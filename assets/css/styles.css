@@ -290,7 +290,8 @@ img {
 }
 
 .home__blob-img {
-  width: 500px;
+  width: 170px;
+  height: 250px;
 }
 
 .home__data {
@@ -856,8 +857,7 @@ img {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  height: 100vh;
+  row-gap: 3rem;
 }
 
 .contact__information {
