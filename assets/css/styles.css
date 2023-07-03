@@ -286,17 +286,11 @@ img {
 
 .home__blob {
   width: 300px;
-  height: 300px; /* Add this line to set the height */
   fill: var(--first-color);
-  position: relative; /* Add this line to position the child element */
 }
 
 .home__blob-img {
-  width: 100%; /* Change width to 100% to fill the parent element */
-  height: 100%; /* Add this line to fill the parent element */
-  position: absolute; /* Add this line to position the image */
-  top: 0; /* Add this line to position the image at the top */
-  left: 0; /* Add this line to position the image at the left */
+  width: 180px;
 }
 
 .home__data {
