@@ -494,48 +494,108 @@ img {
   background-color: var(--first-color);
 }
 
-.skills__html {
+.skills__python {
   width: 90%;
 }
 
-.skills__css {
+.skills__r {
   width: 80%;
 }
 
-.skills__js {
+.skills__sql {
+  width: 80%;
+}
+
+.skills__powershell {
   width: 60%;
 }
 
-.skills__react {
-  width: 85%;
-}
-
 .skills__php {
-  width: 80%;
+  width: 60%;
 }
 
-.skills__node {
+.skills__c {
+  width: 50%;
+}
+
+.skills__tableau {
+  width: 90%;
+}
+
+.skills__powerbi {
+  width: 90%;
+}
+
+.skills__qualtrics {
+  width: 60%;
+}
+
+.skills__powerapps {
   width: 70%;
 }
 
-.skills__firebase {
+.skills__hadoop {
+  width: 70%;
+}
+
+.skills__databricks {
+  width: 70%;
+}
+
+.skills__apachespark {
+  width: 65%;
+}
+
+.skills__apachehive {
+  width: 60%;
+}
+
+.skills__mss {
   width: 90%;
 }
 
-.skills__python {
-  width: 55%;
-}
-
-.skills__figma {
+.skills__snowflake {
   width: 90%;
 }
 
-.skills__sketch {
+.skills__oracle {
+  width: 90%;
+}
+
+.skills__aws {
+  width: 65%;
+}
+
+.skills__azure {
+  width: 70%;
+}
+
+.skills__github{
+  width: 790;
+}
+
+.skills__workday {
+  width: 90%;
+}
+
+.skills__google {
+  width: 80%;
+}
+
+.skills__rapidminer {
+  width: 70%;
+}
+
+.skills__greenhouse {
   width: 85%;
 }
 
-.skills__photoshop {
-  width: 85%;
+.skills__jdxperts {
+  width: 60%;
+}
+
+.skills__successfactors {
+  width: 70%;
 }
 
 .skills__close .skills__list {
