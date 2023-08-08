@@ -975,7 +975,7 @@ img {
 .footer__links {
   display: flex;
   flex-direction: row;
-  row-gap: 1.5rem;
+  row-gap: 1rem;
   white-space: nowrap;
 }
 
