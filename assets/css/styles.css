@@ -969,6 +969,7 @@ img {
   align-items: center;
   flex-direction: row;
   row-gap: 1.5rem;
+  white-space: nowrap;
 }
 
 .footer__link:hover {
@@ -1241,6 +1242,7 @@ img {
     flex-direction: row;
     align-items: center;
     column-gap: 2rem;
+    white-space: nowrap;
   }
   .footer__socials {
     justify-self: flex-end;
