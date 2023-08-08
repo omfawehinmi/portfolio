@@ -1238,7 +1238,7 @@ img {
     padding: 3rem 0 3.5rem;
   }
   .footer__links {
-    flex-direction: row;
+    flex-direction: column;
     column-gap: 2rem;
   }
   .footer__socials {
