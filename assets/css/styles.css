@@ -270,7 +270,7 @@ img {
 }
 
 .home__social {
-  display:block;
+  display:-ms-inline-grid;
   grid-template-columns: max-content;
   row-gap: 1rem;
 }
