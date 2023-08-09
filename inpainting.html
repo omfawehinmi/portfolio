@@ -133,28 +133,24 @@
                             This process enables the models to differentiate between authentic and manipulated regions, leveraging the inherent capabilities of CNNs 
                             to perform complex image analysis. By utilizing feature extraction, my models will effectively distinguish between inpainted and 
                             non-inpainted sections, contributing to accurate image forensics and manipulation detection.</p>
+                            <img src="assets/img/DeepfakeArt.jpg" alt="DeepfakeArt Dataset Image" class="deepfakeart." style="width: 300px; height: 250px;">
                     </div>
                     
 
                     <div>
                     <b><h2 class="home__subtitle2">System Configuration</h2></b>
-                        <p class="home__description">Data scientist and data engineer driving impactful business decisions and 
-                            automated process improvements. Advanced knowledge of BI tools, programmatic analysis, and data 
-                            system integrations. Excellent communications skills and proven leadership abilities.</p>
-                    </div>
-
-                    <div>
-                        <h3 class="home__subtitle">Available Graphical Processing Units</h3>
-                        <p class="home__description">Data scientist and data engineer driving impactful business decisions and 
-                            automated process improvements. Advanced knowledge of BI tools, programmatic analysis, and data 
-                            system integrations. Excellent communications skills and proven leadership abilities.</p>
-                    </div>
-
-                    <div>
-                        <h3 class="home__subtitle">Distributed Mirror Strategy</h3>
-                        <p class="home__description">Data scientist and data engineer driving impactful business decisions and 
-                            automated process improvements. Advanced knowledge of BI tools, programmatic analysis, and data 
-                            system integrations. Excellent communications skills and proven leadership abilities.</p>
+                        <p class="home__description">In this project, I'll leverage my personal PC build featuring 64 GB of RAM and an AMD Ryzen 5 5600 6-Core 
+                            Processor. The system boasts a dual GPU setup, including the NVIDIA GeForce RTX 4080 and RTX 3060. The RTX 4080 impresses with 9728 
+                            CUDA cores for parallel processing, 16 GB VRAM, and specialized Tensor and Ray Tracing cores that optimize deep learning and graphics 
+                            tasks. Similarly, the RTX 3060 showcases 3584 CUDA cores, 12 GB VRAM, and functional Tensor and Ray Tracing cores.</p><br>
+                        <p>To maximize training efficiency, I adopted a distributed strategy using TensorFlow's 'tf.distribute' module. I opted for the 
+                            MirroredStrategy, facilitating synchronous training across GPUs by replicating the model on each unit and harmonizing updates 
+                            during training. It processes different data subsets in parallel, synchronizes gradients, averages losses, and updates model 
+                            parameters consistently. This strategy significantly accelerates the training process.</p>
+                        <p>Moreover, I fine-tuned GPU memory allocation with the 'limit_gpu_memory' function. This customization lets me specify the GPU memory
+                            fraction, preventing memory overflow and bolstering training stability. This comprehensive approach ensures optimal performance in
+                            model training and evaluation.</p>
+                            <img src="assets/img/DeepfakeArt.jpg" alt="DeepfakeArt Dataset Image" class="deepfakeart." style="width: 300px; height: 250px;">
                     </div>
                     
 
