@@ -101,7 +101,9 @@
                             60,000 real images, sourced from CIFAR-10. While the dataset offers a wealth of training data, it's important to note 
                             that AI-generated images might vary in quality due to the inherent nature of synthetic content. This variability could 
                             influence the model's performance, particularly when confronted with lower-quality AI-generated images in the test set.</p>
-                            <img src="assets/img/CIFAKE.png" alt="CIFAKE Dataset Image" class="cifake-image" style="width: 300px; height: 250px;">
+                            <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+                                <img src="assets/img/CIFAKE.png" alt="CIFAKE Dataset Image" class="cifake" style="width: 600px; height: 350px;">
+                            </div>
                     </div>
 
                     <div>
@@ -112,7 +114,9 @@
                             undergone rigorous quality checks to ensure accuracy and consistency.The DeepfakeArt Challenge Dataset encompasses a wide range of 
                             generative forgery and data poisoning methods, including inpainting, style transfer, adversarial data poisoning, and Cutmix. 
                             I specifically chose to utilize the Inpainting repository from the DeepfakeArt Challenge Dataset.</p>
-                            <img src="assets/img/DeepfakeArt.jpg" alt="DeepfakeArt Dataset Image" class="deepfakeart." style="width: 300px; height: 250px;">
+                            <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+                                <img src="assets/img/DeepfakeArt.jpg" alt="DeepfakeArt Dataset Image" class="deepfakeart" style="width: 600px; height: 350px;">
+                            </div>
 
                     </div>
 
@@ -133,12 +137,14 @@
                             This process enables the models to differentiate between authentic and manipulated regions, leveraging the inherent capabilities of CNNs 
                             to perform complex image analysis. By utilizing feature extraction, my models will effectively distinguish between inpainted and 
                             non-inpainted sections, contributing to accurate image forensics and manipulation detection.</p>
-                            <img src="assets/img/DeepfakeArt.jpg" alt="DeepfakeArt Dataset Image" class="deepfakeart." style="width: 300px; height: 250px;">
+                            <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+                                <img src="assets/img/assets/img/feature_extraction.png" alt="Feature Extraction Image" class="feature" style="width:800px; height: 250px;">
+                            </div>
                     </div>
                     
 
                     <div>
-                    <b><h2 class="home__subtitle2">System Configuration</h2></b>
+                        <h2 class="home__subtitle2">System Configuration</h2> 
                         <p class="home__description">In this project, I'll leverage my personal PC build featuring 64 GB of RAM and an AMD Ryzen 5 5600 6-Core 
                             Processor. The system boasts a dual GPU setup, including the NVIDIA GeForce RTX 4080 and RTX 3060. The RTX 4080 impresses with 9728 
                             CUDA cores for parallel processing, 16 GB VRAM, and specialized Tensor and Ray Tracing cores that optimize deep learning and graphics 
@@ -150,12 +156,14 @@
                         <p>Moreover, I fine-tuned GPU memory allocation with the 'limit_gpu_memory' function. This customization lets me specify the GPU memory
                             fraction, preventing memory overflow and bolstering training stability. This comprehensive approach ensures optimal performance in
                             model training and evaluation.</p>
-                            <img src="assets/img/DeepfakeArt.jpg" alt="DeepfakeArt Dataset Image" class="deepfakeart." style="width: 300px; height: 250px;">
+                            <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+                                <img src="assets/img/system.jpg" alt="system Image" class="system" style="width: 325px; height: 400px;">
+                            </div>
                     </div>
                     
 
                     <div>
-                    <b><h2 class="home__subtitle2">Approach</h2></b>
+                        <h2 class="home__subtitle2">Approach</h2>
                         <p class="home__description">This project focuses on detecting image inpainting using convolutional neural 
                             networks (CNNs) and an ensemble model. The project takes advantage of a dual dataset approach, combining 
                             the CIFAKE dataset, enriched with real and AI-generated synthetic images, alongside the esteemed DeepFake 
@@ -201,7 +209,7 @@
                     </div>     
 
                     <div>
-                    <b><h2 class="home__subtitle2">Convolutional Neural Network: Model Build</h2></b>
+                        <h2 class="home__subtitle2">Convolutional Neural Network: Model Build</h2>
                         <p class="home__description">he model is implemented using transfer learning and a pre-trained convolutional neural 
                             network (CNN) architecture called DenseNet121. Transfer learning allows leveraging the knowledge 
                             learned from a large dataset (ImageNet) to improve performance on the target task with a smaller 
@@ -287,7 +295,7 @@
                     </div>
 
                     <div>
-                    <b><h2 class="home__subtitle2">Results & Accuracy</h2></b>
+                        <h2 class="home__subtitle2">Results & Accuracy</h2>
                         <p class="home__description">Data scientist and data engineer driving impactful business decisions and 
                             automated process improvements. Advanced knowledge of BI tools, programmatic analysis, and data 
                             system integrations. Excellent communications skills and proven leadership abilities.</p>
