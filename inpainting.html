@@ -97,35 +97,42 @@
 
                     <div>
                         <h3 class="home__subtitle">CIFAKE: Real and AI-Generated Synthetic Images</h3>
-                        <p class="home__description">The CIFAKE dataset consists of 60,000 AI-generated images and an equivalent number o
-                            f 60,000 real images, sourced from CIFAR-10. With the advancement in the quality of AI-generated images, 
-                            questions regarding their authenticity and credibility have emerged. Can computer vision methods effectively 
-                            differentiate between genuine and AI-generated images?<br>
-                            his dataset is thoughtfully organized into "Train" and "Test" folders, each containing distinct subfolders that 
-                            play a crucial role in facilitating effective model training and evaluation. In the "Train" section of the CIFAKE dataset, 
-                            images are thoughtfully categorized into subfolders named "Real" and "AI-Generated." This organization allows machine learning 
-                            models to learn from a diverse range of image types during the training phase. By being exposed to both authentic and AI-generated 
-                            images, models can develop a robust understanding of the characteristics that distinguish the two categories.Correspondingly, the 
-                            "Test" section of the dataset mirrors this categorization, with subfolders named "Real" and "AI-Generated" as well. hile the dataset 
-                            offers a wealth of training data, it's important to note that AI-generated images might vary in quality due to the inherent nature 
-                            of synthetic content. This variability could influence the model's performance, particularly when confronted with lower-quality 
-                            AI-generated images in the test set.</p>
+                        <p class="home__description">The CIFAKE dataset consists of 60,000 AI-generated images and an equivalent number of
+                            60,000 real images, sourced from CIFAR-10. While the dataset offers a wealth of training data, it's important to note 
+                            that AI-generated images might vary in quality due to the inherent nature of synthetic content. This variability could 
+                            influence the model's performance, particularly when confronted with lower-quality AI-generated images in the test set.</p>
                             <img src="assets/img/CIFAKE.png" alt="CIFAKE Dataset Image" class="cifake-image" style="width: 300px; height: 250px;">
-</div>
                     </div>
 
                     <div>
                         <h3 class="home__subtitle">DeepfakeArt Challenge Image Dataset</h3>
-                        <p class="home__description">Data scientist and data engineer driving impactful business decisions and 
-                            automated process improvements. Advanced knowledge of BI tools, programmatic analysis, and data 
-                            system integrations. Excellent communications skills and proven leadership abilities.</p>
+                        <p class="home__description">The DeepfakeArt Challenge Dataset is comprised of a collection of over 32,000 images, 
+                            the dataset encompasses a diverse array of generative forgery and data poisoning techniques. Each entry in the dataset consists 
+                            of a pair of images, categorized as forgeries/adversarially contaminated or authentic. Notably, every generated image has 
+                            undergone rigorous quality checks to ensure accuracy and consistency.The DeepfakeArt Challenge Dataset encompasses a wide range of 
+                            generative forgery and data poisoning methods, including inpainting, style transfer, adversarial data poisoning, and Cutmix. 
+                            I specifically chose to utilize the Inpainting repository from the DeepfakeArt Challenge Dataset.</p>
+                            <img src="assets/img/DeepfakeArt.jpg" alt="DeepfakeArt Dataset Image" class="deepfakeart." style="width: 300px; height: 250px;">
+
+                    </div>
+
+                    <div>
+                            <p class="home__description">This datasets were thoughtfully organized into "Train" and "Test" folders, each containing distinct subfolders that 
+                            play a crucial role in facilitating effective model training and evaluation. In the "Train" section of each data repository, 
+                            images are categorized into subfolders named "Real" and "Fake." This organization allows my machine learning 
+                            models to learn from a diverse range of image types during the training phase. By being exposed to both authentic and AI-generated 
+                            images, the models can develop a robust understanding of the characteristics that distinguish the two categories.Correspondingly, the 
+                            "Test" section of the dataset mirrors this categorization, with subfolders named "Real" and "AI-Generated" as well.</p>
                     </div>
 
                     <div>
                         <h3 class="home__subtitle">Images & Feature Extraction</h3>
-                        <p class="home__description">Data scientist and data engineer driving impactful business decisions and 
-                            automated process improvements. Advanced knowledge of BI tools, programmatic analysis, and data 
-                            system integrations. Excellent communications skills and proven leadership abilities.</p>
+                        <p class="home__description">In your project, feature extraction through convolutional layers will play a pivotal role in detecting image 
+                            inpainting. By applying these layers, my models will automatically identify intricate patterns, textures, and irregularities within images. 
+                            These features will be learned and consolidated into higher-level representations as the models delve deeper into their architecture. 
+                            This process enables the models to differentiate between authentic and manipulated regions, leveraging the inherent capabilities of CNNs 
+                            to perform complex image analysis. By utilizing feature extraction, my models will effectively distinguish between inpainted and 
+                            non-inpainted sections, contributing to accurate image forensics and manipulation detection.</p>
                     </div>
                     
 
@@ -157,7 +164,8 @@
                             networks (CNNs) and an ensemble model. The project takes advantage of a dual dataset approach, combining 
                             the CIFAKE dataset, enriched with real and AI-generated synthetic images, alongside the esteemed DeepFake 
                             Detection Challenge Dataset. Training the CNNs entails an intricate amalgamation of techniques, including 
-                            the strategic application of transfer learning, which capitalizes on pre-trained models' intrinsic feature 
+                            the strategic application of transfer learning, which capitangly, the 
+                            "Test" section of the dataset mirrors this categorization, with subfolders named "Real" and "AI-Generated" as well.</p>izes on pre-trained models' intrinsic feature 
                             extraction capabilities. The arsenal of strategies further expands with the integration of data augmentation 
                             to enhance generalization, early stopping for combating overfitting, and regularization to ensure optimum 
                             model robustness. The models' convergence is expedited through the application of the binary cross-entropy 
@@ -253,7 +261,7 @@
                     </div>
 
                     <div>
-                    <b><h2 class="home__subtitle2">Model Compilation</h2></b>
+                        <h2 class="home__subtitle2">Model Compilation</h2>
                         <h3 class="home__subtitle">Learning Rate Optimizer: Adam</h3>
                         <p class="home__description">he model is implemented using transfer learning and a pre-trained convolutional neural 
                             network (CNN) architecture called DenseNet121. Transfer learning allows leveraging the knowledge 
@@ -269,7 +277,7 @@
                     
 
                     <div>
-                    <b><h2 class="home__subtitle2">Training & Validation</h2></b>
+                        <h2 class="home__subtitle2">Training & Validation</h2>
                         <p class="home__description">Data scientist and data engineer driving impactful business decisions and 
                             automated process improvements. Advanced knowledge of BI tools, programmatic analysis, and data 
                             system integrations. Excellent communications skills and proven leadership abilities.</p>
