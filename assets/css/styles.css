@@ -349,6 +349,18 @@ img {
   font-size: 1.25rem;
 }
 
+.column {
+  float: left;
+  width: 33.33%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
 /*========== BUTTONS ==========*/
 .button {
   display: inline-block;
