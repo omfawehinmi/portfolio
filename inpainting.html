@@ -92,7 +92,7 @@
                             art experts, e-commerce platforms, and social media networks can benefit from the tool 
                             to validate image authenticity and uphold credibility. By providing a reliable defense 
                             against manipulated visuals, the tool ensures trust in the integrity of digital media.</p>
-
+                    <div>
                         <h3 class="home__subtitle">CIFAKE: Real and AI-Generated Synthetic Images</h3>
                         <p class="home__description">The CIFAKE dataset consists of 60,000 AI-generated images and an equivalent number of
                             60,000 real images, sourced from CIFAR-10. While the dataset offers a wealth of training data, it's important to note 
@@ -100,8 +100,10 @@
                             influence the model's performance, particularly when confronted with lower-quality AI-generated images in the test set.</p>
                             <div style="display: flex; justify-content: center; align-items: center;">
                                 <img src="assets/img/CIFAKE_pic.png" alt="CIFAKE Dataset Image" class="cifake" style="width: 600px; height: 325px;">
-                            </div><br>
+                            </div>
+                    </div>
 
+                    <div>
                         <h3 class="home__subtitle">DeepfakeArt Challenge Image Dataset</h3>
                         <p class="home__description">The DeepfakeArt Challenge Dataset is comprised of a collection of over 32,000 images, 
                             the dataset encompasses a diverse array of generative forgery and data poisoning techniques. Each entry in the dataset consists 
@@ -111,15 +113,18 @@
                             I specifically chose to utilize the Inpainting repository from the DeepfakeArt Challenge Dataset.</p>
                             <div style="display: flex; justify-content: center; align-items: center;">
                                 <img src="assets/img/DeepfakeArt_pic.jpg" alt="DeepfakeArt Dataset Image" class="deepfakeart" style="width: 600px; height: 375px;">
-                            </div><br>
+                            </div>
+                    </div>
 
+                    <div>
                         <p class="home__description">This datasets were thoughtfully organized into "Train" and "Test" folders, each containing distinct subfolders that 
                             play a crucial role in facilitating effective model training and evaluation. In the "Train" section of each data repository, 
                             images are categorized into subfolders named "Real" and "Fake." This organization allows my machine learning 
                             models to learn from a diverse range of image types during the training phase. By being exposed to both authentic and AI-generated 
                             images, the models can develop a robust understanding of the characteristics that distinguish the two categories.Correspondingly, the 
-                            "Test" section of the dataset mirrors this categorization, with subfolders named "Real" and "AI-Generated" as well.</p><br>
-                            
+                            "Test" section of the dataset mirrors this categorization, with subfolders named "Real" and "AI-Generated" as well.</p>
+                    </div>
+                    <div>
                         <h3 class="home__subtitle">Images & Feature Extraction</h3>
                         <p class="home__description">In your project, feature extraction through convolutional layers will play a pivotal role in detecting image 
                             inpainting. By applying these layers, my models will automatically identify intricate patterns, textures, and irregularities within images. 
@@ -130,6 +135,7 @@
                             <div style="display: flex; justify-content: center; align-items: center;">
                                 <img src="assets/img/assets/img/feature_extraction.png" alt="Feature Extraction Image" class="feature" style="width:200px; height: 150px;">
                             </div>
+                    </div>
                 
                     <div>
                         <b><h2 class="home__subtitle2">System Configuration</h2></b>
@@ -211,115 +217,372 @@
                                 classification. Its integration into a distributed strategy reinforces its potential for scaling across multiple GPUs while maintaining performance.
                                  Through this comprehensive architecture, the model exemplifies the synergy of transfer learning, personalized feature refinement, regularization 
                                  techniques, and distributed training, collectively contributing to robust and efficient image classification capabilities.</p>
-                        </div><br>
+                                 <div style="display: flex; justify-content: center; align-items: center;">
+                                    <img src="assets/img/CIFAKE.png" alt="CIFAKE Model" class="cm" style="width: 475px; height: 490px;">
+                                </div>
+                        </div>
 
                         <div>
                             <p><strong>Deepfake:</strong> The construction commences by importing a pre-trained Xception model, pretrained on ImageNet. The subsequent step involves 
                                 fine-tuning, where a subset of layers (from index 56 onwards) is rendered trainable, thereby adapting the model to the specific task. To prevent
-                                 overfitting, a Dropout layer with a rate of 0.5 is introduced, facilitating regularization. Further augmentation occurs through the sequential layer 
-                                 composition. The Xception base model is followed by a Global Average Pooling 2D layer, which distills complex feature maps into a more manageable form. 
+                                overfitting, a Dropout layer with a rate of 0.5 is introduced, facilitating regularization. Further augmentation occurs through the sequential layer 
+                                composition. The Xception base model is followed by a Global Average Pooling 2D layer, which distills complex feature maps into a more manageable form. 
                                  The Dropout layer follows, curtailing overfitting risks. Finally, a single Dense layer with sigmoid activation furnishes the model's classification 
-                                 output. This configuration interlaces the power of transfer learning, enabling the network to leverage learned features, with careful regularization and 
-                                 pooling mechanisms. The tailored architecture strikes a balance between complexity and efficiency, ensuring effective image classification while minimizing 
-                                 overfitting. </p>
+                                output. This configuration interlaces the power of transfer learning, enabling the network to leverage learned features, with careful regularization and 
+                                pooling mechanisms. The tailored architecture strikes a balance between complexity and efficiency, ensuring effective image classification while minimizing 
+                                overfitting. </p>
+                                <div style="display: flex; justify-content: center; align-items: center;">
+                                    <img src="assets/img/Deepfake.png" alt="Deepfake Model" class="df" style="width: 475px; height: 490px;">
+                                </div>
                         </div><br>
 
                         <div>
-                            <p><strong>Deepfake:</strong> Firstly, two pretrained models, loaded from specified paths, are assigned names for differentiation. The models are labeled as 
+                            <p><strong>Ensemble:</strong> Firstly, two pretrained models, loaded from specified paths, are assigned names for differentiation. The models are labeled as 
                                 'model1' and 'model2'. Following this, a new input layer is introduced, designed to accommodate the specific input dimensions (224x224x3). This input layer 
                                 forms the entry point for the ensemble model. Subsequently, the outputs of both 'model1' and 'model2' are retrieved by passing the ensemble input through
-                                 these models. These outputs are then concatenated together, amalgamating the predictions generated by both individual models. To finalize the ensemble, a
-                                  Dense layer with sigmoid activation is appended, shaping the output for binary classification (the classification task at hand). Ultimately, the ensemble 
-                                  model is established using the Functional API of TensorFlow. The ensemble's inputs consist of the ensemble input layer, while the outputs are steered 
-                                  through the concatenated and transformed layers, culminating in the ensemble output layer. This ensemble model demonstrates the potency of combining the
-                                   predictive prowess of two independently trained models to achieve superior classification outcomes. Through this configuration, the ensemble leverages the
-                                    diversity of learned features from different models, thus leading to a more robust and effective classifier.</p>
+                                these models. These outputs are then concatenated together, amalgamating the predictions generated by both individual models. To finalize the ensemble, a
+                                Dense layer with sigmoid activation is appended, shaping the output for binary classification (the classification task at hand). Ultimately, the ensemble 
+                                model is established using the Functional API of TensorFlow. The ensemble's inputs consist of the ensemble input layer, while the outputs are steered 
+                                through the concatenated and transformed layers, culminating in the ensemble output layer. This ensemble model demonstrates the potency of combining the
+                                predictive prowess of two independently trained models to achieve superior classification outcomes. Through this configuration, the ensemble leverages the
+                                diversity of learned features from different models, thus leading to a more robust and effective classifier.</p>
+                                <div style="display: flex; justify-content: center; align-items: center;">
+                                    <img src="assets/img/ensemble.png" alt="Ensemble Model" class="em" style="width: 475px; height: 490px;">
+                                </div>
+
                         </div>
                     </div>
 
                     <div>
                         <h3 class="home__subtitle">Callbacks</h3>
-                        <p class="home__description">he model is implemented using transfer learning and a pre-trained convolutional neural 
-                            network (CNN) architecture called DenseNet121. Transfer learning allows leveraging the knowledge 
-                            learned from a large dataset (ImageNet) to improve performance on </p>
-                    </div>
+                        <div>
+                            <p><strong>CIFAKE:</strong> The "EarlyStopping" callback monitors the loss metric, terminating training if the loss doesn't substantially decrease over a predefined 
+                                number of epochs (patience of 3). This helps prevent overfitting and conserves computational resources. The "ReduceLROnPlateau" callback dynamically adjusts the 
+                                learning rate during training. It observes loss changes and reduces the learning rate by a specified factor (0.1) if significant loss improvement isn't detected 
+                                after a set number of epochs (patience of 2). The "min_lr" parameter ensures the learning rate doesn't drop below a minimum threshold. These callbacks collectively 
+                                adapt the model's learning rate and halt training if needed, fostering efficient convergence and preventing suboptimal outcomes. Additionally, the 
+                                "tensorboard_callback" facilitates model monitoring through TensorBoard visualization. </p>
+                                <div style="display: flex; justify-content: center; align-items: center;">
+                                    <img src="assets/img/callbacks.png" alt="CIFAKE Model" class="cm" style="width: 500px; height: 200px;">
+                                </div>
+                        </div>
 
-                    <div>
-                        <h3 class="home__subtitle">Regularization Methods</h3>
-                        <p class="home__description">he model is implemented using transfer learning and a pre-trained convolutional neural 
-                            network (CNN) architecture called DenseNet121. Transfer learning allows leveraging the knowledge 
-                            learned from a large dataset (ImageNet) to improve performance on </p>
+                        <div>
+                            <p><strong>Deepfake & Ensemble:</strong> The "EarlyStopping" callback remains consistent with its earlier explanation, monitoring the loss metric and ending training if
+                                loss stagnation persists beyond three epochs, preventing unnecessary computation and potential overfitting. The "ReduceLROnPlateau" callback, however, 
+                                introduces some changes. It still observes loss changes and reduces the learning rate if significant loss improvement isn't observed, yet with a more cautious
+                                approach. The "factor" parameter is adjusted to 0.001, indicating a smaller decrease in the learning rate, while the "patience" parameter remains at 2. The 
+                                "min_lr" parameter is again utilized to ensure the learning rate doesn't dip below a minimum threshold. These callbacks, in conjunction with the 
+                                "tensorboard_callback," facilitate improved convergence and efficiency in the training process. </p>
+                                <div style="display: flex; justify-content: center; align-items: center;">
+                                    <img src="assets/img/learningratereduction.png" alt="CIFAKE Model" class="cm" style="width: 500px; height: 100px;">
+                                </div>
+                        </div>
+
                     </div>
 
                     <div>
                         <b><h2 class="home__subtitle2">Model Compilation</h2></b>
-                        <h3 class="home__subtitle">Learning Rate Optimizer: Adam</h3>
-                        <p class="home__description">he model is implemented using transfer learning and a pre-trained convolutional neural 
-                            network (CNN) architecture called DenseNet121. Transfer learning allows leveraging the knowledge 
-                            learned from a large dataset (ImageNet) to improve performance on </p>
-                    </div>
+                        <div>
+                            <p><strong>CIFAKE & Ensemble:</strong> In this section, we delve into the model's compilation, showcasing a refined approach to optimization. Here, the "Adam" optimizer 
+                                is employed, which facilitates adaptive learning rates, enhancing convergence during training. The learning rate is set to 0.001, 
+                                aligning with the model's optimization goals. The choice of the "binary_crossentropy" loss function is indicative of the binary 
+                                classification nature of the problem, adeptly quantifying the divergence between predicted and actual outputs. Simultaneously, 
+                                accuracy metrics are specified to monitor the model's classification performance during training. This compilation configuration 
+                                aligns with the model's architectural intricacies and the nature of the image classification task. By tailoring the optimizer, 
+                                loss function, and evaluation metrics, the model is primed to effectively learn and improve its classification accuracy over training 
+                                epochs.</p>
+                                <div style="display: flex; justify-content: center; align-items: center;">
+                                    <img src="assets/img/CIAFAKEcompiler.png" alt="CIFAKE Compiler" class="cc" style="width: 4500px; height: 300px;">
+                                </div>
+                        </div>
 
-                    <div>
-                        <h3 class="home__subtitle">Binary Cross-Entropy</h3>
-                        <p class="home__description">he model is implemented using transfer learning and a pre-trained convolutional neural 
-                            network (CNN) architecture called DenseNet121. Transfer learning allows leveraging the knowledge 
-                            learned from a large dataset (ImageNet) to improve performance on </p>
+                        <div>
+                            <p><strong>Deepfake:</strong> Here, the "Stochastic Gradient Descent" (SGD) optimizer is introduced, characterized by its iterative weight 
+                                updates that enhance convergence. The learning rate is set to 0.1, a choice that regulates the step size during weight adjustments, 
+                                influencing the training speed and stability. Intriguingly, the "momentum" hyperparameter is incorporated at a value of 0.9, amplifying 
+                                the optimizer's capacity to traverse gradient landscapes with enhanced momentum, promoting efficient learning. The loss function
+                                remains "binary_crossentropy," accurately quantifying classification disparities, while accuracy metrics persist to evaluate model
+                                performance. This nuanced compilation configuration underlines the significance of matching optimization techniques to model 
+                                architecture and task complexity.</p>
+                                <div style="display: flex; justify-content: center; align-items: center;">
+                                    <img src="assets/img/deepfakecompiler.png" alt="Deepfake Compiler" class="dc" style="width: 500px; height: 300px;">
+                                </div>
+                        </div>
+
                     </div>
-                    
 
                     <div>
                     <b><h2 class="home__subtitle2">Training & Validation</h2></b>
-                        <p class="home__description">Data scientist and data engineer driving impactful business decisions and 
-                            automated process improvements. Advanced knowledge of BI tools, programmatic analysis, and data 
-                            system integrations. Excellent communications skills and proven leadership abilities.</p>
-                    </div>
+                    <p><strong>CIFAKE</strong></p>
+                    <h2>Training History</h2>
+                        <table>
+                        <tr>
+                            <th>Epoch</th>
+                            <th>Loss</th>
+                            <th>Accuracy</th>
+                            <th>Validation Loss</th>
+                            <th>Validation Accuracy</th>
+                            <th>Learning Rate</th>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>0.3717</td>
+                            <td>0.8931</td>
+                            <td>0.2321</td>
+                            <td>0.9202</td>
+                            <td>0.001</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>0.2000</td>
+                            <td>0.9267</td>
+                            <td>0.1736</td>
+                            <td>0.9315</td>
+                            <td>0.001</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>0.1785</td>
+                            <td>0.9342</td>
+                            <td>0.1965</td>
+                            <td>0.9324</td>
+                            <td>0.001</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>0.1604</td>
+                            <td>0.9421</td>
+                            <td>0.1844</td>
+                            <td>0.9332</td>
+                            <td>0.001</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>0.1482</td>
+                            <td>0.9458</td>
+                            <td>0.1529</td>
+                            <td>0.9448</td>
+                            <td>0.001</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>0.1397</td>
+                            <td>0.9483</td>
+                            <td>0.1465</td>
+                            <td>0.9507</td>
+                            <td>0.001</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>0.1325</td>
+                            <td>0.9522</td>
+                            <td>0.1938</td>
+                            <td>0.9252</td>
+                            <td>0.001</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>0.1251</td>
+                            <td>0.9541</td>
+                            <td>0.1308</td>
+                            <td>0.9547</td>
+                            <td>0.001</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>0.1183</td>
+                            <td>0.9574</td>
+                            <td>0.1035</td>
+                            <td>0.9613</td>
+                            <td>0.001</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>0.1128</td>
+                            <td>0.9598</td>
+                            <td>0.1125</td>
+                            <td>0.9592</td>
+                            <td>0.001</td>
+                        </tr>
+                        </table>
 
-                    <div>
-                        <h3 class="home__subtitle">Hyperparameter Tuning: Hyperopt</h3>
-                        <p class="home__description">Data scientist and data engineer driving impactful business decisions and 
-                            automated process improvements. Advanced knowledge of BI tools, programmatic analysis, and data 
-                            system integrations. Excellent communications skills and proven leadership abilities.</p>
-                    </div>
+                                            </div>
 
-                    <div>
-                    <b><h2 class="home__subtitle2">Results & Accuracy</h2></b>
-                        <p class="home__description">Data scientist and data engineer driving impactful business decisions and 
-                            automated process improvements. Advanced knowledge of BI tools, programmatic analysis, and data 
-                            system integrations. Excellent communications skills and proven leadership abilities.</p>
-                    </div>
-                    
-                </div>
-            </section>
-            
-        <!--==================== FOOTER ====================-->
-        <footer class="footer">
-            <div class="footer__bg">
-                <div class="footer__container container grid">
-                    <div>
-                        <h1 class="footer__title">Michael</h1>
-                        <span class="footer__subtitle">Data Scientist | Data Engineer</span>
-                    </div>
+                                            <div>
+                                            <b><h2 class="home__subtitle2">Results & Accuracy</h2></b>
+                                                <p class="home__description">Data scientist and data engineer driving impactful business decisions and 
+                                                    automated process improvements. Advanced knowledge of BI tools, programmatic analysis, and data 
+                                                    system integrations. Excellent communications skills and proven leadership abilities.</p>
+                                            </div>
+                                            
+                                        </div>
+                                    </section>
+                                    
+                                <!--==================== FOOTER ====================-->
+                                <footer class="footer">
+                                    <div class="footer__bg">
+                                        <div class="footer__container container grid">
+                                            <div>
+                                                <h1 class="footer__title">Michael</h1>
+                                                <span class="footer__subtitle">Data Scientist | Data Engineer</span>
+                                            </div>
 
-                    <ul class="footer__links">
-                        <li>
-                            <a href="https://omfawehinmi.github.io/portfolio/#education" class="footer__link">Education | Work</a>
-                        </li>
-                        <li>
-                            <a href="https://omfawehinmi.github.io/portfolio/#projects" class="footer__link">Projects</a>
-                        </li>
-                        <li>
-                            <a href="https://omfawehinmi.github.io/portfolio/#contact" class="footer__link">Contactme</a>
-                        </li>
-                    </ul>
+                                            <ul class="footer__links">
+                                                <li>
+                                                    <a href="https://omfawehinmi.github.io/portfolio/#education" class="footer__link">Education | Work</a>
+                                                </li>
+                                                <li>
+                                                    <a href="https://omfawehinmi.github.io/portfolio/#projects" class="footer__link">Projects</a>
+                                                </li>
+                                                <li>
+                                                    <a href="https://omfawehinmi.github.io/portfolio/#contact" class="footer__link">Contactme</a>
+                                                </li>
+                                            </ul>
 
 
-                    <div class="footer__socials">
-                        <a href="https://www.linkedin.com/in/michael-fawehinmi" target="_blank" class="footer__social">
-                            <i class="uil uil-linkedin-alt"></i>
-                        </a>
-                        <a href="https://github.com/omfawehinmi/portfolio" target="_blank" class="footer__social">
-                            <i class="uil uil-github-alt"></i>
-                        </a>
+                                            <div class="footer__socials">
+                                                <a href="https://www.linkedin.com/in/michael-fawehinmi" target="_blank" class="footer__social">
+                                                    <i class="uil uil-linkedin-alt"></i>
+                                                </a>
+                                                <a h<table>
+                                                    <tr>
+                                                    <th>Epoch</th>
+                                                    <th>Loss</th>
+                                                    <th>Accuracy</th>
+                                                    <th>Validation Loss</th>
+                                                    <th>Validation Accuracy</th>
+                                                    <th>Learning Rate</th>
+                                                    </tr>
+                                                    <tr>
+                                                    <td>1</td>
+                                                    <td>0.3717</td>
+                                                    <td>0.8931</td>
+                                                    <td>0.2321</td>
+                                                    <td>0.9202</td>
+                                                    <td>0.001</td>
+                                                    </tr>
+                                                    <tr>
+                                                    <td>2</td>
+                                                    <td>0.2000</td>
+                                                    <td>0.9267</td>
+                                                    <td>0.1736</td>
+                                                    <td>0.9315</td>
+                                                    <td>0.001</td>
+                                                    </tr>
+                                                    <tr>
+                                                    <td>3</td>
+                                                    <td>0.1785</td>
+                                                    <td>0.9342</td>
+                                                    <td>0.1965</td>
+                                                    <td>0.9324</td>
+                                                    <td>0.001</td>
+                                                    </tr>
+                                                    <tr>
+                                                    <td>4</td>
+                                                    <td>0.1604</td>
+                                                    <td>0.9421</td>
+                                                    <td>0.1844</td>
+                                                    <td>0.9332</td>
+                                                    <td>0.001</td>
+                                                    </tr>
+                                                    <tr>
+                                                    <td>5</td>
+                                                    <td>0.1482</td>
+                                                    <td>0.9458</td>
+                                                    <td>0.1529</td>
+                                                    <td>0.9448</td>
+                                                    <td>0.001</td>
+                                                    </tr>
+                                                    <tr>
+                                                    <td>6</td>
+                                                    <td>0.1397</td>
+                                                    <td>0.9483</td>
+                                                    <td>0.1465</td>
+                                                    <td>0.9507</td>
+                                                    <td>0.001</td>
+                                                    </tr>
+                                                    <tr>
+                                                    <td>7</td>
+                                                    <td>0.1325</td>
+                                                    <td>0.9522</td>
+                                                    <td>0.1938</td>
+                                                    <td>0.9252</td>
+                                                    <td>0.001</td>
+                                                    </tr>
+                                                    <tr>
+                                                    <td>8</td>
+                                                    <td>0.1251</td>
+                                                    <td>0.9541</td>
+                                                    <td>0.1308</td>
+                                                    <td>0.9547</td>
+                                                    <td>0.001</td>
+                                                    </tr>
+                                                    <tr>
+                                                    <td>9</td>
+                                                    <td>0.1183</td>
+                                                    <td>0.9574</td>
+                                                    <td>0.1035</td>
+                                                    <td>0.9613</td>
+                                                    <td>0.001</td>
+                                                    </tr>
+                                                    <tr>
+                                                    <td>10</td>
+                                                    <td>0.1128</td>
+                                                    <td>0.9598</td>
+                                                    <td>0.1125</td>
+                                                    <td>0.9592</td>
+                                                    <td>0.001</td>
+                                                    </tr>
+                                                </table>
+                          
+                                              </div>
+                          
+                                              <div>
+                                              <b><h2 class="home__subtitle2">Results & Accuracy</h2></b>
+                                                  <p class="home__description">Data scientist and data engineer driving impactful business decisions and 
+                                                      automated process improvements. Advanced knowledge of BI tools, programmatic analysis, and data 
+                                                      system integrations. Excellent communications skills and proven leadership abilities.</p>
+                                              </div>
+                                              
+                                          </div>
+                                      </section>
+                                      
+                                  <!--==================== FOOTER ====================-->
+                                  <footer class="footer">
+                                      <div class="footer__bg">
+                                          <div class="footer__container container grid">
+                                              <div>
+                                                  <h1 class="footer__title">Michael</h1>
+                                                  <span class="footer__subtitle">Data Scientist | Data Engineer</span>
+                                              </div>
+                          
+                                              <ul class="footer__links">
+                                                  <li>
+                                                      <a href="https://omfawehinmi.github.io/portfolio/#education" class="footer__link">Education | Work</a>
+                                                  </li>
+                                                  <li>
+                                                      <a href="https://omfawehinmi.github.io/portfolio/#projects" class="footer__link">Projects</a>
+                                                  </li>
+                                                  <li>
+                                                      <a href="https://omfawehinmi.github.io/portfolio/#contact" class="footer__link">Contactme</a>
+                                                  </li>
+                                              </ul>
+                          
+                          
+                                              <div class="footer__socials">
+                                                  <a href="https://www.linkedin.com/in/michael-fawehinmi" target="_blank" class="footer__social">
+                                                      <i class="uil uil-linkedin-alt"></i>
+                                                  </a>
+                                                  <a href="https://github.com/omfawehinmi/portfolio" target="_blank" class="footer__social">
+                                                      <i class="uil uil-github-alt"></i>
+                                                  </a>
+                                                  </a>
+                                              </div>
+                          
+                                  </footer>
+                          
+                                  <!--========== SCROL
                         </a>
                     </div>
 
