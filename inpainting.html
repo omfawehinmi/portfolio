@@ -80,7 +80,6 @@
             <!--==================== HOME ====================-->
             <section class="home section" id="home">
                 <div class="home__container container grid">
-                    <div>
                         <h1 class="home__title">Inpainting Image Detection</h1><br><br>
                         <b><h2 class="home__subtitle2">Introduction</h2></b>
                         <p class="home__description">In a world inundated with digital media and misinformation, ensuring image 
@@ -101,10 +100,8 @@
                             influence the model's performance, particularly when confronted with lower-quality AI-generated images in the test set.</p>
                             <div style="display: flex; justify-content: center; align-items: center;">
                                 <img src="assets/img/CIFAKE_pic.png" alt="CIFAKE Dataset Image" class="cifake" style="width: 600px; height: 325px;">
-                            </div>
-                    </div>
+                            </div><br>
 
-                    <div>
                         <h3 class="home__subtitle">DeepfakeArt Challenge Image Dataset</h3>
                         <p class="home__description">The DeepfakeArt Challenge Dataset is comprised of a collection of over 32,000 images, 
                             the dataset encompasses a diverse array of generative forgery and data poisoning techniques. Each entry in the dataset consists 
@@ -114,18 +111,15 @@
                             I specifically chose to utilize the Inpainting repository from the DeepfakeArt Challenge Dataset.</p>
                             <div style="display: flex; justify-content: center; align-items: center;">
                                 <img src="assets/img/DeepfakeArt_pic.jpg" alt="DeepfakeArt Dataset Image" class="deepfakeart" style="width: 600px; height: 375px;">
-                            </div>
-                    </div>
+                            </div><br>
 
-                    <div>
                         <p class="home__description">This datasets were thoughtfully organized into "Train" and "Test" folders, each containing distinct subfolders that 
                             play a crucial role in facilitating effective model training and evaluation. In the "Train" section of each data repository, 
                             images are categorized into subfolders named "Real" and "Fake." This organization allows my machine learning 
                             models to learn from a diverse range of image types during the training phase. By being exposed to both authentic and AI-generated 
                             images, the models can develop a robust understanding of the characteristics that distinguish the two categories.Correspondingly, the 
-                            "Test" section of the dataset mirrors this categorization, with subfolders named "Real" and "AI-Generated" as well.</p>
-                    </div>
-                    <div>
+                            "Test" section of the dataset mirrors this categorization, with subfolders named "Real" and "AI-Generated" as well.</p><br>
+                            
                         <h3 class="home__subtitle">Images & Feature Extraction</h3>
                         <p class="home__description">In your project, feature extraction through convolutional layers will play a pivotal role in detecting image 
                             inpainting. By applying these layers, my models will automatically identify intricate patterns, textures, and irregularities within images. 
@@ -136,7 +130,6 @@
                             <div style="display: flex; justify-content: center; align-items: center;">
                                 <img src="assets/img/assets/img/feature_extraction.png" alt="Feature Extraction Image" class="feature" style="width:200px; height: 150px;">
                             </div>
-                    </div>
                 
                     <div>
                         <b><h2 class="home__subtitle2">System Configuration</h2></b>
@@ -218,7 +211,7 @@
                                 classification. Its integration into a distributed strategy reinforces its potential for scaling across multiple GPUs while maintaining performance.
                                  Through this comprehensive architecture, the model exemplifies the synergy of transfer learning, personalized feature refinement, regularization 
                                  techniques, and distributed training, collectively contributing to robust and efficient image classification capabilities.</p>
-                        </div>
+                        </div><br>
 
                         <div>
                             <p><strong>Deepfake:</strong> The construction commences by importing a pre-trained Xception model, pretrained on ImageNet. The subsequent step involves 
@@ -229,7 +222,7 @@
                                  output. This configuration interlaces the power of transfer learning, enabling the network to leverage learned features, with careful regularization and 
                                  pooling mechanisms. The tailored architecture strikes a balance between complexity and efficiency, ensuring effective image classification while minimizing 
                                  overfitting. </p>
-                        </div>
+                        </div><br>
 
                         <div>
                             <p><strong>Deepfake:</strong> Firstly, two pretrained models, loaded from specified paths, are assigned names for differentiation. The models are labeled as 
