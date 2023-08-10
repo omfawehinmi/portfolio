@@ -187,9 +187,16 @@
 
                     <div>
                         <h3 class="home__subtitle">Custom Image Generator</h3>
-                        <p class="home__description">Data scientist and data engineer driving impactful business decisions and 
-                            automated process improvements. Advanced knowledge of BI tools, programmatic analysis, and data 
-                            system integrations. Excellent communications skills and proven leadership abilities.</p>
+                        <p class="home__description">The generator operates within an infinite loop using a while True construct. Inside the loop, the next(generator) 
+                            function is called to retrieve the next batch of data and corresponding labels from the original data generator. If the data loading 
+                            process encounters an UnidentifiedImageError, which could occur due to corrupted or invalid image files, the generator catches the
+                             error and displays an error message indicating the issue. The purpose of this custom generator is to ensure robustness and resilience
+                              in handling potential errors when loading images for training or evaluation. By using this generator, the research paper's machine 
+                              learning pipeline becomes more stable and less prone to interruptions caused by problematic images, ultimately contributing to the 
+                              reliability and effectiveness of the model training process.</p>
+                            <div style="display: flex; justify-content: center; align-items: center;">
+                                <img src="assets/img/customgenerator.png" alt="CustomGenerator" class="cg" style="width: 375px; height: 300px;">
+                            </div>
                     </div>     
 
                     <div>
