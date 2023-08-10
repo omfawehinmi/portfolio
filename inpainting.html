@@ -97,7 +97,7 @@
                             that AI-generated images might vary in quality due to the inherent nature of synthetic content. This variability could 
                             influence the model's performance, particularly when confronted with lower-quality AI-generated images in the test set.</p>
                             <div style="display: flex; justify-content: center; align-items: center;">
-                                <img src="assets/img/CIFAKE.png" alt="CIFAKE Dataset Image" class="cifake" style="width: 600px; height: 325px;">
+                                <img src="assets/img/CIFAKE_pic.png" alt="CIFAKE Dataset Image" class="cifake" style="width: 600px; height: 325px;">
                             </div>
                     </div>
 
@@ -171,21 +171,18 @@
 
                     <div>
                     <b><h2 class="home__subtitle2">Preprocessing Image Data: ImageDataGenerator</h2></b>
-                        <p class="home__description">This project focuses on detecting image inpainting using convolutional neural 
-                            networks (CNNs) and an ensemble model. The project takes advantage of a dual dataset approach, combining 
-                            the CIFAKE dataset, enriched with real and AI-generated synthetic images, alongside the esteemed DeepFake 
-                            Detection Challenge Dataset. Training the CNNs entails an intricate amalgamation of techniques, including 
-                            the strategic application of transfer learning, which capitalizes on pre-trained models' intrinsic feature 
-                            extraction capabilities. The arsenal of strategies further expands with the integration of data augmentation 
-                            to enhance generalization, early stopping for combating overfitting, and regularization to ensure optimum 
-                            model robustness. The models' convergence is expedited through the application of the binary cross-entropy 
-                            loss function, while the judicious freezing of layers refines efficiency. The project's apex lies in the 
-                            formulation of an ensemble model, intelligently combining the diverse predictions from individual CNNs. 
-                            Hyperparameter optimization through the sophisticated hyperopt library underscores the meticulous nature of 
-                            parameter tuning. As a harmonious culmination of these technical methodologies, the project unveils an 
-                            impeccable demonstration of CNNs' prowess and ensemble methods' finesse in effectively detecting inpainted 
-                            regions. In doing so, it exemplifies their transformative potential within the domain of image forensics and 
-                            the ever-evolving field of manipulation detection.</p>
+                        <p class="home__description">The provided code segment demonstrates crucial steps in processing image data for a technical
+                             research paper. Initially, the function display_images_from_folder is defined to visualize a selection of images from 
+                             specified folders. Subsequently, the script sets the directories for the training and testing data. Images from these
+                              directories are displayed using the defined function. Moving on, the data preparation phase begins. Through the 
+                              ImageDataGenerator, data augmentation techniques are applied, including rotation, flipping, shifting, zooming, and
+                               shearing, all while rescaling pixel values. This prepared data is organized into train and test subsets using the 
+                               flow_from_directory method, ensuring a consistent image size of 224x224 pixels. Each subset is divided into batches 
+                               of 32 images with binary classification labels (FAKE or REAL). These generators facilitate efficient and dynamic 
+                               loading of image data for model training and evaluation, contributing to the success of the machine learning project.</p>
+                            <div style="display: flex; justify-content: center; align-items: center;">
+                                <img src="assets/img/system.png" alt="System Image" class="system" style="width: 575px; height: 600px;">
+                            </div>
                     </div>
 
                     <div>
