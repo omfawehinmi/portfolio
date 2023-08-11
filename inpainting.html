@@ -81,7 +81,7 @@
             <section class="home section" id="home">
                 <div class="home__container container grid">
                         <h1 class="home__title">Inpainting Image Detection</h1><br><br>
-                        <b><h2 class="home__subtitle2">Introduction</h2></b>
+                        <b><h2>Introduction</h2></b>
                         <p class="home__description">In a world inundated with digital media and misinformation, ensuring image 
                             authenticity is paramount. This paper introduces an innovative inpainting image 
                             detection tool, using machine learning to verify the presence of inpainting in images. 
@@ -138,7 +138,7 @@
                     </div>
                 
                     <div>
-                        <b><h2 class="home__subtitle2">System Configuration</h2></b>
+                        <b><h2>System Configuration</h2></b>
                         <p class="home__description">In this project, I'll leverage my personal PC build featuring 64 GB of RAM and an AMD Ryzen 5 5600 6-Core 
                             Processor. The system boasts a dual GPU setup, including the NVIDIA GeForce RTX 4080 and RTX 3060. The RTX 4080 impresses with 9728 
                             CUDA cores for parallel processing, 16 GB VRAM, and specialized Tensor and Ray Tracing cores that optimize deep learning and graphics 
@@ -156,7 +156,7 @@
                     </div>
 
                     <div>
-                        <b><h2 class="home__subtitle2">Approach</h2></b>
+                        <b><h2>Approach</h2></b>
                         <p class="home__description">This project focuses on detecting image inpainting using convolutional neural 
                             networks (CNNs) and an ensemble model. The project takes advantage of a dual dataset approach, combining 
                             the CIFAKE: Real and AI-Generated Synthetic Images dataset alongside the esteemed DeepFake 
@@ -172,7 +172,7 @@
                     </div>
 
                     <div>
-                    <b><h2 class="home__subtitle2">Preprocessing Image Data: ImageDataGenerator</h2></b>
+                    <b><h2>Preprocessing Image Data: ImageDataGenerator</h2></b>
                         <p class="home__description">The provided code segment demonstrates crucial steps in processing image data for a technical
                              research paper. Initially, the function display_images_from_folder is defined to visualize a selection of images from 
                              specified folders. Subsequently, the script sets the directories for the training and testing data. Images from these
@@ -202,7 +202,7 @@
                     </div>     
 
                     <div>
-                    <b><h2 class="home__subtitle2">Convolutional Neural Network: Model Build</h2></b>
+                    <b><h2>Convolutional Neural Network: Model Build</h2></b>
                         <div>
                             <p><strong>CIFAKE:</strong> This excerpt from the technical research paper elaborates on the composition of a Convolutional Neural Network (CNN) 
                                 developed for image classification, integrated into a distributed training context. The model is formulated within the strategy's scope, using 
@@ -313,276 +313,329 @@
                     </div>
 
                     <div>
-                    <b><h2 class="home__subtitle2">Training & Validation</h2></b>
+                    <b><h2>Training & Validation</h2></b>
                     <p><strong>CIFAKE</strong></p>
-                    <h2>Training History</h2>
-                        <table>
-                        <tr>
-                            <th>Epoch</th>
-                            <th>Loss</th>
-                            <th>Accuracy</th>
-                            <th>Validation Loss</th>
-                            <th>Validation Accuracy</th>
-                            <th>Learning Rate</th>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>0.3717</td>
-                            <td>0.8931</td>
-                            <td>0.2321</td>
-                            <td>0.9202</td>
-                            <td>0.001</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>0.2000</td>
-                            <td>0.9267</td>
-                            <td>0.1736</td>
-                            <td>0.9315</td>
-                            <td>0.001</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>0.1785</td>
-                            <td>0.9342</td>
-                            <td>0.1965</td>
-                            <td>0.9324</td>
-                            <td>0.001</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>0.1604</td>
-                            <td>0.9421</td>
-                            <td>0.1844</td>
-                            <td>0.9332</td>
-                            <td>0.001</td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>0.1482</td>
-                            <td>0.9458</td>
-                            <td>0.1529</td>
-                            <td>0.9448</td>
-                            <td>0.001</td>
-                        </tr>
-                        <tr>
-                            <td>6</td>
-                            <td>0.1397</td>
-                            <td>0.9483</td>
-                            <td>0.1465</td>
-                            <td>0.9507</td>
-                            <td>0.001</td>
-                        </tr>
-                        <tr>
-                            <td>7</td>
-                            <td>0.1325</td>
-                            <td>0.9522</td>
-                            <td>0.1938</td>
-                            <td>0.9252</td>
-                            <td>0.001</td>
-                        </tr>
-                        <tr>
-                            <td>8</td>
-                            <td>0.1251</td>
-                            <td>0.9541</td>
-                            <td>0.1308</td>
-                            <td>0.9547</td>
-                            <td>0.001</td>
-                        </tr>
-                        <tr>
-                            <td>9</td>
-                            <td>0.1183</td>
-                            <td>0.9574</td>
-                            <td>0.1035</td>
-                            <td>0.9613</td>
-                            <td>0.001</td>
-                        </tr>
-                        <tr>
-                            <td>10</td>
-                            <td>0.1128</td>
-                            <td>0.9598</td>
-                            <td>0.1125</td>
-                            <td>0.9592</td>
-                            <td>0.001</td>
-                        </tr>
-                        </table>
+                        <div>
+                            <table>
+                            <tr>
+                                <th>Epoch</th>
+                                <th>Loss</th>
+                                <th>Accuracy</th>
+                                <th>Validation Loss</th>
+                                <th>Validation Accuracy</th>
+                                <th>Learning Rate</th>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>0.3717</td>
+                                <td>0.8931</td>
+                                <td>0.2321</td>
+                                <td>0.9202</td>
+                                <td>0.001</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>0.2000</td>
+                                <td>0.9267</td>
+                                <td>0.1736</td>
+                                <td>0.9315</td>
+                                <td>0.001</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>0.1785</td>
+                                <td>0.9342</td>
+                                <td>0.1965</td>
+                                <td>0.9324</td>
+                                <td>0.001</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>0.1604</td>
+                                <td>0.9421</td>
+                                <td>0.1844</td>
+                                <td>0.9332</td>
+                                <td>0.001</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>0.1482</td>
+                                <td>0.9458</td>
+                                <td>0.1529</td>
+                                <td>0.9448</td>
+                                <td>0.001</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>0.1397</td>
+                                <td>0.9483</td>
+                                <td>0.1465</td>
+                                <td>0.9507</td>
+                                <td>0.001</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>0.1325</td>
+                                <td>0.9522</td>
+                                <td>0.1938</td>
+                                <td>0.9252</td>
+                                <td>0.001</td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td>0.1251</td>
+                                <td>0.9541</td>
+                                <td>0.1308</td>
+                                <td>0.9547</td>
+                                <td>0.001</td>
+                            </tr>
+                            <tr>
+                                <td>9</td>
+                                <td>0.1183</td>
+                                <td>0.9574</td>
+                                <td>0.1035</td>
+                                <td>0.9613</td>
+                                <td>0.001</td>
+                            </tr>
+                            <tr>
+                                <td>10</td>
+                                <td>0.1128</td>
+                                <td>0.9598</td>
+                                <td>0.1125</td>
+                                <td>0.9592</td>
+                                <td>0.001</td>
+                            </tr>
+                            </table>
+                        </div>
+                    <p><strong>Deepfake</strong></p>
 
-                                            </div>
+                        <div>
+                            <table>
+                                <tr>
+                                  <th>Epoch</th>
+                                  <th>Loss</th>
+                                  <th>Accuracy</th>
+                                  <th>Validation Loss</th>
+                                  <th>Validation Accuracy</th>
+                                  <th>Learning Rate</th>
+                                </tr>
+                                <tr>
+                                  <td>1</td>
+                                  <td>0.6044</td>
+                                  <td>0.6796</td>
+                                  <td>2.7905</td>
+                                  <td>0.5000</td>
+                                  <td>0.1</td>
+                                </tr>
+                                <tr>
+                                  <td>2</td>
+                                  <td>0.5064</td>
+                                  <td>0.7600</td>
+                                  <td>2.8863</td>
+                                  <td>0.6111</td>
+                                  <td>0.1</td>
+                                </tr>
+                                <tr>
+                                  <td>3</td>
+                                  <td>0.4659</td>
+                                  <td>0.7810</td>
+                                  <td>0.7383</td>
+                                  <td>0.6531</td>
+                                  <td>0.1</td>
+                                </tr>
+                                <tr>
+                                  <td>4</td>
+                                  <td>0.4153</td>
+                                  <td>0.8147</td>
+                                  <td>0.5438</td>
+                                  <td>0.7636</td>
+                                  <td>0.1</td>
+                                </tr>
+                                <tr>
+                                  <td>5</td>
+                                  <td>0.3758</td>
+                                  <td>0.8292</td>
+                                  <td>0.4932</td>
+                                  <td>0.7667</td>
+                                  <td>0.1</td>
+                                </tr>
+                                <tr>
+                                  <td>6</td>
+                                  <td>0.3685</td>
+                                  <td>0.8323</td>
+                                  <td>0.4926</td>
+                                  <td>0.7691</td>
+                                  <td>0.1</td>
+                                </tr>
+                                <tr>
+                                  <td>7</td>
+                                  <td>0.3339</td>
+                                  <td>0.8543</td>
+                                  <td>1.6651</td>
+                                  <td>0.6130</td>
+                                  <td>0.1</td>
+                                </tr>
+                                <tr>
+                                  <td>8</td>
+                                  <td>0.3191</td>
+                                  <td>0.8576</td>
+                                  <td>0.4762</td>
+                                  <td>0.7914</td>
+                                  <td>0.1</td>
+                                </tr>
+                                <tr>
+                                  <td>9</td>
+                                  <td>0.2821</td>
+                                  <td>0.8792</td>
+                                  <td>0.4761</td>
+                                  <td>0.7858</td>
+                                  <td>0.1</td>
+                                </tr>
+                                <tr>
+                                  <td>10</td>
+                                  <td>0.2671</td>
+                                  <td>0.8815</td>
+                                  <td>0.3979</td>
+                                  <td>0.8173</td>
+                                  <td>0.1</td>
+                                </tr>
+                              </table>
+                        </div>
 
-                                            <div>
-                                            <b><h2 class="home__subtitle2">Results & Accuracy</h2></b>
-                                                <p class="home__description">Data scientist and data engineer driving impactful business decisions and 
-                                                    automated process improvements. Advanced knowledge of BI tools, programmatic analysis, and data 
-                                                    system integrations. Excellent communications skills and proven leadership abilities.</p>
-                                            </div>
-                                            
-                                        </div>
-                                    </section>
-                                    
-                                <!--==================== FOOTER ====================-->
-                                <footer class="footer">
-                                    <div class="footer__bg">
-                                        <div class="footer__container container grid">
-                                            <div>
-                                                <h1 class="footer__title">Michael</h1>
-                                                <span class="footer__subtitle">Data Scientist | Data Engineer</span>
-                                            </div>
+                    <p><strong>Ensemble</strong></p>
+                        <div>
+                            <table>
+                                <tr>
+                                  <th>Epoch</th>
+                                  <th>Loss</th>
+                                  <th>Accuracy</th>
+                                  <th>Validation Loss</th>
+                                  <th>Validation Accuracy</th>
+                                  <th>Learning Rate</th>
+                                </tr>
+                                <tr>
+                                  <td>1</td>
+                                  <td>0.1127</td>
+                                  <td>0.9569</td>
+                                  <td>0.0944</td>
+                                  <td>0.9652</td>
+                                  <td>0.001</td>
+                                </tr>
+                                <tr>
+                                  <td>2</td>
+                                  <td>0.1059</td>
+                                  <td>0.9596</td>
+                                  <td>0.1165</td>
+                                  <td>0.9593</td>
+                                  <td>0.001</td>
+                                </tr>
+                                <tr>
+                                  <td>3</td>
+                                  <td>0.1044</td>
+                                  <td>0.9604</td>
+                                  <td>0.1097</td>
+                                  <td>0.9600</td>
+                                  <td>0.001</td>
+                                </tr>
+                                <tr>
+                                  <td>4</td>
+                                  <td>0.1002</td>
+                                  <td>0.9618</td>
+                                  <td>0.0929</td>
+                                  <td>0.9655</td>
+                                  <td>0.001</td>
+                                </tr>
+                                <tr>
+                                  <td>5</td>
+                                  <td>0.0980</td>
+                                  <td>0.9627</td>
+                                  <td>0.0871</td>
+                                  <td>0.9688</td>
+                                  <td>0.001</td>
+                                </tr>
+                                <tr>
+                                  <td>6</td>
+                                  <td>0.0923</td>
+                                  <td>0.9653</td>
+                                  <td>0.0897</td>
+                                  <td>0.9688</td>
+                                  <td>0.001</td>
+                                </tr>
+                                <tr>
+                                  <td>7</td>
+                                  <td>0.0912</td>
+                                  <td>0.9663</td>
+                                  <td>0.0973</td>
+                                  <td>0.9624</td>
+                                  <td>0.001</td>
+                                </tr>
+                                <tr>
+                                  <td>8</td>
+                                  <td>0.0871</td>
+                                  <td>0.9672</td>
+                                  <td>0.0918</td>
+                                  <td>0.9667</td>
+                                  <td>0.001</td>
+                                </tr>
+                                <tr>
+                                  <td>9</td>
+                                  <td>0.0845</td>
+                                  <td>0.9686</td>
+                                  <td>0.0730</td>
+                                  <td>0.9745</td>
+                                  <td>0.001</td>
+                                </tr>
+                                <tr>
+                                  <td>10</td>
+                                  <td>0.0809</td>
+                                  <td>0.9698</td>
+                                  <td>0.0808</td>
+                                  <td>0.9719</td>
+                                  <td>0.001</td>
+                                </tr>
+                              </table>
+                        </div>
+                    </div>
 
-                                            <ul class="footer__links">
-                                                <li>
-                                                    <a href="https://omfawehinmi.github.io/portfolio/#education" class="footer__link">Education | Work</a>
-                                                </li>
-                                                <li>
-                                                    <a href="https://omfawehinmi.github.io/portfolio/#projects" class="footer__link">Projects</a>
-                                                </li>
-                                                <li>
-                                                    <a href="https://omfawehinmi.github.io/portfolio/#contact" class="footer__link">Contactme</a>
-                                                </li>
-                                            </ul>
+                    <div>
+                    <b><h2 class="home__subtitle2">Results & Accuracy</h2></b>
+                        <p class="home__description">Data scientist and data engineer driving impactful business decisions and 
+                            automated process improvements. Advanced knowledge of BI tools, programmatic analysis, and data 
+                            system integrations. Excellent communications skills and proven leadership abilities.</p>
+                    </div>
+                    
+                </div>
+            </section>
+            
+        <!--==================== FOOTER ====================-->
+        <footer class="footer">
+            <div class="footer__bg">
+                <div class="footer__container container grid">
+                    <div>
+                        <h1 class="footer__title">Michael</h1>
+                        <span class="footer__subtitle">Data Scientist | Data Engineer</span>
+                    </div>
+
+                    <ul class="footer__links">
+                        <li>
+                            <a href="https://omfawehinmi.github.io/portfolio/#education" class="footer__link">Education | Work</a>
+                        </li>
+                        <li>
+                            <a href="https://omfawehinmi.github.io/portfolio/#projects" class="footer__link">Projects</a>
+                        </li>
+                        <li>
+                            <a href="https://omfawehinmi.github.io/portfolio/#contact" class="footer__link">Contactme</a>
+                        </li>
+                    </ul>
 
 
-                                            <div class="footer__socials">
-                                                <a href="https://www.linkedin.com/in/michael-fawehinmi" target="_blank" class="footer__social">
-                                                    <i class="uil uil-linkedin-alt"></i>
-                                                </a>
-                                                <a h<table>
-                                                    <tr>
-                                                    <th>Epoch</th>
-                                                    <th>Loss</th>
-                                                    <th>Accuracy</th>
-                                                    <th>Validation Loss</th>
-                                                    <th>Validation Accuracy</th>
-                                                    <th>Learning Rate</th>
-                                                    </tr>
-                                                    <tr>
-                                                    <td>1</td>
-                                                    <td>0.3717</td>
-                                                    <td>0.8931</td>
-                                                    <td>0.2321</td>
-                                                    <td>0.9202</td>
-                                                    <td>0.001</td>
-                                                    </tr>
-                                                    <tr>
-                                                    <td>2</td>
-                                                    <td>0.2000</td>
-                                                    <td>0.9267</td>
-                                                    <td>0.1736</td>
-                                                    <td>0.9315</td>
-                                                    <td>0.001</td>
-                                                    </tr>
-                                                    <tr>
-                                                    <td>3</td>
-                                                    <td>0.1785</td>
-                                                    <td>0.9342</td>
-                                                    <td>0.1965</td>
-                                                    <td>0.9324</td>
-                                                    <td>0.001</td>
-                                                    </tr>
-                                                    <tr>
-                                                    <td>4</td>
-                                                    <td>0.1604</td>
-                                                    <td>0.9421</td>
-                                                    <td>0.1844</td>
-                                                    <td>0.9332</td>
-                                                    <td>0.001</td>
-                                                    </tr>
-                                                    <tr>
-                                                    <td>5</td>
-                                                    <td>0.1482</td>
-                                                    <td>0.9458</td>
-                                                    <td>0.1529</td>
-                                                    <td>0.9448</td>
-                                                    <td>0.001</td>
-                                                    </tr>
-                                                    <tr>
-                                                    <td>6</td>
-                                                    <td>0.1397</td>
-                                                    <td>0.9483</td>
-                                                    <td>0.1465</td>
-                                                    <td>0.9507</td>
-                                                    <td>0.001</td>
-                                                    </tr>
-                                                    <tr>
-                                                    <td>7</td>
-                                                    <td>0.1325</td>
-                                                    <td>0.9522</td>
-                                                    <td>0.1938</td>
-                                                    <td>0.9252</td>
-                                                    <td>0.001</td>
-                                                    </tr>
-                                                    <tr>
-                                                    <td>8</td>
-                                                    <td>0.1251</td>
-                                                    <td>0.9541</td>
-                                                    <td>0.1308</td>
-                                                    <td>0.9547</td>
-                                                    <td>0.001</td>
-                                                    </tr>
-                                                    <tr>
-                                                    <td>9</td>
-                                                    <td>0.1183</td>
-                                                    <td>0.9574</td>
-                                                    <td>0.1035</td>
-                                                    <td>0.9613</td>
-                                                    <td>0.001</td>
-                                                    </tr>
-                                                    <tr>
-                                                    <td>10</td>
-                                                    <td>0.1128</td>
-                                                    <td>0.9598</td>
-                                                    <td>0.1125</td>
-                                                    <td>0.9592</td>
-                                                    <td>0.001</td>
-                                                    </tr>
-                                                </table>
-                          
-                                              </div>
-                          
-                                              <div>
-                                              <b><h2 class="home__subtitle2">Results & Accuracy</h2></b>
-                                                  <p class="home__description">Data scientist and data engineer driving impactful business decisions and 
-                                                      automated process improvements. Advanced knowledge of BI tools, programmatic analysis, and data 
-                                                      system integrations. Excellent communications skills and proven leadership abilities.</p>
-                                              </div>
-                                              
-                                          </div>
-                                      </section>
-                                      
-                                  <!--==================== FOOTER ====================-->
-                                  <footer class="footer">
-                                      <div class="footer__bg">
-                                          <div class="footer__container container grid">
-                                              <div>
-                                                  <h1 class="footer__title">Michael</h1>
-                                                  <span class="footer__subtitle">Data Scientist | Data Engineer</span>
-                                              </div>
-                          
-                                              <ul class="footer__links">
-                                                  <li>
-                                                      <a href="https://omfawehinmi.github.io/portfolio/#education" class="footer__link">Education | Work</a>
-                                                  </li>
-                                                  <li>
-                                                      <a href="https://omfawehinmi.github.io/portfolio/#projects" class="footer__link">Projects</a>
-                                                  </li>
-                                                  <li>
-                                                      <a href="https://omfawehinmi.github.io/portfolio/#contact" class="footer__link">Contactme</a>
-                                                  </li>
-                                              </ul>
-                          
-                          
-                                              <div class="footer__socials">
-                                                  <a href="https://www.linkedin.com/in/michael-fawehinmi" target="_blank" class="footer__social">
-                                                      <i class="uil uil-linkedin-alt"></i>
-                                                  </a>
-                                                  <a href="https://github.com/omfawehinmi/portfolio" target="_blank" class="footer__social">
-                                                      <i class="uil uil-github-alt"></i>
-                                                  </a>
-                                                  </a>
-                                              </div>
-                          
-                                  </footer>
-                          
-                                  <!--========== SCROL
+                    <div class="footer__socials">
+                        <a href="https://www.linkedin.com/in/michael-fawehinmi" target="_blank" class="footer__social">
+                            <i class="uil uil-linkedin-alt"></i>
+                        </a>
+                        <a href="https://github.com/omfawehinmi/portfolio" target="_blank" class="footer__social">
+                            <i class="uil uil-github-alt"></i>
+                        </a>
                         </a>
                     </div>
 
