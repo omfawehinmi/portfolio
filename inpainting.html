@@ -89,10 +89,10 @@
                                         <li><a href="#introduction">Introduction</a></li>
                                         <li><a href="#system-configuration">System Configuration</a></li>
                                         <li><a href="#approach">Approach</a></li>
-                                        <li><a href="#preprocessing-image-data">Preprocessing Image Data</a></li>
+                                        <li><a href="#preprocessing-image-data">Preprocessing Image Data: ImageDataGenerator</a></li>
                                     </ul>
                                     <ul>
-                                        <li><a href="#cnn-model">Convolutional Neural Network</a></li>
+                                        <li><a href="#cnn-model">Convolutional Neural Network: Model Build</a></li>
                                         <li><a href="#model-compilation">Model Compilation</a></li>
                                         <li><a href="#training-validation">Training & Validation</a></li>
                                         <li><a href="#results-accuracy">Results & Accuracy</a></li>
@@ -181,7 +181,7 @@
 
                     <section id="preprocessing-image-data">
                         <div>
-                        <b><h2>Preprocessing Image Data: ImageDataGenerator</h2></b>
+                        <b><h2>Preprocessing Image Data: ImageDataGenerator</h2></b><br>
                             <h3>Images & Feature Extraction</h3>
                             <p class="home__description">In your project, feature extraction through convolutional layers will play a pivotal role in detecting image 
                                 inpainting. By applying these layers, my models will automatically identify intricate patterns, textures, and irregularities within images. 
@@ -222,7 +222,7 @@
 
                     <section id="cnn-model">
                         <div>
-                        <b><h2>Convolutional Neural Network: Model Build</h2></b>
+                        <b><h2>Convolutional Neural Network: Model Build</h2></b><br>
                             <div>
                                 <p><strong>CIFAKE:</strong> This excerpt from the technical research paper elaborates on the composition of a Convolutional Neural Network (CNN) 
                                     developed for image classification, integrated into a distributed training context. The model is formulated within the strategy's scope, using 
@@ -299,7 +299,7 @@
                         <div>
                             <b><h2>Model Compilation</h2></b><br>
                             <div>
-                                <p><strong>CIFAKE & Ensemble:</strong>In this section, we delve into the model's compilation, showcasing a refined approach to optimization. Here, the "Adam" optimizer 
+                                <p><strong>CIFAKE & Ensemble:</strong> In this section, we delve into the model's compilation, showcasing a refined approach to optimization. Here, the "Adam" optimizer 
                                     is employed, which facilitates adaptive learning rates, enhancing convergence during training. The learning rate is set to 0.001, 
                                     aligning with the model's optimization goals. The choice of the "binary_crossentropy" loss function is indicative of the binary 
                                     classification nature of the problem, adeptly quantifying the divergence between predicted and actual outputs. Simultaneously, 
@@ -329,7 +329,7 @@
                     <section id="training-validation">
                         <div>
                             <b><h2>Training & Validation</h2></b><br>
-                            <p><strong>CIFAKE:</strong>The CNN model trained on the CIFAKE dataset showcases a notable progression in performance over successive epochs. Commencing 
+                            <p><strong>CIFAKE:</strong> The CNN model trained on the CIFAKE dataset showcases a notable progression in performance over successive epochs. Commencing 
                                 with an initial accuracy of approximately 68.0%, the model gradually refines its predictions, culminating in an impressive accuracy of 90.9% by the 
                                 final epoch. The loss function exhibits a parallel behavior, diminishing consistently throughout training. The validation accuracy, beginning at 
                                 50.0%, ascends to a commendable 84.0%, indicating the model's ability to generalize to unseen data. This is substantiated by the validation loss, 
@@ -636,7 +636,7 @@
 
                     <section id="results-accuracy">
                         <div>
-                        <b><h2>Results & Accuracy</h2></b>
+                        <b><h2>Results & Accuracy</h2></b><br>
                             <div>
                                 <p><strong>CIFAKE:</strong> The CIFAKE CNN model demonstrates robust generalization to new, unseen data, achieving an impressive test accuracy of 
                                     96.4%. This performance underscores the model's ability to effectively classify fake and real images even beyond its training domain. The test 
@@ -654,7 +654,7 @@
                                     applications, such as identifying deepfakes within artistic contexts. By achieving over 80% accuracy on unseen data, the model demonstrates its 
                                     utility beyond the training data's confines, reinforcing its capacity for real-world application.</p><br>
                                     <div style="display: flex; justify-content: flex-start; align-items: center;">
-                                        <img src="assets/img/DeepfakeArttest.png" alt="Deepfake Test" class="dtest" style="width: 550px; height: 25px;">
+                                        <img src="assets/img/DeepfakeArttest.png" alt="Deepfake Test" class="dtest" style="width: 550px; height: 75px;">
                                     </div><br>
                             </div>
                             <div>
