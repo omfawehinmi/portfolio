@@ -153,7 +153,9 @@
                             formulation of an ensemble model, combining the diverse predictions from individual CNNs. 
                             Hyperparameter optimization through the sophisticated hyperopt library underscores the meticulous nature of 
                             parameter tuning.</p>
-
+                    </div>
+                    <div>
+                    <b><h2>Preprocessing Image Data: ImageDataGenerator</h2></b>
                         <h3>Images & Feature Extraction</h3>
                         <p class="home__description">In your project, feature extraction through convolutional layers will play a pivotal role in detecting image 
                             inpainting. By applying these layers, my models will automatically identify intricate patterns, textures, and irregularities within images. 
@@ -163,24 +165,21 @@
                             non-inpainted sections, contributing to accurate image forensics and manipulation detection.</p>
                         <div style="display: flex; justify-content: center; align-items: center;">
                             <img src="assets/img/feature_extraction.jpg" alt="Feature Extraction Image" class="feature" style="width:600px; height: 550px;">
-                        </div><br>
-                    </div>
-                    <div>
-                    <b><h2>Preprocessing Image Data: ImageDataGenerator</h2></b>
+                        </div>
+
                         <p class="home__description">The provided code segment demonstrates crucial steps in processing image data for a technical
-                             research paper. Initially, the function display_images_from_folder is defined to visualize a selection of images from 
-                             specified folders. Subsequently, the script sets the directories for the training and testing data. Images from these
-                              directories are displayed using the defined function. Moving on, the data preparation phase begins. Through the 
-                              ImageDataGenerator, data augmentation techniques are applied, including rotation, flipping, shifting, zooming, and
-                               shearing, all while rescaling pixel values. This prepared data is organized into train and test subsets using the 
-                               flow_from_directory method, ensuring a consistent image size of 224x224 pixels. Each subset is divided into batches 
-                               of 32 images with binary classification labels (FAKE or REAL). These generators facilitate efficient and dynamic 
-                               loading of image data for model training and evaluation, contributing to the success of the machine learning project.</p>
-                            <div style="display: flex; justify-content: center; align-items: center;">
-                                <img src="assets/img/imagedatagenerator.png" alt="ImageDataGenerator" class="idg" style="width: 475px; height: 490px;">
-                            </div>
-                    </div>
-                    <div>
+                            research paper. Initially, the function display_images_from_folder is defined to visualize a selection of images from 
+                            specified folders. Subsequently, the script sets the directories for the training and testing data. Images from these
+                            directories are displayed using the defined function. Moving on, the data preparation phase begins. Through the 
+                            ImageDataGenerator, data augmentation techniques are applied, including rotation, flipping, shifting, zooming, and
+                            shearing, all while rescaling pixel values. This prepared data is organized into train and test subsets using the 
+                            flow_from_directory method, ensuring a consistent image size of 224x224 pixels. Each subset is divided into batches 
+                            of 32 images with binary classification labels (FAKE or REAL). These generators facilitate efficient and dynamic 
+                            loading of image data for model training and evaluation, contributing to the success of the machine learning project.</p>
+                        <div style="display: flex; justify-content: center; align-items: center;">
+                            <img src="assets/img/imagedatagenerator.png" alt="ImageDataGenerator" class="idg" style="width: 475px; height: 490px;">
+                        </div>
+                        
                         <h3 class="home__subtitle">Custom Image Generator</h3>
                         <p class="home__description">The generator operates within an infinite loop using a while True construct. Inside the loop, the next(generator) 
                             function is called to retrieve the next batch of data and corresponding labels from the original data generator. If the data loading 
