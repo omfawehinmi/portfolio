@@ -361,6 +361,26 @@ img {
   display: table;
 }
 
+.bullet-columns {
+  column-count: 2;
+}
+
+.bullet-columns li::before {
+  content: "\2022"; /* Unicode bullet character */
+  margin-right: 10px;
+}
+
+/* Optional: Adjust spacing and styling as needed */
+.bullet-columns ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.bullet-columns li {
+  margin-bottom: 10px;
+}
+
 /*========== BUTTONS ==========*/
 .button {
   display: inline-block;
