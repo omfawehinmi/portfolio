@@ -111,7 +111,7 @@
                             generative forgery and data poisoning methods, including inpainting, style transfer, adversarial data poisoning, and Cutmix. 
                             I specifically chose to utilize the Inpainting repository from the DeepfakeArt Challenge Dataset.</p>
                         <div style="display: flex; justify-content: center; align-items: center;">
-                            <img src="assets/img/DeepfakeArt_pic.jpg" alt="DeepfakeArt Dataset Image" class="deepfakeart" style="width: 600px; height: 375px;">
+                            <img src="assets/img/DeepfakeArt_pic.jpg" alt="DeepfakeArt Dataset Image" class="deepfakeart" style="width: 600px; height: 350px;">
                         </div><br>
 
                         <p class="home__description">This datasets were thoughtfully organized into "Train" and "Test" folders, each containing distinct subfolders that 
@@ -126,14 +126,15 @@
                         <p class="home__description">In this project, I'll leverage my personal PC build featuring 64 GB of RAM and an AMD Ryzen 5 5600 6-Core 
                             Processor. The system boasts a dual GPU setup, including the NVIDIA GeForce RTX 4080 and RTX 3060. The RTX 4080 impresses with 9728 
                             CUDA cores for parallel processing, 16 GB VRAM, and specialized Tensor and Ray Tracing cores that optimize deep learning and graphics 
-                            tasks. Similarly, the RTX 3060 showcases 3584 CUDA cores, 12 GB VRAM, and functional Tensor and Ray Tracing cores.</p><br>
+                            tasks. Similarly, the RTX 3060 showcases 3584 CUDA cores, 12 GB VRAM, and functional Tensor and Ray Tracing cores.</p>
+
                         <p>To maximize training efficiency, I adopted a distributed strategy using TensorFlow's 'tf.distribute' module. I opted for the 
                             MirroredStrategy, facilitating synchronous training across GPUs by replicating the model on each unit and harmonizing updates 
                             during training. It processes different data subsets in parallel, synchronizes gradients, averages losses, and updates model 
-                            parameters consistently. This strategy significantly accelerates the training process.</p>
-                        <p>Moreover, I fine-tuned GPU memory allocation with the 'limit_gpu_memory' function. This customization lets me specify the GPU memory
+                            parameters consistently. This strategy significantly accelerates the training process. Moreover, I fine-tuned GPU memory 
+                            allocation with the 'limit_gpu_memory' function. This customization lets me specify the GPU memory
                             fraction, preventing memory overflow and bolstering training stability. This comprehensive approach ensures optimal performance in
-                            model training and evaluation.</p>
+                            model training and evaluation.</p><br>
                         <div style="display: flex; justify-content: center; align-items: center;">
                             <img src="assets/img/system.png" alt="System Image" class="system" style="width: 575px; height: 590px;">
                         </div><br>
@@ -161,7 +162,7 @@
                             to perform complex image analysis. By utilizing feature extraction, my models will effectively distinguish between inpainted and 
                             non-inpainted sections, contributing to accurate image forensics and manipulation detection.</p>
                         <div style="display: flex; justify-content: center; align-items: center;">
-                            <img src="assets/img/feature_extraction.jpg" alt="Feature Extraction Image" class="feature" style="width:600px; height: 550px;">
+                            <img src="assets/img/feature_extraction.jpg" alt="Feature Extraction Image" class="feature" style="width:600px; height: 500px;">
                         </div><br>
                     </div>
                     <div>
