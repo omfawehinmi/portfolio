@@ -391,6 +391,16 @@ img {
   font-weight: var(--font-medium);
 }
 
+.button2 {
+  display: inline-block;
+  text-align: center;
+  background-color: var(--first-color);
+  color: #FFF;
+  padding: 1rem;
+  border-radius: .5rem;
+  font-weight: var(--font-medium);
+}
+
 .button:hover {
   background-color: var(--first-color-alt);
 }
