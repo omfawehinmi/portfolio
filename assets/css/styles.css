@@ -387,16 +387,9 @@ img {
   background-color: var(--first-color);
   color: #FFF;
   padding: 1rem;
-  border-radius: .5rem;
-  font-weight: var(--font-medium);
-}
-
-.button2 {
-  display: inline-block;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  background-color: var(--first-color);
-  color: #FFF;
-  padding: 1rem;
   border-radius: .5rem;
   font-weight: var(--font-medium);
 }
