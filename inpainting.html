@@ -149,7 +149,7 @@
                                 tasks. Similarly, the RTX 3060 showcases 3584 CUDA cores, 12 GB VRAM, and functional over 100 Tensor and Ray Tracing cores.</p>
 
                             <p>To maximize training efficiency, I adopted a distributed strategy using TensorFlow's 'tf.distribute' module. I opted for the 
-                                MirroredStrategy, facilitating synchronous training across GPUs by replicating the model on each unit and harmonizing updates 
+                                <b>MirroredStrategy</b>, facilitating synchronous training across GPUs by replicating the model on each unit and harmonizing updates 
                                 during training. It processes different data subsets in parallel, synchronizes gradients, averages losses, and updates model 
                                 parameters consistently. This strategy significantly accelerates the training process. Moreover, I fine-tuned GPU memory 
                                 allocation with the 'limit_gpu_memory' function. This customization lets me specify the GPU memory
@@ -223,7 +223,7 @@
                         <div>
                         <b><h2>Convolutional Neural Network: Model Build</h2></b><br>
                             <div>
-                                <p><strong>CIFAKE:</strong> As exhibited below the model is formulated within the strategy's scope which allows for the utilization of our mirror strategy. Using 
+                                <p><strong>CIFAKE:</strong> As exhibited below the model is formulated within the <b>strategy's scope</b> which allows for the utilization of our mirror strategy. Using 
                                     transfer learning through a pre-trained DenseNet121 base. The final ten layers of the base are fine-tuned for task-specific adaptation. The 
                                     architecture's sequential part involves successive Convolutional layers with 16 and 32 filters respectively, employing kernel sizes of 3x3, 
                                     ReLU activation, and same-padding to extract salient features from input images. Following this, a Flatten layer transforms the feature maps 
