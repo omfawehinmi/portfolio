@@ -114,7 +114,7 @@
                             <h3>CIFAKE: Real and AI-Generated Synthetic Images</h3>
                             <p class="home__description">The CIFAKE dataset consists of 60,000 AI-generated images and an equivalent number of
                                 60,000 real images, sourced from CIFAR-10. While the dataset offers a wealth of training data, it's important to note 
-                                that AI-generated images might vary in quality due to the inherent nature of synthetic content. This variability could 
+                                this AI-generated image dataset varies in quality due to the inherent nature of synthetic content. This variability could 
                                 influence the model's performance, particularly when confronted with lower-quality AI-generated images in the test set.</p>
                             <div style="display: flex; justify-content: center; align-items: center;">
                                 <img src="assets/img/CIFAKE_pic.png" alt="CIFAKE Dataset Image" class="cifake" style="width: 600px; height: 325px;">
@@ -126,7 +126,7 @@
                                 of a pair of images, categorized as forgeries/adversarially contaminated or authentic. Notably, every generated image has 
                                 undergone rigorous quality checks to ensure accuracy and consistency.The DeepfakeArt Challenge Dataset encompasses a wide range of 
                                 generative forgery and data poisoning methods, including inpainting, style transfer, adversarial data poisoning, and Cutmix. 
-                                I specifically chose to utilize the Inpainting repository from the DeepfakeArt Challenge Dataset.</p>
+                                I specifically chose to utilize the Inpainting dataset from the DeepfakeArt Challenge repository.</p>
                             <div style="display: flex; justify-content: center; align-items: center;">
                                 <img src="assets/img/DeepfakeArt_pic.jpg" alt="DeepfakeArt Dataset Image" class="deepfakeart" style="width: 600px; height: 350px;">
                             </div><br>
@@ -136,7 +136,7 @@
                                 images are categorized into subfolders named "Real" and "Fake." This organization allows my machine learning 
                                 models to learn from a diverse range of image types during the training phase. By being exposed to both authentic and AI-generated 
                                 images, the models can develop a robust understanding of the characteristics that distinguish the two categories.Correspondingly, the 
-                                "Test" section of the dataset mirrors this categorization, with subfolders named "Real" and "AI-Generated" as well.</p>
+                                "Test" section of the dataset mirrors this categorization, with subfolders named "Real" and "Fake" as well.</p>
                         </div>
                     </section>
 
@@ -144,9 +144,9 @@
                         <div>
                             <b><h2>System Configuration</h2></b>
                             <p class="home__description">In this project, I'll leverage my personal PC build featuring 64 GB of RAM and an AMD Ryzen 5 5600 6-Core 
-                                Processor. The system boasts a dual GPU setup, including the NVIDIA GeForce RTX 4080 and RTX 3060. The RTX 4080 impresses with 9728 
-                                CUDA cores for parallel processing, 16 GB VRAM, and specialized Tensor and Ray Tracing cores that optimize deep learning and graphics 
-                                tasks. Similarly, the RTX 3060 showcases 3584 CUDA cores, 12 GB VRAM, and functional Tensor and Ray Tracing cores.</p>
+                                Processor. The system boasts a dual GPU setup, including the NVIDIA GeForce RTX 4080 and RTX 3060. The RTX 4080 contains 9728 
+                                CUDA cores for parallel processing, 16 GB VRAM, and specialized over 300 Tensor and Ray Tracing cores that optimize deep learning and graphics 
+                                tasks. Similarly, the RTX 3060 showcases 3584 CUDA cores, 12 GB VRAM, and functional over 100 Tensor and Ray Tracing cores.</p>
 
                             <p>To maximize training efficiency, I adopted a distributed strategy using TensorFlow's 'tf.distribute' module. I opted for the 
                                 MirroredStrategy, facilitating synchronous training across GPUs by replicating the model on each unit and harmonizing updates 
@@ -183,8 +183,8 @@
                         <div>
                         <b><h2>Preprocessing Image Data: ImageDataGenerator</h2></b><br>
                             <h3>Images & Feature Extraction</h3>
-                            <p class="home__description">In your project, feature extraction through convolutional layers will play a pivotal role in detecting image 
-                                inpainting. By applying these layers, my models will automatically identify intricate patterns, textures, and irregularities within images. 
+                            <p class="home__description">In this project, feature extraction through convolutional layers will play a pivotal role in detecting image 
+                                inpainting. By applying convolutional layers, my models will automatically identify intricate patterns, textures, and irregularities within images. 
                                 These features will be learned and consolidated into higher-level representations as the models delve deeper into their architecture. 
                                 This process enables the models to differentiate between authentic and manipulated regions, leveraging the inherent capabilities of CNNs 
                                 to perform complex image analysis. By utilizing feature extraction, my models will effectively distinguish between inpainted and 
@@ -193,23 +193,22 @@
                                 <img src="assets/img/feature_extraction.jpg" alt="Feature Extraction Image" class="feature" style="width:600px; height: 400px;">
                             </div><br>
 
-                            <p class="home__description">The provided code segment demonstrates crucial steps in processing image data for a technical
-                                research paper. Initially, the function display_images_from_folder is defined to visualize a selection of images from 
+                            <p class="home__description">The provided code segment demonstrates crucial steps in processing image data. 
+                                Initially, the function <b>display_images_from_folder</b> is defined to visualize a selection of images from 
                                 specified folders. Subsequently, the script sets the directories for the training and testing data. Images from these
                                 directories are displayed using the defined function. Moving on, the data preparation phase begins. Through the 
-                                ImageDataGenerator, data augmentation techniques are applied, including rotation, flipping, shifting, zooming, and
+                                <b>ImageDataGenerator</b>, data augmentation techniques are applied, including rotation, flipping, shifting, zooming, and
                                 shearing, all while rescaling pixel values. This prepared data is organized into train and test subsets using the 
-                                flow_from_directory method, ensuring a consistent image size of 224x224 pixels. Each subset is divided into batches 
-                                of 32 images with binary classification labels (FAKE or REAL). These generators facilitate efficient and dynamic 
-                                loading of image data for model training and evaluation, contributing to the success of the machine learning project.</p>
+                                <b>flow_from_directory</b> method, ensuring a consistent image size of 224x224 pixels. Each subset is divided into batches 
+                                of 32 images with binary classification labels (FAKE or REAL).</p>
                             <div style="display: flex; justify-content: flex-start; align-items: center;">
                                 <img src="assets/img/imagedatagenerator.png" alt="ImageDataGenerator" class="idg" style="width: 750px; height: 650px;">
                             </div><br>
 
                             <h3>Custom Image Generator</h3>
-                            <p class="home__description">The generator operates within an infinite loop using a while True construct. Inside the loop, the next(generator) 
+                            <p class="home__description">The generator operates within an infinite loop using a <b>While True</b> construct. Inside the loop, the next(generator) 
                                 function is called to retrieve the next batch of data and corresponding labels from the original data generator. If the data loading 
-                                process encounters an UnidentifiedImageError, which could occur due to corrupted or invalid image files, the generator catches the
+                                process encounters an <b>UnidentifiedImageError</b>, which could occur due to corrupted or invalid image files, the generator catches the
                                 error and displays an error message indicating the issue. The purpose of this custom generator is to ensure robustness and resilience
                                 in handling potential errors when loading images for training or evaluation. By using this generator, the research paper's machine 
                                 learning pipeline becomes more stable and less prone to interruptions caused by problematic images, ultimately contributing to the 
@@ -224,19 +223,14 @@
                         <div>
                         <b><h2>Convolutional Neural Network: Model Build</h2></b><br>
                             <div>
-                                <p><strong>CIFAKE:</strong> This excerpt from the technical research paper elaborates on the composition of a Convolutional Neural Network (CNN) 
-                                    developed for image classification, integrated into a distributed training context. The model is formulated within the strategy's scope, using 
+                                <p><strong>CIFAKE:</strong> As exhibited below the model is formulated within the strategy's scope which allows for the utilization of our mirror strategy. Using 
                                     transfer learning through a pre-trained DenseNet121 base. The final ten layers of the base are fine-tuned for task-specific adaptation. The 
                                     architecture's sequential part involves successive Convolutional layers with 16 and 32 filters respectively, employing kernel sizes of 3x3, 
                                     ReLU activation, and same-padding to extract salient features from input images. Following this, a Flatten layer transforms the feature maps 
                                     into a one-dimensional vector, facilitating integration into densely connected layers. Within the dense portion, two additional layers with 
                                     128 and 64 neurons respectively utilize ReLU activation and L2 regularization (with a regularization strength of 0.01) to enhance feature 
                                     interpretation and control overfitting. To further curb overfitting, a dropout layer with a rate of 0.5 is introduced. The ultimate layer, 
-                                    equipped with a sigmoid activation function, culminates the architecture, facilitating binary classification output. By blending pre-trained 
-                                    feature extraction with customized adjustments, the model harnesses the strengths of both approaches, fostering efficient and accurate image 
-                                    classification. Its integration into a distributed strategy reinforces its potential for scaling across multiple GPUs while maintaining performance.
-                                    Through this comprehensive architecture, the model exemplifies the synergy of transfer learning, personalized feature refinement, regularization 
-                                    techniques, and distributed training, collectively contributing to robust and efficient image classification capabilities.</p><br>
+                                    equipped with a sigmoid activation function, culminates the architecture, facilitating binary classification output.</p><br>
                                     <div style="display: flex; justify-content: flex-start; align-items: center;">
                                         <img src="assets/img/CIFAKE.png" alt="CIFAKE Model" class="cm" style="width: 650px; height: 550px;">
                                     </div><br>
