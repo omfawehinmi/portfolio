@@ -345,8 +345,8 @@ def train_model(model, train_generator, validation_generator, callbacks_list, ep
             Dropout(dropout_rate),
             Dense(1, activation='sigmoid')
 ])                                  </pre>
-                                </div><br>
-                            </div>
+                                </div>
+                            </div><br>
                             <div>
                                 <p><strong>Deepfake:</strong> The construction commences by importing a pre-trained Xception model, pretrained on ImageNet. The subsequent step involves 
                                     fine-tuning, where a subset of layers (from index 56 onwards) is rendered trainable, thereby adapting the model to the specific task. To prevent
@@ -381,6 +381,7 @@ def train_model(model, train_generator, validation_generator, callbacks_list, ep
         ])
                                 </pre>
                             </div><br>
+                        
                                 <p><strong>Ensemble:</strong> Firstly, two pretrained models, loaded from specified paths, are assigned names for differentiation. The models are labeled as 
                                     'model1' and 'model2'. Following this, a new input layer is introduced, designed to accommodate the specific input dimensions (224x224x3). This input layer 
                                     forms the entry point for the ensemble model. Subsequently, the outputs of both 'model1' and 'model2' are retrieved by passing the ensemble input through
@@ -392,6 +393,8 @@ def train_model(model, train_generator, validation_generator, callbacks_list, ep
                                     diversity of learned features from different models, thus leading to a more robust and effective classifier.</p><br>
                             <div>
                                 <pre style="background-color: #f4f4f4; border: 1px solid #ccc; padding: 20px; color: #333; white-space: pre-wrap;">
+
+# Define the training function
 def train_model(ensemble_model, train_generator, validation_generator, callbacks_list, epochs=10):
     with strategy.scope():
         # Load the pre-trained models
@@ -421,7 +424,7 @@ def train_model(ensemble_model, train_generator, validation_generator, callbacks
         ensemble_model = Model(inputs=ensemble_input, outputs=ensemble_output)                                   
                                 </pre>
                             </div><br>
-                        </div>
+                        
                         <div>
                             <h3>Callbacks</h3><br>
                             <div>
@@ -431,19 +434,30 @@ def train_model(ensemble_model, train_generator, validation_generator, callbacks
                                     after a set number of epochs (patience of 2). The "min_lr" parameter ensures the learning rate doesn't drop below a minimum threshold. These callbacks collectively 
                                     adapt the model's learning rate and halt training if needed, fostering efficient convergence and preventing suboptimal outcomes. Additionally, the 
                                     "tensorboard_callback" facilitates model monitoring through TensorBoard visualization. </p><br>
-                                    <div style="display: flex; justify-content: flex-start; align-items: center;">
-                                        <img src="assets/img/callbacks.png" alt="CIFAKE Model" class="cm" style="width: 675px; height: 250px;">
-                                    </div><br>
+                            <div>
+                                <pre style="background-color: #f4f4f4; border: 1px solid #ccc; padding: 20px; color: #333; white-space: pre-wrap;">
+# Define the log directory where TensorBoard will store the logs
+log_dir = "/home/drill-team/Machine Learning/tensorboard_logs/"
+tensorboard_callback = TensorBoard(log_dir=log_dir, histogram_freq=1)
 
+# Learning rate reduction callback
+learning_rate_reduction = ReduceLROnPlateau(monitor='loss', patience=2, verbose=1, factor=0.1, min_lr=0.000001)
+
+# Callbacks
+early = EarlyStopping(monitor="loss", mode="min", patience=3)
+callbacks_list = [early, tensorboard_callback, learning_rate_reduction]                                    
+                            </div><br>
+                                
                                 <p><strong>Deepfake & Ensemble:</strong> The "EarlyStopping" callback remains consistent with its earlier explanation, monitoring the loss metric and ending training if
                                     loss stagnation persists beyond three epochs, preventing unnecessary computation and potential overfitting. The "ReduceLROnPlateau" callback, however, 
                                     introduces some changes. It still observes loss changes and reduces the learning rate if significant loss improvement isn't observed, yet with a more cautious
                                     approach. The "factor" parameter is adjusted to 0.001, indicating a smaller decrease in the learning rate, while the "patience" parameter remains at 2. The 
                                     "min_lr" parameter is again utilized to ensure the learning rate doesn't dip below a minimum threshold. These callbacks, in conjunction with the 
                                     "tensorboard_callback," facilitate improved convergence and efficiency in the training process. </p><br>
-                                    <div style="display: flex; justify-content: flex-start; align-items: center;">
-                                        <img src="assets/img/learningratereduction.png" alt="CIFAKE Model" class="cm" style="width: 725px; height: 60px;">
-                                    </div>
+                            <div>
+                                <pre style="background-color: #f4f4f4; border: 1px solid #ccc; padding: 20px; color: #333; white-space: pre-wrap;">
+# Learning rate reduction
+learning_rate_reduction = ReduceLROnPlateau(monitor='loss', patience=2, verbose=1, factor=0.001, min_lr=0.000001)
                             </div>
                         </div>
                     </section>
@@ -460,8 +474,8 @@ def train_model(ensemble_model, train_generator, validation_generator, callbacks
                                     aligns with the model's architectural intricacies and the nature of the image classification task. By tailoring the optimizer, 
                                     loss function, and evaluation metrics, the model is primed to effectively learn and improve its classification accuracy over training 
                                     epochs.</p><br>
-                                    <div style="display: flex; justify-content: flex-start; align-items: center;">
-                                        <img src="assets/img/CIAFAKEcompiler.png" alt="CIFAKE Compiler" class="cc" style="width: 600px; height: 100px;">
+                            <div>
+                                <pre style="background-color: #f4f4f4; border: 1px solid #ccc; padding: 20px; color: #333; white-space: pre-wrap;">
                                     </div><br>
                             </div>
                             <div>
@@ -471,8 +485,8 @@ def train_model(ensemble_model, train_generator, validation_generator, callbacks
                                     the optimizer's capacity to traverse gradient landscapes with enhanced momentum, promoting efficient learning. The loss function
                                     remains "binary_crossentropy," accurately quantifying classification disparities, while accuracy metrics persist to evaluate model
                                     performance.</p><br>
-                                    <div style="display: flex; justify-content: flex-start; align-items: center;">
-                                        <img src="assets/img/deepfakecompiler.png" alt="Deepfake Compiler" class="dc" style="width: 700px; height: 100px;">
+                            <div>
+                                <pre style="background-color: #f4f4f4; border: 1px solid #ccc; padding: 20px; color: #333; white-space: pre-wrap;">
                                     </div>
                             </div>
                         </div>
