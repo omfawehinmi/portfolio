@@ -235,52 +235,52 @@ def limit_gpu_memory(gpu_index, memory_fraction=0.95):
                         </div>
                         <div>
                             <pre style="background-color: #f4f4f4; border: 1px solid #ccc; padding: 20px; color: #333; white-space: pre-wrap;">
-                                # Check if GPU is available
-                                # Data Preparation - Organize your dataset into "Train" and "Test" folders
-                                train_dir = 'train_folder_path'
-                                test_dir = 'test_folder_path'
-                                
-                                # Data Augmentation
-                                train_datagen = ImageDataGenerator(
-                                    rescale=1./255,
-                                    rotation_range=20,
-                                    horizontal_flip=True,
-                                    width_shift_range=0.1,
-                                    height_shift_range=0.1,
-                                    zoom_range=0.2,
-                                    shear_range=0.2,
-                                    fill_mode="nearest",
-                                    validation_split=0.2  # 20% of the data will be used for validation
-                                )
-                                
-                                test_datagen = ImageDataGenerator(rescale=1./255)
-                                
-                                # Generate batches of augmented data for training and validation
-                                train_generator = train_datagen.flow_from_directory(
-                                    train_dir,
-                                    target_size=(224, 224),
-                                    batch_size=32,
-                                    class_mode='binary',  # assuming binary classification
-                                    classes=['FAKE', 'REAL'],  # specify class names
-                                    subset='training'  # indicate training subset
-                                )
-                                
-                                validation_generator = train_datagen.flow_from_directory(
-                                    train_dir,
-                                    target_size=(224, 224),
-                                    batch_size=32,
-                                    class_mode='binary',
-                                    classes=['FAKE', 'REAL'],
-                                    subset='validation'  # indicate validation subset
-                                )
-                                
-                                test_generator = test_datagen.flow_from_directory(
-                                    test_dir,
-                                    target_size=(224, 224),
-                                    batch_size=32,
-                                    class_mode='binary',
-                                    classes=['FAKE', 'REAL']
-                                )
+# Check if GPU is available
+# Data Preparation - Organize your dataset into "Train" and "Test" folders
+train_dir = 'train_folder_path'
+test_dir = 'test_folder_path'
+
+# Data Augmentation
+train_datagen = ImageDataGenerator(
+    rescale=1./255,
+    rotation_range=20,
+    horizontal_flip=True,
+    width_shift_range=0.1,
+    height_shift_range=0.1,
+    zoom_range=0.2,
+    shear_range=0.2,
+    fill_mode="nearest",
+    validation_split=0.2  # 20% of the data will be used for validation
+)
+
+test_datagen = ImageDataGenerator(rescale=1./255)
+
+# Generate batches of augmented data for training and validation
+train_generator = train_datagen.flow_from_directory(
+    train_dir,
+    target_size=(224, 224),
+    batch_size=32,
+    class_mode='binary',  # assuming binary classification
+    classes=['FAKE', 'REAL'],  # specify class names
+    subset='training'  # indicate training subset
+)
+
+validation_generator = train_datagen.flow_from_directory(
+    train_dir,
+    target_size=(224, 224),
+    batch_size=32,
+    class_mode='binary',
+    classes=['FAKE', 'REAL'],
+    subset='validation'  # indicate validation subset
+)
+
+test_generator = test_datagen.flow_from_directory(
+    test_dir,
+    target_size=(224, 224),
+    batch_size=32,
+    class_mode='binary',
+    classes=['FAKE', 'REAL']
+)
 
                                 </pre>
                             </div><br>
