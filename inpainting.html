@@ -318,6 +318,7 @@ def custom_generator(generator):
                                     128 and 64 neurons respectively utilize ReLU activation and L2 regularization (with a regularization strength of 0.01) to enhance feature 
                                     interpretation and control overfitting. To further curb overfitting, a dropout layer with a rate of 0.5 is introduced. The ultimate layer, 
                                     equipped with a sigmoid activation function, culminates the architecture, facilitating binary classification output.</p><br>
+                            </div>
                             <div>
                                 <pre style="background-color: #f4f4f4; border: 1px solid #ccc; padding: 20px; color: #333; white-space: pre-wrap;">
 # Training function using custom generator and manual GPU memory control
@@ -343,8 +344,8 @@ def train_model(model, train_generator, validation_generator, callbacks_list, ep
             Dense(64, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.01)),
             Dropout(dropout_rate),
             Dense(1, activation='sigmoid')
-])                                     </pre>
-                                    </div><br>
+])                                  </pre>
+                                </div><br>
                             </div>
                             <div>
                                 <p><strong>Deepfake:</strong> The construction commences by importing a pre-trained Xception model, pretrained on ImageNet. The subsequent step involves 
@@ -355,11 +356,31 @@ def train_model(model, train_generator, validation_generator, callbacks_list, ep
                                     output. This configuration interlaces the power of transfer learning, enabling the network to leverage learned features, with careful regularization and 
                                     pooling mechanisms. The tailored architecture strikes a balance between complexity and efficiency, ensuring effective image classification while minimizing 
                                     overfitting. </p><br>
-                                    <div style="display: flex; justify-content: flex-start; align-items: center;">
-                                        <img src="assets/img/Deepfake.png" alt="Deepfake Model" class="df" style="width: 650px; height: 450px;">
-                                    </div><br>
                             </div>
                             <div>
+                                <pre style="background-color: #f4f4f4; border: 1px solid #ccc; padding: 20px; color: #333; white-space: pre-wrap;">
+# Training function using custom generator and manual GPU memory control
+def train_model(model, train_generator, validation_generator, callbacks_list, epochs=15):
+    with strategy.scope():
+        # Transfer Learning, using ImageNet
+        base_model = Xception(weights="imagenet", include_top=False)
+
+        # Unfreeze some Layers for fine-tuning
+        for layer in base_model.layers[56:]:
+            layer.trainable = True
+
+        # Use Dropout for regularization
+        dropout_rate = 0.5
+
+        # Define additional layers for the sequential part
+        model = Sequential([
+            base_model,
+            GlobalAveragePooling2D(),
+            Dropout(dropout_rate),
+            Dense(1, activation='sigmoid')
+        ])
+                                </pre>
+                            </div><br>
                                 <p><strong>Ensemble:</strong> Firstly, two pretrained models, loaded from specified paths, are assigned names for differentiation. The models are labeled as 
                                     'model1' and 'model2'. Following this, a new input layer is introduced, designed to accommodate the specific input dimensions (224x224x3). This input layer 
                                     forms the entry point for the ensemble model. Subsequently, the outputs of both 'model1' and 'model2' are retrieved by passing the ensemble input through
@@ -369,10 +390,37 @@ def train_model(model, train_generator, validation_generator, callbacks_list, ep
                                     through the concatenated and transformed layers, culminating in the ensemble output layer. This ensemble model demonstrates the potency of combining the
                                     predictive prowess of two independently trained models to achieve superior classification outcomes. Through this configuration, the ensemble leverages the
                                     diversity of learned features from different models, thus leading to a more robust and effective classifier.</p><br>
-                                    <div style="display: flex; justify-content: flex-start; align-items: center;">
-                                        <img src="assets/img/ensemble.png" alt="Ensemble Model" class="em" style="width: 725px; height: 625px;">
-                                    </div><br>
-                            </div>
+                            <div>
+                                <pre style="background-color: #f4f4f4; border: 1px solid #ccc; padding: 20px; color: #333; white-space: pre-wrap;">
+def train_model(ensemble_model, train_generator, validation_generator, callbacks_list, epochs=10):
+    with strategy.scope():
+        # Load the pre-trained models
+        model_path1 = '/home/drill-team/Machine Learning/models/CIFAKE 2023-07-27 15¹00.keras'
+        model_path2 = '/home/drill-team/Machine Learning/models/DeepfakeArt- 2023-08-06 20:34.keras'
+        model1 = tf.keras.models.load_model(model_path1)
+        model2 = tf.keras.models.load_model(model_path2)
+        
+        # Assign unique names to the loaded models
+        model1._name = 'model1'
+        model2._name = 'model2'
+        
+        # Create a new input layer for the ensemble model
+        ensemble_input = Input(shape=(224, 224, 3))
+        
+        # Get the outputs of both models
+        output1 = model1(ensemble_input)
+        output2 = model2(ensemble_input)
+        
+        # Concatenate the outputs
+        concatenated = concatenate([output1, output2])
+        
+        # Add a Dense layer with sigmoid activation for binary classification
+        ensemble_output = Dense(1, activation='sigmoid')(concatenated)
+        
+        # Create the ensemble model
+        ensemble_model = Model(inputs=ensemble_input, outputs=ensemble_output)                                   
+                                </pre>
+                            </div><br>
                         </div>
                         <div>
                             <h3>Callbacks</h3><br>
