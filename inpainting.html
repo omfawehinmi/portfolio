@@ -605,69 +605,69 @@ model.summary()
                                     </table><br>
                                     <body>
 
-<h2>Training Results - Loss</h2>
-
-<canvas id="lossChart" width="400" height="200"></canvas>
-
-<h2>Training Results - Accuracy</h2>
-
-<canvas id="accuracyChart" width="400" height="200"></canvas>
-
-<script>
-    // Sample data for loss and accuracy
-    const epochs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    const lossData = [0.3717, 0.2000, 0.1785, 0.1604, 0.1482, 0.1397, 0.1325, 0.1251, 0.1183, 0.1128];
-    const accuracyData = [0.8931, 0.9267, 0.9342, 0.9421, 0.9458, 0.9483, 0.9522, 0.9541, 0.9574, 0.9598];
-
-    // Create the loss chart
-    const lossChartCtx = document.getElementById('lossChart').getContext('2d');
-    const lossChart = new Chart(lossChartCtx, {
-        type: 'line',
-        data: {
-            labels: epochs,
-            datasets: [{
-                label: 'Loss',
-                data: lossData,
-                borderColor: 'blue',
-                borderWidth: 1,
-                fill: false
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-
-    // Create the accuracy chart
-    const accuracyChartCtx = document.getElementById('accuracyChart').getContext('2d');
-    const accuracyChart = new Chart(accuracyChartCtx, {
-        type: 'line',
-        data: {
-            labels: epochs,
-            datasets: [{
-                label: 'Accuracy',
-                data: accuracyData,
-                borderColor: 'green',
-                borderWidth: 1,
-                fill: false
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 1
-                }
-            }
-        }
-    });
-</script>
-
-</body>
+                                        <h2>Training Results - Loss</h2>
+                                        
+                                        <canvas id="lossChart" width="400" height="200"></canvas>
+                                        
+                                        <h2>Training Results - Accuracy</h2>
+                                        
+                                        <canvas id="accuracyChart" width="400" height="200"></canvas>
+                                        
+                                        <script>
+                                            // Sample data for loss and accuracy
+                                            const epochs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+                                            const lossData = [0.3717, 0.2000, 0.1785, 0.1604, 0.1482, 0.1397, 0.1325, 0.1251, 0.1183, 0.1128];
+                                            const accuracyData = [0.8931, 0.9267, 0.9342, 0.9421, 0.9458, 0.9483, 0.9522, 0.9541, 0.9574, 0.9598];
+                                        
+                                            // Create the loss chart
+                                            const lossChartCtx = document.getElementById('lossChart').getContext('2d');
+                                            const lossChart = new Chart(lossChartCtx, {
+                                                type: 'line',
+                                                data: {
+                                                    labels: epochs,
+                                                    datasets: [{
+                                                        label: 'Loss',
+                                                        data: lossData,
+                                                        borderColor: 'blue',
+                                                        borderWidth: 1,
+                                                        fill: false
+                                                    }]
+                                                },
+                                                options: {
+                                                    scales: {
+                                                        y: {
+                                                            beginAtZero: true
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                        
+                                            // Create the accuracy chart
+                                            const accuracyChartCtx = document.getElementById('accuracyChart').getContext('2d');
+                                            const accuracyChart = new Chart(accuracyChartCtx, {
+                                                type: 'line',
+                                                data: {
+                                                    labels: epochs,
+                                                    datasets: [{
+                                                        label: 'Accuracy',
+                                                        data: accuracyData,
+                                                        borderColor: 'green',
+                                                        borderWidth: 1,
+                                                        fill: false
+                                                    }]
+                                                },
+                                                options: {
+                                                    scales: {
+                                                        y: {
+                                                            beginAtZero: true,
+                                                            max: 1
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                        </script>
+                                        
+                                    </body>
                                 </div>
                             <p><strong>Deepfake:</strong> Similar to its CIFAKE counterpart, the CNN model trained on the DeepfakeArt dataset demonstrates an 
                                 analogous trajectory of growth. The initial accuracy of 68.0% advances incrementally to reach 90.9% at the conclusion of training. 
