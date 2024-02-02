@@ -302,6 +302,7 @@ def custom_generator(generator):
             yield data, labels
         except UnidentifiedImageError as e:
             print(f"Error loading image: {e}")
+                            </pre>
                         </div>    
                     </section>
 
@@ -317,8 +318,32 @@ def custom_generator(generator):
                                     128 and 64 neurons respectively utilize ReLU activation and L2 regularization (with a regularization strength of 0.01) to enhance feature 
                                     interpretation and control overfitting. To further curb overfitting, a dropout layer with a rate of 0.5 is introduced. The ultimate layer, 
                                     equipped with a sigmoid activation function, culminates the architecture, facilitating binary classification output.</p><br>
-                                    <div style="display: flex; justify-content: flex-start; align-items: center;">
-                                        <img src="assets/img/CIFAKE.png" alt="CIFAKE Model" class="cm" style="width: 650px; height: 550px;">
+                            <div>
+                                <pre style="background-color: #f4f4f4; border: 1px solid #ccc; padding: 20px; color: #333; white-space: pre-wrap;">
+# Training function using custom generator and manual GPU memory control
+def train_model(model, train_generator, validation_generator, callbacks_list, epochs=10):
+    with stratgey.scope():
+        # Transfer Learning, using pre-trained CNN
+        base_model = DenseNet121(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+        
+        # Unfreeze some Layers for fine-tuning
+        for layer in base_model.layers[56:]:
+            layer.trainable = True
+
+        # Use Dropout for regularization
+        dropout_rate = 0.5
+        
+        # Define additional layers for the sequential part
+        model = Sequential([
+            base_model,
+            Conv2D(16, kernel_size=(3, 3), activation="relu", padding="same"),
+            Conv2D(32, (3, 3), activation="relu", padding="same"),
+            Flatten(),
+            Dense(128, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.01)),
+            Dense(64, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.01)),
+            Dropout(dropout_rate),
+            Dense(1, activation='sigmoid')
+])                                     </pre>
                                     </div><br>
                             </div>
                             <div>
