@@ -282,8 +282,8 @@ test_generator = test_datagen.flow_from_directory(
     classes=['FAKE', 'REAL']
 )
 
-                                </pre>
-                            </div><br>
+                            </pre>
+                        </div><br>
                             
                             <h3>Custom Image Generator</h3>
                             <p class="home__description">The generator operates within an infinite loop using a <b>While True</b> construct. Inside the loop, the next(generator) 
@@ -293,10 +293,16 @@ test_generator = test_datagen.flow_from_directory(
                                 in handling potential errors when loading images for training or evaluation. By using this generator, the research paper's machine 
                                 learning pipeline becomes more stable and less prone to interruptions caused by problematic images, ultimately contributing to the 
                                 reliability and effectiveness of the model training process.</p>
-                                <div style="display: flex; justify-content: flex-start; align-items: center;">
-                                    <img src="assets/img/customgenerator.png" alt="CustomGenerator" class="cg" style="width: 400px; height: 200px;">
-                                </div>
-                        </div>     
+                        <div>
+                            <pre style="background-color: #f4f4f4; border: 1px solid #ccc; padding: 20px; color: #333; white-space: pre-wrap;">
+def custom_generator(generator):
+    while True:
+        try:
+            data, labels = next(generator)
+            yield data, labels
+        except UnidentifiedImageError as e:
+            print(f"Error loading image: {e}")
+                        </div>    
                     </section>
 
                     <section id="cnn-model">
