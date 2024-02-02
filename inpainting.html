@@ -474,10 +474,15 @@ learning_rate_reduction = ReduceLROnPlateau(monitor='loss', patience=2, verbose=
                                     aligns with the model's architectural intricacies and the nature of the image classification task. By tailoring the optimizer, 
                                     loss function, and evaluation metrics, the model is primed to effectively learn and improve its classification accuracy over training 
                                     epochs.</p><br>
+                            </div>
                             <div>
                                 <pre style="background-color: #f4f4f4; border: 1px solid #ccc; padding: 20px; color: #333; white-space: pre-wrap;">
-                                    </div><br>
-                            </div>
+# Model Compilation
+optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
+ensemble_model.compile(optimizer=optimizer, loss='binary_crossentropy', metrics=['accuracy'])
+ensemble_model.summary()
+                            </div><br>
+                            
                             <div>
                                 <p><strong>Deepfake:</strong> Here, the "Stochastic Gradient Descent" (SGD) optimizer is introduced, characterized by its iterative weight 
                                     updates that enhance convergence. The learning rate is set to 0.1, a choice that regulates the step size during weight adjustments, 
@@ -487,7 +492,10 @@ learning_rate_reduction = ReduceLROnPlateau(monitor='loss', patience=2, verbose=
                                     performance.</p><br>
                             <div>
                                 <pre style="background-color: #f4f4f4; border: 1px solid #ccc; padding: 20px; color: #333; white-space: pre-wrap;">
-                                    </div>
+# Model Compilation
+optimizer = tf.keras.optimizers.SGD(learning_rate=0.1, momentum=0.9)
+model.compile(optimizer=optimizer, loss='binary_crossentropy', metrics=['accuracy'])
+model.summary()
                             </div>
                         </div>
                     </section>
