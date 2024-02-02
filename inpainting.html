@@ -817,9 +817,44 @@ model.summary()
                                     accuracy, exceeding the training accuracy, suggests a minimal tendency for overfitting, and the relatively low test loss of 0.1013 further 
                                     validates the model's proficiency in making accurate predictions on previously unseen images. The model's consistent performance across both 
                                     training and test datasets indicates its reliability and adaptability to a wider range of inputs.</p><br>
-                                    <div style="display: flex; justify-content: flex-start; align-items: center;">
-                                        <img src="assets/img/CIFAKEtest.png" alt="CIFAKE Test" class="cstest" style="width: 550px; height: 50px;">
-                                    </div><br>
+                            <style>
+                                    table {
+                                        border-collapse: collapse;
+                                        width: 50%;
+                                        margin: auto;
+                                    }
+                                    th, td {
+                                        border: 1px solid #dddddd;
+                                        text-align: left;
+                                        padding: 8px;
+                                    }
+                                    th {
+                                        background-color: #f2f2f2;
+                                    }
+                                </style>
+                            </head>
+                            <body>
+                            
+                            <h2>Training Results</h2>
+                            
+                            <table>
+                              <tr>
+                                <th>Step</th>
+                                <th>Duration</th>
+                                <th>Loss</th>
+                                <th>Accuracy</th>
+                              </tr>
+                              <tr>
+                                <td>625/625</td>
+                                <td>19s 27ms/step</td>
+                                <td>0.1013</td>
+                                <td>0.9639</td>
+                              </tr>
+                            </table>
+                            
+                            <p>Test Accuracy on New Data: 0.9639000296592712</p>
+                            
+                            </body>
                             </div>
                             <div>
                                 <p><strong>Deepfake:</strong> The DeepfakeArt CNN model exhibits a test accuracy of 81.1%, a solid indication of its competence in distinguishing 
