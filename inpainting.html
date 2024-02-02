@@ -862,9 +862,44 @@ model.summary()
                                     overfitting, though the test loss of 0.5316 remains reasonable. Despite this, the model's performance underscores its viability for practical 
                                     applications, such as identifying deepfakes within artistic contexts. By achieving over 80% accuracy on unseen data, the model demonstrates its 
                                     utility beyond the training data's confines, reinforcing its capacity for real-world application.</p><br>
-                                    <div style="display: flex; justify-content: flex-start; align-items: center;">
-                                        <img src="assets/img/DeepfakeArttest.png" alt="Deepfake Test" class="dtest" style="width: 575px; height: 40px;">
-                                    </div><br>
+                                <style>
+                                        table {
+                                            border-collapse: collapse;
+                                            width: 50%;
+                                            margin: auto;
+                                        }
+                                        th, td {
+                                            border: 1px solid #dddddd;
+                                            text-align: left;
+                                            padding: 8px;
+                                        }
+                                        th {
+                                            background-color: #f2f2f2;
+                                        }
+                                    </style>
+                                </head>
+                                <body>
+                                
+                                <h2>Training Results</h2>
+                                
+                                <table>
+                                  <tr>
+                                    <th>Step</th>
+                                    <th>Duration</th>
+                                    <th>Loss</th>
+                                    <th>Accuracy</th>
+                                  </tr>
+                                  <tr>
+                                    <td>64/64</td>
+                                    <td>541ms/step</td>
+                                    <td>0.5316</td>
+                                    <td>0.8110</td>
+                                  </tr>
+                                </table>
+                                
+                                <p>Test Accuracy on New Data: 0.8109575510025024</p>
+                                
+                                </body>
                             </div>
                             <div>
                                 <p><strong>Ensemble:</strong> The ensemble CNN model, a fusion of CIFAKE and DeepfakeArt datasets, showcases an impressive test accuracy of 94.9%, 
@@ -872,9 +907,44 @@ model.summary()
                                     sources to create a more versatile and capable model. The relatively low test loss of 0.1373 further validates the ensemble's ability to make 
                                     accurate predictions on novel inputs. The ensemble model's consistency between training and test accuracies, coupled with its high performance, 
                                     reaffirms its suitability for practical use cases where accuracy and generalization are paramount.</p><br>
-                                    <div style="display: flex; justify-content: flex-start; align-items: center;">
-                                        <img src="assets/img/ensembletest.png" alt="Ensemble Test" class="etest" style="width: 550px; height: 50px;">
-                                    </div>
+                                <style>
+                                        table {
+                                            border-collapse: collapse;
+                                            width: 50%;
+                                            margin: auto;
+                                        }
+                                        th, td {
+                                            border: 1px solid #dddddd;
+                                            text-align: left;
+                                            padding: 8px;
+                                        }
+                                        th {
+                                            background-color: #f2f2f2;
+                                        }
+                                    </style>
+                                </head>
+                                <body>
+                                
+                                <h2>Training Results</h2>
+                                
+                                <table>
+                                  <tr>
+                                    <th>Step</th>
+                                    <th>Duration</th>
+                                    <th>Loss</th>
+                                    <th>Accuracy</th>
+                                  </tr>
+                                  <tr>
+                                    <td>689/689</td>
+                                    <td>63ms/step</td>
+                                    <td>0.1373</td>
+                                    <td>0.9497</td>
+                                  </tr>
+                                </table>
+                                
+                                <p>Test Accuracy on New Data: 0.9496958255767822</p>
+                                
+                                </body>
                             </div>
                         </div>
                     </section>
