@@ -164,7 +164,8 @@
 # Check if GPU is available
 def get_gpu_info():
     try:
-        result = subprocess.run(['nvidia-smi', '--query-gpu=index,name', '--format=csv,noheader'], capture_output=True, text=True)
+        result = subprocess.run(['nvidia-smi', '--query-gpu=index,name', 
+                                '--format=csv,noheader'], capture_output=True, text=True)
         gpu_info = result.stdout.strip().split('\n')
         gpu_info = [info.split(', ') for info in gpu_info]
         return gpu_info
@@ -186,7 +187,8 @@ def limit_gpu_memory(gpu_index, memory_fraction=0.95):
                 # Limit GPU memory growth for the specified GPU index
                 tf.config.experimental.set_virtual_device_configuration(
                     gpus[gpu_index],
-                    [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=int(memory_fraction * 1024))]
+                    [tf.config.experimental.VirtualDeviceConfiguration
+                                    (memory_limit=int(memory_fraction * 1024))]
                 )
             except RuntimeError as e:
                 print(e)
@@ -328,7 +330,8 @@ def custom_generator(generator):
 def train_model(model, train_generator, validation_generator, callbacks_list, epochs=10):
     with stratgey.scope():
         # Transfer Learning, using pre-trained CNN
-        base_model = DenseNet121(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+        base_model = DenseNet121(weights='imagenet', 
+                                    include_top=False, input_shape=(224, 224, 3))
         
         # Unfreeze some Layers for fine-tuning
         for layer in base_model.layers[56:]:
@@ -340,11 +343,14 @@ def train_model(model, train_generator, validation_generator, callbacks_list, ep
         # Define additional layers for the sequential part
         model = Sequential([
             base_model,
-            Conv2D(16, kernel_size=(3, 3), activation="relu", padding="same"),
+            Conv2D(16, kernel_size=(3, 3), activation="relu", 
+                                    padding="same"),
             Conv2D(32, (3, 3), activation="relu", padding="same"),
             Flatten(),
-            Dense(128, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.01)),
-            Dense(64, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.01)),
+            Dense(128, activation='relu', 
+                                    kernel_regularizer=tf.keras.regularizers.l2(0.01)),
+            Dense(64, activation='relu', 
+                                    kernel_regularizer=tf.keras.regularizers.l2(0.01)),
             Dropout(dropout_rate),
             Dense(1, activation='sigmoid')
 ])                                  </pre>
@@ -445,7 +451,8 @@ log_dir = "/home/drill-team/Machine Learning/tensorboard_logs/"
 tensorboard_callback = TensorBoard(log_dir=log_dir, histogram_freq=1)
 
 # Learning rate reduction callback
-learning_rate_reduction = ReduceLROnPlateau(monitor='loss', patience=2, verbose=1, factor=0.1, min_lr=0.000001)
+learning_rate_reduction = ReduceLROnPlateau(monitor='loss', patience=2, verbose=1, 
+                                    factor=0.1, min_lr=0.000001)
 
 # Callbacks
 early = EarlyStopping(monitor="loss", mode="min", patience=3)
@@ -461,7 +468,8 @@ callbacks_list = [early, tensorboard_callback, learning_rate_reduction]
                             <div>
                                 <pre style="background-color: #f4f4f4; border: 1px solid #ccc; padding: 20px; color: #333; white-space: pre-wrap;">
 # Learning rate reduction
-learning_rate_reduction = ReduceLROnPlateau(monitor='loss', patience=2, verbose=1, factor=0.001, min_lr=0.000001)
+learning_rate_reduction = ReduceLROnPlateau(monitor='loss', patience=2, verbose=1, 
+                                    factor=0.001, min_lr=0.000001)
                             </div>
                         </div>
                     </section>
@@ -483,7 +491,8 @@ learning_rate_reduction = ReduceLROnPlateau(monitor='loss', patience=2, verbose=
                                 <pre style="background-color: #f4f4f4; border: 1px solid #ccc; padding: 20px; color: #333; white-space: pre-wrap;">
 # Model Compilation
 optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
-ensemble_model.compile(optimizer=optimizer, loss='binary_crossentropy', metrics=['accuracy'])
+ensemble_model.compile(optimizer=optimizer, loss='binary_crossentropy', 
+                                    metrics=['accuracy'])
 ensemble_model.summary()
                             </div><br>
                             
