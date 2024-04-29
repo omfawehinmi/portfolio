@@ -47,7 +47,7 @@ def limit_gpu_memory(gpu_index, memory_fraction=0.95):
                     [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=int(memory_fraction * 1024))]
                 )
             except RuntimeError as e:
-                print(e)
+                print(e) ```
 
 ## Approach
 
