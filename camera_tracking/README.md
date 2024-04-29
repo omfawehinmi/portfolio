@@ -2,6 +2,8 @@
 ## Purpose
 This project explores the intersection of machine learning and physical infrastructure. It involves a comprehensive system that leverages various components such as Bluetooth Low Energy (BLE), motor control, webcam configuration, and more to demonstrate how machine learning can be applied to control and optimize physical systems.
 
+##
+
 ## Components Summary
 ### Configuration and Setup
 Configuration Files: Scripts like configuration.py, gpu_config.py, and webcam_config.py handle the setup and configuration of the system's various hardware and software parameters, such as GPU settings and webcam resolutions.
