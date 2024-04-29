@@ -8,7 +8,7 @@ In a world inundated with digital media and misinformation, ensuring image authe
 
 The CIFAKE dataset consists of 60,000 AI-generated images and an equivalent number of 60,000 real images, sourced from CIFAR-10. While the dataset offers a wealth of training data, it's important to note this AI-generated image dataset varies in quality due to the inherent nature of synthetic content. This variability could influence the model's performance, particularly when confronted with lower-quality AI-generated images in the test set.
 
-!(assets/img/CIFAKE_pic.png)
+![CIFAKE Dataset Image](https://github.com/omfawehinmi/portfolio/tree/main/assets/img/CIFAKE_pic.png)
 
 ### DeepfakeArt Challenge Image Dataset
 
