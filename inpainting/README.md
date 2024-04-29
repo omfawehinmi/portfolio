@@ -14,7 +14,7 @@ The CIFAKE dataset consists of 60,000 AI-generated images and an equivalent numb
 
 The DeepfakeArt Challenge Dataset is comprised of a collection of over 32,000 images, the dataset encompasses a diverse array of generative forgery and data poisoning techniques. Each entry in the dataset consists of a pair of images, categorized as forgeries/adversarially contaminated or authentic. Notably, every generated image has undergone rigorous quality checks to ensure accuracy and consistency.The DeepfakeArt Challenge Dataset encompasses a wide range of generative forgery and data poisoning methods, including inpainting, style transfer, adversarial data poisoning, and Cutmix. I specifically chose to utilize the Inpainting dataset from the DeepfakeArt Challenge repository.
 
-![DeepfakeArt Dataset Image](assets/img/DeepfakeArt_pic.jpg)
+![DeepfakeArt Dataset Image](../assets/img/DeepfakeArt_pic.jpg)
 
 These datasets were thoughtfully organized into "Train" and "Test" folders, each containing distinct subfolders that play a crucial role in facilitating effective model training and evaluation. In the "Train" section of each data repository, images are categorized into subfolders named "Real" and "Fake." This organization allows my machine learning models to learn from a diverse range of image types during training phases. By being exposed to both authentic and AI-generated images, the models can develop a robust understanding of the characteristics that distinguish the two categories. Correspondingly, the "Test" section of the dataset mirrors this categorization, with subfolders named "Real" and "Fake".
 
