@@ -8,7 +8,7 @@ This project explores the intersection of machine learning and physical infrastr
 **Functionality:** Handles the execution of Python scripts, management of Bluetooth connectivity, and communication with other hardware components like motors and the webcam. It's equipped with Wi-Fi capabilities which are useful for remote monitoring and control tasks.
 
 ### 12V Stepper Motors
-Quantity: 2<br>
+**Quantity:** 2<br>
 **Role:** Responsible for the mechanical movement in the project.<br>
 **Functionality:** These motors provide precise control over mechanical actions, crucial for tasks that require exact positioning and movement, such as robotics arms or moving parts of an installation.
 
