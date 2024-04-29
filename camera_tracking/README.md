@@ -5,24 +5,24 @@ This project explores the intersection of machine learning and physical infrastr
 ## Physical Infrastructure (Rig)
 ### Raspberry Pi Pico W
 <b>Role: Serves as the central microcontroller unit (MCU) for the project.
-Functionality: Handles the execution of Python scripts, management of Bluetooth connectivity, and communication with other hardware components like motors and the webcam. It's equipped with Wi-Fi capabilities which are useful for remote monitoring and control tasks.
+<b>Functionality:</b> Handles the execution of Python scripts, management of Bluetooth connectivity, and communication with other hardware components like motors and the webcam. It's equipped with Wi-Fi capabilities which are useful for remote monitoring and control tasks.
 
 ### 12V Stepper Motors
 Quantity: 2
-Role: Responsible for the mechanical movement in the project.
-Functionality: These motors provide precise control over mechanical actions, crucial for tasks that require exact positioning and movement, such as robotics arms or moving parts of an installation.
+<b>Role:</b> Responsible for the mechanical movement in the project.
+<b>Functionality:</b> These motors provide precise control over mechanical actions, crucial for tasks that require exact positioning and movement, such as robotics arms or moving parts of an installation.
 
 ### Stepper Motor Drivers
-Role: Interface between the Raspberry Pi Pico W and the stepper motors.
-Functionality: These drivers take commands from the microcontroller and supply the stepper motors with the necessary power to perform movements. They handle the current and voltage requirements of the stepper motors, ensuring smooth and accurate operation.
+<b>Role:</b> Interface between the Raspberry Pi Pico W and the stepper motors.
+<b>Functionality:</b> These drivers take commands from the microcontroller and supply the stepper motors with the necessary power to perform movements. They handle the current and voltage requirements of the stepper motors, ensuring smooth and accurate operation.
 
 ### Standard Webcam
-Role: Acts as the visual sensor for the project.
-Functionality: Captures real-time video data, which can be used for various applications like monitoring, object detection, or interfacing with machine learning models for visual analysis.
+<b>Role:</b> Acts as the visual sensor for the project.
+<b>Functionality:</b> Captures real-time video data, which can be used for various applications like monitoring, object detection, or interfacing with machine learning models for visual analysis.
 
-### Laptop Power Supply
-Role: Provides power to the Raspberry Pi Pico W and possibly other components.
-Functionality: Ensures a stable and adequate power supply to the system, which is crucial for continuous and reliable operation of all electronic and mechanical parts.
+### Laptop Charger (Power Supply)
+<b>Role:</b> Provides power to the Raspberry Pi Pico W and possibly other components.
+<b>Functionality:</b> Ensures a stable and adequate power supply to the system, which is crucial for continuous and reliable operation of all electronic and mechanical parts.
 
 
 ## Components Summary
