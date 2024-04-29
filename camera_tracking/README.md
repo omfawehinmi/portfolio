@@ -5,7 +5,7 @@ This project explores the intersection of machine learning and physical infrastr
 ## Physical Infrastructure (Rig)
 ### Raspberry Pi Pico W
 **Role:** Serves as the central microcontroller unit (MCU) for the project.
-**Functionality:**> Handles the execution of Python scripts, management of Bluetooth connectivity, and communication with other hardware components like motors and the webcam. It's equipped with Wi-Fi capabilities which are useful for remote monitoring and control tasks.
+**Functionality:** Handles the execution of Python scripts, management of Bluetooth connectivity, and communication with other hardware components like motors and the webcam. It's equipped with Wi-Fi capabilities which are useful for remote monitoring and control tasks.
 
 ### 12V Stepper Motors
 Quantity: 2
