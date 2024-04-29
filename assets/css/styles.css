@@ -771,6 +771,11 @@ img {
   font-weight: var(--font-medium);
 }
 
+.small-text {
+  font-size: 0.75em; 
+}
+
+
 .services__button {
   cursor: pointer;
   font-size: var(--small-font-size);
