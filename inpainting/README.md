@@ -268,11 +268,11 @@ The CNN model trained on the CIFAKE dataset showcases a notable progression in p
 
 ```
 
-Deepfake
+## Deepfake
+
 Similar to its CIFAKE counterpart, the CNN model trained on the DeepfakeArt dataset demonstrates an analogous trajectory of growth. The initial accuracy of 68.0% advances incrementally to reach 90.9% at the conclusion of training. Correspondingly, the loss function consistently diminishes across epochs. The model's generalization capacity is underscored by the validation accuracy, which, commencing at 50.0%, escalates to an appreciable 84.0%. Validation loss, akin to the CIFAKE model, undergoes reduction amidst intermittent variations, signifying effective learning and a propensity to mitigate overfitting.
 
-markdown
-Copy code
+```
 | Epoch | Loss   | Accuracy | Validation Loss | Validation Accuracy | Learning Rate |
 |-------|--------|----------|-----------------|---------------------|---------------|
 | 1     | 0.6044 | 0.6796   | 2.7905          | 0.5000              | 0.1           |
@@ -285,11 +285,12 @@ Copy code
 | 8     | 0.3191 | 0.8576   | 0.4762          | 0.7914              | 0.1           |
 | 9     | 0.2821 | 0.8792   | 0.4761          | 0.7858              | 0.1           |
 | 10    | 0.2671 | 0.8815   | 0.3979          | 0.8173              | 0.1           |
-Ensemble
+
+```
+## Ensemble
 The ensemble CNN model, a harmonious amalgamation of CIFAKE and DeepfakeArt datasets, presents a distinct advantage in terms of initial performance. With an elevated inception accuracy of 95.7%, the model systematically advances to an impressive 97.0% accuracy, underscoring the efficacy of leveraging multiple datasets. Concomitantly, the ensemble model's loss trajectory commences at a lower point and steadily decreases throughout training. The validation accuracy, commencing at 96.5%, remains consistently high, peaking at 97.5%. This persistent alignment between training and validation accuracy is complemented by the validation loss, which, though initially elevated, demonstrates steady reduction over successive epochs.
 
-markdown
-Copy code
+```
 | Epoch | Loss   | Accuracy | Validation Loss | Validation Accuracy | Learning Rate |
 |-------|--------|----------|-----------------|---------------------|---------------|
 | 1     | 0.1127 | 0.9569   | 0.0944          | 0.9652              | 0.001         |
@@ -302,38 +303,39 @@ Copy code
 | 8     | 0.0871 | 0.9672   | 0.0918          | 0.9667              | 0.001         |
 | 9     | 0.0845 | 0.9686   | 0.0730          | 0.9745              | 0.001         |
 | 10    | 0.0809 | 0.9698   | 0.0808          | 0.9719              | 0.001         |
-Results & Accuracy
-CIFAKE
+
+```
+### Results & Accuracy
+
+## CIFAKE
+
 The CIFAKE CNN model demonstrates robust generalization to new, unseen data, achieving an impressive test accuracy of 96.4%. This performance underscores the model's ability to effectively classify fake and real images even beyond its training domain. The test accuracy, exceeding the training accuracy, suggests a minimal tendency for overfitting, and the relatively low test loss of 0.1013 further validates the model's proficiency in making accurate predictions on previously unseen images. The model's consistent performance across both training and test datasets indicates its reliability and adaptability to a wider range of inputs.
 
-markdown
-Copy code
+```
 | Step       | Duration          | Loss  | Accuracy |
 |------------|-------------------|-------|----------|
 | 625/625    | 19s 27ms/step     | 0.1013| 0.9639   |
+```
 Test Accuracy on New Data: 0.9639000296592712
 
-Deepfake
+## Deepfake
 The DeepfakeArt CNN model exhibits a test accuracy of 81.1%, a solid indication of its competence in distinguishing between deepfake and authentic images in a real-world context. The discrepancy between training and test accuracies suggests a moderate degree of overfitting, though the test loss of 0.5316 remains reasonable. Despite this, the model's performance underscores its viability for practical applications, such as identifying deepfakes within artistic contexts. By achieving over 80% accuracy on unseen data, the model demonstrates its utility beyond the training data's confines, reinforcing its capacity for real-world application.
 
-markdown
-Copy code
+```
 | Step       | Duration          | Loss  | Accuracy |
 |------------|-------------------|-------|----------|
 | 64/64      | 541ms/step        | 0.5316| 0.8110   |
+```
 Test Accuracy on New Data: 0.8109575510025024
 
-Ensemble
+## Ensemble
+
 The ensemble CNN model, a fusion of CIFAKE and DeepfakeArt datasets, showcases an impressive test accuracy of 94.9%, reiterating its proficiency in discerning fake from real images. This robust performance signifies the successful integration of diverse data sources to create a more versatile and capable model. The relatively low test loss of 0.1373 further validates the ensemble's ability to make accurate predictions on novel inputs. The ensemble model's consistency between training and test accuracies, coupled with its high performance, reaffirms its suitability for practical use cases where accuracy and generalization are paramount.
 
-markdown
-Copy code
+```
 | Step       | Duration          | Loss  | Accuracy |
 |------------|-------------------|-------|----------|
 | 689/689    | 63ms/step         | 0.1373| 0.9497   |
+```
 Test Accuracy on New Data: 0.9496958255767822
 
-vbnet
-Copy code
-
-This markdown content represents the entire HTML structure in a text-friendly format
