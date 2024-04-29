@@ -398,6 +398,15 @@ img {
   background-color: var(--first-color-alt);
 }
 
+.button--short {
+    padding: 2px 10px; /* Reduces vertical padding */
+    font-size: 0.8em; /* Reduces the font size if necessary */
+}
+
+.button--short .uil {
+    margin-left: 5px; /* Adjusts space between text and icon if needed */
+}
+
 .button__icon {
   font-size: 1.25rem;
   margin-left: var(--mb-0-5);
