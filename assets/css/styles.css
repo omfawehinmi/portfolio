@@ -741,7 +741,7 @@ img {
 /*==================== SERVICES ====================*/
 .services__container {
   gap: 1.5rem;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
 }
 
 .services__content {
@@ -1166,7 +1166,8 @@ img {
   .project__container,
   .contact__container,
   .footer__container {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, auto);
   }
   .qualification__sections {
     display: grid;
@@ -1291,7 +1292,7 @@ img {
     padding-top: .8rem;
   }
   .footer__container {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
   .footer__bg {
     padding: 3rem 0 3.5rem;
