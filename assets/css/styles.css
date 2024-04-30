@@ -551,7 +551,7 @@ img {
 }
 
 .skills__r {
-  width: 80%;
+  width: 85%;
 }
 
 .skills__sql {
@@ -559,7 +559,7 @@ img {
 }
 
 .skills__powershell {
-  width: 60%;
+  width: 75%;
 }
 
 .skills__php {
@@ -570,12 +570,30 @@ img {
   width: 50%;
 }
 
-.skills__tableau {
+.skills__glue {
   width: 90%;
+}
+.skills__hadoop {
+  width: 80%;
+}
+
+.skills__databricks {
+  width: 70%;
+}
+
+.skills__apachespark {
+  width: 85%;
+}
+
+.skills__apachehive {
+  width: 70%;
+}
+.skills__tableau {
+  width: 95%;
 }
 
 .skills__powerbi {
-  width: 90%;
+  width: 95%;
 }
 
 .skills__qualtrics {
@@ -583,23 +601,27 @@ img {
 }
 
 .skills__powerapps {
+  width: 80%;
+}
+
+.skills__google {
   width: 70%;
 }
 
-.skills__hadoop {
+.skills__rapidminer {
   width: 70%;
 }
 
-.skills__databricks {
-  width: 60%;
+.skills__aws {
+  width: 85%;
 }
 
-.skills__apachespark {
-  width: 65%;
+.skills__azure {
+  width: 80%;
 }
 
-.skills__apachehive {
-  width: 60%;
+.skills__gcp {
+  width: 70%;
 }
 
 .skills__mss {
@@ -607,35 +629,15 @@ img {
 }
 
 .skills__snowflake {
-  width: 90%;
+  width: 80%;
 }
 
 .skills__oracle {
-  width: 90%;
-}
-
-.skills__aws {
-  width: 65%;
-}
-
-.skills__azure {
   width: 70%;
-}
-
-.skills__github{
-  width: 90;
 }
 
 .skills__workday {
   width: 90%;
-}
-
-.skills__google {
-  width: 80%;
-}
-
-.skills__rapidminer {
-  width: 70%;
 }
 
 .skills__greenhouse {
@@ -647,7 +649,7 @@ img {
 }
 
 .skills__successfactors {
-  width: 70%;
+  width: 90%;
 }
 
 .skills__close .skills__list {
