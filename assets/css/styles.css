@@ -1167,7 +1167,6 @@ img {
   .contact__container,
   .footer__container {
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(3, auto);
   }
   .qualification__sections {
     display: grid;
@@ -1257,7 +1256,7 @@ img {
     grid-template-columns: .5fr;
   }
   .services__container {
-    grid-template-columns: repeat(3, 218px);
+    grid-template-columns: repeat(2, 218px);
     justify-content: center;
   }
   .services__icon {
@@ -1324,7 +1323,7 @@ img {
     transform: translateX(-6rem);
   }
   .services__container {
-    grid-template-columns: repeat(3, 238px);
+    grid-template-columns: repeat(2, 238px);
   }
   .portfolio__content {
     column-gap: 5rem;
