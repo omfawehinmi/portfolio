@@ -484,10 +484,6 @@ img {
 /*==================== SKILLS ====================*/
 .skills__container {
   row-gap: 0;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); 
-  grid-template-rows: auto; 
-  gap: 1.5rem;
 }
 
 .skills__header {
