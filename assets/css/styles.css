@@ -1160,6 +1160,7 @@ img {
   .contact__container,
   .footer__container {
     grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, auto);
   }
   .qualification__sections {
     display: grid;
