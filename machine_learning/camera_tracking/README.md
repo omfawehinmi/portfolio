@@ -24,7 +24,9 @@ This project explores the intersection of machine learning and physical infrastr
 **Role:** Provides power to the Raspberry Pi Pico W and possibly other components.<br>
 **Functionality:** Ensures a stable and adequate power supply to the system, which is crucial for continuous and reliable operation of all electronic and mechanical parts.<br><br>
 ![Camera](../../assets/img/camera.PNG)
-![Camera Video](../../assets/mp4/camera.mp4) 
+<p align="center">
+  <video src="[http://some_place.com/image.png](https://player.vimeo.com/video/938258584?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479)" />
+</p>
 
 ## Components Summary
 ### Configuration and Setup
