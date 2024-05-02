@@ -1,6 +1,7 @@
 # Camera Tracking
 ## Purpose
 This project explores the intersection of machine learning and physical infrastructure. It involves a comprehensive system that leverages various components such as Bluetooth Low Energy (BLE), motor control, webcam configuration, and more to demonstrate how machine learning can be applied to control and optimize physical systems.
+<video src='[Camera Video](https://player.vimeo.com/video/938258584?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479)' width=180/>
 
 ## Physical Infrastructure (Rig)
 ### Raspberry Pi Pico W
