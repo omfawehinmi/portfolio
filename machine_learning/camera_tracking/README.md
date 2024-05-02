@@ -23,7 +23,7 @@ This project explores the intersection of machine learning and physical infrastr
 ### Laptop Charger (Power Supply)
 **Role:** Provides power to the Raspberry Pi Pico W and possibly other components.<br>
 **Functionality:** Ensures a stable and adequate power supply to the system, which is crucial for continuous and reliable operation of all electronic and mechanical parts.
-
+![Camera](../assets/img/camera.jpg)
 
 ## Components Summary
 ### Configuration and Setup
