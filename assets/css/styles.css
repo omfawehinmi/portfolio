@@ -156,12 +156,37 @@ img {
 }
 
 /*==================== MODAL IMPROVEMENTS ====================*/
+.services__modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Background overlay */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  padding: 1rem;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.services__modal.active-modal {
+  visibility: visible;
+  opacity: 1;
+}
+
 .services__modal-content {
-  max-height: 80vh; /* Ensure the modal content doesn't exceed viewport height */
-  overflow-y: auto; /* Allow scrolling within modal */
-  padding: 20px;
-  box-sizing: border-box;
-  position: relative; /* Ensure the close button is well-positioned */
+  background-color: var(--container-color);
+  padding: 1.5rem;
+  border-radius: .5rem;
+  max-height: 80vh; /* Limits the modal height to 80% of the viewport */
+  width: 100%;
+  max-width: 600px; /* Limits the modal width */
+  overflow-y: auto; /* Allows scrolling within the modal */
+  position: relative;
 }
 
 .services__modal-close {
@@ -169,10 +194,12 @@ img {
   top: 10px;
   right: 10px;
   cursor: pointer;
-  z-index: 1000; /* Ensure close button stays on top */
+  font-size: 1.5rem;
+  z-index: 10;
+  color: var(--first-color);
 }
 
-/* Modal padding for small screens */
+/* Adjust modal height and padding for small screens */
 @media (max-width: 600px) {
   .services__modal-content {
     max-height: 70vh; /* Slightly reduce height for small screens */
