@@ -156,30 +156,12 @@ img {
 }
 
 /*==================== MODAL IMPROVEMENTS ====================*/
-.services__modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5); /* Background overlay */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: var(--z-modal);
-  padding: 1rem; /* Add padding to ensure proper spacing on mobile */
-}
-
 .services__modal-content {
-  background-color: var(--container-color);
-  padding: 1.5rem;
-  border-radius: .5rem;
-  max-height: 80vh; /* Limits the modal height to 80% of the viewport */
-  width: 100%;
-  max-width: 600px; /* Limits the modal width */
-  overflow-y: auto; /* Allows scrolling within the modal */
-  position: relative; /* Important for positioning the close button */
+  max-height: 80vh; /* Ensure the modal content doesn't exceed viewport height */
+  overflow-y: auto; /* Allow scrolling within modal */
+  padding: 20px;
   box-sizing: border-box;
+  position: relative; /* Ensure the close button is well-positioned */
 }
 
 .services__modal-close {
@@ -187,50 +169,37 @@ img {
   top: 10px;
   right: 10px;
   cursor: pointer;
-  font-size: 1.5rem;
-  z-index: 10; /* Ensure close button is on top */
+  z-index: 1000; /* Ensure close button stays on top */
 }
 
-/* Adjust modal height and padding for small screens */
+/* Modal padding for small screens */
 @media (max-width: 600px) {
   .services__modal-content {
     max-height: 70vh; /* Slightly reduce height for small screens */
-    padding: 10px; /* Smaller padding for mobile */
+    padding: 10px;
   }
 }
 
-/* Make button smaller for mobile */
-@media screen and (max-width: 400px) {
-  .button {
-    padding: 0.75rem;
-    font-size: 0.85rem;
-  }
-}
-
-/* General Modal Style */
-.services__modal-title {
-  font-size: var(--h3-font-size);
-  font-weight: var(--font-medium);
-  margin-bottom: var(--mb-1-5);
-}
-
-.services__modal p {
-  margin-bottom: var(--mb-2); /* Adjust space between paragraphs */
-}
-
-.services__modal .button {
-  display: inline-block;
+/*==================== SCROLL UP ==========*/
+.scrollup {
+  position: fixed;
+  right: 1rem;
+  bottom: -20%;
   background-color: var(--first-color);
-  color: #fff;
-  padding: 1rem;
-  text-align: center;
-  border-radius: .5rem;
-  font-weight: var(--font-medium);
-  margin-top: var(--mb-1-5);
+  opacity: .8;
+  padding: 0 .3rem;
+  border-radius: .4rem;
+  z-index: var(--z-tooltip);
+  transition: .4s;
 }
 
-.services__modal .button:hover {
+.scrollup:hover {
   background-color: var(--first-color-alt);
+}
+
+.scrollup__icon {
+  font-size: 1.5rem;
+  color: #FFF;
 }
 
 /*==================== BUTTONS ====================*/
@@ -262,74 +231,32 @@ img {
   }
 }
 
-/*==================== SCROLL UP ==========*/
-.scrollup {
-  position: fixed;
-  right: 1rem;
-  bottom: -20%;
-  background-color: var(--first-color);
-  opacity: .8;
-  padding: 0 .3rem;
-  border-radius: .4rem;
-  z-index: var(--z-tooltip);
-  transition: .4s;
+/*==================== MEDIA QUERIES ====================*/
+/* Grid layout for smaller screens */
+@media screen and (max-width: 767px) {
+  .services__container {
+    grid-template-columns: 1fr;
+  }
+
+  .home__content {
+    grid-template-columns: 1fr;
+  }
+
+  .container {
+    max-width: 100%;
+  }
 }
 
-.scrollup:hover {
-  background-color: var(--first-color-alt);
-}
-
-.scrollup__icon {
-  font-size: 1.5rem;
-  color: #FFF;
-}
-
-.scroll-header {
-  box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.15);
-}
-
-.scrollup {
-  right: 1rem;
-  bottom: 5rem;
-}
-
-.active-link {
-  color: var(--first-color);
-}
-
-/*==================== FOOTER ====================*/
-.footer__bg {
-  background-color: var(--first-color-second);
-  padding: 2rem 0 3rem;
-}
-
-.footer__container {
-  row-gap: 3.5rem;
-  grid-template-columns: repeat(3, 1fr);
-}
-
-.footer__title {
-  font-size: var(--h1-font-size);
-  margin-bottom: var(--mb-0-25);
-}
-
-.footer__subtitle {
-  font-size: var(--small-font-size);
-}
-
-.footer__links {
-  display: flex;
-  flex-direction: column;
-  row-gap: 2rem;
-}
-
-.footer__link:hover {
-  color: var(--first-color-lighter);
-}
-
-.footer__copy {
-  font-size: var(--smaller-font-size);
-  text-align: center;
-  color: var(--text-color-light);
-  margin-top: var(--mb-3);
+/* General smaller screen responsiveness */
+@media screen and (max-width: 350px) {
+  .container {
+    margin-left: var(--mb-1);
+    margin-right: var(--mb-1);
+  }
+  .nav__menu {
+    padding: 2rem .25rem 4rem;
+  }
+  .services__modal {
+    padding: 0 .5rem;
+  }
 }
