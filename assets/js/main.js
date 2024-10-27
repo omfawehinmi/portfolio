@@ -72,25 +72,33 @@ tabs.forEach(tab => {
 /*==================== SERVICES MODAL ====================*/
 const modalViews = document.querySelectorAll('.services__modal'),
       modalBtns = document.querySelectorAll('.services__button'),
-      modalCloses = document.querySelectorAll('.services__modal-close')
+      modalCloses = document.querySelectorAll('.services__modal-close');
 
-let modal = function(modalClick){
-    modalViews[modalClick].classList.add('active-modal')
+// Function to open the modal
+let openModal = function(modalIndex) {
+    modalViews[modalIndex].classList.add('active-modal');
+    document.body.style.overflow = 'hidden'; // Prevent background scroll
 }
 
-modalBtns.forEach((modalBtn, i) => {
-    modalBtn.addEventListener('click', () => {
-        modal(i)
-    })
-})
+// Function to close the modal
+let closeModal = function() {
+    modalViews.forEach((modalView) => {
+        modalView.classList.remove('active-modal');
+    });
+    document.body.style.overflow = 'auto'; // Allow background scroll again
+}
 
+// Attach event listeners to open modal buttons
+modalBtns.forEach((modalBtn, index) => {
+    modalBtn.addEventListener('click', () => {
+        openModal(index);
+    });
+});
+
+// Attach event listeners to close modal buttons
 modalCloses.forEach((modalClose) => {
-    modalClose.addEventListener('click', () => {
-        modalViews.forEach((modalView) => {
-            modalView.classList.remove('active-modal')
-        })
-    })
-})
+    modalClose.addEventListener('click', closeModal);
+});
 
 /*==================== PORTFOLIO SWIPER  ====================*/
 let swiperPortfolio = new Swiper('.portfolio__container', {
