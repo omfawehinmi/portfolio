@@ -4,7 +4,6 @@
 /*==================== VARIABLES CSS ====================*/
 :root {
   --header-height: 3rem;
-  /*========== Colors ==========*/
   --hue-color: 250;
   --first-color: hsl(var(--hue-color), 69%, 61%);
   --first-color-second: hsl(var(--hue-color), 69%, 61%);
@@ -18,7 +17,6 @@
   --container-color: #FFF;
   --scroll-bar-color: hsl(var(--hue-color), 12%, 90%);
   --scroll-thumb-color: hsl(var(--hue-color), 12%, 80%);
-  /*========== Font and typography ==========*/
   --body-font: 'Poppins', sans-serif;
   --big-font-size: 2rem;
   --h1-font-size: 1.5rem;
@@ -27,10 +25,8 @@
   --normal-font-size: .938rem;
   --small-font-size: .813rem;
   --smaller-font-size: .75rem;
-  /*========== Font weight ==========*/
   --font-medium: 500;
   --font-semi-bold: 600;
-  /*========== Margins Bottom ==========*/
   --mb-0-25: .25rem;
   --mb-0-5: .5rem;
   --mb-0-75: .75rem;
@@ -39,7 +35,6 @@
   --mb-2: 2rem;
   --mb-2-5: 2.5rem;
   --mb-3: 3rem;
-  /*========== z index ==========*/
   --z-tooltip: 10;
   --z-fixed: 100;
   --z-modal: 1000;
@@ -123,26 +118,6 @@ img {
   height: auto;
 }
 
-/*==================== REUSABLE CSS CLASSES ====================*/
-.section {
-  padding: 2rem 0 4rem;
-}
-
-.section__title {
-  font-size: var(--h1-font-size);
-  color: var(--title-color);
-}
-
-.section__subtitle {
-  display: block;
-  font-size: var(--small-font-size);
-  margin-bottom: var(--mb-3);
-}
-
-.section__title, .section__subtitle {
-  text-align: center;
-}
-
 /*==================== LAYOUT ====================*/
 .container {
   max-width: 768px;
@@ -162,12 +137,12 @@ img {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5); /* Background overlay */
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: var(--z-modal);
   padding: 1rem;
+  z-index: var(--z-modal);
   visibility: hidden;
   opacity: 0;
   transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -182,10 +157,10 @@ img {
   background-color: var(--container-color);
   padding: 1.5rem;
   border-radius: .5rem;
-  max-height: 80vh; /* Limits the modal height to 80% of the viewport */
+  max-height: 80vh;
   width: 100%;
-  max-width: 600px; /* Limits the modal width */
-  overflow-y: auto; /* Allows scrolling within the modal */
+  max-width: 600px;
+  overflow-y: auto;
   position: relative;
 }
 
@@ -197,14 +172,6 @@ img {
   font-size: 1.5rem;
   z-index: 10;
   color: var(--first-color);
-}
-
-/* Adjust modal height and padding for small screens */
-@media (max-width: 600px) {
-  .services__modal-content {
-    max-height: 70vh; /* Slightly reduce height for small screens */
-    padding: 10px;
-  }
 }
 
 /*==================== SCROLL UP ==========*/
@@ -250,7 +217,6 @@ img {
   padding: .75rem 1rem;
 }
 
-/* Buttons for smaller screens */
 @media screen and (max-width: 400px) {
   .button {
     padding: 0.75rem;
@@ -259,7 +225,6 @@ img {
 }
 
 /*==================== MEDIA QUERIES ====================*/
-/* Grid layout for smaller screens */
 @media screen and (max-width: 767px) {
   .services__container {
     grid-template-columns: 1fr;
@@ -274,16 +239,10 @@ img {
   }
 }
 
-/* General smaller screen responsiveness */
-@media screen and (max-width: 350px) {
-  .container {
-    margin-left: var(--mb-1);
-    margin-right: var(--mb-1);
-  }
-  .nav__menu {
-    padding: 2rem .25rem 4rem;
-  }
-  .services__modal {
-    padding: 0 .5rem;
+/* Responsive Modal on Smaller Screens */
+@media (max-width: 600px) {
+  .services__modal-content {
+    max-height: 70vh;
+    padding: 10px;
   }
 }
