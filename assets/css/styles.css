@@ -785,6 +785,7 @@ img {
   transform: translateX(0.25rem);
 }
 
+/*==================== SERVICES MODAL ====================*/
 .services__modal {
   position: fixed;
   top: 0;
@@ -807,14 +808,8 @@ img {
   background-color: var(--container-color);
   padding: 1.5rem;
   border-radius: .5rem;
-}
-
-.services__modal-services {
-  row-gap: 1rem;
-}
-
-.services__modal-service {
-  display: flex;
+  max-height: 80vh; /* Ensure the modal doesn't exceed viewport height */
+  overflow-y: auto; /* Allow scrolling inside the modal */
 }
 
 .services__modal-title {
@@ -830,11 +825,6 @@ img {
   font-size: 1.5rem;
   color: var(--first-color);
   cursor: pointer;
-}
-
-.services__modal-icon {
-  color: var(--first-color);
-  margin-right: var(--mb-0-25);
 }
 
 /* Active Modal */
