@@ -77,7 +77,7 @@ const modalViews = document.querySelectorAll('.services__modal'),
 // Function to open the modal
 let openModal = function(modalIndex) {
     modalViews[modalIndex].classList.add('active-modal');
-    document.body.style.overflow = 'hidden'; // Prevent background scroll
+    document.body.style.overflow = 'hidden';
 }
 
 // Function to close the modal
@@ -85,7 +85,7 @@ let closeModal = function() {
     modalViews.forEach((modalView) => {
         modalView.classList.remove('active-modal');
     });
-    document.body.style.overflow = 'auto'; // Allow background scroll again
+    document.body.style.overflow = 'auto';
 }
 
 // Attach event listeners to open modal buttons
@@ -98,6 +98,18 @@ modalBtns.forEach((modalBtn, index) => {
 // Attach event listeners to close modal buttons
 modalCloses.forEach((modalClose) => {
     modalClose.addEventListener('click', closeModal);
+});
+
+// Click on backdrop (outside modal content) closes the modal
+modalViews.forEach((modalView) => {
+    modalView.addEventListener('click', (e) => {
+        if (e.target === modalView) closeModal();
+    });
+});
+
+// Escape key closes the modal
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
 });
 
 /*==================== PORTFOLIO SWIPER  ====================*/
