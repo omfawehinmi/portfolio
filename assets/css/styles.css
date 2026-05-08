@@ -1337,6 +1337,7 @@ img {
   }
   .about__img {
     width: 350px;
+    align-self: start;
   }
   .about__description {
     text-align: initial;
@@ -1367,7 +1368,7 @@ img {
     padding: 6rem 0 2rem 2.5rem;
   }
   .services__modal-content {
-    width: 450px;
+    width: min(720px, 90vw);
   }
   .portfolio__img {
     width: 320px;
