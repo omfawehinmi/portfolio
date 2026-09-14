@@ -1,3 +1,10 @@
+The live site is a React (Vite) app hosted on GitHub Pages: https://omfawehinmi.github.io/portfolio/
+
+```bash
+npm install
+npm run dev
+```
+
 Welcome to my portfolio repository!
 
 This repository serves as a showcase for my resume projects and personal work as a data scientist/data engineer. Here, you will find a collection of projects that highlight my technical abilities, problem-solving skills, and passion for data analysis.
