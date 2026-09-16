@@ -1,17 +1,22 @@
+import { profile } from '../data/profile.js'
+import Icon from './ui/Icon.jsx'
+
 export default function Footer() {
   return (
     <footer className="footer">
       <div className="footer__bg">
         <div className="footer__container container grid">
           <div>
-            <h1 className="footer__title">Michael</h1>
-            <span className="footer__subtitle">Senior Data Engineer &amp; AI Solutions Architect</span>
+            <h2 className="footer__title">{profile.firstName}</h2>
+            <span className="footer__subtitle">
+              {profile.title} · {profile.titleAlt}
+            </span>
           </div>
 
           <ul className="footer__links">
             <li>
-              <a href="#qualification" className="footer__link">
-                Education | Work
+              <a href="#experience" className="footer__link">
+                Work
               </a>
             </li>
             <li>
@@ -27,26 +32,19 @@ export default function Footer() {
           </ul>
 
           <div className="footer__socials">
-            <a
-              href="https://www.linkedin.com/in/michael-fawehinmi"
-              target="_blank"
-              rel="noreferrer"
-              className="footer__social"
-            >
-              <i className="uil uil-linkedin-alt"></i>
+            <a href={profile.linkedin} target="_blank" rel="noreferrer" className="footer__social" aria-label="LinkedIn">
+              <Icon name="uil-linkedin-alt" />
             </a>
-            <a
-              href="https://github.com/omfawehinmi/portfolio"
-              target="_blank"
-              rel="noreferrer"
-              className="footer__social"
-            >
-              <i className="uil uil-github-alt"></i>
+            <a href={profile.github} target="_blank" rel="noreferrer" className="footer__social" aria-label="GitHub">
+              <Icon name="uil-github-alt" />
+            </a>
+            <a href={profile.myorglab} target="_blank" rel="noreferrer" className="footer__social" aria-label="MyOrgLab">
+              <Icon name="uil-snowflake" />
             </a>
           </div>
         </div>
 
-        <p className="footer__copy">&copy; 2026 Michael Fawehinmi. All rights reserved.</p>
+        <p className="footer__copy">&copy; {new Date().getFullYear()} {profile.name}. All rights reserved.</p>
       </div>
     </footer>
   )

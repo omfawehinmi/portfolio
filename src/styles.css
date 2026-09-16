@@ -305,9 +305,10 @@ img {
 
 .home__subtitle {
   font-size: var(--h3-font-size);
-  color: var(--text-color);
+  color: var(--title-color);
   font-weight: var(--font-medium);
   margin-bottom: var(--mb-0-75);
+  line-height: 1.35;
 }
 
 .home__subtitle2 {
@@ -1522,7 +1523,7 @@ h1, h2, h3, h4 {
   margin-bottom: var(--mb-3);
 }
 
-/* 4. Nav — backdrop blur + professional border */
+/* 4. Nav: backdrop blur + professional border */
 @media screen and (min-width: 768px) {
   .header {
     background-color: rgba(255, 255, 255, 0.88);
@@ -1556,7 +1557,7 @@ h1, h2, h3, h4 {
   font-weight: 600;
 }
 
-/* 5. Buttons — refined sizing and weight */
+/* 5. Buttons: refined sizing and weight */
 .button {
   border-radius: 0.4rem;
   letter-spacing: 0.3px;
@@ -1583,8 +1584,13 @@ h1, h2, h3, h4 {
 }
 
 .home__subtitle {
-  color: var(--first-color);
+  color: var(--title-color);
   font-weight: 600;
+}
+
+.home__subtitle-sep {
+  color: var(--first-color);
+  font-weight: 700;
 }
 
 .home__description {
@@ -1622,7 +1628,7 @@ h1, h2, h3, h4 {
   font-size: var(--smaller-font-size);
 }
 
-/* 8. Skills — card treatment */
+/* 8. Skills: card treatment */
 .skills__container {
   gap: 1.25rem;
 }
