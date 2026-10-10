@@ -1,58 +1,118 @@
-import { useEffect, useState } from 'react'
-import { projects } from '../data.jsx'
+import { projectGroups, projects } from '../data/projects.js'
+import Icon from './ui/Icon.jsx'
+import Modal from './ui/Modal.jsx'
+import ProjectMedia from './ui/ProjectMedia.jsx'
+import SectionHeader from './ui/SectionHeader.jsx'
 
-export default function Projects() {
-  const [openIndex, setOpenIndex] = useState(null)
-
-  useEffect(() => {
-    document.body.style.overflow = openIndex === null ? 'auto' : 'hidden'
-
-    const onKeyDown = (event) => {
-      if (event.key === 'Escape') setOpenIndex(null)
-    }
-
-    document.addEventListener('keydown', onKeyDown)
-    return () => {
-      document.body.style.overflow = 'auto'
-      document.removeEventListener('keydown', onKeyDown)
-    }
-  }, [openIndex])
+function ProjectBody({ project, onOpen }) {
+  const parts = (project.parts || []).map((id) => projects.find((item) => item.id === id)).filter(Boolean)
+  const parent = project.parentId ? projects.find((item) => item.id === project.parentId) : null
 
   return (
-    <section className="services section" id="projects">
-      <h2 className="section__title">Featured Projects</h2>
-      <br />
-      <div className="services__container container grid">
-        {projects.map((project, index) => (
-          <div className="services__content" key={project.icon}>
-            <div>
-              <i className={`uil ${project.icon} services__icon`}></i>
-              <h3 className="services__title">{project.title}</h3>
-            </div>
+    <>
+      {project.videoFile ? (
+        <video className="case-video" src={project.videoFile} controls playsInline muted loop />
+      ) : null}
+      {project.video ? (
+        <div className="media-well">
+          <iframe
+            src={project.video}
+            title={project.title}
+            allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
+          />
+        </div>
+      ) : null}
+      {project.thumb && !project.videoFile && !project.video ? (
+        <img
+          src={project.thumb}
+          alt=""
+          className="case-still"
+          style={{ objectPosition: project.thumbPos || 'center top' }}
+        />
+      ) : null}
+      {project.summary?.map((paragraph) => (
+        <p key={paragraph}>{paragraph}</p>
+      ))}
+      {project.points ? (
+        <ul className="case-points">
+          {project.points.map((point) => (
+            <li key={point}>{point}</li>
+          ))}
+        </ul>
+      ) : null}
+      {parts.length ? (
+        <div className="case-parts">
+          <p className="case-parts__label">Highlighted components</p>
+          {parts.map((part) => (
+            <button type="button" className="case-part" key={part.id} onClick={() => onOpen(part.id)}>
+              <Icon name={part.icon} />
+              <span>
+                <strong>{part.title}</strong>
+                <em>{part.outcome}</em>
+              </span>
+            </button>
+          ))}
+        </div>
+      ) : null}
+      <div className="case-links">
+        {parent ? (
+          <button type="button" className="button button--flex button--ghost" onClick={() => onOpen(parent.id)}>
+            Back to {parent.title}
+            <Icon name="uil-arrow-left" className="button__icon" />
+          </button>
+        ) : null}
+        {project.links?.map((link) => (
+          <a key={link.href} href={link.href} className="button button--flex" target="_blank" rel="noreferrer">
+            {link.label}
+            <Icon name="uil-external-link-alt" className="button__icon" />
+          </a>
+        ))}
+        {project.github ? (
+          <a href={project.github} className="button button--flex">
+            GitHub <Icon name="uil-github-alt" className="button__icon" />
+          </a>
+        ) : null}
+      </div>
+    </>
+  )
+}
 
-            <span
-              className="button button--flex button--small button--link services__button"
-              onClick={() => setOpenIndex(index)}
-            >
-              View More
-              <i className="uil uil-arrow-right button__icon"></i>
-            </span>
+export default function Projects({ openId, onOpen }) {
+  const openProject = projects.find((project) => project.id === openId)
 
-            <div
-              className={`services__modal${openIndex === index ? ' active-modal' : ''}`}
-              onClick={(event) => {
-                if (event.target === event.currentTarget) setOpenIndex(null)
-              }}
-            >
-              <div className="services__modal-content">
-                <h4 className="services__modal-title">{project.modalTitle}</h4>
-                <i className="uil uil-times services__modal-close" onClick={() => setOpenIndex(null)}></i>
-                <div className="services__modal-services">{project.body}</div>
-              </div>
-            </div>
+  return (
+    <section className="projects section" id="projects">
+      <SectionHeader title="Projects" subtitle="Open a tile. SOF and Household Ledger components sit with the system they belong to." />
+
+      <div className="projects__stack container">
+        {projectGroups.map((group) => (
+          <div className="project-group" key={group}>
+            <h3 className="project-group__label">{group}</h3>
+            <ul className={`project-grid${projects.some((item) => item.group === group && item.featured) ? ' project-grid--ledger' : ''}`}>
+              {projects
+                .filter((project) => project.group === group)
+                .map((project) => (
+                  <li key={project.id} className={project.featured ? 'is-featured' : project.parentId ? 'is-part' : undefined}>
+                    <button type="button" className={`project-tile${project.parentId ? ' project-tile--part' : ''}`} onClick={() => onOpen(project.id)}>
+                      <span className="project-tile__media">
+                        <ProjectMedia project={project} />
+                      </span>
+                      <span className="project-tile__copy">
+                        {project.parentId ? <span className="project-tile__kicker">Component</span> : null}
+                        <span className="project-tile__title">{project.title}</span>
+                        <span className="project-tile__outcome">{project.outcome}</span>
+                      </span>
+                    </button>
+                  </li>
+                ))}
+            </ul>
           </div>
         ))}
       </div>
+
+      <Modal open={Boolean(openProject)} title={openProject?.modalTitle} onClose={() => onOpen(null)}>
+        {openProject ? <ProjectBody key={openProject.id} project={openProject} onOpen={onOpen} /> : null}
+      </Modal>
     </section>
   )
 }
