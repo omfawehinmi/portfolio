@@ -9,7 +9,7 @@ function Role({ item }) {
     <article className="role">
       <div className="role__head">
         <h3 className="role__title">{item.title}</h3>
-        <span className="role__years">{item.years}</span>
+        {item.years && <span className="role__years">{item.years}</span>}
       </div>
       <p className="role__org">{item.subtitle}</p>
       {item.bullets?.length ? (

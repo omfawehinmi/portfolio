@@ -65,24 +65,21 @@ export const work = [
 export const education = [
   {
     side: 'left',
-    title: 'M.S. Data Science',
+    title: "Master's in Data Science, Attended",
     subtitle: 'Worcester Polytechnic Institute',
-    years: '2021 – 2023',
     bullets: ['Deep learning, Bayesian statistics, database systems, multivariate methods.'],
   },
   {
     side: 'right',
     wrapTime: true,
-    title: 'B.S. Finance, Capital Markets',
+    title: "Bachelor's in Finance, Attended",
     subtitle: 'Bentley University',
-    years: '2014 – 2018',
     bullets: ['Quantitative portfolio management, financial modeling, programmatic modeling.'],
   },
   {
     side: 'left',
     title: 'Certificates',
     subtitle: 'WPI · Dataquest · Bunker Hill',
-    years: '2018 – 2022',
     bullets: ['Data Science, SQL / PostgreSQL / MySQL, Database Architecture.'],
   },
 ]
