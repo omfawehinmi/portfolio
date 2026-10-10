@@ -102,39 +102,33 @@ export const skillGroups = [
 export const education = [
   {
     side: 'left',
-    title: 'Bachelors in Finance w/ Concentration in Capital Markets',
+    title: "Bachelor's in Finance, Attended",
     subtitle: 'Bentley University',
-    years: '2014 - 2018',
   },
   {
     side: 'right',
     title: 'Certificate in Database Architecture',
     subtitle: 'Bunker Hill Community College',
-    years: '2018 - 2018',
   },
   {
     side: 'left',
     title: 'Certificate in SQL, PostgreSQL, MySQL',
     subtitle: 'Dataquest.io',
-    years: '2018 - 2019',
-  },
-  {
-    side: 'left',
-    title: 'Certificate in Data Sceince(x2)',
-    subtitle: 'Dataquest.io',
-    years: '2018 - 2019',
   },
   {
     side: 'right',
-    title: 'Certificate in Data Science',
-    subtitle: 'Worcester Polytechnic Institute',
-    years: '2021 - 2022',
+    title: 'Certificate in Data Science (x2)',
+    subtitle: 'Dataquest.io',
   },
   {
     side: 'left',
-    title: 'Masters in Data Science',
+    title: 'Certificate in Data Science',
     subtitle: 'Worcester Polytechnic Institute',
-    years: '2021 - 2023',
+  },
+  {
+    side: 'right',
+    title: "Master's in Data Science, Attended",
+    subtitle: 'Worcester Polytechnic Institute',
   },
 ]
 
@@ -181,6 +175,89 @@ export const work = [
 ]
 
 export const projects = [
+  {
+    icon: 'uil-robot',
+    title: (
+      <>
+        Case Study:
+        <br />
+        Multi-Agent AI
+        <br />
+        Reporting System
+        <br />
+        <span className="small-text">
+          (Snowflake Cortex,
+          <br />
+          MCP, Power BI)
+        </span>
+      </>
+    ),
+    modalTitle: (
+      <>
+        Case Study: Snowflake Cortex Multi-Agent System{' '}
+        <span className="small-text">(Novanta &amp; NetApp)</span>
+      </>
+    ),
+    body: (
+      <>
+        <p>
+          <strong>Problem:</strong> C-suite leaders and HRBPs relied on 50+ recurring Tier 0 and Tier 1 reporting
+          requests handled through manual query workflows.
+        </p>
+        <p>
+          <strong>Approach:</strong> At Novanta, built LLM applications and agents on Snowflake Cortex (Cortex Analyst,
+          Cortex Search), encoding years of domain logic, business rules, and conditional logic into AI schemas. At
+          NetApp, built Snowflake Cortex LLM agents around a master agent that orchestrates specialized sub-agents
+          exposed to it as MCP tools.
+        </p>
+        <p>
+          <strong>Outcome:</strong> Eliminated all 50+ recurring Tier 0 and Tier 1 reporting requests with self-service
+          AI reporting, serving ~130 C-suite and HRBP users at NetApp and ~15 at Novanta.
+        </p>
+      </>
+    ),
+  },
+  {
+    icon: 'uil-database',
+    title: (
+      <>
+        Case Study:
+        <br />
+        Workforce
+        <br />
+        Data Platform
+        <br />
+        <span className="small-text">
+          (SuccessFactors, Workday,
+          <br />
+          Snowflake)
+        </span>
+      </>
+    ),
+    modalTitle: (
+      <>
+        Case Study: Workforce Data Platform{' '}
+        <span className="small-text">(SuccessFactors &amp; Workday to Snowflake)</span>
+      </>
+    ),
+    body: (
+      <>
+        <p>
+          <strong>SuccessFactors to Snowflake (NetApp, ~12,000 employees):</strong> engineered an SAP SuccessFactors
+          OData API integration with ETL pipelines, stored procedures, and scheduled migration tasks, and unified four
+          workforce platforms (SuccessFactors, Fieldglass, Eightfold, Visier) into Snowflake.
+        </p>
+        <p>
+          <strong>Workday to Snowflake (Novanta, ~3,500 employees):</strong> integrated Workday via Web Services and
+          Public API with raw, staging, and production layers and nightly maintenance procedures.
+        </p>
+        <p>
+          <strong>Governance &amp; quality:</strong> row access policies and dynamic data masking for access control,
+          certified schema layers, and automated data quality checks with actionable failure reporting.
+        </p>
+      </>
+    ),
+  },
   {
     icon: 'uil-amazon',
     title: (
