@@ -6,9 +6,11 @@ function QualificationItem({ item }) {
     <div>
       <h3 className="qualification__title">{item.title}</h3>
       <span className="qualification__subtitle">{item.subtitle}</span>
-      <div className="qualification__calendar">
-        <i className="uil uil-calendar-alt"></i> {item.years}
-      </div>
+      {item.years && (
+        <div className="qualification__calendar">
+          <i className="uil uil-calendar-alt"></i> {item.years}
+        </div>
+      )}
     </div>
   )
 
@@ -70,7 +72,7 @@ export default function Qualification() {
             id="education"
           >
             {education.map((item) => (
-              <QualificationItem item={item} key={`${item.title}-${item.years}`} />
+              <QualificationItem item={item} key={`${item.title}-${item.subtitle}`} />
             ))}
           </div>
 
