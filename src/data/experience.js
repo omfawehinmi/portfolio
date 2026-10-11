@@ -47,7 +47,7 @@ export const work = [
     side: 'left',
     title: 'Data Analyst',
     subtitle: 'Alder Partners LLC',
-    years: '2017 – 2018',
+    years: 'Mar 2017 – Nov 2017',
     bullets: ['Analytics and reporting for investment operations before moving fully into data engineering.'],
   },
   {

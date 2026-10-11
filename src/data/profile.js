@@ -26,6 +26,7 @@ export const navLinks = [
   { id: 'home', href: '#home', icon: 'uil-estate', label: 'Home' },
   { id: 'projects', href: '#projects', icon: 'uil-scenery', label: 'Projects' },
   { id: 'experience', href: '#experience', icon: 'uil-briefcase-alt', label: 'Work' },
+  { id: 'leadership', href: '#leadership', icon: 'uil-users-alt', label: 'Leadership' },
   { id: 'skills', href: '#skills', icon: 'uil-snowflake', label: 'Skills' },
   { id: 'contact', href: '#contact', icon: 'uil-message', label: 'Contact' },
 ]
