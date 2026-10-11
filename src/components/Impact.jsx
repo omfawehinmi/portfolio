@@ -1,4 +1,4 @@
-import { highlights } from '../data/profile.js'
+import { highlights } from '../data/projects.js'
 import Fold from './ui/Fold.jsx'
 import Icon from './ui/Icon.jsx'
 
