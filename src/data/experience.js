@@ -17,8 +17,8 @@ export const work = [
     subtitle: 'Novanta Corporation',
     years: 'Jan 2021 – Dec 2025',
     bullets: [
-      'Sole engineer for the Snowflake program: planning through production, including Workday → Snowflake with raw/stage/prod, row access policies, and dynamic masking.',
-      'Deployed Snowflake Cortex LLMs that encoded years of domain logic and eliminated Tier 0 and Tier 1 reporting queues.',
+      'Sole engineer on the Workday → Snowflake integration, planning through production: raw/stage/prod layers, row access policies, and dynamic masking for 3,500 employees.',
+      'Built Snowflake Cortex LLM apps and agents that encoded years of domain logic and eliminated all 50+ recurring Tier 0 and Tier 1 reporting requests.',
       'Built the C-suite / CHRO Power BI library plus SharePoint integration via Microsoft Fabric and Snowflake Open Catalog.',
     ],
   },
@@ -39,7 +39,7 @@ export const work = [
     subtitle: 'Global Atlantic Financial Group',
     years: 'Dec 2017 – Jun 2020',
     bullets: [
-      'Sole integration architect for Workday, Greenhouse, and SuccessFactors REST flows.',
+      'Solely designed and built the Greenhouse integration with Oracle HR systems via REST API; maintained and enhanced the existing SuccessFactors integration.',
       'Owned GLM / GLMM / SARIMAX attrition models through versioning, drift, and CHRO-facing Power BI.',
     ],
   },
