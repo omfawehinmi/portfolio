@@ -36,7 +36,7 @@ export const projects = [
       'Workday, SuccessFactors, Fieldglass, Eightfold, Visier, and One Model land into Snowflake with row access and masking, then Power BI / Streamlit / Cortex sit on that layer.',
     ],
     points: [
-      'Same pattern I ran as sole Snowflake owner at Novanta and as the HRIS landing engineer at NetApp.',
+      'Same pattern I ran as sole engineer on the Workday-to-Snowflake integration at Novanta and as the HRIS landing engineer at NetApp.',
       'Agents do not invent headcount or attrition; they read the semantic layer.',
     ],
     links: [{ href: 'https://www.myorglab.com/semantic-hr', label: 'Semantic HR' }],
@@ -57,7 +57,7 @@ export const projects = [
     points: [
       'Workday or SuccessFactors: API to raw/stage/prod, then row access and masking on the same grain Cortex uses.',
       'Tier 0/1 tickets die because the question already has a certified answer in Snowflake.',
-      'Novanta: sole Snowflake owner, Workday, Cortex, queues to zero. NetApp: SuccessFactors (plus Fieldglass, Eightfold, Visier) into Snowflake on the same idea.',
+      'Novanta: sole engineer on the Workday-to-Snowflake integration, then Cortex, queues to zero. NetApp: SuccessFactors (plus Fieldglass, Eightfold, Visier) into Snowflake on the same idea.',
     ],
   },
   {
@@ -352,14 +352,14 @@ export const highlights = [
   {
     projectId: 'myorglab',
     icon: 'uil-snowflake',
-    label: 'Sole Snowflake platform',
-    detail: 'Stood it up end to end at Novanta: planning through production.',
+    label: 'Sole-engineer Workday → Snowflake',
+    detail: 'Built the Novanta Workday-to-Snowflake integration end to end: planning through production.',
   },
   {
     projectId: 'cortex-self-serve',
     icon: 'uil-processor',
     label: '0 Tier 0/1 queues left',
-    detail: 'Workday / SuccessFactors in Snowflake. Cortex replaced the reporting queue.',
+    detail: 'Workday in Snowflake at Novanta. Cortex replaced all 50+ recurring Tier 0/1 requests.',
   },
   {
     projectId: 'household-ledger',

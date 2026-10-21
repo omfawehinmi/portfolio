@@ -15,7 +15,7 @@ export default function About() {
         <div className="about__data">
           <p className="about__description">
             Senior Data Engineer and AI Solution Architect who treats Snowflake as the system of record for both analytics and agents. At
-            Novanta I was the sole engineer who stood up the platform, wired Workday into certified layers, then put
+            Novanta I was the sole engineer on the Workday-to-Snowflake integration, wired Workday into certified layers, then put
             Cortex LLMs on that grain until Tier 0/1 reporting queues went away. At NetApp I land SuccessFactors,
             Fieldglass, Eightfold, and Visier into Snowflake and One Model.
           </p>
@@ -30,7 +30,7 @@ export default function About() {
             <div>
               <span className="about__info-title">1</span>
               <span className="about__info-name">
-                Snowflake <br /> platform, sole-owned
+                Workday → Snowflake <br /> integration, sole engineer
               </span>
             </div>
             <div>
