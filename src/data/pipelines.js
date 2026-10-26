@@ -36,18 +36,18 @@ export const pipelines = [
         'A video platform API feeds one daily Airflow DAG on the office PC. The DAG checks a cooldown, finds new videos, fetches transcripts, backfills gaps and transcribes the rest locally, then loads segments and vectors into Snowflake. A search index built on those tables is refreshed on demand and serves agent search tools, which are suspended today.',
       lanes: [
         { key: 'source', label: 'Source', nodes: [
-          { title: 'Video platform API', detail: 'Channel allowlist, published since 2025-01-01', state: 'running' },
+          { title: 'Video platform API', detail: 'Channel allowlist', state: 'running' },
         ] },
         { key: 'orchestrate', label: 'Orchestrate', nodes: [
-          { title: 'Daily Airflow DAG', detail: 'Office PC; checks a cooldown before any call', state: 'paused' },
+          { title: 'Daily Airflow DAG', detail: 'Cooldown check, then new videos only', state: 'paused' },
         ] },
         { key: 'ingest', label: 'Ingest', nodes: [
-          { title: 'Find, fetch, backfill', detail: 'New videos, available transcripts, then gaps', state: 'paused' },
-          { title: 'Transcribe locally', detail: 'faster-whisper on the PC GPU, one job at a time', state: 'paused' },
+          { title: 'Fetch transcripts', detail: 'Captions first, with backfill', state: 'paused' },
+          { title: 'Transcribe locally', detail: 'faster-whisper speech-to-text on the local GPU', state: 'paused' },
+          { title: 'Embed', detail: 'Behind a flag', state: 'paused' },
         ] },
         { key: 'store', label: 'Store', nodes: [
-          { title: 'Snowflake transcript tables', detail: 'Segments from the load step', state: 'running' },
-          { title: 'Embed', detail: 'Vectors for new rows, behind a flag', state: 'paused' },
+          { title: 'Snowflake transcript tables', detail: 'Segments and vectors', state: 'running' },
         ] },
         { key: 'serve', label: 'Serve', nodes: [
           { title: 'Search index', detail: 'Refreshed on demand, not by this DAG', state: 'running' },
@@ -55,10 +55,10 @@ export const pipelines = [
         ] },
       ],
       edges: [
-        { label: 'new videos' },
-        { label: 'audio + captions' },
-        { label: 'transcript segments' },
-        { label: 'index, on demand' },
+        { label: 'new video IDs' },
+        { label: 'transcripts' },
+        { label: 'segments + vectors' },
+        { label: 'source for the index' },
       ],
     },
     problem: [
@@ -114,33 +114,35 @@ export const pipelines = [
     architecture: {
       ariaLabel: 'Document intake pipeline architecture',
       longDescription:
-        'Every 15 minutes a polling DAG reads the cloud drive changes feed. Empty polls stop without a Snowflake connection. Changed files go to an extract DAG that skips files already seen, reads PDF text with pypdf or falls back to Tesseract OCR, then loads through an idempotent procedure into a Snowflake documents table with an audit log. The table feeds a search index when search is enabled.',
+        'When enabled (currently paused), a polling DAG reads the cloud drive changes feed every 15 minutes. Empty polls stop without a Snowflake connection. Changed files go to an extract DAG that skips files already seen, reads PDF text with pypdf or falls back to Tesseract OCR, then loads through an idempotent procedure into a Snowflake documents table with an audit log. The table feeds a search index when search is enabled.',
       lanes: [
         { key: 'source', label: 'Source', nodes: [
-          { title: 'Cloud drive folder', detail: 'Changes feed from a saved page token', state: 'paused' },
+          { title: 'Cloud drive folder', detail: 'Watched for changes', state: 'running' },
+          { title: 'Change poll', detail: 'Every 15 min when enabled, currently paused; changes feed, up to 200 files per trigger', state: 'paused' },
         ] },
         { key: 'orchestrate', label: 'Orchestrate', nodes: [
-          { title: 'drive_poll', detail: 'Every 15 min when enabled, currently paused; max 200 files per trigger', state: 'paused', note: 'No changes: stop, no Snowflake connection' },
-          { title: 'doc_extract', detail: 'Triggered with changed file IDs + md5', state: 'paused' },
+          { title: 'Extract DAG', detail: 'Plan: skip any file ID and checksum already seen', state: 'paused' },
         ] },
         { key: 'ingest', label: 'Ingest', nodes: [
-          { title: 'Plan step', detail: 'Skip any file ID + md5 already seen', state: 'paused' },
-          { title: 'pypdf text', detail: 'PDFs with a text layer', state: 'paused', join: 'or' },
-          { title: 'Tesseract OCR', detail: 'Average under 25 chars/page, or any image; 300 DPI, max 40 pages', state: 'paused' },
+          { title: 'Text layer: pypdf', detail: 'Average 25+ characters per page', state: 'paused', join: 'or' },
+          { title: 'Scan: Tesseract OCR', detail: 'Under 25 on average, or an image', state: 'paused' },
         ] },
         { key: 'store', label: 'Store', nodes: [
-          { title: 'Idempotent load', detail: "Owner's-rights procedure, one row per file", state: 'paused' },
-          { title: 'Snowflake documents table', detail: 'Plus an append-only audit log', state: 'paused' },
+          { title: 'Snowflake documents table', detail: 'Idempotent load', state: 'paused' },
+          { title: 'Audit log', detail: 'Every run recorded', state: 'paused' },
         ] },
         { key: 'serve', label: 'Serve', nodes: [
-          { title: 'Search index', detail: 'Planned: indexed when search is enabled', state: 'planned' },
+          { title: 'Document search index', detail: 'Indexed when search is enabled', state: 'planned' },
         ] },
       ],
       edges: [
-        { label: 'changed files' },
-        { label: 'file IDs + md5' },
+        { label: 'changed file IDs + checksums' },
+        { label: 'PDFs and images' },
         { label: 'text' },
-        { label: 'index when search enabled, planned', state: 'planned' },
+        { label: 'index when search is enabled, planned', state: 'planned' },
+      ],
+      sidePaths: [
+        { from: 'Change poll', label: 'No changes: stop without opening a warehouse connection' },
       ],
     },
     problem: [
@@ -199,32 +201,34 @@ export const pipelines = [
         'A pull request runs platform-ci on GitHub Actions: dbt deps, parse and compile, two dbt builds on DuckDB, sqlfluff lint and a docs check. Any failure goes back to the pull request. A passing change is reviewed and merged to main. Two daily dbt DAGs are deployed and paused; a single Cosmos DAG is planned. Builds land in Snowflake analytics, where a failed test leaves the previous tables in place. Docs are a CI artifact today; hosted docs are planned.',
       lanes: [
         { key: 'source', label: 'Source', nodes: [
-          { title: 'Pull request', detail: 'Platform code and dbt models', state: 'running' },
+          { title: 'Pull request', detail: 'Platform code change', state: 'running' },
         ] },
         { key: 'test', label: 'Test', nodes: [
-          { title: 'platform-ci', detail: 'GitHub Actions; deps, parse, compile', state: 'running', note: 'Any check fails: fix and push' },
-          { title: 'dbt build on DuckDB', detail: 'Two passes: models, then incremental + snapshots', state: 'running' },
-          { title: 'Lint + docs check', detail: 'sqlfluff; fail on undocumented model, column or source', state: 'running' },
-          { title: 'Slim CI, per-PR schemas', detail: 'Planned: zero-row builds against the published manifest', state: 'planned' },
+          { title: 'GitHub Actions CI', detail: 'dbt build twice on DuckDB, no production data', state: 'running' },
+          { title: 'Lint + docs check', detail: 'sqlfluff, fail on undocumented models', state: 'running' },
+          { title: 'Slim CI + per-PR schemas', detail: 'Zero-row builds against the published manifest', state: 'planned' },
         ] },
         { key: 'orchestrate', label: 'Orchestrate', nodes: [
-          { title: 'Review, merge to main', detail: 'Prod builds only from main', state: 'running' },
-          { title: 'Daily dbt DAGs', detail: 'hr_dbt_daily and ledger_dbt_daily', state: 'paused' },
-          { title: 'Single Cosmos DAG', detail: 'Planned: one task per model', state: 'planned' },
+          { title: 'Review + merge to main', detail: 'Owner approval required', state: 'running' },
+          { title: 'Daily dbt DAGs', detail: 'HR and ledger models, daily', state: 'paused' },
+          { title: 'Single Cosmos DAG', detail: 'One task per model', state: 'planned' },
         ] },
         { key: 'store', label: 'Store', nodes: [
-          { title: 'Snowflake analytics', detail: 'Failed test: previous tables stay', state: 'paused' },
+          { title: 'Snowflake analytics schema', detail: 'Failed test: previous tables stay', state: 'paused' },
         ] },
         { key: 'serve', label: 'Serve', nodes: [
           { title: 'dbt docs + manifest', detail: 'CI artifact today', state: 'running' },
-          { title: 'Hosted docs', detail: 'Planned: behind access control', state: 'planned' },
+          { title: 'Hosted docs', detail: 'Access-controlled', state: 'planned' },
         ] },
       ],
       edges: [
         { label: 'push' },
-        { label: 'checks pass' },
-        { label: 'build from main' },
-        { label: 'docs, hosting planned', state: 'planned' },
+        { label: 'all checks pass' },
+        { label: 'daily build' },
+        { label: 'docs' },
+      ],
+      sidePaths: [
+        { from: 'GitHub Actions CI', label: 'Any check fails: fix and push again' },
       ],
     },
     problem: [
@@ -283,14 +287,16 @@ export const pipelines = [
         ] },
         { key: 'orchestrate', label: 'Orchestrate', nodes: [
           { title: 'On-demand trigger', detail: 'Running today', state: 'running' },
-          { title: 'Daily Snowflake task', detail: 'Planned, after the reliability fixes', state: 'planned' },
+          { title: 'Daily schedule', detail: 'Snowflake task, after the reliability fixes', state: 'planned' },
         ] },
         { key: 'ingest', label: 'Ingest', nodes: [
-          { title: 'Extract procedure', detail: 'Full lookback now; incremental planned', state: 'running' },
-          { title: 'Holdings extract', detail: 'Runs with the load', state: 'running' },
+          { title: 'Extract procedure', detail: 'Full lookback today', state: 'running' },
+          { title: 'Holdings extract', detail: 'Positions per account', state: 'running' },
+          { title: 'Incremental pull', detail: 'Watermark minus 14 days, weekly full', state: 'planned' },
         ] },
         { key: 'store', label: 'Store', nodes: [
-          { title: 'Raw landing tables', detail: 'Merged into core ledger tables', state: 'running' },
+          { title: 'Raw landing tables', detail: 'As returned by the API', state: 'running' },
+          { title: 'Core ledger tables', detail: 'Merged, no duplicates', state: 'running' },
           { title: 'Run log + watermarks', detail: 'Row counts, request window, caller', state: 'running' },
         ] },
         { key: 'serve', label: 'Serve', nodes: [
@@ -299,8 +305,8 @@ export const pipelines = [
         ] },
       ],
       edges: [
-        { label: 'pull' },
-        { label: 'landed rows' },
+        { label: 'API pull' },
+        { label: 'land raw rows' },
         { label: 'merge' },
         { label: 'warn after 26 h, planned', state: 'planned' },
       ],

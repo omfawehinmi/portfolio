@@ -1,20 +1,30 @@
+import FigureHeader from './FigureHeader.jsx'
 import StatePill from './StatePill.jsx'
 
-export default function PipelineArchitectureDiagram({ id, eyebrow, title, status, lanes, edges, ariaLabel, longDescription }) {
+function SidePath({ label }) {
+  return (
+    <span className="pl-side">
+      <span className="pl-side__arrow">No</span>
+      <span className="pl-side__card">
+        <span className="pl-side__tag">Side path</span>
+        <span>{label}</span>
+      </span>
+    </span>
+  )
+}
+
+export default function PipelineArchitectureDiagram({ id, eyebrow, title, status, lanes, edges, sidePaths = [], ariaLabel, longDescription }) {
   const titleId = `${id}-arch-title`
   const descId = `${id}-arch-desc`
 
   return (
     <figure className="pl-figure" aria-labelledby={titleId} aria-describedby={descId}>
-      <p className="pl-eyebrow">{eyebrow}</p>
-      <figcaption className="pl-figure__title" id={titleId}>
-        {title} <span className="visually-hidden">: {ariaLabel}</span>
-      </figcaption>
-      {status ? <p className="pl-figure__status">{status}</p> : null}
+      <FigureHeader eyebrow={eyebrow} title={title} status={status} titleId={titleId} ariaLabel={ariaLabel} />
       <p className="visually-hidden" id={descId}>
         {longDescription}
+        {sidePaths.map((sp) => ` Side path from ${sp.from}: ${sp.label}.`).join('')}
       </p>
-      <ol className="pl-lanes">
+      <ol className="pl-lanes" aria-hidden="true">
         {lanes.map((lane, i) => {
           const edge = edges[i]
           return (
@@ -29,14 +39,19 @@ export default function PipelineArchitectureDiagram({ id, eyebrow, title, status
                         <StatePill state={node.state} />
                       </span>
                       <span className="pl-node__detail">{node.detail}</span>
-                      {node.note ? <span className="pl-node__note">{node.note}</span> : null}
-                      {node.join ? <span className="pl-node__join" aria-hidden="true">{node.join}</span> : null}
+                      {sidePaths
+                        .filter((sp) => sp.from === node.title)
+                        .map((sp) => (
+                          <SidePath key={sp.label} label={sp.label} />
+                        ))}
+                      {node.join ? <span className="pl-node__join">{node.join}</span> : null}
                     </li>
                   ))}
                 </ul>
               </div>
               {edge ? (
-                <span className={`pl-edge is-${edge.state || 'running'}`} aria-hidden="true">
+                <span className={`pl-edge is-${edge.state || 'running'}`}>
+                  <span className="pl-edge__num">{i + 1}</span>
                   <span className="pl-edge__label">{edge.label}</span>
                   <span className="pl-edge__line" />
                 </span>
@@ -52,10 +67,25 @@ export default function PipelineArchitectureDiagram({ id, eyebrow, title, status
 
 export function Legend() {
   return (
-    <p className="pl-legend">
-      <StatePill state="running" />
-      <StatePill state="paused" />
-      <span className="pl-pill is-planned">Planned (dashed)</span>
-    </p>
+    <div className="pl-legend" aria-hidden="true">
+      <span className="pl-legend__item">
+        <span className="pl-legend__bar is-running" /> Running
+      </span>
+      <span className="pl-legend__item">
+        <span className="pl-legend__bar is-paused" /> Deployed or built, paused
+      </span>
+      <span className="pl-legend__item">
+        <span className="pl-legend__bar is-planned" /> Planned
+      </span>
+      <span className="pl-legend__item">
+        <span className="pl-legend__edge" /> Data flow
+      </span>
+      <span className="pl-legend__item">
+        <span className="pl-legend__edge is-planned" /> Planned flow
+      </span>
+      <span className="pl-legend__item">
+        <span className="pl-side__arrow">No</span> Side path
+      </span>
+    </div>
   )
 }

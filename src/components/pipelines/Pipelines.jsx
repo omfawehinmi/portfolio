@@ -26,7 +26,6 @@ function List({ items, ordered }) {
 }
 
 function PipelineBody({ p }) {
-  const eyebrow = `Pipeline ${p.number}`
   return (
     <div className="pl-body">
       <p className="pipeline__status">
@@ -38,13 +37,25 @@ function PipelineBody({ p }) {
             id: 'architecture',
             label: 'Architecture',
             content: (
-              <PipelineArchitectureDiagram id={p.id} eyebrow={eyebrow} title="Architecture" {...p.architecture} />
+              <PipelineArchitectureDiagram
+                id={p.id}
+                eyebrow={`Pipeline ${p.number} · Architecture`}
+                title={p.title}
+                status={p.status}
+                {...p.architecture}
+              />
             ),
           },
           {
             id: 'flow',
             label: 'Process flow',
-            content: <PipelineProcessFlow id={p.id} title="Process flow" {...p.flow} />,
+            content: <PipelineProcessFlow
+                id={p.id}
+                eyebrow={`Pipeline ${p.number} · Process flow`}
+                title={p.title}
+                status={p.status}
+                {...p.flow}
+              />,
           },
         ]}
       />
