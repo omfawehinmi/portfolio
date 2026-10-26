@@ -39,8 +39,30 @@ export default function Modal({ open, title, onClose, children, wide = false }) 
 
     document.body.style.overflow = 'hidden'
     document.addEventListener('keydown', onKeyDown)
-    closeRef.current?.focus()
+    // The overlay is visibility: hidden until the open transition starts, and the
+    // browser ignores focus() on hidden elements. Try now (jsdom, no transition),
+    // again after two frames, on transitionend, and once more as a fallback.
+    const overlay = dialogRef.current?.parentElement
+    const focusClose = () => {
+      const dialog = dialogRef.current
+      if (!dialog || dialog.contains(document.activeElement)) return
+      closeRef.current?.focus()
+    }
+    let raf2 = 0
+    focusClose()
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(focusClose)
+    })
+    const onTransitionEnd = (event) => {
+      if (event.target === overlay) focusClose()
+    }
+    overlay?.addEventListener('transitionend', onTransitionEnd)
+    const fallback = setTimeout(focusClose, 350)
     return () => {
+      cancelAnimationFrame(raf1)
+      cancelAnimationFrame(raf2)
+      clearTimeout(fallback)
+      overlay?.removeEventListener('transitionend', onTransitionEnd)
       document.body.style.overflow = 'auto'
       document.removeEventListener('keydown', onKeyDown)
       if (opener && typeof opener.focus === 'function' && opener.isConnected) opener.focus()
