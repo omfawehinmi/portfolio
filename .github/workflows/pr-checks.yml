@@ -1,0 +1,48 @@
+name: PR checks
+
+# Lint / unit tests run only if the script exists in package.json (none today).
+# Build + Playwright smoke against `vite preview`. No secrets, read-only token.
+# Rollback: delete this file. deploy.yml is untouched.
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-checks-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Lint, build, unit, e2e
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 20 # same as deploy.yml
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Lint (if configured)
+        run: npm run lint --if-present
+      - name: Build
+        run: npm run build
+      - name: Unit tests (if configured)
+        run: npm test --if-present
+        env:
+          CI: "true"
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+      - name: Playwright e2e (vite preview on :4173)
+        run: npm run test:e2e
+        env:
+          CI: "true"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: failure()
+        with:
+          name: playwright-report-${{ github.sha }}
+          path: playwright-report
+          retention-days: 7
