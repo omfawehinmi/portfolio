@@ -688,3 +688,336 @@ body.dark-theme .home {
     justify-content: center;
   }
 }
+
+/* ===== Pipelines (case studies) ===== */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.pipelines__list {
+  display: grid;
+  gap: 2rem;
+}
+
+.pipeline {
+  background: var(--container-color);
+  border: 1px solid var(--border-color);
+  border-radius: 0.85rem;
+  box-shadow: var(--card-shadow);
+  padding: 1.5rem 1.25rem;
+  scroll-margin-top: 5rem;
+  min-width: 0;
+}
+
+.pipeline p {
+  margin-bottom: 0.65rem;
+}
+
+.pipeline__eyebrow {
+  color: var(--first-color);
+  font-size: var(--smaller-font-size);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pipeline__title {
+  font-size: var(--h3-font-size);
+  color: var(--title-color);
+  margin-bottom: 0.5rem;
+}
+
+.pipeline__heading {
+  color: var(--title-color);
+  font-size: var(--normal-font-size);
+  margin: 1rem 0 0.35rem;
+}
+
+.pipeline__status strong,
+.pipeline__shows strong,
+.case-points strong {
+  color: var(--title-color);
+}
+
+.pipeline__stack {
+  font-size: var(--smaller-font-size);
+  color: var(--text-color);
+}
+
+.pipeline .case-points {
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.4rem;
+  margin-bottom: 0.65rem;
+}
+
+.pipeline ul.case-points { list-style: disc; }
+.pipeline ol.case-points { list-style: decimal; }
+
+.pipeline__shows {
+  margin-top: 1.25rem;
+}
+
+.pipeline__flow-slot {
+  border: 2px dashed var(--first-color);
+  border-radius: 0.85rem;
+  background: var(--input-color);
+  padding: 1rem 1.1rem;
+  margin: 1.25rem 0 0.5rem;
+  color: var(--title-color);
+}
+
+.pipeline__flow-label {
+  font-weight: 600;
+  color: var(--first-color);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: var(--smaller-font-size);
+}
+
+/* Architecture diagram: 5 lanes in a row >=1280, 3+2 from 1024, stacked below */
+.arch {
+  margin: 1.25rem 0 0.75rem;
+}
+
+.arch__caption {
+  font-weight: 600;
+  color: var(--title-color);
+  margin-bottom: 0.65rem;
+}
+
+.arch__lanes {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+.arch__lane-wrap {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.arch__lane {
+  background: var(--input-color);
+  border-radius: 0.85rem;
+  padding: 0.75rem;
+  flex: 1;
+}
+
+.arch__lane-label {
+  font-size: var(--smaller-font-size);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--title-color);
+  margin-bottom: 0.5rem !important;
+}
+
+.arch__nodes {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.arch__node {
+  position: relative;
+  display: grid;
+  gap: 0.25rem;
+  background: var(--container-color);
+  border: 1px solid var(--border-color);
+  border-top: 3px solid var(--first-color);
+  border-radius: 0.6rem;
+  padding: 0.6rem 0.7rem;
+  box-shadow: var(--card-shadow);
+  font-size: var(--smaller-font-size);
+  color: var(--text-color);
+}
+
+.arch__node.is-paused {
+  border-top: 3px solid var(--text-color-light);
+  background-image: repeating-linear-gradient(135deg, transparent 0 8px, rgba(127, 127, 127, 0.06) 8px 12px);
+}
+
+.arch__node.is-planned {
+  border: 1px dashed var(--text-color);
+  box-shadow: none;
+}
+
+.arch__node-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.35rem;
+}
+
+.arch__node-title {
+  color: var(--title-color);
+  font-size: var(--small-font-size);
+  line-height: 1.3;
+}
+
+.arch__pill,
+.arch__key {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.05rem 0.5rem;
+  font-size: var(--smaller-font-size);
+  font-weight: 600;
+  line-height: 1.5;
+  border: 1px solid currentColor;
+}
+
+.arch__node.is-live .arch__pill,
+.arch__key.is-live {
+  color: #fff;
+  background: var(--first-color-alt);
+  border-color: var(--first-color-alt);
+}
+
+.arch__node.is-paused .arch__pill,
+.arch__key.is-paused {
+  color: var(--title-color);
+  background: var(--container-color);
+}
+
+.arch__node.is-planned .arch__pill,
+.arch__key.is-planned {
+  color: var(--title-color);
+  background: transparent;
+  border-style: dashed;
+}
+
+.arch__node-note {
+  border-left: 2px solid var(--text-color-light);
+  padding-left: 0.4rem;
+  font-style: italic;
+}
+
+.arch__join {
+  justify-self: center;
+  font-weight: 600;
+  color: var(--title-color);
+  margin-bottom: -0.45rem;
+}
+
+.arch__edge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.3rem 0;
+  font-size: var(--smaller-font-size);
+  color: var(--title-color);
+}
+
+.arch__edge-label {
+  text-align: center;
+  font-weight: 500;
+}
+
+.arch__edge-line {
+  position: relative;
+  width: 0;
+  height: 1.4rem;
+  border-left: 2px solid var(--text-color);
+}
+
+.arch__edge.is-planned .arch__edge-line {
+  border-left-style: dashed;
+}
+
+.arch__edge-line::after {
+  content: '';
+  position: absolute;
+  left: -6px;
+  bottom: -2px;
+  border: 5px solid transparent;
+  border-top: 7px solid var(--text-color);
+}
+
+.arch__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+@media screen and (min-width: 768px) {
+  .pipeline {
+    padding: 2rem;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .arch__lanes {
+    grid-template-columns: repeat(3, 1fr);
+    row-gap: 0.5rem;
+  }
+
+  .arch__lane-wrap {
+    flex-direction: row;
+  }
+
+  .arch__edge {
+    width: 4.5rem;
+    flex: none;
+    justify-content: center;
+    padding: 0 0.25rem;
+  }
+
+  .arch__edge-line {
+    width: 100%;
+    height: 0;
+    border-left: 0;
+    border-top: 2px solid var(--text-color);
+  }
+
+  .arch__edge.is-planned .arch__edge-line {
+    border-top-style: dashed;
+  }
+
+  .arch__edge-line::after {
+    left: auto;
+    right: -2px;
+    bottom: auto;
+    top: -6px;
+    border: 5px solid transparent;
+    border-left: 7px solid var(--text-color);
+  }
+
+  .arch__lane-wrap.is-last .arch__lane {
+    margin-right: 4.5rem;
+  }
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1279px) {
+  /* 3+2: the 3rd lane's edge wraps to the next row */
+  .arch__lane-wrap:nth-child(3) .arch__edge-label::after {
+    content: ' (continues below)';
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .pipelines .container {
+    max-width: 1240px;
+  }
+
+  .arch__lanes {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .arch__edge {
+    width: 3.75rem;
+  }
+
+  .arch__lane-wrap.is-last .arch__lane {
+    margin-right: 0;
+  }
+}
