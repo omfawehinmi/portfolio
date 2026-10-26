@@ -73,6 +73,7 @@ export const pipelines = [
       ['Scope cut first.', 'Videos published before 2025-01-01 and out-of-scope channels were removed, with backup clones kept. That left 544 videos.'],
       ['Gap classification.', 'A simple SQL rule labels each video full, placeholder or missing, so the backlog is measurable by channel, year and month.'],
       ['Cooldown, then incremental.', 'The DAG checks a cooldown before calling the video platform, finds new videos, fetches available transcripts, backfills gaps, and transcribes only what is still missing.'],
+      ['Audio chunking.', 'Audio is transcribed in 10-minute (600-second) windows.'],
       ['Embedding behind a flag.', 'The embed step stays off unless enabled.'],
       ['Environments.', 'Dev runs a 10-video sample; staging runs a 10 + 10 GPU test; prod loads approved batches only.'],
     ],
@@ -119,7 +120,7 @@ export const pipelines = [
           { title: 'Cloud drive folder', detail: 'Changes feed from a saved page token', state: 'paused' },
         ] },
         { key: 'orchestrate', label: 'Orchestrate', nodes: [
-          { title: 'drive_poll', detail: 'Every 15 min, max 200 files per trigger', state: 'paused', note: 'No changes: stop, no Snowflake connection' },
+          { title: 'drive_poll', detail: 'Every 15 min when enabled, currently paused; max 200 files per trigger', state: 'paused', note: 'No changes: stop, no Snowflake connection' },
           { title: 'doc_extract', detail: 'Triggered with changed file IDs + md5', state: 'paused' },
         ] },
         { key: 'ingest', label: 'Ingest', nodes: [
@@ -146,7 +147,7 @@ export const pipelines = [
       'Household documents (statements, bills, scanned pages, phone photos) needed to land as searchable text in Snowflake. The earlier design parsed documents with in-warehouse AI functions on a task that polled every 2 minutes. That meant thousands of warehouse resumes a month and an AI charge on every page.',
     ],
     method: [
-      ['Change-based polling.', 'Every 15 minutes, drive_poll reads the cloud drive changes feed from a saved page token, capped at 200 files per trigger. Empty polls never open a Snowflake session.'],
+      ['Change-based polling.', 'Polls every 15 minutes when enabled (currently paused). drive_poll reads the cloud drive changes feed from a saved page token, capped at 200 files per trigger. Empty polls never open a Snowflake session.'],
       ['Extract DAG.', 'Changed files are handed to the doc_extract DAG, which plans, extracts and loads.'],
       ['Plan before extract.', 'A plan step skips any file whose file ID and md5 were already seen, so only new or changed files are processed.'],
       ['Text first, OCR second.', 'Extraction reads the PDF text layer with pypdf. A PDF averaging under 25 characters per page goes to Tesseract. Images go straight to OCR at 300 DPI, up to 40 pages.'],
@@ -256,14 +257,14 @@ export const pipelines = [
     flow: {
       ariaLabel: 'Process flow',
       longDescription:
-        'Process flow, on demand running. A run starts on demand; a daily schedule is planned. Planned: a weekly full pull, otherwise an incremental pull from the watermark minus 14 days; today every run uses the full lookback. Transactions and holdings land raw, merge into core ledger tables, and a freshness check warns if data is over 26 hours old.',
+        'Process flow, on demand running. A run starts on demand; a daily schedule is planned. Planned: a weekly full pull, otherwise an incremental pull from the watermark minus 14 days; today every run uses the full lookback. Transactions and holdings land raw, merge into core ledger tables. Planned: a freshness check that warns if data is over 26 hours old.',
       steps: [
         { n: 1, type: 'trigger', label: 'On-demand run', state: 'running', branch: { label: 'Planned', text: 'Daily schedule', state: 'planned' } },
         { n: 2, type: 'decision', label: 'Weekly full due?', state: 'planned', branch: { label: 'No', text: 'Pull from watermark minus 14 days', state: 'planned' } },
         { n: 3, type: 'action', label: 'Pull transactions + holdings (full lookback today)', state: 'running' },
         { n: 4, type: 'action', label: 'Land raw rows', state: 'running' },
         { n: 5, type: 'action', label: 'Merge into core ledger tables', state: 'running' },
-        { n: 6, type: 'decision', label: 'Fresh within 26 hours?', state: 'running', branch: { label: 'No', text: 'Warn in run log', state: 'running' } },
+        { n: 6, type: 'decision', label: 'Fresh within 26 hours? (planned)', state: 'planned', branch: { label: 'No', text: 'Warn in run log', state: 'planned' } },
         { n: 7, type: 'outcome', label: 'Ledger up to date', state: 'running' },
       ],
     },
@@ -275,7 +276,7 @@ export const pipelines = [
     architecture: {
       ariaLabel: 'Personal finance load architecture',
       longDescription:
-        'An on-demand trigger, running today, and a planned daily Snowflake task both call an extract procedure. It pulls from a personal finance aggregator API, with a holdings extract alongside, into raw landing tables that merge into the core ledger tables. A run log and watermarks feed a freshness check. Incremental pulls and a downstream dbt build are planned.',
+        'An on-demand trigger, running today, and a planned daily Snowflake task both call an extract procedure. It pulls from a personal finance aggregator API, with a holdings extract alongside, into raw landing tables that merge into the core ledger tables. A run log and watermarks are written today. A freshness check, incremental pulls and a downstream dbt build are planned.',
       lanes: [
         { key: 'source', label: 'Source', nodes: [
           { title: 'Finance aggregator API', detail: 'Accounts, transactions, holdings', state: 'running' },
@@ -293,7 +294,7 @@ export const pipelines = [
           { title: 'Run log + watermarks', detail: 'Row counts, request window, caller', state: 'running' },
         ] },
         { key: 'serve', label: 'Serve', nodes: [
-          { title: 'Freshness check', detail: 'Warns after 26 h', state: 'running' },
+          { title: 'Freshness check', detail: 'Planned: warn after 26 h', state: 'planned' },
           { title: 'Ledger dbt models', detail: 'Planned: reads core tables', state: 'planned' },
         ] },
       ],
@@ -301,7 +302,7 @@ export const pipelines = [
         { label: 'pull' },
         { label: 'landed rows' },
         { label: 'merge' },
-        { label: 'freshness; dbt planned' },
+        { label: 'warn after 26 h, planned', state: 'planned' },
       ],
     },
     problem: [
@@ -327,7 +328,7 @@ export const pipelines = [
       'Retry with backoff on rate-limit and server errors, plus an alert when the token is rejected.',
       'TLS verification turned back on.',
       'Stale follow-up requests swept or expired.',
-      'A freshness check in the daily ledger QA warns when the last success is more than 26 hours old.',
+      'Planned: a freshness check in the daily ledger QA that warns when the last success is more than 26 hours old.',
     ],
     cost: [
       'Measured baseline: average run 37 seconds, max 90 seconds.',
