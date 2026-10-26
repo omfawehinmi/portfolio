@@ -5,8 +5,10 @@ import { readFileSync } from 'node:fs'
 
 const files = [
   'src/data/pipelines.js',
-  'src/components/Pipelines.jsx',
-  'src/components/ui/ArchitectureDiagram.jsx',
+  'src/components/pipelines/Pipelines.jsx',
+  'src/components/pipelines/PipelineArchitectureDiagram.jsx',
+  'src/components/pipelines/PipelineProcessFlow.jsx',
+  'src/components/pipelines/StatePill.jsx',
 ]
 
 const banned = [
@@ -42,10 +44,14 @@ const { pipelines } = await import('../src/data/pipelines.js')
 for (const p of pipelines) {
   if (p.architecture.edges.length !== p.architecture.lanes.length - 1) problems.push(`${p.id}: edge count`)
   for (const e of p.architecture.edges) {
-    if (e.planned && !/planned/i.test(e.label)) problems.push(`${p.id}: planned edge label "${e.label}"`)
+    if (e.state === 'planned' && !/planned/i.test(e.label)) problems.push(`${p.id}: planned edge label "${e.label}"`)
   }
   for (const l of p.architecture.lanes) for (const n of l.nodes) {
-    if (!['live', 'paused', 'planned'].includes(n.status)) problems.push(`${p.id}: bad status ${n.title}`)
+    if (!['running', 'paused', 'planned'].includes(n.state)) problems.push(`${p.id}: bad status ${n.title}`)
+  }
+  if (p.flow.steps.length !== 7) problems.push(`${p.id}: flow needs 7 steps`)
+  for (const s of p.flow.steps) {
+    if (!['running', 'paused', 'planned'].includes(s.state)) problems.push(`${p.id}: bad step state ${s.n}`)
   }
 }
 

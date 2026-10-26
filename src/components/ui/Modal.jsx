@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import Icon from './Icon.jsx'
 
-export default function Modal({ open, title, onClose, children }) {
+export default function Modal({ open, title, onClose, children, wide = false }) {
   useEffect(() => {
     if (!open) return undefined
 
@@ -24,7 +24,7 @@ export default function Modal({ open, title, onClose, children }) {
         if (event.target === event.currentTarget) onClose()
       }}
     >
-      <div className="services__modal-content case-modal" role="dialog" aria-modal="true" aria-label={typeof title === 'string' ? title : 'Project details'}>
+      <div className={`services__modal-content case-modal${wide ? ' case-modal--wide' : ''}`} role="dialog" aria-modal="true" aria-label={typeof title === 'string' ? title : 'Project details'}>
         <h4 className="services__modal-title">{title}</h4>
         <button type="button" className="services__modal-close" onClick={onClose} aria-label="Close">
           <Icon name="uil-times" />
