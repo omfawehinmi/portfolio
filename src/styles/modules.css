@@ -3,6 +3,7 @@
 :root {
   --hue-color: 196;
   --first-color: #29b5e8;
+  --button-hover-bg: #5cc8ef;
   --first-color-second: #29b5e8;
   --first-color-alt: #1689b5;
   --first-color-lighter: #d4f2fb;
@@ -161,7 +162,7 @@ body.dark-theme .home {
   right: 0;
   bottom: 0;
   padding: 0.12rem 0.25rem;
-  font-size: 0.62rem;
+  font-size: max(0.75rem, 12px);
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -433,6 +434,18 @@ body.dark-theme .home {
 
 .project-grid--ledger .is-featured .project-tile__media {
   height: 240px;
+}
+
+/* Full-width featured screenshot: match its 16:9 frame so it is not clipped.
+   Icon-only featured tiles keep the 240px band above. */
+.project-grid--ledger .is-featured .project-tile__media:has(> img) {
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+
+.project-grid--ledger .is-featured .project-tile__media:has(> img) img {
+  position: absolute;
+  inset: 0;
 }
 
 .project-tile--part .project-tile__media {
@@ -757,3 +770,108 @@ body.dark-theme .home {
 }
 .case-stats strong { display: block; color: var(--first-color); font-size: var(--h3-font-size); }
 .case-stats span { font-size: var(--smaller-font-size); color: var(--text-color); }
+/* Mobile overflow (audit: page 476px wide at 375). Media never exceeds its
+   container, and the skills grid collapses to one column on small screens. */
+iframe,
+video,
+img {
+  max-width: 100%;
+}
+.skills__content,
+.skills__header {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+@media screen and (max-width: 568px) {
+  .skills__container {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .skills__header {
+    flex-wrap: wrap;
+  }
+}
+
+/* a11y (WCAG 1.4.3): white on --first-color is 2.37:1. Navy text on the
+   accent matches the case-tabs fix in PR #8. */
+.button,
+.button--ghost:hover {
+  color: var(--navy);
+}
+.button--ghost {
+  color: var(--title-color);
+}
+/* --first-color-alt (#1689b5) with navy text is 4.25:1; use the lighter
+   dark-theme accent for light-theme hover (navy on #5cc8ef is 8.9:1+). */
+body:not(.dark-theme) .button:not(.button--ghost):hover {
+  background-color: var(--button-hover-bg);
+}
+/* a11y (WCAG 2.5.8 target size, 24px min; 12px text floor). */
+.change-theme,
+.home__social-icon,
+.footer__social {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  min-height: 24px;
+}
+.project-tile__kicker,
+.impact__kicker {
+  font-size: max(0.75rem, 12px);
+}
+
+/* Theme toggle is a native <button> (WCAG 4.1.2); reset UA button chrome. */
+button.change-theme {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-size: 1.25rem;
+  color: var(--title-color);
+  cursor: pointer;
+}
+button.change-theme:hover {
+  color: var(--first-color);
+}
+
+/* Target size 24px+ (WCAG 2.5.8) for nav and contact links. */
+.nav__link {
+  min-height: 24px;
+  justify-content: center;
+}
+.contact__subtitle[href] {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+}
+.footer__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+}
+.services__modal-close {
+  min-width: 24px;
+  min-height: 24px;
+}
+
+/* Narrow-screen gutter: section labels and project cards sat flush against
+   the screen edge at 320/375. Add a 16px side gutter at 568px and below. */
+@media screen and (max-width: 568px) {
+  .section__title,
+  .section__subtitle,
+  .projects__stack.container {
+    padding-left: 16px;
+    padding-right: 16px;
+    box-sizing: border-box;
+  }
+}
+
+/* Narrow-screen home grid: the implicit grid column sized itself to the
+   Selected impact cards' content, so at 375 the cards ran past the
+   container's right edge (24px left, ~3px right). Clamp the column to the
+   container width so both side gaps match. */
+@media screen and (max-width: 767px) {
+  .home__container {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
