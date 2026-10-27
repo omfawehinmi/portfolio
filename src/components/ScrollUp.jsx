@@ -7,7 +7,7 @@ export default function ScrollUp({ visible }) {
       aria-label="Back to top"
       onClick={(event) => {
         event.preventDefault()
-        window.scrollTo({ top: 0, behavior: 'smooth' })
+        window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
       }}
     >
       <i className="uil uil-arrow-up scrollup__icon" aria-hidden="true"></i>
