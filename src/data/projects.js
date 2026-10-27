@@ -7,6 +7,21 @@ const CAMERA_VIDEO =
 
 export const projects = [
   {
+    id: 'mcp-servers',
+    group: 'Production',
+    featured: true,
+    icon: 'uil-server-network',
+    title: 'MCP servers connecting AI agents to Snowflake Cortex',
+    outcome: 'I expose Cortex agents, Cortex Analyst on semantic views, Cortex Search services and guarded write procedures as MCP tools, so each AI client sees only the tools its server allows.',
+    modalTitle: 'MCP servers connecting AI agents to Snowflake Cortex',
+    parts: ['ledger-readonly-mcp', 'ledger-semantics', 'ledger-tools'],
+    summary: [
+      'I expose Cortex agents, Cortex Analyst on semantic views, Cortex Search services and guarded write procedures as MCP tools, so each AI client sees only the tools its server allows.',
+      'Domain analyst agents sit on semantic views, a master orchestrator handles multi-step work, and MCP bridges let other agents reuse that expertise under the customer’s identity and policy.',
+    ],
+    points: ['MCP is not the agent. It is the API catalog the bots are allowed to see.'],
+  },
+  {
     id: 'snowflake-migration',
     group: 'Production',
     icon: 'uil-server-network',

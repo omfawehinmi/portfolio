@@ -54,11 +54,12 @@ function Diagram({ alt }) {
   )
 }
 
-export default function McpSpotlight({ data = mcpSpotlight, onOpen }) {
+export default function McpSpotlight({ data = mcpSpotlight, onOpen, headingLevel = 3 }) {
+  const H = `h${headingLevel}`
   return (
     <article className="rb-card rb-lift rb-mcp" id="t1-mcp" aria-labelledby="t1-mcp-h">
       <p className="rb-kicker">{data.kicker}</p>
-      <h3 className="rb-spot__title" id="t1-mcp-h">{data.title}</h3>
+      <H className="rb-spot__title" id="t1-mcp-h">{data.title}</H>
       <p className="rb-spot__framing">{data.framing}</p>
       <blockquote className="rb-spot__quote">{data.quote}</blockquote>
       <p>{data.body}</p>
