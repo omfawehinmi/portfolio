@@ -9,6 +9,7 @@
   --first-color-lighter: #d4f2fb;
   --title-color: #0b1d36;
   --navy: #0b1d36;
+  --card-radius: 0.85rem;
   --hero-wash: linear-gradient(180deg, #e8f7fc 0%, var(--body-color) 42%);
 }
 
@@ -211,7 +212,7 @@ body.dark-theme .home {
   color: inherit;
   background: var(--container-color);
   border: 1px solid var(--border-color);
-  border-radius: 0.85rem;
+  border-radius: var(--card-radius);
   padding: 0.9rem 1rem;
   box-shadow: var(--card-shadow);
 }
@@ -250,7 +251,7 @@ body.dark-theme .home {
 .impact__card {
   background: var(--container-color);
   border: 1px solid var(--border-color);
-  border-radius: 0.85rem;
+  border-radius: var(--card-radius);
   padding: 1.15rem 1.25rem;
   box-shadow: var(--card-shadow);
 }
@@ -333,7 +334,17 @@ body.dark-theme .home {
 .case-tabs__tab.is-active {
   background: var(--first-color);
   border-color: var(--first-color);
-  color: #fff;
+  color: var(--navy);
+}
+
+.case-tabs__tab {
+  min-height: 44px;
+}
+
+.case-tabs__tab:focus-visible,
+.services__modal-close:focus-visible {
+  outline: 2px solid var(--first-color-alt);
+  outline-offset: 2px;
 }
 
 .projects__stack {
@@ -369,7 +380,7 @@ body.dark-theme .home {
   padding: 0;
   overflow: hidden;
   border: 1px solid var(--border-color);
-  border-radius: 0.85rem;
+  border-radius: var(--card-radius);
   background: var(--container-color);
   color: inherit;
 }
@@ -618,6 +629,11 @@ body.dark-theme .home {
   border: 0;
   line-height: 1;
   padding: 0;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .about__description a {
@@ -702,6 +718,76 @@ body.dark-theme .home {
   }
 }
 
+/*==================== CASE STUDY DIAGRAMS ====================*/
+.case-diagram {
+  margin: var(--mb-1) 0;
+  padding: var(--mb-1);
+  background: var(--container-color);
+  border: 1px solid var(--first-color-alt);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+}
+.case-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: var(--mb-1) 0;
+}
+.case-scroll:focus-visible {
+  outline: 2px solid var(--first-color-alt);
+  outline-offset: 2px;
+}
+.case-scroll > .case-diagram,
+.case-scroll > .case-table { margin: 0; }
+.case-diagram svg {
+  display: block;
+  margin: 0 auto;
+  height: auto;
+  min-width: 320px;
+}
+.case-diagram svg text,
+.case-diagram svg .nodeLabel,
+.case-diagram svg .edgeLabel {
+  font-size: max(12px, 1em);
+}
+.case-legend {
+  font-size: var(--small-font-size);
+  color: var(--text-color);
+  margin-bottom: var(--mb-1);
+}
+.case-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--small-font-size);
+  margin: var(--mb-1) 0;
+}
+.case-table th,
+.case-table td {
+  text-align: left;
+  padding: .5rem;
+  border-bottom: 1px solid var(--scroll-bar-color);
+  color: var(--text-color);
+}
+.case-table th { color: var(--title-color); font-weight: var(--font-semi-bold); }
+.case-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: .75rem;
+  margin: var(--mb-1) 0;
+}
+.case-stats div {
+  background: var(--input-color);
+  border-radius: .5rem;
+  padding: .75rem;
+  text-align: center;
+}
+.case-stats strong { display: block; color: var(--title-color); font-size: var(--h3-font-size); }
+.case-stats span { font-size: var(--smaller-font-size); color: var(--title-color); }
+@media screen and (max-width: 400px) {
+  .case-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .case-table tr { display: block; padding: .5rem 0; border-bottom: 1px solid var(--scroll-bar-color); }
+  .case-table th, .case-table td { display: block; border-bottom: 0; padding: .15rem 0; }
+  .case-table td[data-label]::before { content: attr(data-label) ": "; font-weight: var(--font-semi-bold); color: var(--title-color); }
+}
 /* Mobile overflow (audit: page 476px wide at 375). Media never exceeds its
    container, and the skills grid collapses to one column on small screens. */
 iframe,
