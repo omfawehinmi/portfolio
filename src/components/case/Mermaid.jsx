@@ -11,7 +11,7 @@ function token(name) {
 }
 
 function themeFromSite() {
-  const accent = token('--first-color')
+  const accent = token('--first-color-alt')
   const surface = token('--container-color')
   const body = token('--body-color')
   const title = token('--title-color')
@@ -47,8 +47,8 @@ const useNarrow = () => {
   return narrow
 }
 
-// chart: (dir) => mermaid source. dir is LR on wide screens, TB at phone widths.
-export default function Mermaid({ chart, wide = 'LR', label }) {
+// chart: (dir) => mermaid source. Diagrams run TB at all widths.
+export default function Mermaid({ chart, wide = 'TB', label }) {
   const ref = useRef(null)
   const id = `mmd${useId().replace(/[^a-zA-Z0-9]/g, '')}`
   const narrow = useNarrow()

@@ -1,8 +1,8 @@
 import CaseTabs from '../ui/CaseTabs.jsx'
 import Mermaid from './Mermaid.jsx'
 
-// Source: household-platform docs/migration (12 case study, 02 architecture, 03 decisions,
-// 04 before/after, 05 environments and roles, 07 test results, 10 CI/CD, 11 security).
+// Source: internal docs (household-platform docs/migration (12 case study, 02 architecture, 03 decisions,
+// 04 before/after, 05 environments and roles, 07 test results, 10 CI/CD, 11 security)).
 // Public page: generic names only.
 
 const dataFlow = (dir) => `flowchart ${dir}
@@ -13,20 +13,25 @@ const dataFlow = (dir) => `flowchart ${dir}
     s3[Mail and docs]
     s4[Chat export]
     s5[Desk captures]
+    s1 ~~~ s2 ~~~ s3 ~~~ s4 ~~~ s5
   end
-  sources --> raw[(Raw)]
-  raw --> stg[(Staging and intermediate)]
-  stg --> marts[(Analytics marts)]
-  marts --> app[Desktop app, read-only]
-  marts --> mcp[MCP clients, read-only]
-  wk[Airflow on on-prem host] -->|dbt build| stg
-  wk -->|task results| tr[(Test results)]
-  ci[GitHub Actions] -->|JUnit results| tr
-  tr --> dash[Red-alert dashboard]`
+  s1 --> raw[(Raw)]
+  s2 --> raw
+  s3 --> raw
+  s4 --> raw
+  s5 --> raw
+  raw --> stg[(Staging and<br/>intermediate)]
+  stg --> marts[(Analytics<br/>marts)]
+  marts --> app[Desktop app,<br/>read-only]
+  marts --> mcp[MCP clients,<br/>read-only]
+  wk[Airflow on<br/>on-prem host] -->|dbt build| stg
+  wk -->|task results| tr[(Test<br/>results)]
+  ci[GitHub<br/>Actions] -->|JUnit results| tr
+  tr --> dash[Red-alert<br/>dashboard]`
 
-const environments = (dir) => `flowchart ${dir}
+const prodEnv = (dir) => `flowchart ${dir}
   tf[Terraform: one state, plan on every PR] --> prod
-  tf --> dev
+  pr[Pipeline role] --> prod
   subgraph prod[PROD: 5 databases]
     direction TB
     p1[(Ledger database)]
@@ -34,16 +39,20 @@ const environments = (dir) => `flowchart ${dir}
     p3[(Agent workforce database)]
     p4[(Control database)]
     p5[(Audit store, append-only)]
-  end
+    p1 ~~~ p2 ~~~ p3 ~~~ p4 ~~~ p5
+  end`
+
+const devEnv = (dir) => `flowchart ${dir}
+  tf[Same Terraform state] --> dev
+  dr[DEV pipeline role] --> dev
   subgraph dev[DEV: 4 databases, synthetic data only]
     direction TB
     d1[(Ledger DEV)]
     d2[(Projects DEV)]
     d3[(Agent workforce DEV)]
     d4[(Control DEV)]
-  end
-  pr[Pipeline role] --> prod
-  dr[DEV pipeline role] --> dev`
+    d1 ~~~ d2 ~~~ d3 ~~~ d4
+  end`
 
 const roles = (dir) => `flowchart ${dir}
   owners[Tier 1: Database owner roles] --> pipe[Tier 2: Pipeline and dbt service roles]
@@ -59,20 +68,21 @@ const ciFlow = (dir) => `flowchart ${dir}
     c2[Full-history secret scan]
     c3[Terraform static checks]
     c4[Snowflake plan, 0-destroy guard]
+    c1 ~~~ c2 ~~~ c3 ~~~ c4
   end
   pr -.->|optional| dbt[dbt slim CI in a per-PR schema]
   checks --> merge[Merge to main]
-  merge --> apply[Terraform apply: manual dispatch, re-plan and guard]`
+  merge --> apply[Terraform apply: manual dispatch<br/>re-plan and guard]`
 
 const releaseFlow = (dir) => `flowchart ${dir}
-  merge[Merge to main] --> tests[DAG import tests]
+  merge[Merge<br/>to main] --> tests[DAG import<br/>tests]
   tests --> tag[Release tag]
-  tag --> pull[On-prem host pulls the tag, dry run first]
-  pull --> swap[Atomic swap to release]
-  swap --> run[Airflow DAGs and daily dbt]
-  run --> tr[(Test results)]
-  swap -.->|import error| back[Redeploy prior tag]
-  ci[CI JUnit results] -.->|planned| tr`
+  tag --> pull[On-prem host<br/>pulls the tag,<br/>dry run first]
+  pull --> swap[Atomic swap<br/>to release]
+  swap --> run[Airflow DAGs<br/>and daily dbt]
+  run --> tr[(Test<br/>results)]
+  swap -.->|import error| back[Redeploy<br/>prior tag]
+  ci[CI JUnit<br/>results] -.->|planned| tr`
 
 const Legend = () => (
   <p className="case-legend">Dotted lines: labeled <em>optional</em> (runs when configured) or <em>planned</em> (not built yet).</p>
@@ -108,10 +118,11 @@ const architecture = (
     <Mermaid chart={dataFlow} label="Data flow from five sources through raw, staging and marts to read-only clients, with test results feeding a dashboard" />
     <h4>Environments</h4>
     <p>PROD has 5 databases: a finance ledger, a projects domain, an agent workforce domain, a control plane and an audit store. DEV has 4 matching databases with their own warehouse, resource monitor and pipeline role, holding synthetic fixtures only.</p>
-    <Mermaid chart={environments} wide="TB" label="Terraform manages 5 PROD databases and 4 DEV databases, each with its own pipeline role" />
+    <Mermaid chart={prodEnv} label="Terraform and the pipeline role manage 5 PROD databases" />
+    <Mermaid chart={devEnv} label="The same Terraform state and a DEV pipeline role manage 4 DEV databases with synthetic data" />
     <h4>Roles</h4>
     <p>Every pipeline and app has its own service role and key-pair authenticated service user. Access to AI functions flows through a single gate role, so there is one place to audit and revoke. No person runs as a pipeline role.</p>
-    <Mermaid chart={roles} wide="TB" label="Four role tiers: owners, pipeline and dbt, read-only apps, and an AI gate granting AI users" />
+    <Mermaid chart={roles} label="Four role tiers: owners, pipeline and dbt, read-only apps, and an AI gate granting AI users" />
   </>
 )
 

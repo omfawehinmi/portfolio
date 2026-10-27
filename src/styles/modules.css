@@ -332,7 +332,17 @@ body.dark-theme .home {
 .case-tabs__tab.is-active {
   background: var(--first-color);
   border-color: var(--first-color);
-  color: #fff;
+  color: var(--navy);
+}
+
+.case-tabs__tab {
+  min-height: 44px;
+}
+
+.case-tabs__tab:focus-visible,
+.services__modal-close:focus-visible {
+  outline: 2px solid var(--first-color-alt);
+  outline-offset: 2px;
 }
 
 .projects__stack {
@@ -605,6 +615,11 @@ body.dark-theme .home {
   border: 0;
   line-height: 1;
   padding: 0;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .about__description a {
@@ -694,7 +709,7 @@ body.dark-theme .home {
   margin: var(--mb-1) 0;
   padding: var(--mb-1);
   background: var(--container-color);
-  border: 1px solid var(--scroll-bar-color);
+  border: 1px solid var(--first-color-alt);
   border-radius: .75rem;
   overflow-x: auto;
 }
