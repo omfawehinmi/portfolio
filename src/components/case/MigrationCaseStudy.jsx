@@ -1,8 +1,7 @@
 import CaseTabs from '../ui/CaseTabs.jsx'
 import Mermaid from './Mermaid.jsx'
 
-// Source: internal docs (household-platform docs/migration (12 case study, 02 architecture, 03 decisions,
-// 04 before/after, 05 environments and roles, 07 test results, 10 CI/CD, 11 security)).
+// Source: internal migration docs
 // Public page: generic names only.
 
 const dataFlow = (dir) => `flowchart ${dir}
