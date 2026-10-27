@@ -1,4 +1,5 @@
 import { projects } from '../data/projects.js'
+import { sizeOf } from '../data/imageSizes.js'
 import Icon from './ui/Icon.jsx'
 import Modal from './ui/Modal.jsx'
 import CompactList from './ui/CompactList.jsx'
@@ -17,13 +18,14 @@ function ProjectBody({ project, onOpen }) {
   return (
     <>
       {project.videoFile ? (
-        <video className="case-video" src={project.videoFile} controls playsInline muted loop />
+        <video className="case-video" src={project.videoFile} controls playsInline muted loop preload="metadata" />
       ) : null}
       {project.video ? (
         <div className="media-well">
           <iframe
             src={project.video}
             title={project.title}
+            loading="lazy"
             allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
           />
         </div>
@@ -32,6 +34,10 @@ function ProjectBody({ project, onOpen }) {
         <img
           src={project.thumb}
           alt=""
+          width={sizeOf(project.thumb)[0]}
+          height={sizeOf(project.thumb)[1]}
+          loading="lazy"
+          decoding="async"
           className="case-still"
           style={{ objectPosition: project.thumbPos || 'center top' }}
         />
