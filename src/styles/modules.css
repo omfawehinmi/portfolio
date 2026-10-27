@@ -3,6 +3,7 @@
 :root {
   --hue-color: 196;
   --first-color: #29b5e8;
+  --button-hover-bg: #5cc8ef;
   --first-color-second: #29b5e8;
   --first-color-alt: #1689b5;
   --first-color-lighter: #d4f2fb;
@@ -701,5 +702,5 @@ body.dark-theme .home {
 /* --first-color-alt (#1689b5) with navy text is 4.25:1; use the lighter
    dark-theme accent for light-theme hover (navy on #5cc8ef is 8.9:1+). */
 body:not(.dark-theme) .button:not(.button--ghost):hover {
-  background-color: #5cc8ef;
+  background-color: var(--button-hover-bg);
 }
