@@ -19,7 +19,7 @@ const dataFlow = (dir) => `flowchart ${dir}
   stg --> marts[(Analytics marts)]
   marts --> app[Desktop app, read-only]
   marts --> mcp[MCP clients, read-only]
-  wk[Airflow on self-hosted worker] -->|dbt build| stg
+  wk[Airflow on on-prem host] -->|dbt build| stg
   wk -->|task results| tr[(Test results)]
   ci[GitHub Actions] -->|JUnit results| tr
   tr --> dash[Red-alert dashboard]`
@@ -67,7 +67,7 @@ const ciFlow = (dir) => `flowchart ${dir}
 const releaseFlow = (dir) => `flowchart ${dir}
   merge[Merge to main] --> tests[DAG import tests]
   tests --> tag[Release tag]
-  tag --> pull[Self-hosted worker pulls the tag, dry run first]
+  tag --> pull[On-prem host pulls the tag, dry run first]
   pull --> swap[Atomic swap to release]
   swap --> run[Airflow DAGs and daily dbt]
   run --> tr[(Test results)]
@@ -81,14 +81,14 @@ const Legend = () => (
 const overview = (
   <>
     <div className="case-stats">
-      <div><strong>207</strong><span>PRs</span></div>
-      <div><strong>183</strong><span>merged</span></div>
+      <div><strong>211</strong><span>PRs</span></div>
+      <div><strong>184</strong><span>merged</span></div>
       <div><strong>15</strong><span>decisions</span></div>
       <div><strong>5 + 4</strong><span>PROD + DEV databases</span></div>
       <div><strong>4</strong><span>required checks</span></div>
     </div>
     <h4>Problem</h4>
-    <p>My personal data platform ran on Snowflake in a single-schema layout. Routine scripts ran on admin roles, objects were created by hand-run SQL, transforms lived in stored procedures, and orchestration was a mix of Windows tasks and ad hoc runs. There was only a production environment, and test outcomes lived in logs. It worked, but nothing was reviewable, reproducible or safe to change.</p>
+    <p>My personal data platform ran on Snowflake in a single-schema layout. Routine scripts ran on admin roles, objects were created by hand-run SQL, transforms lived in stored procedures, and orchestration was a mix of scheduled scripts and ad hoc runs. There was only a production environment, and test outcomes lived in logs. It worked, but nothing was reviewable, reproducible or safe to change.</p>
     <h4>Approach</h4>
     <p>I treated this as a data infrastructure project, not a warehouse tweak. The goal was a medallion multi-database layout managed by Terraform, built by dbt, orchestrated by Airflow, with DEV and PROD separated. Five working principles held every change:</p>
     <ul className="case-points">
@@ -145,7 +145,7 @@ const delivery = (
     <Mermaid chart={ciFlow} label="Pull request runs four required checks and optional dbt slim CI, then merges; apply is a separate manual dispatch" />
     <h4>Release and pull deploy</h4>
     <p>Airflow 3 runs on the on-prem host with dbt through Cosmos. A merge runs DAG import tests and cuts a release tag. The deploy runs dry by default, swaps to the release atomically, and rolls back to the prior tag on any import error.</p>
-    <Mermaid chart={releaseFlow} label="Release tag pulled by the self-hosted worker, atomic swap, rollback to prior tag on import error" />
+    <Mermaid chart={releaseFlow} label="Release tag pulled by the on-prem host, atomic swap, rollback to prior tag on import error" />
     <Legend />
     <h4>dbt and test results</h4>
     <p>Models run with tests; slim CI builds unit tests and zero-row builds into a per-PR schema, and a sweeper drops stale PR schemas. Prod builds use a dedicated warehouse, separate from CI. Airflow task outcomes, dbt run results and CI results land in one append-only test-results table, with a latest view that feeds a red-alert dashboard. Every test job writes JUnit XML and keeps a test-results artifact for 30 days.</p>
@@ -156,7 +156,7 @@ const beforeAfter = [
   ['Roles', 'Routine scripts on admin roles', 'Per-service roles'],
   ['Objects', 'Hand-run SQL', 'Terraform plan and apply with CI'],
   ['Transforms', 'Stored procedures', 'dbt with tests and slim CI'],
-  ['Orchestration', 'Windows tasks and ad hoc runs', 'Airflow 3 on the on-prem host, tagged releases'],
+  ['Orchestration', 'Scheduled scripts and ad hoc runs', 'Airflow 3 on the on-prem host, tagged releases'],
   ['Environments', 'Prod only', 'DEV and PROD'],
 ]
 
@@ -171,7 +171,7 @@ const outcomes = (
       </tbody>
     </table>
     <ul className="case-points">
-      <li>207 PRs across 4 of 27 repos scanned: 183 merged, 13 open, 8 draft, 3 closed. 26 of them were groundwork that came before the migration plan.</li>
+      <li>211 PRs across 4 of 27 repos scanned: 184 merged, 16 open, 8 draft, 3 closed. 26 of them were groundwork that came before the migration plan.</li>
       <li>15 recorded decisions (D0 to D14), each with alternatives and sources.</li>
       <li>Every infrastructure change is reversible by design: a change log entry with exact rollback steps is written first, plans must show 0 destroys, and Airflow rollback is a redeploy of the previous tag.</li>
       <li>Incidents handled in the open: 3 incidents documented with cause, response and learnings, including a partial Terraform apply that stayed safe because applies are create-only and 0-destroy.</li>
