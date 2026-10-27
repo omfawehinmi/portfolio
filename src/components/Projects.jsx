@@ -3,6 +3,7 @@ import Icon from './ui/Icon.jsx'
 import Modal from './ui/Modal.jsx'
 import ProjectMedia from './ui/ProjectMedia.jsx'
 import SectionHeader from './ui/SectionHeader.jsx'
+import McpSpotlight from './McpSpotlight.jsx'
 import MigrationCaseStudy from './case/MigrationCaseStudy.jsx'
 
 function ProjectBody({ project, onOpen }) {
@@ -86,7 +87,9 @@ export default function Projects({ openId, onOpen }) {
     <section className="projects section" id="projects">
       <SectionHeader title="Projects" subtitle="Open a tile. SOF and Household Ledger components sit with the system they belong to." />
 
-      <div className="projects__stack container">
+      <div className="rb-wrap rb-projects">
+        <p className="rb-kicker rb-projects__kicker">Production</p>
+        <McpSpotlight onOpen={onOpen} />
         {projectGroups.map((group) => (
           <div className="project-group" key={group}>
             <h3 className="project-group__label">{group}</h3>
