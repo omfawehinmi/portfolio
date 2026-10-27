@@ -265,7 +265,7 @@
   object-fit: cover;
   display: block;
 }
-.rb-row__placeholder {
+.rb-row__diagram {
   display: grid;
   place-items: center;
   width: 100%;

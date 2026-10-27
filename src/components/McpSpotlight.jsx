@@ -8,7 +8,7 @@ export const mcpSpotlight = {
   servers: [
     {
       label: 'Finance ledger server · read/write',
-      line: 'Cursor/Cowork uses the finance ledger server (read/write): agents, analyst, search, procedures.',
+      line: 'Coding agents use the finance ledger server (read/write): agents, analyst, search, procedures.',
     },
     {
       label: 'Finance ledger server · read-only for AI clients',
