@@ -8,7 +8,6 @@ import { labIds, tier2, tier2Heading } from '../data/tier2.js'
 import SectionHeader from './ui/SectionHeader.jsx'
 import FeatureRow from './FeatureRow.jsx'
 import { featureRows } from '../data/featureRows.js'
-import McpSpotlight from './McpSpotlight.jsx'
 import MigrationCaseStudy from './case/MigrationCaseStudy.jsx'
 
 function ProjectBody({ project, onOpen }) {
@@ -107,7 +106,6 @@ export default function Projects({ openId, onOpen }) {
 
       <div className="rb-wrap rb-projects">
         <p className="rb-kicker rb-projects__kicker">Production</p>
-        <McpSpotlight onOpen={onOpen} />
         {featureRows.map((row, index) => {
           const project = byId(row.projectId)
           return (
