@@ -172,7 +172,13 @@
   text-align: left;
 }
 .rb-chip:hover { border-color: var(--first-color-alt); }
-.rb-btn { min-height: 44px; }
+/* Lilian #30 review: buttons inherit the body font (were rendering in UA Arial). */
+.rb-btn {
+  min-height: 44px;
+  font-family: inherit;
+  /* .button uses --small-font-size, which is .813rem (13.008px) below 968px; pin 14px. */
+  font-size: .875rem;
+}
 
 /* Projects frame */
 .rb-projects {
@@ -461,4 +467,13 @@ small, .tag, .rb-kicker, .rb-row-c__line { font-size: max(var(--min-font-size), 
   .rb-lift,
   .rb-lift:hover,
   .rb-lift:focus-within { transform: none !important; }
+}
+
+/* Lilian #30 review: modal close button is a 44x44 target. */
+.services__modal .services__modal-close {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
