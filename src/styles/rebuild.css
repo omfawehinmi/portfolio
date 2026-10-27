@@ -25,6 +25,7 @@
 }
 
 /* Shared focus ring */
+.rb-card:focus-visible,
 .rb-card :focus-visible,
 .rb-chip:focus-visible,
 .rb-btn:focus-visible {
@@ -161,7 +162,7 @@
   min-height: 44px;
   padding: 0 var(--mb-1);
   border: 1px solid var(--border-color);
-  border-radius: 999px;
+  border-radius: var(--card-radius);
   background: var(--first-color-lighter);
   color: var(--title-color);
   font: inherit;
@@ -296,4 +297,69 @@
   .rb-row--flip .rb-row__media { order: 1; }
 }
 
-.rb-tile-chips { margin-top: var(--mb-0-75); }
+/* Tier 2: ProjectCard */
+.rb-subh {
+  font-size: var(--h2-font-size);
+  color: var(--title-color);
+  margin-bottom: calc(-1 * var(--mb-1));
+}
+.rb-t2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: var(--mb-1-5);
+}
+.rb-pcard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mb-0-75);
+  padding: var(--mb-1);
+}
+.rb-pcard__thumb {
+  aspect-ratio: 16 / 9;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  background: var(--input-color);
+}
+.rb-pcard__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.rb-pcard__title { font-size: var(--h3-font-size); }
+.rb-pcard__open {
+  min-height: 44px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--title-color);
+  font: inherit;
+  font-weight: var(--font-semi-bold);
+  text-align: left;
+  cursor: pointer;
+}
+.rb-pcard__open:focus-visible { outline: 2px solid var(--first-color-alt); outline-offset: 2px; }
+
+/* Tier 3: CompactList */
+.rb-clist {
+  display: grid;
+  gap: var(--mb-0-75);
+  list-style: none;
+  padding: 0;
+}
+@media (min-width: 576px) { .rb-clist { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 900px) { .rb-clist { grid-template-columns: repeat(3, 1fr); } }
+.rb-clist > li { display: flex; }
+.rb-row-c {
+  display: flex;
+  align-items: center;
+  gap: var(--mb-0-75);
+  width: 100%;
+  min-height: 56px;
+  padding: var(--mb-0-5) var(--mb-1);
+  color: var(--text-color);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+div.rb-row-c { cursor: default; }
+.rb-row-c__icon { font-size: 24px; color: var(--first-color); flex: none; }
+.rb-row-c__text { display: grid; gap: 2px; min-width: 0; }
+.rb-row-c__title { color: var(--title-color); font-size: var(--normal-font-size); font-weight: var(--font-semi-bold); }
+.rb-row-c__line { font-size: var(--small-font-size); }
