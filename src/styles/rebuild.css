@@ -111,5 +111,40 @@
   }
 }
 
-/* Interim: kicker sits on the page body until ImpactBand (PR 5) */
-.impact__kicker { color: var(--title-color); }
+/* ImpactBand */
+.rb-band {
+  background: var(--navy);
+  padding: var(--mb-2) 0;
+}
+.rb-band__h {
+  color: white;
+  font-size: var(--h2-font-size);
+  margin-bottom: var(--mb-1);
+}
+.rb-band__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: var(--mb-1);
+  list-style: none;
+  padding: 0;
+}
+.rb-band__grid > li { display: flex; }
+.rb-band__card {
+  display: grid;
+  gap: var(--mb-0-5);
+  align-content: start;
+  width: 100%;
+  min-height: 44px;
+  padding: var(--mb-1-5);
+  color: var(--text-color);
+}
+.rb-band__icon {
+  font-size: 1.5rem;
+  color: var(--first-color);
+}
+.rb-band__title {
+  color: var(--title-color);
+  font-size: var(--h3-font-size);
+  font-weight: var(--font-semi-bold);
+}
+.rb-band__body { font-size: var(--normal-font-size); }
