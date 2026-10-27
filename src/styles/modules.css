@@ -426,6 +426,18 @@ body.dark-theme .home {
   height: 240px;
 }
 
+/* Full-width featured screenshot: match its 16:9 frame so it is not clipped.
+   Icon-only featured tiles keep the 240px band above. */
+.project-grid--ledger .is-featured .project-tile__media:has(> img) {
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+
+.project-grid--ledger .is-featured .project-tile__media:has(> img) img {
+  position: absolute;
+  inset: 0;
+}
+
 .project-tile--part .project-tile__media {
   height: 148px;
 }
