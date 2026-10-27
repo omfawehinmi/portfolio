@@ -137,6 +137,7 @@ const decisions = [
 const decisionsTab = (
   <>
     <p>Each design choice went into a decision log, 15 decisions in all (D0 to D14), with the alternatives I rejected and why. A few that shaped the result:</p>
+    <div className="case-scroll" tabIndex={0} role="region" aria-label="Design decisions table">
     <table className="case-table">
       <tbody>
         {decisions.map(([k, v]) => (
@@ -144,6 +145,7 @@ const decisionsTab = (
         ))}
       </tbody>
     </table>
+    </div>
   </>
 )
 
@@ -172,14 +174,16 @@ const beforeAfter = [
 
 const outcomes = (
   <>
+    <div className="case-scroll" tabIndex={0} role="region" aria-label="Before and after table">
     <table className="case-table">
       <thead><tr><th>Aspect</th><th>Before</th><th>After</th></tr></thead>
       <tbody>
         {beforeAfter.map(([a, b, c]) => (
-          <tr key={a}><th scope="row">{a}</th><td>{b}</td><td>{c}</td></tr>
+          <tr key={a}><th scope="row">{a}</th><td data-label="Before">{b}</td><td data-label="After">{c}</td></tr>
         ))}
       </tbody>
     </table>
+    </div>
     <ul className="case-points">
       <li>211 PRs across 4 of 27 repos scanned: 184 merged, 16 open, 8 draft, 3 closed. 26 of them were groundwork that came before the migration plan.</li>
       <li>15 recorded decisions (D0 to D14), each with alternatives and sources.</li>

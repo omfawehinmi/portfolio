@@ -35,7 +35,7 @@ export default function CaseTabs({ tabs }) {
             type="button"
             role="tab"
             aria-selected={tab.id === current.id}
-            aria-controls={panelId(tab.id)}
+            aria-controls={tab.id === current.id ? panelId(tab.id) : undefined}
             tabIndex={tab.id === current.id ? 0 : -1}
             className={`case-tabs__tab${tab.id === current.id ? ' is-active' : ''}`}
             onClick={() => setActive(tab.id)}

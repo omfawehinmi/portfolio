@@ -81,5 +81,9 @@ export default function Mermaid({ chart, wide = 'TB', label }) {
     }
   }, [chart, wide, narrow, dark, id])
 
-  return <figure className="case-diagram" role="img" aria-label={label} ref={ref} />
+  return (
+    <div className="case-scroll" tabIndex={0} role="region" aria-label={`Diagram: ${label}`}>
+      <figure className="case-diagram" role="img" aria-label={label} ref={ref} />
+    </div>
+  )
 }

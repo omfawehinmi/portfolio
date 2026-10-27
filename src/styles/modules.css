@@ -9,6 +9,7 @@
   --first-color-lighter: #d4f2fb;
   --title-color: #0b1d36;
   --navy: #0b1d36;
+  --card-radius: 0.85rem;
   --hero-wash: linear-gradient(180deg, #e8f7fc 0%, var(--body-color) 42%);
 }
 
@@ -723,9 +724,20 @@ body.dark-theme .home {
   padding: var(--mb-1);
   background: var(--container-color);
   border: 1px solid var(--first-color-alt);
-  border-radius: .75rem;
-  overflow-x: auto;
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
 }
+.case-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: var(--mb-1) 0;
+}
+.case-scroll:focus-visible {
+  outline: 2px solid var(--first-color-alt);
+  outline-offset: 2px;
+}
+.case-scroll > .case-diagram,
+.case-scroll > .case-table { margin: 0; }
 .case-diagram svg {
   display: block;
   margin: 0 auto;
@@ -768,8 +780,14 @@ body.dark-theme .home {
   padding: .75rem;
   text-align: center;
 }
-.case-stats strong { display: block; color: var(--first-color); font-size: var(--h3-font-size); }
-.case-stats span { font-size: var(--smaller-font-size); color: var(--text-color); }
+.case-stats strong { display: block; color: var(--first-color-alt); font-size: var(--h3-font-size); }
+.case-stats span { font-size: var(--smaller-font-size); color: var(--title-color); }
+@media screen and (max-width: 400px) {
+  .case-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .case-table tr { display: block; padding: .5rem 0; border-bottom: 1px solid var(--scroll-bar-color); }
+  .case-table th, .case-table td { display: block; border-bottom: 0; padding: .15rem 0; }
+  .case-table td[data-label]::before { content: attr(data-label) ": "; font-weight: var(--font-semi-bold); color: var(--title-color); }
+}
 /* Mobile overflow (audit: page 476px wide at 375). Media never exceeds its
    container, and the skills grid collapses to one column on small screens. */
 iframe,
