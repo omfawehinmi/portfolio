@@ -3,6 +3,8 @@ import Icon from './ui/Icon.jsx'
 import Modal from './ui/Modal.jsx'
 import ProjectMedia from './ui/ProjectMedia.jsx'
 import SectionHeader from './ui/SectionHeader.jsx'
+import FeatureRow from './FeatureRow.jsx'
+import { featureRows } from '../data/featureRows.js'
 import McpSpotlight from './McpSpotlight.jsx'
 import MigrationCaseStudy from './case/MigrationCaseStudy.jsx'
 
@@ -90,12 +92,26 @@ export default function Projects({ openId, onOpen }) {
       <div className="rb-wrap rb-projects">
         <p className="rb-kicker rb-projects__kicker">Production</p>
         <McpSpotlight onOpen={onOpen} />
+        {featureRows.map((row, index) => {
+          const project = projects.find((item) => item.id === row.projectId)
+          return (
+            <FeatureRow
+              key={row.id}
+              {...row}
+              title={project.title}
+              outcome={project.outcome}
+              cta={{ label: project.modalTitle, opens: project.id }}
+              eager={index === 0}
+              onOpen={onOpen}
+            />
+          )
+        })}
         {projectGroups.map((group) => (
           <div className="project-group" key={group}>
             <h3 className="project-group__label">{group}</h3>
             <ul className={`project-grid${projects.some((item) => item.group === group && item.featured) ? ' project-grid--ledger' : ''}`}>
               {projects
-                .filter((project) => project.group === group)
+                .filter((project) => project.group === group && !featureRows.some((row) => row.projectId === project.id))
                 .map((project) => (
                   <li key={project.id} className={project.featured ? 'is-featured' : project.parentId ? 'is-part' : undefined}>
                     <button type="button" className={`project-tile${project.parentId ? ' project-tile--part' : ''}`} onClick={() => onOpen(project.id)}>
