@@ -688,3 +688,24 @@ body.dark-theme .home {
     justify-content: center;
   }
 }
+
+/* Mobile overflow (audit: page 476px wide at 375). Media never exceeds its
+   container, and the skills grid collapses to one column on small screens. */
+iframe,
+video,
+img {
+  max-width: 100%;
+}
+.skills__content,
+.skills__header {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+@media screen and (max-width: 568px) {
+  .skills__container {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .skills__header {
+    flex-wrap: wrap;
+  }
+}
