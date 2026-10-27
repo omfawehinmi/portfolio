@@ -40,9 +40,17 @@ export default function Header({ dark, onToggleTheme, scrolled, activeSection })
           >
             <i className={`uil ${dark ? 'uil-sun' : 'uil-moon'}`} aria-hidden="true"></i>
           </button>
-          <div className="nav__toggle" id="nav-toggle" onClick={() => setMenuOpen(true)}>
+          <button
+            type="button"
+            className="nav__toggle"
+            id="nav-toggle"
+            onClick={() => setMenuOpen(true)}
+            aria-label="Open navigation menu"
+            aria-expanded={menuOpen}
+            aria-controls="nav-menu"
+          >
             <Icon name="uil-apps" />
-          </div>
+          </button>
         </div>
       </nav>
     </header>
