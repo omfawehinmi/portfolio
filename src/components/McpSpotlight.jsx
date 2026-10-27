@@ -8,7 +8,7 @@ export const mcpSpotlight = {
   servers: [
     {
       label: 'Finance ledger server · read/write',
-      line: 'Cursor/Cowork uses the finance ledger server (read/write): agents, analyst, search, procedures.',
+      line: 'Coding agents use the finance ledger server (read/write): agents, analyst, search, procedures.',
     },
     {
       label: 'Finance ledger server · read-only for AI clients',
@@ -16,12 +16,12 @@ export const mcpSpotlight = {
     },
   ],
   tools: [
-    { label: 'agent-run tools', opens: 'household-tools' },
-    { label: 'Cortex Analyst on semantic views', opens: 'household-semantics' },
-    { label: 'Cortex Search services', opens: 'household-semantics' },
-    { label: 'guarded write procedures for ingest and mutate', opens: 'household-tools' },
+    { label: 'agent-run tools', opens: 'ledger-tools' },
+    { label: 'Cortex Analyst on semantic views', opens: 'ledger-semantics' },
+    { label: 'Cortex Search services', opens: 'ledger-semantics' },
+    { label: 'guarded write procedures for ingest and mutate', opens: 'ledger-tools' },
   ],
-  cta: { label: 'See the MCP tools', opens: 'household-tools' },
+  cta: { label: 'See the MCP tools', opens: 'ledger-tools' },
   diagram: {
     alt: 'AI agents connect through a read/write MCP server or a read-only MCP server to Cortex agents, Cortex Analyst on semantic views, Cortex Search services and, on the read/write server only, guarded write procedures in Snowflake.',
   },
@@ -30,7 +30,7 @@ export const mcpSpotlight = {
 function Diagram({ alt }) {
   const targets = [40, 140, 240, 340]
   return (
-    <div className="rb-mcp__diagram" role="img" aria-label={alt}>
+    <div className="rb-spot__diagram" role="img" aria-label={alt}>
       <svg viewBox="0 0 1050 450" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
         {[90, 225, 360].map((y) => (
           <circle key={y} className="d-agent" cx="110" cy={y} r="42" />
@@ -58,14 +58,14 @@ export default function McpSpotlight({ data = mcpSpotlight, onOpen }) {
   return (
     <article className="rb-card rb-lift rb-mcp" id="t1-mcp" aria-labelledby="t1-mcp-h">
       <p className="rb-kicker">{data.kicker}</p>
-      <h3 className="rb-mcp__title" id="t1-mcp-h">{data.title}</h3>
-      <p className="rb-mcp__framing">{data.framing}</p>
-      <blockquote className="rb-mcp__quote">{data.quote}</blockquote>
+      <h3 className="rb-spot__title" id="t1-mcp-h">{data.title}</h3>
+      <p className="rb-spot__framing">{data.framing}</p>
+      <blockquote className="rb-spot__quote">{data.quote}</blockquote>
       <p>{data.body}</p>
-      <div className="rb-mcp__servers">
+      <div className="rb-spot__servers">
         {data.servers.map((server) => (
-          <div className="rb-mcp__server" key={server.label}>
-            <p className="rb-mcp__server-label">{server.label}</p>
+          <div className="rb-spot__server" key={server.label}>
+            <p className="rb-spot__server-label">{server.label}</p>
             <p>{server.line}</p>
           </div>
         ))}

@@ -1,5 +1,5 @@
 // WebP first with the original as fallback. width/height reserve space (CLS).
-const WEBP = new Set(['myorglab', 'semantic-hr', 'sof-overview', 'household-ledger', 'cortex-self-serve', 'home'])
+const WEBP = new Set(['myorglab', 'semantic-hr', 'sof-overview', 'finance-ledger', 'cortex-self-serve', 'home'])
 
 export default function Picture({ src, alt = '', width, height, eager = false, className, style }) {
   const base = String(src).split('/').pop().replace(/\.(png|jpe?g)$/i, '')

@@ -26,15 +26,15 @@ export const featureRows = [
       { label: '5 + 4 PROD + DEV databases', opens: 'snowflake-migration' },
     ],
     // Q13: text-only until a diagram and its alt text exist.
-    media: { alt: 'Data flow diagram placeholder', icon: 'uil-server-network' },
+    media: { alt: 'Re-architecture data flow', icon: 'uil-server-network' },
   },
   {
     id: 't1-ledger',
-    projectId: 'household-ledger',
+    projectId: 'finance-ledger',
     kicker: 'Production',
     flip: true,
     media: {
-      src: publicUrl('assets/img/household-ledger.png'),
+      src: publicUrl('assets/img/finance-ledger.png'),
       alt: 'Ledger dashboard with example data',
       width: 1280,
       height: 720,
