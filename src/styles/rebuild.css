@@ -419,3 +419,46 @@ div.rb-row-c { cursor: default; }
 .rb-row__media picture,
 .rb-pcard__thumb picture { display: block; width: 100%; height: 100%; }
 .rb-hero__grid picture { display: block; line-height: 0; }
+
+/*==================== Follow-up: 44px targets, 12px floor, reduced motion ====================*/
+.nav__logo,
+.nav__link,
+.change-theme,
+.fold__toggle,
+.footer__link,
+.footer__social,
+.scrollup,
+.nav__toggle,
+.nav__close,
+.modal__close {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.change-theme,
+.footer__social,
+.scrollup,
+.nav__toggle,
+.nav__close,
+.modal__close { justify-content: center; }
+.nav__link { flex-direction: column; justify-content: center; }
+
+/* 12px floor: nothing renders smaller than 0.75rem */
+:root { --min-font-size: .75rem; }
+small, .tag, .rb-kicker, .rb-row-c__line { font-size: max(var(--min-font-size), var(--small-font-size)); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .rb-lift,
+  .rb-lift:hover,
+  .rb-lift:focus-within { transform: none !important; }
+}
