@@ -402,3 +402,15 @@ div.rb-row-c { cursor: default; }
 .rb-details__chev { margin-left: auto; color: var(--title-color); }
 .rb-details[open] .rb-details__chev { transform: rotate(180deg); }
 .rb-details__body { padding: 0 var(--mb-1) var(--mb-1) calc(var(--mb-1) + 1.1rem); }
+
+/* Skills + Contact */
+.rb-details__tags { padding: 0 var(--mb-1) var(--mb-1); }
+.rb-contact .rb-row-c { min-height: 64px; }
+.rb-contact__email { gap: var(--mb-0-5); }
+.rb-contact__copy {
+  flex: none;
+  min-height: 44px;
+  align-self: center;
+  padding: 0 var(--mb-1);
+}
+.rb-contact__email .rb-row-c__line { overflow-wrap: anywhere; }
