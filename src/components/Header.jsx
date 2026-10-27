@@ -30,17 +30,16 @@ export default function Header({ dark, onToggleTheme, scrolled, activeSection })
         </div>
 
         <div className="nav__btns">
-          <i
-            className={`uil ${dark ? 'uil-sun' : 'uil-moon'} change-theme`}
+          <button
+            type="button"
+            className="change-theme"
             id="theme-button"
             onClick={onToggleTheme}
-            role="button"
-            tabIndex={0}
             aria-label="Toggle color theme"
-            onKeyDown={(event) => {
-              if (event.key === 'Enter' || event.key === ' ') onToggleTheme()
-            }}
-          ></i>
+            aria-pressed={dark}
+          >
+            <i className={`uil ${dark ? 'uil-sun' : 'uil-moon'}`} aria-hidden="true"></i>
+          </button>
           <div className="nav__toggle" id="nav-toggle" onClick={() => setMenuOpen(true)}>
             <Icon name="uil-apps" />
           </div>

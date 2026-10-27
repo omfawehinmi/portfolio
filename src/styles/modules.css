@@ -162,7 +162,7 @@ body.dark-theme .home {
   right: 0;
   bottom: 0;
   padding: 0.12rem 0.25rem;
-  font-size: 0.62rem;
+  font-size: max(0.75rem, 12px);
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -717,4 +717,38 @@ body:not(.dark-theme) .button:not(.button--ghost):hover {
 .project-tile__kicker,
 .impact__kicker {
   font-size: max(0.75rem, 12px);
+}
+
+/* Theme toggle is a native <button> (WCAG 4.1.2); reset UA button chrome. */
+button.change-theme {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-size: 1.25rem;
+  color: var(--title-color);
+  cursor: pointer;
+}
+button.change-theme:hover {
+  color: var(--first-color);
+}
+
+/* Target size 24px+ (WCAG 2.5.8) for nav and contact links. */
+.nav__link {
+  min-height: 24px;
+  justify-content: center;
+}
+.contact__subtitle[href] {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+}
+.footer__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+}
+.services__modal-close {
+  min-width: 24px;
+  min-height: 24px;
 }
