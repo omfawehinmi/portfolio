@@ -37,7 +37,7 @@ const prodEnv = (dir) => `flowchart ${dir}
     p2[(Projects database)]
     p3[(Agent workforce database)]
     p4[(Control database)]
-    p5[(Audit store, append-only)]
+    p5[(Audit store)]
     p1 ~~~ p2 ~~~ p3 ~~~ p4 ~~~ p5
   end`
 
@@ -160,7 +160,7 @@ const delivery = (
     <Mermaid chart={releaseFlow} label="Release tag pulled by the on-prem host, atomic swap, rollback to prior tag on import error" />
     <Legend />
     <h4>dbt and test results</h4>
-    <p>Models run with tests; slim CI builds unit tests and zero-row builds into a per-PR schema, and a sweeper drops stale PR schemas. Prod builds use a dedicated warehouse, separate from CI. Airflow task outcomes, dbt run results and CI results land in one append-only test-results table, with a latest view that feeds a red-alert dashboard. Every test job writes JUnit XML and keeps a test-results artifact for 30 days.</p>
+    <p>Models run with tests; slim CI builds unit tests and zero-row builds into a per-PR schema, and a sweeper drops stale PR schemas. Prod builds use a dedicated warehouse, separate from CI. Airflow task outcomes and dbt run results land in one append-only test-results table, with a latest view that feeds a red-alert dashboard. Every test job writes JUnit XML and keeps a test-results artifact for 30 days.</p>
   </>
 )
 
