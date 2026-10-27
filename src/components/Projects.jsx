@@ -3,6 +3,7 @@ import Icon from './ui/Icon.jsx'
 import Modal from './ui/Modal.jsx'
 import ProjectMedia from './ui/ProjectMedia.jsx'
 import SectionHeader from './ui/SectionHeader.jsx'
+import MigrationCaseStudy from './case/MigrationCaseStudy.jsx'
 
 function ProjectBody({ project, onOpen }) {
   const parts = (project.parts || []).map((id) => projects.find((item) => item.id === id)).filter(Boolean)
@@ -30,6 +31,7 @@ function ProjectBody({ project, onOpen }) {
           style={{ objectPosition: project.thumbPos || 'center top' }}
         />
       ) : null}
+      {project.caseStudy === 'migration' ? <MigrationCaseStudy /> : null}
       {project.summary?.map((paragraph) => (
         <p key={paragraph}>{paragraph}</p>
       ))}

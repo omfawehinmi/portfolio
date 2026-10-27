@@ -688,3 +688,57 @@ body.dark-theme .home {
     justify-content: center;
   }
 }
+
+/*==================== CASE STUDY DIAGRAMS ====================*/
+.case-diagram {
+  margin: var(--mb-1) 0;
+  padding: var(--mb-1);
+  background: var(--container-color);
+  border: 1px solid var(--scroll-bar-color);
+  border-radius: .75rem;
+  overflow-x: auto;
+}
+.case-diagram svg {
+  display: block;
+  margin: 0 auto;
+  height: auto;
+  min-width: 320px;
+}
+.case-diagram svg text,
+.case-diagram svg .nodeLabel,
+.case-diagram svg .edgeLabel {
+  font-size: max(12px, 1em);
+}
+.case-legend {
+  font-size: var(--small-font-size);
+  color: var(--text-color);
+  margin-bottom: var(--mb-1);
+}
+.case-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--small-font-size);
+  margin: var(--mb-1) 0;
+}
+.case-table th,
+.case-table td {
+  text-align: left;
+  padding: .5rem;
+  border-bottom: 1px solid var(--scroll-bar-color);
+  color: var(--text-color);
+}
+.case-table th { color: var(--title-color); font-weight: var(--font-semi-bold); }
+.case-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: .75rem;
+  margin: var(--mb-1) 0;
+}
+.case-stats div {
+  background: var(--input-color);
+  border-radius: .5rem;
+  padding: .75rem;
+  text-align: center;
+}
+.case-stats strong { display: block; color: var(--first-color); font-size: var(--h3-font-size); }
+.case-stats span { font-size: var(--smaller-font-size); color: var(--text-color); }

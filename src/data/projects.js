@@ -7,6 +7,15 @@ const CAMERA_VIDEO =
 
 export const projects = [
   {
+    id: 'snowflake-migration',
+    group: 'Production',
+    icon: 'uil-server-network',
+    title: 'Snowflake platform re-architecture',
+    outcome: 'Lift-and-shift of a Snowflake data platform into a Terraform, dbt and Airflow managed architecture.',
+    modalTitle: 'Case study: Snowflake platform re-architecture',
+    caseStudy: 'migration',
+  },
+  {
     id: 'myorglab',
     group: 'Production',
     icon: 'uil-snowflake',
