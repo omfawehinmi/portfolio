@@ -704,3 +704,17 @@ body.dark-theme .home {
 body:not(.dark-theme) .button:not(.button--ghost):hover {
   background-color: var(--button-hover-bg);
 }
+/* a11y (WCAG 2.5.8 target size, 24px min; 12px text floor). */
+.change-theme,
+.home__social-icon,
+.footer__social {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  min-height: 24px;
+}
+.project-tile__kicker,
+.impact__kicker {
+  font-size: max(0.75rem, 12px);
+}
