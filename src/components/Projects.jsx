@@ -82,6 +82,13 @@ function ProjectBody({ project, onOpen }) {
   )
 }
 
+function componentChips(project) {
+  return (project.parts || [])
+    .map((id) => projects.find((item) => item.id === id))
+    .filter(Boolean)
+    .map((part) => ({ label: part.title, opens: part.id }))
+}
+
 export default function Projects({ openId, onOpen }) {
   const openProject = projects.find((project) => project.id === openId)
 
@@ -98,6 +105,8 @@ export default function Projects({ openId, onOpen }) {
             <FeatureRow
               key={row.id}
               {...row}
+              chips={row.chips || componentChips(project)}
+              chipsLabel={row.chipsLabel || `${project.title} components`}
               title={project.title}
               outcome={project.outcome}
               cta={{ label: project.modalTitle, opens: project.id }}
@@ -111,7 +120,7 @@ export default function Projects({ openId, onOpen }) {
             <h3 className="project-group__label">{group}</h3>
             <ul className={`project-grid${projects.some((item) => item.group === group && item.featured) ? ' project-grid--ledger' : ''}`}>
               {projects
-                .filter((project) => project.group === group && !featureRows.some((row) => row.projectId === project.id))
+                .filter((project) => project.group === group && !project.parentId && !featureRows.some((row) => row.projectId === project.id))
                 .map((project) => (
                   <li key={project.id} className={project.featured ? 'is-featured' : project.parentId ? 'is-part' : undefined}>
                     <button type="button" className={`project-tile${project.parentId ? ' project-tile--part' : ''}`} onClick={() => onOpen(project.id)}>
@@ -124,6 +133,17 @@ export default function Projects({ openId, onOpen }) {
                         <span className="project-tile__outcome">{project.outcome}</span>
                       </span>
                     </button>
+                    {project.parts?.length ? (
+                      <ul className="rb-chips rb-tile-chips" aria-label={`${project.title} components`}>
+                        {componentChips(project).map((chip) => (
+                          <li key={chip.opens}>
+                            <button type="button" className="rb-chip" aria-haspopup="dialog" onClick={() => onOpen(chip.opens)}>
+                              {chip.label}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
                   </li>
                 ))}
             </ul>
