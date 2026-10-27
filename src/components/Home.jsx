@@ -57,11 +57,11 @@ export default function Home({ onOpenProject }) {
           <div className="home__data">
             <p className="home__eyebrow">{profile.eyebrow}</p>
             <h1 className="home__title">Hi, I&apos;m {profile.firstName}</h1>
-            <h3 className="home__subtitle">
+            <p className="home__subtitle">
               {profile.title}
               <span className="home__subtitle-sep"> · </span>
               {profile.titleAlt}
-            </h3>
+            </p>
             <p className="home__lede">{profile.headline}</p>
             <p className="home__description">{profile.summary}</p>
             <p className="home__about">{profile.about}</p>
@@ -85,7 +85,7 @@ export default function Home({ onOpenProject }) {
             {highlights.map((item) => (
               <button type="button" className="impact__card" key={item.label} onClick={() => onOpenProject(item.projectId)}>
                 <Icon name={item.icon} className="impact__icon" />
-                <h3 className="impact__label">{item.label}</h3>
+                <h2 className="impact__label">{item.label}</h2>
                 <p className="impact__detail">{item.detail}</p>
               </button>
             ))}

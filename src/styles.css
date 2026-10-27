@@ -1610,6 +1610,7 @@ h1, h2, h3, h4 {
 .home__subtitle {
   color: var(--title-color);
   font-weight: 600;
+  letter-spacing: -0.3px; /* matches h1-h4 now that it is a <p> */
 }
 
 .home__subtitle-sep {
