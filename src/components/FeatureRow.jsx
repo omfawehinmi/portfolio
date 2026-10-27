@@ -44,7 +44,7 @@ export default function FeatureRow({ id, kicker, title, outcome, chips = [], chi
             style={media.position ? { objectPosition: media.position } : undefined}
           />
         ) : (
-          <div className="rb-row__diagram" role="img" aria-label={media.alt}>
+          <div className="rb-row__diagram" aria-hidden="true">
             <i className={`uil ${media.icon}`} aria-hidden="true" />
           </div>
         )}
