@@ -1,7 +1,9 @@
-import { projectGroups, projects } from '../data/projects.js'
+import { projects } from '../data/projects.js'
 import Icon from './ui/Icon.jsx'
 import Modal from './ui/Modal.jsx'
-import ProjectMedia from './ui/ProjectMedia.jsx'
+import CompactList from './ui/CompactList.jsx'
+import ProjectCard from './ProjectCard.jsx'
+import { labIds, tier2, tier2Heading } from '../data/tier2.js'
 import SectionHeader from './ui/SectionHeader.jsx'
 import FeatureRow from './FeatureRow.jsx'
 import { featureRows } from '../data/featureRows.js'
@@ -91,16 +93,17 @@ function componentChips(project) {
 
 export default function Projects({ openId, onOpen }) {
   const openProject = projects.find((project) => project.id === openId)
+  const byId = (id) => projects.find((project) => project.id === id)
 
   return (
     <section className="projects section" id="projects">
-      <SectionHeader title="Projects" subtitle="Open a tile. SOF and Household Ledger components sit with the system they belong to." />
+      <SectionHeader title="Projects" subtitle="Production systems first. Components open from the system they belong to." />
 
       <div className="rb-wrap rb-projects">
         <p className="rb-kicker rb-projects__kicker">Production</p>
         <McpSpotlight onOpen={onOpen} />
         {featureRows.map((row, index) => {
-          const project = projects.find((item) => item.id === row.projectId)
+          const project = byId(row.projectId)
           return (
             <FeatureRow
               key={row.id}
@@ -115,40 +118,34 @@ export default function Projects({ openId, onOpen }) {
             />
           )
         })}
-        {projectGroups.map((group) => (
-          <div className="project-group" key={group}>
-            <h3 className="project-group__label">{group}</h3>
-            <ul className={`project-grid${projects.some((item) => item.group === group && item.featured) ? ' project-grid--ledger' : ''}`}>
-              {projects
-                .filter((project) => project.group === group && !project.parentId && !featureRows.some((row) => row.projectId === project.id))
-                .map((project) => (
-                  <li key={project.id} className={project.featured ? 'is-featured' : project.parentId ? 'is-part' : undefined}>
-                    <button type="button" className={`project-tile${project.parentId ? ' project-tile--part' : ''}`} onClick={() => onOpen(project.id)}>
-                      <span className="project-tile__media">
-                        <ProjectMedia project={project} />
-                      </span>
-                      <span className="project-tile__copy">
-                        {project.parentId ? <span className="project-tile__kicker">Component</span> : null}
-                        <span className="project-tile__title">{project.title}</span>
-                        <span className="project-tile__outcome">{project.outcome}</span>
-                      </span>
-                    </button>
-                    {project.parts?.length ? (
-                      <ul className="rb-chips rb-tile-chips" aria-label={`${project.title} components`}>
-                        {componentChips(project).map((chip) => (
-                          <li key={chip.opens}>
-                            <button type="button" className="rb-chip" aria-haspopup="dialog" onClick={() => onOpen(chip.opens)}>
-                              {chip.label}
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : null}
-                  </li>
-                ))}
-            </ul>
-          </div>
-        ))}
+
+        <h3 className="rb-subh" id="t2">{tier2Heading}</h3>
+        <div className="rb-t2">
+          {tier2.map((card) => {
+            const project = byId(card.id)
+            return (
+              <ProjectCard
+                key={card.id}
+                id={card.id}
+                kicker={card.kicker}
+                title={project.title}
+                outcome={project.outcome}
+                thumb={card.thumb}
+                chips={componentChips(project)}
+                onOpen={onOpen}
+              />
+            )
+          })}
+        </div>
+
+        <h3 className="rb-subh">Lab</h3>
+        <CompactList
+          label="Lab projects"
+          items={labIds.map((id) => {
+            const project = byId(id)
+            return { key: id, icon: project.icon, title: project.title, line: project.outcome, onClick: () => onOpen(id) }
+          })}
+        />
       </div>
 
       <Modal open={Boolean(openProject)} title={openProject?.modalTitle} onClose={() => onOpen(null)}>
