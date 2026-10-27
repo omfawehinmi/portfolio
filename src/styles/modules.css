@@ -785,3 +785,15 @@ button.change-theme:hover {
   min-width: 24px;
   min-height: 24px;
 }
+
+/* Narrow-screen gutter: section labels and project cards sat flush against
+   the screen edge at 320/375. Add a 16px side gutter at 568px and below. */
+@media screen and (max-width: 568px) {
+  .section__title,
+  .section__subtitle,
+  .projects__stack.container {
+    padding-left: 16px;
+    padding-right: 16px;
+    box-sizing: border-box;
+  }
+}
