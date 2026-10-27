@@ -688,3 +688,18 @@ body.dark-theme .home {
     justify-content: center;
   }
 }
+
+/* a11y (WCAG 1.4.3): white on --first-color is 2.37:1. Navy text on the
+   accent matches the case-tabs fix in PR #8. */
+.button,
+.button--ghost:hover {
+  color: var(--navy);
+}
+.button--ghost {
+  color: var(--title-color);
+}
+/* --first-color-alt (#1689b5) with navy text is 4.25:1; use the lighter
+   dark-theme accent for light-theme hover (navy on #5cc8ef is 8.9:1+). */
+body:not(.dark-theme) .button:not(.button--ghost):hover {
+  background-color: #5cc8ef;
+}
