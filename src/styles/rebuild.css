@@ -414,3 +414,8 @@ div.rb-row-c { cursor: default; }
   padding: 0 var(--mb-1);
 }
 .rb-contact__email .rb-row-c__line { overflow-wrap: anywhere; }
+
+/* Media: picture wrappers fill their 16:9 frames */
+.rb-row__media picture,
+.rb-pcard__thumb picture { display: block; width: 100%; height: 100%; }
+.rb-hero__grid picture { display: block; line-height: 0; }
