@@ -30,11 +30,11 @@ export const featureRows = [
   },
   {
     id: 't1-ledger',
-    projectId: 'household-ledger',
+    projectId: 'finance-ledger',
     kicker: 'Production',
     flip: true,
     media: {
-      src: publicUrl('assets/img/household-ledger.png'),
+      src: publicUrl('assets/img/finance-ledger.png'),
       alt: 'Ledger dashboard with example data',
       width: 1280,
       height: 720,
