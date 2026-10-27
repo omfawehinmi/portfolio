@@ -16,7 +16,7 @@ export default function Header({ dark, onToggleTheme, scrolled, activeSection })
 
   return (
     <header className={`header${scrolled ? ' scroll-header' : ''}`} id="header">
-      <nav className="nav container">
+      <nav className="nav container" aria-label="Primary">
         <a href="#home" className="nav__logo">
           {profile.name}
         </a>

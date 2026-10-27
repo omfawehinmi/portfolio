@@ -1,0 +1,33 @@
+/*==================== WHOLE-SITE REBUILD (SPECS.md, household-tracker #102) ====================*/
+/* Tokens only: no new hex, radii or shadows. */
+
+/* Shared surface */
+.rb-card {
+  background: var(--container-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+}
+
+/* Shared hover / focus-within lift */
+.rb-lift {
+  transition: transform .18s ease-out, box-shadow .18s ease-out;
+}
+.rb-lift:hover,
+.rb-lift:focus-within {
+  transform: translateY(-4px);
+  box-shadow: var(--card-shadow-hover);
+}
+@media (prefers-reduced-motion: reduce) {
+  .rb-lift { transition: none; }
+  .rb-lift:hover,
+  .rb-lift:focus-within { transform: none; }
+}
+
+/* Shared focus ring */
+.rb-card :focus-visible,
+.rb-chip:focus-visible,
+.rb-btn:focus-visible {
+  outline: 2px solid var(--first-color-alt);
+  outline-offset: 2px;
+}
