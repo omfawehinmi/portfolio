@@ -893,3 +893,17 @@ button.change-theme:hover {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/*==================== SECONDARY TEXT CONTRAST (rebuild PR 1) ====================*/
+/* Secondary/accent text uses --title-color in both themes (≥4.5:1). */
+.nav__link.active-link,
+.section__subtitle,
+.project-group__label,
+.project-tile__kicker,
+.qualification__button.qualification__active,
+.role__years,
+.role__org,
+.fold__toggle > span,
+.skills__subtitle {
+  color: var(--title-color);
+}
