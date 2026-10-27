@@ -148,3 +148,90 @@
   font-weight: var(--font-semi-bold);
 }
 .rb-band__body { font-size: var(--normal-font-size); }
+
+/* Chips (shared) */
+.rb-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mb-0-5);
+  list-style: none;
+  padding: 0;
+}
+.rb-chip {
+  min-height: 44px;
+  padding: 0 var(--mb-1);
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: var(--first-color-lighter);
+  color: var(--title-color);
+  font: inherit;
+  font-size: var(--small-font-size);
+  font-weight: var(--font-medium);
+  cursor: pointer;
+  text-align: left;
+}
+.rb-chip:hover { border-color: var(--first-color-alt); }
+.rb-btn { min-height: 44px; }
+
+/* Projects frame */
+.rb-projects {
+  display: grid;
+  gap: var(--mb-2);
+}
+.rb-projects__kicker { margin-bottom: calc(-1 * var(--mb-1)); }
+
+/* McpSpotlight */
+.rb-mcp {
+  display: grid;
+  gap: var(--mb-1);
+  padding: var(--mb-1-5);
+  border: 2px solid var(--first-color-alt);
+}
+@media (min-width: 968px) {
+  .rb-mcp { padding: var(--mb-2); }
+}
+.rb-mcp__title {
+  font-size: var(--big-font-size);
+  line-height: 1.2;
+}
+.rb-mcp__framing {
+  color: var(--title-color);
+  font-size: var(--h3-font-size);
+}
+.rb-mcp__quote {
+  margin: 0;
+  padding-left: var(--mb-1);
+  border-left: 4px solid var(--first-color-alt);
+  color: var(--title-color);
+  font-size: var(--h3-font-size);
+  font-weight: var(--font-medium);
+}
+.rb-mcp__servers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: var(--mb-1);
+}
+.rb-mcp__server {
+  display: grid;
+  gap: var(--mb-0-25);
+  padding: var(--mb-1);
+  border-radius: var(--card-radius);
+  background: var(--input-color);
+  color: var(--title-color);
+}
+.rb-mcp__server-label { font-weight: var(--font-semi-bold); }
+.rb-mcp__diagram {
+  aspect-ratio: 21 / 9;
+  border-radius: var(--card-radius);
+  background: var(--input-color);
+  padding: var(--mb-1);
+}
+.rb-mcp__diagram svg { width: 100%; height: 100%; display: block; }
+.rb-mcp__diagram .d-agent { fill: var(--first-color-lighter); stroke: var(--first-color); stroke-width: 4; }
+.rb-mcp__diagram .d-line { stroke: var(--text-color-light); stroke-width: 3; }
+.rb-mcp__diagram .d-line--strong { stroke: var(--first-color); }
+.rb-mcp__diagram .d-line--dash { stroke-dasharray: 10 8; }
+.rb-mcp__diagram .d-server { fill: var(--first-color); }
+.rb-mcp__diagram .d-server--ro { fill: var(--container-color); stroke: var(--first-color); stroke-width: 4; stroke-dasharray: 12 8; }
+.rb-mcp__diagram .d-tool { fill: var(--container-color); stroke: var(--border-color); stroke-width: 3; }
+.rb-mcp__diagram .d-tool--guard { stroke: var(--first-color-alt); stroke-width: 5; }
