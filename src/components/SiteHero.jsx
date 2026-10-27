@@ -2,6 +2,7 @@ import { profile } from '../data/profile.js'
 import { publicUrl } from '../utils.js'
 import Fold from './ui/Fold.jsx'
 import Icon from './ui/Icon.jsx'
+import Picture from './ui/Picture.jsx'
 
 export const heroProps = {
   headline: profile.headline,
@@ -45,7 +46,7 @@ export default function SiteHero({ headline, greeting, roles, summary, photo, ct
             ))}
           </div>
         </div>
-        <img className="rb-hero__photo" src={photo.src} alt={photo.alt} width="240" height="240" />
+        <Picture className="rb-hero__photo" src={photo.src} alt={photo.alt} width={374} height={500} eager />
       </div>
     </section>
   )

@@ -1,3 +1,5 @@
+import Picture from './ui/Picture.jsx'
+
 export default function FeatureRow({ id, kicker, title, outcome, chips = [], chipsLabel, cta, media, flip = false, eager = false, onOpen, children }) {
   const headingId = `${id}-h`
   return (
@@ -33,13 +35,12 @@ export default function FeatureRow({ id, kicker, title, outcome, chips = [], chi
       </div>
       <div className="rb-row__media">
         {media.src ? (
-          <img
+          <Picture
             src={media.src}
             alt={media.alt}
             width={media.width}
             height={media.height}
-            loading={eager ? 'eager' : 'lazy'}
-            decoding="async"
+            eager={eager}
             style={media.position ? { objectPosition: media.position } : undefined}
           />
         ) : (

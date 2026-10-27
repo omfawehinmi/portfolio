@@ -1,15 +1,14 @@
+import Picture from './ui/Picture.jsx'
+
 export default function ProjectCard({ id, kicker, title, outcome, thumb, chips = [], onOpen }) {
   const headingId = `card-${id}-h`
   return (
     <article className="rb-card rb-lift rb-pcard" aria-labelledby={headingId}>
       <div className="rb-pcard__thumb">
-        <img
+        <Picture
           src={thumb.src}
-          alt=""
           width={thumb.width}
           height={thumb.height}
-          loading="lazy"
-          decoding="async"
           style={thumb.position ? { objectPosition: thumb.position } : undefined}
         />
       </div>
