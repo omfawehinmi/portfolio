@@ -1,9 +1,18 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { navLinks, profile } from '../data/profile.js'
 import Icon from './ui/Icon.jsx'
 
 export default function Header({ dark, onToggleTheme, scrolled, activeSection }) {
   const [menuOpen, setMenuOpen] = useState(false)
+
+  useEffect(() => {
+    if (!menuOpen) return undefined
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') setMenuOpen(false)
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [menuOpen])
 
   return (
     <header className={`header${scrolled ? ' scroll-header' : ''}`} id="header">
@@ -26,7 +35,15 @@ export default function Header({ dark, onToggleTheme, scrolled, activeSection })
               </li>
             ))}
           </ul>
-          <i className="uil uil-times nav__close" id="nav-close" onClick={() => setMenuOpen(false)}></i>
+          <button
+            type="button"
+            className="nav__close"
+            id="nav-close"
+            onClick={() => setMenuOpen(false)}
+            aria-label="Close navigation menu"
+          >
+            <Icon name="uil-times" />
+          </button>
         </div>
 
         <div className="nav__btns">
@@ -44,8 +61,8 @@ export default function Header({ dark, onToggleTheme, scrolled, activeSection })
             type="button"
             className="nav__toggle"
             id="nav-toggle"
-            onClick={() => setMenuOpen(true)}
-            aria-label="Open navigation menu"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-label="Toggle navigation menu"
             aria-expanded={menuOpen}
             aria-controls="nav-menu"
           >

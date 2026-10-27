@@ -196,6 +196,12 @@ img {
   font-family: inherit;
   line-height: 1;
   color: var(--title-color);
+  /* 44x44 hit area (WCAG 2.5.5 / 2.5.8) */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
 }
 
 .nav__toggle:hover {
@@ -245,6 +251,17 @@ img {
   font-size: 1.5rem;
   cursor: pointer;
   color: var(--first-color);
+  /* reset native <button> chrome; 44x44 hit area */
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: inherit;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
 }
 
 .nav__close:hover {
