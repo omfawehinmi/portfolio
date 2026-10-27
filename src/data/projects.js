@@ -9,6 +9,7 @@ export const projects = [
   {
     id: 'snowflake-migration',
     group: 'Production',
+    emphasis: 2,
     icon: 'uil-server-network',
     title: 'Snowflake platform re-architecture',
     outcome: 'Lift-and-shift of a Snowflake data platform into a Terraform, dbt and Airflow managed architecture.',
@@ -243,6 +244,7 @@ export const projects = [
   {
     id: 'household-grok-mcp',
     group: 'Household Ledger',
+    emphasis: 1,
     parentId: 'household-ledger',
     icon: 'uil-comments',
     title: 'MCP for Grok bots',
