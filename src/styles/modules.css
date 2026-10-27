@@ -3,6 +3,7 @@
 :root {
   --hue-color: 196;
   --first-color: #29b5e8;
+  --button-hover-bg: #5cc8ef;
   --first-color-second: #29b5e8;
   --first-color-alt: #1689b5;
   --first-color-lighter: #d4f2fb;
@@ -689,6 +690,20 @@ body.dark-theme .home {
   }
 }
 
+/* a11y (WCAG 1.4.3): white on --first-color is 2.37:1. Navy text on the
+   accent matches the case-tabs fix in PR #8. */
+.button,
+.button--ghost:hover {
+  color: var(--navy);
+}
+.button--ghost {
+  color: var(--title-color);
+}
+/* --first-color-alt (#1689b5) with navy text is 4.25:1; use the lighter
+   dark-theme accent for light-theme hover (navy on #5cc8ef is 8.9:1+). */
+body:not(.dark-theme) .button:not(.button--ghost):hover {
+  background-color: var(--button-hover-bg);
+}
 /* a11y (WCAG 2.5.8 target size, 24px min; 12px text floor). */
 .change-theme,
 .home__social-icon,
