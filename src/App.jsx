@@ -29,8 +29,9 @@ export default function App() {
         <Skills />
         <Contact />
       </main>
-      <Footer />
-      <ScrollUp visible={showScroll} />
+      <Footer>
+        <ScrollUp visible={showScroll} />
+      </Footer>
     </>
   )
 }

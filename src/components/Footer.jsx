@@ -1,7 +1,7 @@
 import { profile } from '../data/profile.js'
 import Icon from './ui/Icon.jsx'
 
-export default function Footer() {
+export default function Footer({ children }) {
   return (
     <footer className="footer">
       <div className="footer__bg">
@@ -46,6 +46,7 @@ export default function Footer() {
 
         <p className="footer__copy">&copy; {new Date().getFullYear()} {profile.name}. All rights reserved.</p>
       </div>
+      {children}
     </footer>
   )
 }
