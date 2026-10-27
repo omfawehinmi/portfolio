@@ -797,3 +797,13 @@ button.change-theme:hover {
     box-sizing: border-box;
   }
 }
+
+/* Narrow-screen home grid: the implicit grid column sized itself to the
+   Selected impact cards' content, so at 375 the cards ran past the
+   container's right edge (24px left, ~3px right). Clamp the column to the
+   container width so both side gaps match. */
+@media screen and (max-width: 767px) {
+  .home__container {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
