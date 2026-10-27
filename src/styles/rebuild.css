@@ -175,9 +175,9 @@
 /* Lilian #30 review: buttons inherit the body font (were rendering in UA Arial). */
 .rb-btn {
   min-height: 44px;
-  font: inherit;
-  font-size: var(--small-font-size);
-  font-weight: var(--font-semi-bold);
+  font-family: inherit;
+  /* .button uses --small-font-size, which is .813rem (13.008px) below 968px; pin 14px. */
+  font-size: .875rem;
 }
 
 /* Projects frame */
