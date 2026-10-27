@@ -26,7 +26,7 @@ export const featureRows = [
       { label: '5 + 4 PROD + DEV databases', opens: 'snowflake-migration' },
     ],
     // Q13: text-only until a diagram and its alt text exist.
-    media: { alt: 'Re-architecture data flow', icon: 'uil-server-network' },
+    media: { decorative: true, icon: 'uil-server-network' },
   },
   {
     id: 't1-ledger',
