@@ -1,0 +1,479 @@
+/*==================== WHOLE-SITE REBUILD (SPECS.md #102) ====================*/
+/* Tokens only: no new hex, radii or shadows. */
+
+/* Shared surface */
+.rb-card {
+  background: var(--container-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+}
+
+/* Shared hover / focus-within lift */
+.rb-lift {
+  transition: transform .18s ease-out, box-shadow .18s ease-out;
+}
+.rb-lift:hover,
+.rb-lift:focus-within {
+  transform: translateY(-4px);
+  box-shadow: var(--card-shadow-hover);
+}
+@media (prefers-reduced-motion: reduce) {
+  .rb-lift { transition: none; }
+  .rb-lift:hover,
+  .rb-lift:focus-within { transform: none; }
+}
+
+/* Shared focus ring */
+.rb-card:focus-visible,
+.rb-card :focus-visible,
+.rb-chip:focus-visible,
+.rb-btn:focus-visible {
+  outline: 2px solid var(--first-color-alt);
+  outline-offset: 2px;
+}
+
+/* Container */
+.rb-wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 var(--mb-1-5);
+}
+@media (max-width: 575px) {
+  .rb-wrap { padding: 0 var(--mb-1); }
+}
+.rb-kicker {
+  font-size: var(--small-font-size);
+  font-weight: var(--font-semi-bold);
+  color: var(--title-color);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+/* SiteHero */
+.rb-hero {
+  background: var(--hero-wash);
+  padding: calc(var(--header-height) + var(--mb-1-5)) 0 var(--mb-2);
+}
+.rb-hero__grid {
+  display: grid;
+  gap: var(--mb-1-5);
+}
+.rb-hero__text {
+  display: grid;
+  gap: var(--mb-0-75);
+  align-content: start;
+}
+.rb-hero__h1 {
+  font-size: var(--big-font-size);
+  line-height: 1.2;
+  max-width: 18ch;
+}
+.rb-hero__who {
+  color: var(--title-color);
+  font-weight: var(--font-medium);
+}
+.rb-hero__summary,
+.rb-hero__about {
+  max-width: 65ch;
+}
+.rb-hero__meta {
+  color: var(--title-color);
+  font-size: var(--small-font-size);
+}
+.rb-hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mb-0-75);
+}
+.rb-hero__ctas .rb-btn {
+  min-height: 48px;
+  flex: 1 1 140px;
+}
+.rb-hero__photo {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--navy);
+}
+@media (min-width: 768px) {
+  .rb-hero__grid {
+    grid-template-columns: 1fr 240px;
+    align-items: center;
+  }
+  .rb-hero__photo {
+    width: 240px;
+    height: 240px;
+  }
+  .rb-hero__ctas .rb-btn {
+    flex: 0 0 auto;
+    min-width: 150px;
+  }
+}
+
+/* ImpactBand */
+.rb-band {
+  background: var(--navy);
+  padding: var(--mb-2) 0;
+}
+.rb-band__h {
+  color: white;
+  font-size: var(--h2-font-size);
+  margin-bottom: var(--mb-1);
+}
+.rb-band__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: var(--mb-1);
+  list-style: none;
+  padding: 0;
+}
+.rb-band__grid > li { display: flex; }
+.rb-band__card {
+  display: grid;
+  gap: var(--mb-0-5);
+  align-content: start;
+  width: 100%;
+  min-height: 44px;
+  padding: var(--mb-1-5);
+  color: var(--text-color);
+}
+.rb-band__icon {
+  font-size: 1.5rem;
+  color: var(--first-color);
+}
+.rb-band__title {
+  color: var(--title-color);
+  font-size: var(--h3-font-size);
+  font-weight: var(--font-semi-bold);
+}
+.rb-band__body { font-size: var(--normal-font-size); }
+
+/* Chips (shared) */
+.rb-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mb-0-5);
+  list-style: none;
+  padding: 0;
+}
+.rb-chip {
+  min-height: 44px;
+  padding: 0 var(--mb-1);
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius);
+  background: var(--first-color-lighter);
+  color: var(--title-color);
+  font: inherit;
+  font-size: var(--small-font-size);
+  font-weight: var(--font-medium);
+  cursor: pointer;
+  text-align: left;
+}
+.rb-chip:hover { border-color: var(--first-color-alt); }
+/* Lilian #30 review: buttons inherit the body font (were rendering in UA Arial). */
+.rb-btn {
+  min-height: 44px;
+  font-family: inherit;
+  /* .button uses --small-font-size, which is .813rem (13.008px) below 968px; pin 14px. */
+  font-size: .875rem;
+}
+
+/* Projects frame */
+.rb-projects {
+  display: grid;
+  gap: var(--mb-2);
+}
+.rb-projects__kicker { margin-bottom: calc(-1 * var(--mb-1)); }
+
+/* McpSpotlight */
+.rb-mcp {
+  display: grid;
+  gap: var(--mb-1);
+  padding: var(--mb-1-5);
+  border: 2px solid var(--first-color-alt);
+}
+@media (min-width: 968px) {
+  .rb-mcp { padding: var(--mb-2); }
+}
+.rb-spot__title {
+  font-size: var(--big-font-size);
+  line-height: 1.2;
+}
+.rb-spot__framing {
+  color: var(--title-color);
+  font-size: var(--h3-font-size);
+}
+.rb-spot__quote {
+  margin: 0;
+  padding-left: var(--mb-1);
+  border-left: 4px solid var(--first-color-alt);
+  color: var(--title-color);
+  font-size: var(--h3-font-size);
+  font-weight: var(--font-medium);
+}
+.rb-spot__servers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: var(--mb-1);
+}
+.rb-spot__server {
+  display: grid;
+  gap: var(--mb-0-25);
+  padding: var(--mb-1);
+  border-radius: var(--card-radius);
+  background: var(--input-color);
+  color: var(--title-color);
+}
+.rb-spot__server-label { font-weight: var(--font-semi-bold); }
+.rb-spot__diagram {
+  aspect-ratio: 21 / 9;
+  border-radius: var(--card-radius);
+  background: var(--input-color);
+  padding: var(--mb-1);
+}
+.rb-spot__diagram svg { width: 100%; height: 100%; display: block; }
+.rb-spot__diagram .d-agent { fill: var(--first-color-lighter); stroke: var(--first-color); stroke-width: 4; }
+.rb-spot__diagram .d-line { stroke: var(--text-color-light); stroke-width: 3; }
+.rb-spot__diagram .d-line--strong { stroke: var(--first-color); }
+.rb-spot__diagram .d-line--dash { stroke-dasharray: 10 8; }
+.rb-spot__diagram .d-server { fill: var(--first-color); }
+.rb-spot__diagram .d-server--ro { fill: var(--container-color); stroke: var(--first-color); stroke-width: 4; stroke-dasharray: 12 8; }
+.rb-spot__diagram .d-tool { fill: var(--container-color); stroke: var(--border-color); stroke-width: 3; }
+.rb-spot__diagram .d-tool--guard { stroke: var(--first-color-alt); stroke-width: 5; }
+
+/* FeatureRow */
+.rb-row {
+  display: grid;
+  gap: var(--mb-1-5);
+  padding: var(--mb-1-5);
+}
+.rb-row__text {
+  display: grid;
+  gap: var(--mb-1);
+  align-content: center;
+}
+.rb-row__title {
+  font-size: var(--h1-font-size);
+  line-height: 1.2;
+}
+.rb-row__media {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  background: var(--input-color);
+}
+.rb-row__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.rb-row__diagram {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  color: var(--first-color);
+  font-size: 4rem;
+}
+.rb-badge {
+  position: absolute;
+  top: var(--mb-0-75);
+  left: var(--mb-0-75);
+  padding: var(--mb-0-25) var(--mb-0-75);
+  border-radius: 999px;
+  background: var(--navy);
+  color: white;
+  font-size: var(--small-font-size);
+  font-weight: var(--font-semi-bold);
+}
+@media (min-width: 900px) {
+  .rb-row {
+    grid-template-columns: 7fr 5fr;
+    gap: var(--mb-2);
+    padding: var(--mb-2);
+    min-height: 380px;
+    align-items: center;
+  }
+  .rb-row--flip { grid-template-columns: 5fr 7fr; }
+  .rb-row--flip .rb-row__text { order: 2; }
+  .rb-row--flip .rb-row__media { order: 1; }
+}
+
+/* Tier 2: ProjectCard */
+.rb-subh {
+  font-size: var(--h2-font-size);
+  color: var(--title-color);
+  margin-bottom: calc(-1 * var(--mb-1));
+}
+.rb-t2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: var(--mb-1-5);
+}
+.rb-pcard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mb-0-75);
+  padding: var(--mb-1);
+}
+.rb-pcard__thumb {
+  aspect-ratio: 16 / 9;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  background: var(--input-color);
+}
+.rb-pcard__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.rb-pcard__title { font-size: var(--h3-font-size); }
+.rb-pcard__open {
+  min-height: 44px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--title-color);
+  font: inherit;
+  font-weight: var(--font-semi-bold);
+  text-align: left;
+  cursor: pointer;
+}
+.rb-pcard__open:focus-visible { outline: 2px solid var(--first-color-alt); outline-offset: 2px; }
+
+/* Tier 3: CompactList */
+.rb-clist {
+  display: grid;
+  gap: var(--mb-0-75);
+  list-style: none;
+  padding: 0;
+}
+@media (min-width: 576px) { .rb-clist { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 900px) { .rb-clist { grid-template-columns: repeat(3, 1fr); } }
+.rb-clist > li { display: flex; }
+.rb-row-c {
+  display: flex;
+  align-items: center;
+  gap: var(--mb-0-75);
+  width: 100%;
+  min-height: 56px;
+  padding: var(--mb-0-5) var(--mb-1);
+  color: var(--text-color);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+div.rb-row-c { cursor: default; }
+.rb-row-c__icon { font-size: 24px; color: var(--first-color); flex: none; }
+.rb-row-c__text { display: grid; gap: 2px; min-width: 0; }
+.rb-row-c__title { color: var(--title-color); font-size: var(--normal-font-size); font-weight: var(--font-semi-bold); }
+.rb-row-c__line { font-size: var(--small-font-size); }
+
+/* Work */
+.rb-work { display: grid; gap: var(--mb-2); }
+.rb-roles {
+  display: grid;
+  gap: var(--mb-1-5);
+}
+@media (min-width: 768px) { .rb-roles { grid-template-columns: repeat(2, 1fr); } }
+.rb-role {
+  display: grid;
+  gap: var(--mb-0-5);
+  align-content: start;
+  padding: var(--mb-1-5);
+}
+.rb-role__title { font-size: var(--h3-font-size); }
+.rb-role__org { color: var(--title-color); font-weight: var(--font-semi-bold); }
+.rb-role__years { color: var(--title-color); font-size: var(--small-font-size); }
+.rb-role__bullets {
+  display: grid;
+  gap: var(--mb-0-5);
+  padding-left: 1.1rem;
+  list-style: disc;
+}
+.rb-details { width: 100%; }
+.rb-details__summary {
+  display: flex;
+  align-items: center;
+  gap: var(--mb-0-75);
+  min-height: 56px;
+  padding: var(--mb-0-5) var(--mb-1);
+  cursor: pointer;
+  list-style: none;
+  border-radius: var(--card-radius);
+}
+.rb-details__summary::-webkit-details-marker { display: none; }
+.rb-details__summary:focus-visible { outline: 2px solid var(--first-color-alt); outline-offset: 2px; }
+.rb-details__chev { margin-left: auto; color: var(--title-color); }
+.rb-details[open] .rb-details__chev { transform: rotate(180deg); }
+.rb-details__body { padding: 0 var(--mb-1) var(--mb-1) calc(var(--mb-1) + 1.1rem); }
+
+/* Skills + Contact */
+.rb-details__tags { padding: 0 var(--mb-1) var(--mb-1); }
+.rb-contact .rb-row-c { min-height: 64px; }
+.rb-contact__email { gap: var(--mb-0-5); }
+.rb-contact__copy {
+  flex: none;
+  min-height: 44px;
+  align-self: center;
+  padding: 0 var(--mb-1);
+}
+.rb-contact__email .rb-row-c__line { overflow-wrap: anywhere; }
+
+/* Media: picture wrappers fill their 16:9 frames */
+.rb-row__media picture,
+.rb-pcard__thumb picture { display: block; width: 100%; height: 100%; }
+.rb-hero__grid picture { display: block; line-height: 0; }
+
+/*==================== Follow-up: 44px targets, 12px floor, reduced motion ====================*/
+.nav__logo,
+.nav__link,
+.change-theme,
+.fold__toggle,
+.footer__link,
+.footer__social,
+.scrollup,
+.nav__toggle,
+.nav__close,
+.modal__close {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.change-theme,
+.footer__social,
+.scrollup,
+.nav__toggle,
+.nav__close,
+.modal__close { justify-content: center; }
+.nav__link { flex-direction: column; justify-content: center; }
+
+/* 12px floor: nothing renders smaller than 0.75rem */
+:root { --min-font-size: .75rem; }
+small, .tag, .rb-kicker, .rb-row-c__line { font-size: max(var(--min-font-size), var(--small-font-size)); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .rb-lift,
+  .rb-lift:hover,
+  .rb-lift:focus-within { transform: none !important; }
+}
+
+/* Lilian #30 review: modal close button is a 44x44 target. */
+.services__modal .services__modal-close {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

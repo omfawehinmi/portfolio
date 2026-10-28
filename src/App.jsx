@@ -3,7 +3,7 @@ import Header from './components/Header.jsx'
 import Home from './components/Home.jsx'
 import Qualification from './components/Qualification.jsx'
 import Projects from './components/Projects.jsx'
-import Leadership from './components/Leadership.jsx'
+import Pipelines from './components/pipelines/Pipelines.jsx'
 import Skills from './components/Skills.jsx'
 import Contact from './components/Contact.jsx'
 import Footer from './components/Footer.jsx'
@@ -24,13 +24,14 @@ export default function App() {
       <main className="main">
         <Home onOpenProject={setOpenProjectId} />
         <Projects openId={openProjectId} onOpen={setOpenProjectId} />
+        <Pipelines />
         <Qualification />
-        <Leadership />
         <Skills />
         <Contact />
       </main>
-      <Footer />
-      <ScrollUp visible={showScroll} />
+      <Footer>
+        <ScrollUp visible={showScroll} />
+      </Footer>
     </>
   )
 }

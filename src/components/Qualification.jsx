@@ -1,70 +1,71 @@
-import { useState } from 'react'
 import { education, work } from '../data/experience.js'
-import Fold from './ui/Fold.jsx'
-import Icon from './ui/Icon.jsx'
+import CompactList from './ui/CompactList.jsx'
+import RoleCard from './RoleCard.jsx'
 import SectionHeader from './ui/SectionHeader.jsx'
 
-function Role({ item }) {
+function EarlierRole({ item }) {
   return (
-    <article className="role">
-      <div className="role__head">
-        <h3 className="role__title">{item.title}</h3>
-        {item.years && <span className="role__years">{item.years}</span>}
-      </div>
-      <p className="role__org">{item.subtitle}</p>
-      {item.bullets?.length ? (
-        <ul className="role__bullets">
-          {item.bullets.map((bullet) => (
-            <li key={bullet}>{bullet}</li>
-          ))}
-        </ul>
-      ) : null}
-    </article>
+    <details className="rb-card rb-details">
+      <summary className="rb-details__summary">
+        <i className="uil uil-briefcase-alt rb-row-c__icon" aria-hidden="true" />
+        <span className="rb-row-c__text">
+          <span className="rb-row-c__title">{item.title}</span>
+          <span className="rb-row-c__line">{item.subtitle} · {item.years}</span>
+        </span>
+        <i className="uil uil-angle-down rb-details__chev" aria-hidden="true" />
+      </summary>
+      <ul className="rb-role__bullets rb-details__body">
+        {item.bullets.map((bullet) => (
+          <li key={bullet}>{bullet}</li>
+        ))}
+      </ul>
+    </details>
   )
 }
 
 export default function Qualification() {
-  const [tab, setTab] = useState('work')
+  // Q3: NetApp stays first as the current role.
   const recentWork = work.slice(0, 2)
   const earlierWork = work.slice(2)
-  const items = tab === 'work' ? recentWork : education
 
   return (
     <section className="qualification section" id="experience">
       <SectionHeader title="Work" subtitle="NetApp and Novanta up front. Earlier roles fold away." />
 
-      <div className="qualification__container container">
-        <div className="qualification__tabs">
-          <button
-            type="button"
-            className={`qualification__button button--flex${tab === 'work' ? ' qualification__active' : ''}`}
-            onClick={() => setTab('work')}
-          >
-            <Icon name="uil-briefcase-alt" className="qualification__icon" />
-            Work
-          </button>
-          <button
-            type="button"
-            className={`qualification__button button--flex${tab === 'education' ? ' qualification__active' : ''}`}
-            onClick={() => setTab('education')}
-          >
-            <Icon name="uil-graduation-cap" className="qualification__icon" />
-            Education
-          </button>
+      <div className="rb-wrap rb-work">
+        <div className="rb-roles">
+          {recentWork.map((item) => (
+            <RoleCard key={item.subtitle} title={item.title} org={item.subtitle} years={item.years} bullets={item.bullets} />
+          ))}
         </div>
 
-        <div className="role-list">
-          {items.map((item) => (
-            <Role item={item} key={`${item.title}-${item.subtitle}`} />
+        <h3 className="rb-subh">Earlier roles</h3>
+        <ul className="rb-clist" aria-label="Earlier roles">
+          {earlierWork.map((item) => (
+            <li key={item.subtitle}>
+              <EarlierRole item={item} />
+            </li>
           ))}
-          {tab === 'work' ? (
-            <Fold title={`Earlier roles (${earlierWork.length})`}>
-              {earlierWork.map((item) => (
-                <Role item={item} key={`${item.title}-${item.subtitle}`} />
-              ))}
-            </Fold>
-          ) : null}
-        </div>
+        </ul>
+
+        {/* Q7: Leadership folds into Work as People management. */}
+        <h3 className="rb-subh">People management</h3>
+        <CompactList
+          label="People management"
+          items={[
+            { icon: 'uil-users-alt', title: 'Manages 3 direct reports', line: '5 years of people management' },
+          ]}
+        />
+
+        <h3 className="rb-subh">Education</h3>
+        <CompactList
+          label="Education"
+          items={education.map((item) => ({
+            icon: 'uil-graduation-cap',
+            title: item.title,
+            line: `${item.subtitle} · ${item.bullets[0]}`,
+          }))}
+        />
       </div>
     </section>
   )
