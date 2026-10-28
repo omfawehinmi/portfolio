@@ -94,7 +94,7 @@ export default function Projects({ openId, onOpen }) {
               {projects
                 .filter((project) => project.group === group)
                 .map((project) => (
-                  <li key={project.id} className={project.featured ? 'is-featured' : project.parentId ? 'is-part' : undefined}>
+                  <li key={project.id} className={[project.featured ? 'is-featured' : project.parentId ? 'is-part' : '', project.emphasis ? `is-emph-${project.emphasis}` : ''].filter(Boolean).join(' ') || undefined}>
                     <button type="button" className={`project-tile${project.parentId ? ' project-tile--part' : ''}`} onClick={() => onOpen(project.id)}>
                       <span className="project-tile__media">
                         <ProjectMedia project={project} />

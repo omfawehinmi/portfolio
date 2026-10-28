@@ -9,6 +9,7 @@ export const projects = [
   {
     id: 'snowflake-migration',
     group: 'Production',
+    emphasis: 2,
     icon: 'uil-server-network',
     title: 'Snowflake platform re-architecture',
     outcome: 'Lift-and-shift of a Snowflake data platform into a Terraform, dbt and Airflow managed architecture.',
@@ -33,13 +34,13 @@ export const projects = [
     links: [{ href: 'https://www.myorglab.com/', label: 'myorglab.com' }],
   },
   {
-    id: 'semantic-hr',
+    id: 'hr-intelligence',
     group: 'Production',
     icon: 'uil-users-alt',
-    title: 'Semantic HR',
+    title: 'HR Intelligence',
     outcome: 'Workday and SuccessFactors as governed Snowflake semantics: the memory agents actually use.',
-    modalTitle: 'Semantic HR: workforce intelligence on Snowflake',
-    thumb: publicUrl('assets/img/semantic-hr.png'),
+    modalTitle: 'HR Intelligence: workforce intelligence on Snowflake',
+    thumb: publicUrl('assets/img/hr-intelligence.png'),
     summary: [
       'Pulled out of the MyOrgLab stack because it is the piece hiring managers probe first: HRIS grain, certified metrics, and talk-to-data on the same warehouse.',
       'Workday, SuccessFactors, Fieldglass, Eightfold, Visier, and One Model land into Snowflake with row access and masking, then Power BI / Streamlit / Cortex sit on that layer.',
@@ -48,7 +49,7 @@ export const projects = [
       'Same pattern I ran as sole engineer on the Workday-to-Snowflake integration at Novanta and as the HRIS landing engineer at NetApp.',
       'Agents do not invent headcount or attrition; they read the semantic layer.',
     ],
-    links: [{ href: 'https://www.myorglab.com/semantic-hr', label: 'Semantic HR' }],
+    links: [{ href: 'https://www.myorglab.com/', label: 'myorglab.com' }],
   },
   {
     id: 'cortex-self-serve',
@@ -243,6 +244,7 @@ export const projects = [
   {
     id: 'household-grok-mcp',
     group: 'Household Ledger',
+    emphasis: 1,
     parentId: 'household-ledger',
     icon: 'uil-comments',
     title: 'MCP for Grok bots',
@@ -377,7 +379,7 @@ export const highlights = [
     detail: 'Domain analysts, orchestrators, and MCP on semantic views I actually run.',
   },
   {
-    projectId: 'semantic-hr',
+    projectId: 'hr-intelligence',
     icon: 'uil-database',
     label: 'HRIS → Snowflake',
     detail: 'Workday, SuccessFactors, Fieldglass, Eightfold, Visier, One Model.',
