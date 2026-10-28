@@ -24,6 +24,7 @@ export const profile = {
 
 export const navLinks = [
   { id: 'projects', href: '#projects', icon: 'uil-scenery', label: 'Projects' },
+  { id: 'pipelines', href: '#pipelines', icon: 'uil-sitemap', label: 'Pipelines' },
   { id: 'experience', href: '#experience', icon: 'uil-briefcase-alt', label: 'Work' },
   { id: 'skills', href: '#skills', icon: 'uil-snowflake', label: 'Skills' },
   { id: 'contact', href: '#contact', icon: 'uil-message', label: 'Contact' },
