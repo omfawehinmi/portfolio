@@ -20,6 +20,6 @@ test('Pipelines modal moves focus to the close button on open', async ({ page })
 
 test('Projects modal moves focus to the close button on open', async ({ page }) => {
   await page.goto('#projects')
-  await page.locator('#projects .project-tile').first().click()
+  await page.locator('#projects').getByTestId('project-tile').first().click()
   await expectCloseFocused(page)
 })

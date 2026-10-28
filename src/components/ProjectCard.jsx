@@ -14,7 +14,7 @@ export default function ProjectCard({ id, kicker, title, outcome, thumb, chips =
       </div>
       <p className="rb-kicker">{kicker}</p>
       <h3 className="rb-pcard__title" id={headingId}>
-        <button type="button" className="rb-pcard__open" aria-haspopup="dialog" onClick={() => onOpen?.(id)}>
+        <button type="button" className="rb-pcard__open" data-testid="project-tile" aria-haspopup="dialog" onClick={() => onOpen?.(id)}>
           {title}
         </button>
       </h3>

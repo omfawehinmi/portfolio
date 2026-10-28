@@ -27,7 +27,7 @@ export default function FeatureRow({ id, kicker, title, outcome, chips = [], chi
         {children}
         {cta ? (
           <div>
-            <button type="button" className="button button--flex rb-btn" aria-haspopup="dialog" onClick={() => onOpen?.(cta.opens)}>
+            <button type="button" className="button button--flex rb-btn" data-testid="project-tile" aria-haspopup="dialog" onClick={() => onOpen?.(cta.opens)}>
               {cta.label}
             </button>
           </div>
