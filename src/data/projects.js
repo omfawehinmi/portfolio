@@ -37,7 +37,7 @@ export const projects = [
     title: 'MyOrgLab',
     outcome: 'Snowflake-native practice: in-account agents, semantic views, and MCP bridges.',
     modalTitle: 'MyOrgLab: governed agents in the customer account',
-    thumb: publicUrl('assets/img/myorglab.png'),
+    thumb: publicUrl('assets/img/myorglab.webp'),
     summary: [
       'The Snowflake-native practice I am building. Domain analyst agents sit on semantic views, a master orchestrator handles multi-step work, and MCP bridges let other agents reuse that expertise under the customer’s identity and policy.',
     ],
@@ -54,7 +54,7 @@ export const projects = [
     title: 'Semantic HR',
     outcome: 'Workday and SuccessFactors as governed Snowflake semantics: the memory agents actually use.',
     modalTitle: 'Semantic HR: workforce intelligence on Snowflake',
-    thumb: publicUrl('assets/img/semantic-hr.png'),
+    thumb: publicUrl('assets/img/semantic-hr.webp'),
     summary: [
       'Pulled out of the MyOrgLab stack because it is the piece hiring managers probe first: HRIS grain, certified metrics, and talk-to-data on the same warehouse.',
       'Workday, SuccessFactors, Fieldglass, Eightfold, Visier, and One Model land into Snowflake with row access and masking, then Power BI / Streamlit / Cortex sit on that layer.',
@@ -72,7 +72,7 @@ export const projects = [
     title: 'Cortex self-service',
     outcome: 'Workday or SuccessFactors into certified Snowflake grain, so Tier 0 and Tier 1 reporting queues go away.',
     modalTitle: 'Cortex self-service: HRIS in, reporting queues out',
-    thumb: publicUrl('assets/img/cortex-self-serve.png'),
+    thumb: publicUrl('assets/img/cortex-self-serve.webp'),
     thumbPos: 'center',
     summary: [
       'The point is not a chatbot. Land Workday or SuccessFactors into Snowflake with certified metrics, then put Cortex on that grain so the business asks instead of opening a Tier 0 or Tier 1 reporting ticket.',
@@ -92,7 +92,7 @@ export const projects = [
     title: 'SOF Financial Services',
     outcome: 'Operating financial-services firm plus the client portal clients actually log into.',
     modalTitle: 'SOF Financial Services: tax, books, and the client portal',
-    thumb: publicUrl('assets/img/sof-overview.png'),
+    thumb: publicUrl('assets/img/sof-overview.webp'),
     thumbPos: 'center top',
     parts: ['sof-portal', 'sof-tax', 'sof-finance'],
     summary: [
@@ -114,7 +114,7 @@ export const projects = [
     title: 'Client portal',
     outcome: 'AWS + MFA document vault, messaging center, and live status on the work.',
     modalTitle: 'SOF client portal: documents, messages, MFA',
-    thumb: publicUrl('assets/img/sof-portal.png'),
+    thumb: publicUrl('assets/img/sof-portal.webp'),
     thumbPos: 'center top',
     summary: [
       'This is the product. Clients land in a portal with Upload, Documents, and Messages: the same pattern the live site walks through under “Our Advanced Client Portal.”',
@@ -135,7 +135,7 @@ export const projects = [
     title: 'Tax & bookkeeping',
     outcome: 'QuickBooks + TaxAct workflows: books, statements, and returns through the portal.',
     modalTitle: 'SOF tax and bookkeeping',
-    thumb: publicUrl('assets/img/sof-tax.png'),
+    thumb: publicUrl('assets/img/sof-tax.webp'),
     thumbPos: 'center top',
     summary: [
       'The firm’s core practice is year-round books and tax, not a once-a-year drop box. Monthly bookkeeping, financial statements, account reconciliation, invoicing and collections, bill payment, and controllership all sit on the same client relationship.',
@@ -156,7 +156,7 @@ export const projects = [
     title: 'Business financing',
     outcome: 'Needs assessments and loan packages built from the same books.',
     modalTitle: 'SOF business financing',
-    thumb: publicUrl('assets/img/sof-finance.png'),
+    thumb: publicUrl('assets/img/sof-finance.webp'),
     thumbPos: 'center',
     summary: [
       'Alongside tax, the firm runs financial needs assessments and prepares loan packages with in-depth financials: the “Finance” lane on the live site. Business plan preparation sits in the same stack when a client is raising or borrowing.',
@@ -336,6 +336,7 @@ export const projects = [
     outcome: 'PALMS I1: three crown cameras to find the opponent, then rotate the arms to strike.',
     modalTitle: 'PALMS I1: vision-guided punching bag',
     videoFile: publicUrl('assets/video/hybrid-punches.mp4'),
+    videoPoster: publicUrl('assets/video/hybrid-punches-poster.webp'),
     parts: ['camera-tracking'],
     summary: [
       'The computer vision job is to locate the person and command azimuth. Three cameras sit 120 degrees apart on a fixed crown. Detection is supposed to estimate opponent position, then a bounded rotate command turns the shoulder carrier so the arms face the target.',
@@ -354,7 +355,7 @@ export const projects = [
     title: 'Inpainting detection',
     outcome: 'WPI coursework: snippets of CNN / ensemble work on CIFAKE and DeepFake Art.',
     modalTitle: 'Inpainting detection: WPI snippet',
-    thumb: publicUrl('assets/img/inpainting.png'),
+    thumb: publicUrl('assets/img/inpainting.webp'),
     summary: [
       'A college project from my WPI data-science work, not a product. Snippets of transfer learning, augmentation, frozen CNN heads, and a Hyperopt-tuned ensemble on CIFAKE and the DeepFake Art inpainting split.',
     ],

@@ -17,7 +17,7 @@ function ProjectBody({ project, onOpen }) {
   return (
     <>
       {project.videoFile ? (
-        <video className="case-video" src={project.videoFile} controls playsInline muted loop preload="metadata" />
+        <video className="case-video" src={project.videoFile} poster={project.videoPoster} preload="none" controls playsInline muted loop />
       ) : null}
       {project.video ? (
         <div className="media-well">
