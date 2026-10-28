@@ -56,7 +56,7 @@ export default function About() {
               <a href={profile.myorglab} target="_blank" rel="noreferrer">
                 MyOrgLab
               </a>
-              : governed domain agents, semantic HR, and MCP tool bridges that run in the customer&apos;s Snowflake
+              : governed domain agents, HR Intelligence, and MCP tool bridges that run in the customer&apos;s Snowflake
               account. The projects below are the proof: live products, a household Cortex finance agent I operate,
               camera tracking, the PALMS punching bag, and forensic ML.
             </p>
