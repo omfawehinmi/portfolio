@@ -1,0 +1,53 @@
+name: PR checks
+
+# build always; unit tests (`npm test`, vitest) and Playwright (`npm run test:e2e`,
+# whose config starts its own vite preview server) run when the scripts exist.
+# No lint script in the repo yet, so lint is skipped. No secrets, read-only token.
+# Rollback: delete this file. deploy.yml is untouched.
+
+on:
+  pull_request:
+    branches: [main, rebuild/integration]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-checks-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Build, unit, e2e
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22 # vitest needs Node >= 20.19
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Build
+        run: npm run build
+      - name: Unit tests (if configured)
+        run: npm test --if-present
+        env:
+          CI: "true"
+      - id: e2e
+        name: Detect test:e2e script
+        run: echo "present=$(node -p "Boolean(require('./package.json').scripts?.['test:e2e'])")" >> "$GITHUB_OUTPUT"
+      - name: Install Playwright browser
+        if: steps.e2e.outputs.present == 'true'
+        run: npx playwright install --with-deps chromium
+      - name: Playwright e2e (config's webServer builds + runs vite preview)
+        if: steps.e2e.outputs.present == 'true'
+        run: npm run test:e2e
+        env:
+          CI: "true"
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: playwright-report-${{ github.sha }}
+          path: playwright-report
+          retention-days: 7
