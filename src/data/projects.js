@@ -40,7 +40,7 @@ export const projects = [
     title: 'HR Intelligence',
     outcome: 'Workday and SuccessFactors as governed Snowflake semantics: the memory agents actually use.',
     modalTitle: 'HR Intelligence: workforce intelligence on Snowflake',
-    thumb: publicUrl('assets/img/hr-intelligence.png'),
+    thumb: publicUrl('assets/img/semantic-hr.png'),
     summary: [
       'Pulled out of the MyOrgLab stack because it is the piece hiring managers probe first: HRIS grain, certified metrics, and talk-to-data on the same warehouse.',
       'Workday, SuccessFactors, Fieldglass, Eightfold, Visier, and One Model land into Snowflake with row access and masking, then Power BI / Streamlit / Cortex sit on that layer.',
@@ -49,7 +49,7 @@ export const projects = [
       'Same pattern I ran as sole engineer on the Workday-to-Snowflake integration at Novanta and as the HRIS landing engineer at NetApp.',
       'Agents do not invent headcount or attrition; they read the semantic layer.',
     ],
-    links: [{ href: 'https://www.myorglab.com/', label: 'myorglab.com' }],
+    links: [{ href: 'https://www.myorglab.com/semantic-hr', label: 'Semantic HR' }],
   },
   {
     id: 'cortex-self-serve',
