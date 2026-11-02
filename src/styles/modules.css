@@ -21,6 +21,7 @@
   --tile-aspect-emph-2: 16 / 9.5;
   --tile-pad-emph-1-block: 1.25rem;
   --tile-pad-emph-2-inline: 1.2rem;
+  --tile-lead-columns: minmax(0, 1fr);
 }
 
 body.dark-theme {
@@ -919,4 +920,13 @@ button.change-theme:hover {
   .project-grid .is-emph-2 { grid-column: 1 / -1; }
   .project-grid .is-emph-1 .project-tile__media { height: auto; aspect-ratio: var(--tile-aspect-emph-1); font-size: var(--tile-icon-emph-1-wide); }
   .project-grid .is-emph-2 .project-tile__media { height: auto; aspect-ratio: var(--tile-aspect-emph-2); font-size: var(--tile-icon-emph-2-wide); }
+}
+
+/* Lead row is one column so MCP and Snowflake stack full width, with no empty cell beside either. */
+.project-grid--lead {
+  grid-template-columns: var(--tile-lead-columns);
+}
+.project-grid--lead .is-emph-1,
+.project-grid--lead .is-emph-2 {
+  grid-column: 1 / -1;
 }
