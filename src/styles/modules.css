@@ -11,6 +11,17 @@
   --navy: #0b1d36;
   --card-radius: 0.85rem;
   --hero-wash: linear-gradient(180deg, #e8f7fc 0%, var(--body-color) 42%);
+  --tile-media-emph-1: 300px;
+  --tile-media-emph-2: 220px;
+  --tile-icon-emph-1: 3.2rem;
+  --tile-icon-emph-2: 2.4rem;
+  --tile-icon-emph-1-wide: 5rem;
+  --tile-icon-emph-2-wide: 4rem;
+  --tile-aspect-emph-1: 16 / 10;
+  --tile-aspect-emph-2: 16 / 9.5;
+  --tile-pad-emph-1-block: 1.25rem;
+  --tile-pad-emph-2-inline: 1.2rem;
+  --tile-lead-columns: minmax(0, 1fr);
 }
 
 body.dark-theme {
@@ -360,7 +371,7 @@ body.dark-theme .home {
   font-size: var(--smaller-font-size);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--first-color);
+  color: var(--title-color);
 }
 
 .project-grid {
@@ -892,4 +903,30 @@ button.change-theme:hover {
   .home__container {
     grid-template-columns: minmax(0, 1fr);
   }
+}
+
+/* Emphasis: the most important projects get the most space. 1 = MCP (largest), 2 = Snowflake / Airflow re-architecture. */
+.project-grid .is-emph-1 { grid-column: 1 / -1; }
+.project-grid .is-emph-1 .project-tile { border: 2px solid var(--first-color); }
+.project-grid .is-emph-1 .project-tile__media { height: var(--tile-media-emph-1); font-size: var(--tile-icon-emph-1); }
+.project-grid .is-emph-1 .project-tile__copy { padding: var(--tile-pad-emph-1-block) var(--mb-1-5) var(--mb-1-5); gap: var(--mb-0-5); }
+.project-grid .is-emph-1 .project-tile__title { font-size: var(--h2-font-size); }
+.project-grid .is-emph-1 .project-tile__outcome { font-size: var(--normal-font-size); }
+.project-grid .is-emph-2 .project-tile__media { height: var(--tile-media-emph-2); font-size: var(--tile-icon-emph-2); }
+.project-grid .is-emph-2 .project-tile__copy { padding: var(--mb-1) var(--tile-pad-emph-2-inline) var(--tile-pad-emph-2-inline); }
+.project-grid .is-emph-2 .project-tile__title { font-size: var(--h3-font-size); }
+@media screen and (min-width: 768px) {
+  /* Wide screens: both span the row and out-size the featured 16:9 group tiles. */
+  .project-grid .is-emph-2 { grid-column: 1 / -1; }
+  .project-grid .is-emph-1 .project-tile__media { height: auto; aspect-ratio: var(--tile-aspect-emph-1); font-size: var(--tile-icon-emph-1-wide); }
+  .project-grid .is-emph-2 .project-tile__media { height: auto; aspect-ratio: var(--tile-aspect-emph-2); font-size: var(--tile-icon-emph-2-wide); }
+}
+
+/* Lead row is one column so MCP and Snowflake stack full width, with no empty cell beside either. */
+.project-grid--lead {
+  grid-template-columns: var(--tile-lead-columns);
+}
+.project-grid--lead .is-emph-1,
+.project-grid--lead .is-emph-2 {
+  grid-column: 1 / -1;
 }

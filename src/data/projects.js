@@ -9,6 +9,7 @@ export const projects = [
   {
     id: 'snowflake-migration',
     group: 'Production',
+    emphasis: 2,
     icon: 'uil-server-network',
     title: 'Snowflake platform re-architecture',
     outcome: 'Lift-and-shift of a Snowflake data platform into a Terraform, dbt and Airflow managed architecture.',
@@ -33,12 +34,12 @@ export const projects = [
     links: [{ href: 'https://www.myorglab.com/', label: 'myorglab.com' }],
   },
   {
-    id: 'semantic-hr',
+    id: 'hr-intelligence',
     group: 'Production',
     icon: 'uil-users-alt',
-    title: 'Semantic HR',
+    title: 'HR Intelligence',
     outcome: 'Workday and SuccessFactors as governed Snowflake semantics: the memory agents actually use.',
-    modalTitle: 'Semantic HR: workforce intelligence on Snowflake',
+    modalTitle: 'HR Intelligence: workforce intelligence on Snowflake',
     thumb: publicUrl('assets/img/semantic-hr.png'),
     summary: [
       'Pulled out of the MyOrgLab stack because it is the piece hiring managers probe first: HRIS grain, certified metrics, and talk-to-data on the same warehouse.',
@@ -243,6 +244,7 @@ export const projects = [
   {
     id: 'household-grok-mcp',
     group: 'Household Ledger',
+    emphasis: 1,
     parentId: 'household-ledger',
     icon: 'uil-comments',
     title: 'MCP for Grok bots',
@@ -377,7 +379,7 @@ export const highlights = [
     detail: 'Domain analysts, orchestrators, and MCP on semantic views I actually run.',
   },
   {
-    projectId: 'semantic-hr',
+    projectId: 'hr-intelligence',
     icon: 'uil-database',
     label: 'HRIS → Snowflake',
     detail: 'Workday, SuccessFactors, Fieldglass, Eightfold, Visier, One Model.',

@@ -79,37 +79,54 @@ function ProjectBody({ project, onOpen }) {
   )
 }
 
+function ProjectTile({ project, onOpen }) {
+  return (
+    <li className={[project.featured ? 'is-featured' : project.parentId ? 'is-part' : '', project.emphasis ? `is-emph-${project.emphasis}` : ''].filter(Boolean).join(' ') || undefined}>
+      <button type="button" className={`project-tile${project.parentId ? ' project-tile--part' : ''}`} onClick={() => onOpen(project.id)}>
+        <span className="project-tile__media">
+          <ProjectMedia project={project} />
+        </span>
+        <span className="project-tile__copy">
+          {project.parentId ? <span className="project-tile__kicker">Component</span> : null}
+          <span className="project-tile__title">{project.title}</span>
+          <span className="project-tile__outcome">{project.outcome}</span>
+        </span>
+      </button>
+    </li>
+  )
+}
+
+/* Michael (11/2): "Yes, move MCP to the top." Then Snowflake / Airflow. */
+const leadIds = ['household-grok-mcp', 'snowflake-migration']
+
 export default function Projects({ openId, onOpen }) {
   const openProject = projects.find((project) => project.id === openId)
+  const leadProjects = leadIds.map((id) => projects.find((project) => project.id === id)).filter(Boolean)
 
   return (
     <section className="projects section" id="projects">
       <SectionHeader title="Projects" subtitle="Open a tile. SOF and Household Ledger components sit with the system they belong to." />
 
       <div className="projects__stack container">
-        {projectGroups.map((group) => (
-          <div className="project-group" key={group}>
-            <h3 className="project-group__label">{group}</h3>
-            <ul className={`project-grid${projects.some((item) => item.group === group && item.featured) ? ' project-grid--ledger' : ''}`}>
-              {projects
-                .filter((project) => project.group === group)
-                .map((project) => (
-                  <li key={project.id} className={project.featured ? 'is-featured' : project.parentId ? 'is-part' : undefined}>
-                    <button type="button" className={`project-tile${project.parentId ? ' project-tile--part' : ''}`} onClick={() => onOpen(project.id)}>
-                      <span className="project-tile__media">
-                        <ProjectMedia project={project} />
-                      </span>
-                      <span className="project-tile__copy">
-                        {project.parentId ? <span className="project-tile__kicker">Component</span> : null}
-                        <span className="project-tile__title">{project.title}</span>
-                        <span className="project-tile__outcome">{project.outcome}</span>
-                      </span>
-                    </button>
-                  </li>
+        <ul className="project-grid project-grid--lead">
+          {leadProjects.map((project) => (
+            <ProjectTile key={project.id} project={project} onOpen={onOpen} />
+          ))}
+        </ul>
+        {projectGroups.map((group) => {
+          const groupProjects = projects.filter((project) => project.group === group && !leadIds.includes(project.id))
+          if (!groupProjects.length) return null
+          return (
+            <div className="project-group" key={group}>
+              <h3 className="project-group__label">{group}</h3>
+              <ul className={`project-grid${groupProjects.some((item) => item.featured) ? ' project-grid--ledger' : ''}`}>
+                {groupProjects.map((project) => (
+                  <ProjectTile key={project.id} project={project} onOpen={onOpen} />
                 ))}
-            </ul>
-          </div>
-        ))}
+              </ul>
+            </div>
+          )
+        })}
       </div>
 
       <Modal open={Boolean(openProject)} title={openProject?.modalTitle} onClose={() => onOpen(null)}>
