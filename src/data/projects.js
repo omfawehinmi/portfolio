@@ -34,12 +34,12 @@ export const projects = [
     links: [{ href: 'https://www.myorglab.com/', label: 'myorglab.com' }],
   },
   {
-    id: 'hr-intelligence',
+    id: 'semantic-hr',
     group: 'Production',
     icon: 'uil-users-alt',
-    title: 'HR Intelligence',
+    title: 'Semantic HR',
     outcome: 'Workday and SuccessFactors as governed Snowflake semantics: the memory agents actually use.',
-    modalTitle: 'HR Intelligence: workforce intelligence on Snowflake',
+    modalTitle: 'Semantic HR: workforce intelligence on Snowflake',
     thumb: publicUrl('assets/img/semantic-hr.png'),
     summary: [
       'Pulled out of the MyOrgLab stack because it is the piece hiring managers probe first: HRIS grain, certified metrics, and talk-to-data on the same warehouse.',
@@ -379,7 +379,7 @@ export const highlights = [
     detail: 'Domain analysts, orchestrators, and MCP on semantic views I actually run.',
   },
   {
-    projectId: 'hr-intelligence',
+    projectId: 'semantic-hr',
     icon: 'uil-database',
     label: 'HRIS → Snowflake',
     detail: 'Workday, SuccessFactors, Fieldglass, Eightfold, Visier, One Model.',
