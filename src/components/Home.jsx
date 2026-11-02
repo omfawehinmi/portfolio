@@ -1,15 +1,9 @@
 import { profile } from '../data/profile.js'
-import { heroMedia, highlights, projects } from '../data/projects.js'
+import { highlights } from '../data/projects.js'
 import { publicUrl } from '../utils.js'
 import Icon from './ui/Icon.jsx'
-import ProjectMedia from './ui/ProjectMedia.jsx'
 
 export default function Home({ onOpenProject }) {
-  const reel = heroMedia.map((item) => ({
-    ...item,
-    project: projects.find((project) => project.id === item.id),
-  }))
-
   return (
     <section className="home section" id="home">
       <div className="home__container container grid">
@@ -36,22 +30,6 @@ export default function Home({ onOpenProject }) {
                 <image className="home__blob-img" x="13" y="18" href={publicUrl('assets/img/home.png')} />
               </g>
             </svg>
-
-            <div className="home__reel" aria-label="Project media">
-              {reel.map((item) =>
-                item.project ? (
-                  <button
-                    type="button"
-                    className="home__reel-tile"
-                    key={item.id}
-                    onClick={() => onOpenProject(item.id)}
-                  >
-                    <ProjectMedia project={item.project} />
-                    <span>{item.label}</span>
-                  </button>
-                ) : null,
-              )}
-            </div>
           </div>
 
           <div className="home__data">
