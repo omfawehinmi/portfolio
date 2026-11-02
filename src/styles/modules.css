@@ -370,7 +370,7 @@ body.dark-theme .home {
   font-size: var(--smaller-font-size);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--first-color);
+  color: var(--title-color);
 }
 
 .project-grid {
