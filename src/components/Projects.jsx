@@ -170,7 +170,7 @@ function LeadTile({ onOpen, tall }) {
       tabIndex={0}
       role="button"
       aria-haspopup="dialog"
-      aria-label={`Open ${L.title}: ${L.subhead}`}
+      aria-label={`${L.title}: ${L.subhead}`}
       onClick={(event) => openTile(event, 'lead', onOpen)}
       onKeyDown={(event) => onTileKey(event, 'lead', onOpen)}
     >
@@ -203,7 +203,7 @@ function ArchitectureTile({ tile, onOpen, tall }) {
       tabIndex={0}
       role="button"
       aria-haspopup="dialog"
-      aria-label={`Open ${tile.title}`}
+      aria-label={tile.title}
       onClick={(event) => openTile(event, tile.id, onOpen)}
       onKeyDown={(event) => onTileKey(event, tile.id, onOpen)}
     >
@@ -230,7 +230,7 @@ function MoreCard({ item, featured, onOpen }) {
       tabIndex={0}
       role="button"
       aria-haspopup="dialog"
-      aria-label={`Open ${item.title}`}
+      aria-label={item.title}
       onClick={(event) => openTile(event, item.id, onOpen)}
       onKeyDown={(event) => onTileKey(event, item.id, onOpen)}
     >

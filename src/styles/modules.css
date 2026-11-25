@@ -845,6 +845,21 @@ img {
 body:not(.dark-theme) .button:not(.button--ghost):hover {
   background-color: var(--button-hover-bg);
 }
+/* Text on light surfaces: #29b5e8 is 2.32:1. Use the diagram ink blue
+   (#0a6688, 6.30:1 on #fbfdfe). */
+#projects .section__subtitle,
+.project-group__label,
+.project-tile__kicker,
+.qualification__button.qualification__active {
+  color: #0a6688;
+}
+body.dark-theme #projects .section__subtitle,
+body.dark-theme .project-group__label,
+body.dark-theme .project-tile__kicker,
+body.dark-theme .qualification__button.qualification__active {
+  color: var(--first-color);
+}
+
 /* a11y (WCAG 2.5.8 target size, 24px min; 12px text floor). */
 .change-theme,
 .home__social-icon,
