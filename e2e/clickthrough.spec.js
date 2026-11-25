@@ -82,7 +82,7 @@ test.describe('Click-through', () => {
     } else {
       await header(page).locator('a[href="#projects"]').first().click();
     }
-    const tile = page.locator('.project-tile').first();
+    const tile = page.locator('.project-tile, [data-testid="project-tile"]').first();
     await expect(tile).toBeVisible();
     await tile.click();
     const dialog = page.getByRole('dialog');
@@ -98,7 +98,13 @@ test.describe('Click-through', () => {
 
     await tile.click();
     await expect(dialog).toBeVisible();
-    await page.locator('.services__modal.active-modal').click({ position: { x: 2, y: 2 } });
+    // Main uses a full-page .services__modal overlay. The redesign uses a
+    // native <dialog>, whose dimmed ::backdrop is outside the panel. A
+    // click at the viewport corner hits the overlay on main and the
+    // backdrop on the redesign.
+    const overlay = page.locator('.services__modal.active-modal, dialog.project-dialog[open]');
+    await expect(overlay).toBeVisible();
+    await page.mouse.click(2, 2);
     await expect(dialog).toHaveCount(0);
   });
 
@@ -115,10 +121,13 @@ test.describe('Click-through', () => {
   test('contact copy control works without posting to a backend', async ({ page }) => {
     await page.context().grantPermissions(['clipboard-write', 'clipboard-read']).catch(() => {});
     await openRoute(page, '/portfolio/#contact');
-    const copy = page.getByRole('button', { name: /Copy/i });
+    // exact: true, so project tiles whose accessible name includes the
+    // word "copy" (the redesign) do not match. Main and the redesign
+    // both label this control "Copy".
+    const copy = page.getByRole('button', { name: 'Copy', exact: true });
     if (await copy.count()) {
       await copy.click();
-      await expect(page.getByRole('button', { name: /Copied/i })).toBeVisible();
+      await expect(page.getByRole('button', { name: 'Copied', exact: true })).toBeVisible();
     }
     await assertUsableDestination(page);
     // No form posts to intercept on this page.
