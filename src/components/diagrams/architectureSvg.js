@@ -180,3 +180,96 @@ export function dFeat(D, inst=""){ID='f'+inst;const R=D.features.rows;const W=44
 export function dRearch(inst=""){ID='r'+inst;let o='',a='';['Terraform','dbt','Airflow','Snowflake'].forEach((t,i)=>{const xx=12+i*88;o+=node(i==3?'cyl':'box',xx,22,72,n2(t),{h:42,e:i==3}).g;if(i<3)a+=arrow(`M${xx+72},43 H${xx+86}`,'c')});
  return svg(370,86,'Re-architecture preview: Terraform, dbt and Airflow managing a Snowflake platform',a+o)};
 
+
+export function dMychart(D,tall, inst=""){
+  ID=(tall?'hT':'hW')+inst;
+  const M=D.mychart;
+  const compact=inst==='tile';
+  const steps=[
+    {t:M.nodes[0],z:'src',shape:'doc'},
+    {t:M.nodes[1],z:'sec',shape:'box'},
+    {t:M.nodes[2],z:'sec',shape:'box',hero:1},
+    {t:M.nodes[3],z:'src',shape:'box'},
+    {t:M.nodes[4],z:'data',shape:'box'},
+    {t:M.nodes[5],z:'data',shape:'box'},
+    {t:M.nodes[6],z:'data',shape:'cyl',hero:1}
+  ];
+  const place=(s,x,y,w,hMin)=>node(s.shape,x,y,w,n2(s.t,'',9.6),{h:hMin||56,z:s.z,hero:s.hero});
+  let o='',a='';
+
+  if(!tall){
+    const W=920,pad=18,gap=16,nw=Math.floor((W-pad*2-gap*6)/7);
+    const nh=Math.max(...steps.map(s=>place(s,0,0,nw,60).h));
+    const nodeY=54;
+    const xs=steps.map((_,i)=>pad+i*(nw+gap));
+    const clusters=[{z:'sec',i:[1,2]},{z:'data',i:[4,5,6]}];
+    clusters.forEach(c=>{
+      const x0=xs[c.i[0]]-8, x1=xs[c.i[c.i.length-1]]+nw+8;
+      o+=group(x0,30,x1-x0,nh+36,'',{z:c.z});
+      o+=lab(x0+8,42,Z[c.z].n,Z[c.z].k);
+    });
+    steps.forEach((s,i)=>{o+=place(s,xs[i],nodeY,nw,nh).g+badge(xs[i],nodeY,i+1)});
+    for(let i=0;i<6;i++){const mid=nodeY+nh/2;a+=arrow(`M${xs[i]+nw},${mid} H${xs[i+1]}`,'c')}
+    const stW=meas(M.status,8.6,500,0,1)/0.88+14;
+    o+=tag(W-16-stW/2,18,M.status);
+    const footY=30+nh+36+20;
+    const chW=meas(M.chip,8.6,500,0,1)/0.88+14;
+    o+=tag(16+chW/2,footY,M.chip,{light:1});
+    o+=legend(16+chW+18,footY,['src','sec','data'],W-16);
+    return svg(W,footY+22,M.caption,a+o);
+  }
+
+  if(compact){
+    const W=330,pad=12,gap=8,r1=4,r2=3;
+    const w1=Math.floor((W-pad*2-gap*(r1-1))/r1);
+    const w2=Math.floor((W-pad*2-gap*(r2-1))/r2);
+    const h1=Math.max(...steps.slice(0,r1).map(s=>place(s,0,0,w1,52).h));
+    const h2=Math.max(...steps.slice(r1).map(s=>place(s,0,0,w2,52).h));
+    const y1=46,y2=y1+h1+32;
+    const stW=meas(M.status,8.6,500,0,1)/0.88+14;
+    o+=tag(Math.min(W-10-stW/2,W/2),16,M.status);
+    const x1=steps.slice(0,r1).map((_,i)=>pad+i*(w1+gap));
+    const row2Inner=r2*w2+(r2-1)*gap;
+    const x2start=Math.round((W-row2Inner)/2);
+    const x2=steps.slice(r1).map((_,i)=>x2start+i*(w2+gap));
+    o+=group(x2[0]-8,y2-18,row2Inner+16,h2+26,'',{z:'data'});
+    o+=lab(x2[0]+8,y2-8,Z.data.n,Z.data.k);
+    steps.slice(0,r1).forEach((s,i)=>{o+=place(s,x1[i],y1,w1,h1).g+badge(x1[i],y1,i+1)});
+    steps.slice(r1).forEach((s,i)=>{o+=place(s,x2[i],y2,w2,h2).g+badge(x2[i],y2,r1+i+1)});
+    for(let i=0;i<r1-1;i++){const mid=y1+h1/2;a+=arrow(`M${x1[i]+w1},${mid} H${x1[i+1]}`,'c')}
+    const turnX=x1[r1-1]+w1/2, midY=y1+h1+10, destX=x2[0]+w2/2;
+    a+=`<path d="M${turnX},${y1+h1} V${midY} H${destX}" fill="none" stroke="${C.accInk}" stroke-width="1.1" stroke-linejoin="round"/>`;
+    a+=arrow(`M${destX},${midY} V${y2}`,'c');
+    for(let i=0;i<r2-1;i++){const mid=y2+h2/2;a+=arrow(`M${x2[i]+w2},${mid} H${x2[i+1]}`,'c')}
+    const footY=y2+h2+24;
+    const chW=meas(M.chip,8.6,500,0,1)/0.88+14;
+    o+=tag(pad+chW/2,footY,M.chip,{light:1});
+    o+=legend(pad,footY+18,['src','sec','data'],W-pad);
+    return svg(W,footY+36,M.caption,a+o);
+  }
+
+  const W=330,pad=16,nw=W-pad*2;
+  const stW=meas(M.status,8.6,500,0,1)/0.88+14;
+  o+=tag(Math.min(W/2, W-10-stW/2),18,M.status);
+  let y=44;
+  const placed=[];
+  const clusters=[{z:'sec',i:[1,2]},{z:'data',i:[4,5,6]}];
+  const heights=steps.map(s=>place(s,0,0,nw,48).h);
+  clusters.forEach(c=>{
+    const y0=(()=>{let yy=44;for(let i=0;i<c.i[0];i++)yy+=heights[i]+18;return yy})();
+    let gh=0;c.i.forEach((i,k)=>{gh+=heights[i]+(k?18:0)});
+    o+=group(pad-8,y0-16,nw+16,gh+24,'',{z:c.z});
+    o+=lab(pad,y0-6,Z[c.z].n,Z[c.z].k);
+  });
+  steps.forEach((s,i)=>{
+    const r=place(s,pad,y,nw,heights[i]);
+    placed.push({y,h:r.h});
+    o+=r.g+badge(pad,y,i+1);
+    y+=r.h+18;
+  });
+  for(let i=0;i<6;i++){a+=arrow(`M${pad+nw/2},${placed[i].y+placed[i].h} V${placed[i+1].y}`,'c')}
+  const chW=meas(M.chip,8.6,500,0,1)/0.88+14;
+  o+=tag(pad+chW/2,y+6,M.chip,{light:1});
+  o+=legend(pad,y+26,['src','sec','data'],W-pad);
+  return svg(W,y+48,M.caption,a+o);
+}

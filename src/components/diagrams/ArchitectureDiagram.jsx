@@ -1,6 +1,6 @@
 import { useLayoutEffect, useState } from 'react'
 import { DIAG } from '../../data/architecture.js'
-import { dErd, dFeat, dLead, dMcp, dPipes, dRearch, dSec, dStack } from './architectureSvg.js'
+import { dErd, dFeat, dLead, dMcp, dMychart, dPipes, dRearch, dSec, dStack } from './architectureSvg.js'
 
 const builders = {
   lead: (tall, inst) => dLead(DIAG, tall, inst),
@@ -11,6 +11,7 @@ const builders = {
   stack: (_tall, inst) => dStack(DIAG, inst),
   features: (_tall, inst) => dFeat(DIAG, inst),
   rearch: (_tall, inst) => dRearch(inst),
+  mychart: (tall, inst) => dMychart(DIAG, tall, inst),
 }
 
 export default function ArchitectureDiagram({ kind, tall = false, inst = 't' }) {

@@ -566,3 +566,69 @@ body:has(dialog.project-dialog[open]) .scrollup {
     padding: 1.25rem;
   }
 }
+
+.bx-t-mychart .bx-lede {
+  margin-top: 0.5rem;
+}
+
+.bx-feat-block {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--container-color);
+  border: 1px solid rgb(224, 227, 235);
+  border-radius: 1.25rem;
+  box-shadow: 0 1px 4px rgba(30, 50, 100, 0.07);
+  overflow: hidden;
+}
+
+.bx-feat-block .bx-tile {
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  border-radius: 0;
+  flex: 1;
+}
+
+.bx-feat-block:has(.bx-tile:hover),
+.bx-feat-block:has(.bx-tile:focus-visible) {
+  border-color: var(--first-color);
+  box-shadow: 0 10px 24px rgba(22, 137, 181, 0.16);
+}
+
+.bx-industries {
+  margin: 0;
+  padding: 0 1.25rem 1.25rem;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text-color);
+}
+
+.bx-industries a {
+  color: var(--title-color);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@media (min-width: 1024px) {
+  .bx-feat-block {
+    grid-column: span 4;
+    grid-row: span 8;
+  }
+  .bx-more .bx-t-mychart {
+    grid-column: span 8;
+    grid-row: span 8;
+  }
+}
+
+@media (max-width: 767px) {
+  dialog.project-dialog.bx-dialog .bx-mychart-panel .bx-fig-big {
+    overflow-x: visible;
+  }
+  dialog.project-dialog.bx-dialog .bx-mychart-panel .bx-fig-big svg {
+    max-height: none;
+    min-width: 0 !important;
+    width: 100%;
+  }
+}

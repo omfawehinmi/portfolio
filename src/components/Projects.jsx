@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { COPY } from '../data/architecture.js'
 import { projects } from '../data/projects.js'
 import { intrinsicImageSize, publicUrl } from '../utils.js'
@@ -15,6 +15,7 @@ const KICKERS = {
   security: 'Access zones',
   stack: 'Layer stack',
   features: 'Capability matrix',
+  mychart: 'Healthcare data ingestion',
 }
 
 const LEAD_CAPTION =
@@ -57,6 +58,7 @@ function resolveOpen(openId) {
   if (!openId) return { kind: null }
   const mapped = OPEN_ALIASES[openId] || openId
   if (mapped === 'lead') return { kind: 'lead' }
+  if (mapped === 'mychart') return { kind: 'mychart' }
   const tile = COPY.tiles.find((item) => item.id === mapped)
   if (tile) return { kind: 'tile', tile }
   const more = moreItems.find((item) => item.id === mapped)
@@ -205,8 +207,49 @@ function ArchitectureTile({ tile, onOpen, tall }) {
   )
 }
 
-function MoreCard({ item, featured, onOpen }) {
+function HealthcareTile({ onOpen, tall }) {
+  const M = COPY.mychart
   return (
+    <article
+      className="bx-tile bx-t-mychart"
+      data-testid="mychart-tile"
+      tabIndex={0}
+      role="button"
+      aria-haspopup="dialog"
+      onClick={(event) => openTile(event, 'mychart', onOpen)}
+      onKeyDown={(event) => onTileKey(event, 'mychart', onOpen)}
+    >
+      <div className="bx-head">
+        <div>
+          <p className="bx-kicker">{M.kicker}</p>
+          <h4 className="bx-h2">{M.title}</h4>
+        </div>
+        <OpenIcon />
+      </div>
+      <p className="bx-lede">{M.summary}</p>
+      <figure className="bx-fig">
+        <ArchitectureDiagram kind="mychart" tall={tall} inst="tile" />
+      </figure>
+    </article>
+  )
+}
+
+function MychartPanel({ tall }) {
+  const M = COPY.mychart
+  return (
+    <div className="bx-panel-body bx-mychart-panel">
+      <figure className="bx-fig bx-fig-big">
+        <ArchitectureDiagram kind="mychart" tall={tall} inst="open" />
+        <figcaption>{M.caption}</figcaption>
+      </figure>
+      <p>{M.open}</p>
+    </div>
+  )
+}
+
+function MoreCard({ item, featured, onOpen }) {
+  const industries = item.prev === 'hr-intelligence' ? COPY.industries : null
+  const card = (
     <article
       className={`bx-tile bx-card ${featured ? 'bx-feat' : 'bx-row'}`}
       data-testid="project-tile"
@@ -223,6 +266,16 @@ function MoreCard({ item, featured, onOpen }) {
       </div>
       <OpenIcon />
     </article>
+  )
+  if (!industries) return card
+  return (
+    <div className="bx-feat-block">
+      {card}
+      <p className="bx-industries">
+        {industries.line}{' '}
+        <a href={industries.href}>{industries.link}</a>
+      </p>
+    </div>
   )
 }
 
@@ -349,19 +402,23 @@ export default function Projects({ openId, onOpen }) {
       ? COPY.lead.title
       : open.kind === 'tile'
         ? open.tile.title
-        : open.kind === 'more'
-          ? open.more.title
-          : open.kind === 'legacy'
-            ? open.project.modalTitle
-            : undefined
+        : open.kind === 'mychart'
+          ? COPY.mychart.title
+          : open.kind === 'more'
+            ? open.more.title
+            : open.kind === 'legacy'
+              ? open.project.modalTitle
+              : undefined
   const modalKicker =
     open.kind === 'lead'
       ? 'Lead project'
       : open.kind === 'tile'
         ? KICKERS[open.tile.id]
-        : open.kind === 'more'
-          ? 'More shipped work'
-          : undefined
+        : open.kind === 'mychart'
+          ? KICKERS.mychart
+          : open.kind === 'more'
+            ? 'More shipped work'
+            : undefined
 
   return (
     <section className="projects section" id="projects">
@@ -378,7 +435,10 @@ export default function Projects({ openId, onOpen }) {
         <h3 className="bx-morehead">More shipped work</h3>
         <div className="bx-grid bx-more">
           {moreItems.map((item, index) => (
-            <MoreCard key={item.id} item={item} featured={index === 0} onOpen={onOpen} />
+            <Fragment key={item.id}>
+              <MoreCard item={item} featured={index === 0} onOpen={onOpen} />
+              {index === 0 ? <HealthcareTile onOpen={onOpen} tall={tall} /> : null}
+            </Fragment>
           ))}
         </div>
       </div>
@@ -392,6 +452,7 @@ export default function Projects({ openId, onOpen }) {
       >
         {open.kind === 'lead' ? <LeadPanel tall={tall} /> : null}
         {open.kind === 'tile' ? <TilePanel tile={open.tile} tall={tall} /> : null}
+        {open.kind === 'mychart' ? <MychartPanel tall={tall} /> : null}
         {open.kind === 'more' ? <MorePanel item={open.more} /> : null}
         {open.kind === 'legacy' ? <LegacyBody key={open.project.id} project={open.project} onOpen={onOpen} /> : null}
       </Modal>

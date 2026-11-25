@@ -101,3 +101,29 @@ DIAG.features.rows=[
   {label:"Catalogs",z:"data",cells:[{i:"grid",t:"Semantic views",s:"Analyst catalogs"},{i:"search",t:"Cortex Search",s:"search catalogs"}]},
   {label:"Data",z:"data",cells:[{i:"layers",t:"Layers as schemas",s:"defined row meaning"}]},
   {label:"Warehouses",cells:[{i:"clock",t:"Batched loads",s:"designed to wake once per run"},{i:"split",t:"Interactive and agents",s:"separate warehouse"}]}];
+
+COPY.mychart = {
+  id: "mychart",
+  kicker: "Healthcare data ingestion",
+  title: "MyChart to Snowflake ingestion",
+  summary: "A SMART on FHIR ingestion path from a MyChart patient portal into Snowflake raw tables. Built and deployed, awaiting first patient authorization.",
+  open: "Designed and deployed a SMART on FHIR R4 ingestion path from an Epic MyChart patient portal into Snowflake. The patient authorizes access through OAuth, and tokens are kept in a token vault on AWS Lambda, DynamoDB and SSM Parameter Store. A scheduled Apache Airflow load is designed to pull FHIR R4 resources onto a Snowflake internal stage, and stored procedures load them into VARIANT raw tables. Infrastructure is defined in Terraform. The path is pending its first patient authorization, so no health data has been loaded yet.",
+  caption: "Ingestion path from patient authorization to Snowflake raw tables. Built, awaiting first load. No patient data is shown.",
+  status: "Built, awaiting first load",
+  chip: "Infrastructure in Terraform",
+  nodes: [
+    "MyChart (FHIR R4)",
+    "Patient authorization (OAuth)",
+    "Token vault (Lambda, DynamoDB, SSM)",
+    "Scheduled load (Airflow)",
+    "Internal stage",
+    "Load procedures",
+    "Raw tables (VARIANT)"
+  ]
+};
+COPY.industries = {
+  line: "The same pattern also covers Healthcare, Logistics, Legal, Finance and Operations, and Public Sector.",
+  link: "See all industries",
+  href: "https://www.myorglab.com/intelligence"
+};
+DIAG.mychart = COPY.mychart;
