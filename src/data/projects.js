@@ -36,9 +36,9 @@ export const projects = [
     id: 'semantic-hr',
     group: 'Production',
     icon: 'uil-users-alt',
-    title: 'Semantic HR',
+    title: 'HR Intelligence',
     outcome: 'Workday and SuccessFactors as governed Snowflake semantics: the memory agents actually use.',
-    modalTitle: 'Semantic HR: workforce intelligence on Snowflake',
+    modalTitle: 'HR Intelligence: workforce intelligence on Snowflake',
     thumb: publicUrl('assets/img/semantic-hr.png'),
     summary: [
       'Pulled out of the MyOrgLab stack because it is the piece hiring managers probe first: HRIS grain, certified metrics, and talk-to-data on the same warehouse.',
@@ -48,7 +48,7 @@ export const projects = [
       'Same pattern I ran as sole engineer on the Workday-to-Snowflake integration at Novanta and as the HRIS landing engineer at NetApp.',
       'Agents do not invent headcount or attrition; they read the semantic layer.',
     ],
-    links: [{ href: 'https://www.myorglab.com/semantic-hr', label: 'Semantic HR' }],
+    links: [{ href: 'https://www.myorglab.com/semantic-hr', label: 'HR Intelligence' }],
   },
   {
     id: 'cortex-self-serve',

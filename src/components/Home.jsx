@@ -1,5 +1,5 @@
 import { profile } from '../data/profile.js'
-import { heroMedia, highlights, projects } from '../data/projects.js'
+import { heroMedia, projects } from '../data/projects.js'
 import { publicUrl } from '../utils.js'
 import Icon from './ui/Icon.jsx'
 import ProjectMedia from './ui/ProjectMedia.jsx'
@@ -79,18 +79,6 @@ export default function Home({ onOpenProject }) {
           </div>
         </div>
 
-        <div className="impact home__impact" aria-label="Selected impact">
-          <p className="impact__kicker">Selected impact</p>
-          <div className="impact__grid">
-            {highlights.map((item) => (
-              <button type="button" className="impact__card" key={item.label} onClick={() => onOpenProject(item.projectId)}>
-                <Icon name={item.icon} className="impact__icon" />
-                <h3 className="impact__label">{item.label}</h3>
-                <p className="impact__detail">{item.detail}</p>
-              </button>
-            ))}
-          </div>
-        </div>
       </div>
     </section>
   )
