@@ -1,15 +1,290 @@
-import { useState } from 'react'
-import { projectGroups, projects } from '../data/projects.js'
-import { intrinsicImageSize } from '../utils.js'
+import { useEffect, useState } from 'react'
+import { COPY } from '../data/architecture.js'
+import { projects } from '../data/projects.js'
+import { intrinsicImageSize, publicUrl } from '../utils.js'
+import ArchitectureDiagram from './diagrams/ArchitectureDiagram.jsx'
 import Icon from './ui/Icon.jsx'
 import Modal from './ui/Modal.jsx'
-import ProjectMedia from './ui/ProjectMedia.jsx'
 import SectionHeader from './ui/SectionHeader.jsx'
 import MigrationCaseStudy from './case/MigrationCaseStudy.jsx'
 
-function ProjectBody({ project, onOpen }) {
+const KICKERS = {
+  mcp: 'Request path',
+  domains: "ERD, crow\u2019s foot",
+  pipes: 'Process flow',
+  security: 'Access zones',
+  stack: 'Layer stack',
+  features: 'Capability matrix',
+}
+
+const LEAD_CAPTION =
+  'Sample diagram, generic names. Separate read and write MCP servers in front of governed catalogs.'
+
+const MORE_PREVIEW = {
+  'hr-intelligence': { src: publicUrl('assets/img/bento/hr-intelligence.jpg'), sample: true },
+  myorglab: { src: publicUrl('assets/img/bento/myorglab.jpg'), sample: true },
+  'sof-portal': { src: publicUrl('assets/img/bento/sof-portal.jpg'), sample: true },
+  palms: { src: publicUrl('assets/img/bento/palms.jpg'), sample: false },
+  camera: { src: publicUrl('assets/img/bento/camera.jpg'), sample: false },
+  inpainting: { src: publicUrl('assets/img/bento/inpainting.jpg'), sample: false },
+}
+
+const OPEN_ALIASES = {
+  lead: 'lead',
+  mcp: 'mcp',
+  domains: 'domains',
+  pipes: 'pipes',
+  security: 'security',
+  stack: 'stack',
+  features: 'features',
+  'snowflake-migration': 'more-rearch',
+  myorglab: 'more-myorglab',
+  'semantic-hr': 'more-hr-intelligence',
+  'cortex-self-serve': 'more-hr-intelligence',
+  sof: 'more-sof-portal',
+  'camera-tracking': 'more-camera',
+  'palms-bag': 'more-palms',
+  inpainting: 'more-inpainting',
+}
+
+const moreItems = COPY.more.map((item) => ({
+  ...item,
+  id: `more-${item.prev}`,
+  outcome: item.line,
+}))
+
+function resolveOpen(openId) {
+  if (!openId) return { kind: null }
+  const mapped = OPEN_ALIASES[openId] || openId
+  if (mapped === 'lead') return { kind: 'lead' }
+  const tile = COPY.tiles.find((item) => item.id === mapped)
+  if (tile) return { kind: 'tile', tile }
+  const more = moreItems.find((item) => item.id === mapped)
+  if (more) return { kind: 'more', more }
+  const legacy = projects.find((item) => item.id === openId)
+  if (legacy) return { kind: 'legacy', project: legacy }
+  return { kind: null }
+}
+
+function useNarrow() {
+  const [narrow, setNarrow] = useState(() =>
+    typeof window !== 'undefined' ? window.matchMedia('(max-width: 767px)').matches : false,
+  )
+
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 767px)')
+    const onChange = () => setNarrow(media.matches)
+    onChange()
+    media.addEventListener('change', onChange)
+    return () => media.removeEventListener('change', onChange)
+  }, [])
+
+  return narrow
+}
+
+function Chips({ tags }) {
+  if (!tags?.length) return null
+  return (
+    <ul className="bx-chips">
+      {tags.map((tag) => (
+        <li key={tag}>{tag}</li>
+      ))}
+    </ul>
+  )
+}
+
+function FoldBody({ project, className = '' }) {
+  const [moreOpen, setMoreOpen] = useState(false)
+
+  return (
+    <div className="project-tile__fold">
+      <p className={`project-tile__outcome bx-body${className ? ` ${className}` : ''}${moreOpen ? ' is-open' : ''}`}>
+        {project.outcome}
+      </p>
+      <button
+        type="button"
+        className="project-tile__more"
+        aria-expanded={moreOpen}
+        onClick={(event) => {
+          event.stopPropagation()
+          setMoreOpen((open) => !open)
+        }}
+      >
+        {moreOpen ? 'Less' : 'More'}
+      </button>
+    </div>
+  )
+}
+
+function OpenIcon() {
+  return (
+    <span className="bx-open" aria-hidden="true">
+      <Icon name="uil-expand-arrows-alt" />
+    </span>
+  )
+}
+
+function PreviewMedia({ item, big = false }) {
+  if (item.prev === 'rearch') {
+    return (
+      <div className={`bx-media bx-svgprev${big ? ' bx-big' : ''}`}>
+        <ArchitectureDiagram kind="rearch" inst={big ? 'open' : 'tile'} />
+      </div>
+    )
+  }
+  const preview = MORE_PREVIEW[item.prev]
+  if (!preview) return null
+  const size = intrinsicImageSize(preview.src)
+  const alt = `${item.title} preview${preview.sample ? ', sample data' : ''}`
+  return (
+    <div className={`bx-media${big ? ' bx-big' : ''}`}>
+      <img
+        alt={alt}
+        src={preview.src}
+        width={size?.width}
+        height={size?.height}
+      />
+    </div>
+  )
+}
+
+function openTile(event, id, onOpen) {
+  if (event.target.closest('.project-tile__more')) return
+  onOpen(id)
+}
+
+function onTileKey(event, id, onOpen) {
+  if (event.target.closest('.project-tile__more')) return
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault()
+    onOpen(id)
+  }
+}
+
+function LeadTile({ onOpen, tall }) {
+  const L = COPY.lead
+  return (
+    <article
+      className="bx-tile bx-lead"
+      data-testid="project-tile"
+      tabIndex={0}
+      role="button"
+      aria-haspopup="dialog"
+      aria-label={`Open ${L.title}: ${L.subhead}`}
+      onClick={(event) => openTile(event, 'lead', onOpen)}
+      onKeyDown={(event) => onTileKey(event, 'lead', onOpen)}
+    >
+      <div className="bx-leadtop">
+        <div>
+          <p className="bx-kicker">Lead project</p>
+          <h3 className="bx-h1">{L.title}</h3>
+          <p className="bx-subhead">{L.subhead}</p>
+        </div>
+        <OpenIcon />
+      </div>
+      <div className="bx-leadbody">
+        <div className="bx-leadtext">
+          <p className="bx-lede">{L.oneLine}</p>
+          <Chips tags={L.tags} />
+        </div>
+        <figure className="bx-fig bx-leadfig">
+          <ArchitectureDiagram kind="lead" tall={tall} inst="tile" />
+        </figure>
+      </div>
+    </article>
+  )
+}
+
+function ArchitectureTile({ tile, onOpen, tall }) {
+  return (
+    <article
+      className={`bx-tile bx-t-${tile.id}`}
+      data-testid="project-tile"
+      tabIndex={0}
+      role="button"
+      aria-haspopup="dialog"
+      aria-label={`Open ${tile.title}`}
+      onClick={(event) => openTile(event, tile.id, onOpen)}
+      onKeyDown={(event) => onTileKey(event, tile.id, onOpen)}
+    >
+      <div className="bx-head">
+        <div>
+          <p className="bx-kicker">{KICKERS[tile.id]}</p>
+          <h4 className="bx-h2">{tile.title}</h4>
+        </div>
+        <OpenIcon />
+      </div>
+      <FoldBody project={{ outcome: tile.body }} />
+      <figure className="bx-fig">
+        <ArchitectureDiagram kind={tile.id} tall={tall} inst="tile" />
+      </figure>
+    </article>
+  )
+}
+
+function MoreCard({ item, featured, onOpen }) {
+  return (
+    <article
+      className={`bx-tile bx-card ${featured ? 'bx-feat' : 'bx-row'}`}
+      data-testid="project-tile"
+      tabIndex={0}
+      role="button"
+      aria-haspopup="dialog"
+      aria-label={`Open ${item.title}`}
+      onClick={(event) => openTile(event, item.id, onOpen)}
+      onKeyDown={(event) => onTileKey(event, item.id, onOpen)}
+    >
+      <PreviewMedia item={item} />
+      <div className="bx-cardtext">
+        <h4 className="bx-h3">{item.title}</h4>
+        <FoldBody project={item} />
+      </div>
+      <OpenIcon />
+    </article>
+  )
+}
+
+function LeadPanel({ tall }) {
+  const L = COPY.lead
+  return (
+    <div className="bx-panel-body">
+      <p className="bx-subhead">{L.subhead}</p>
+      <figure className="bx-fig bx-leadfig bx-fig-big">
+        <ArchitectureDiagram kind="lead" tall={tall} inst="open" />
+        <figcaption>{LEAD_CAPTION}</figcaption>
+      </figure>
+      <p className="bx-lede">{L.oneLine}</p>
+      <p>{L.intro}</p>
+      <Chips tags={L.tags} />
+    </div>
+  )
+}
+
+function TilePanel({ tile, tall }) {
+  return (
+    <div className="bx-panel-body">
+      <figure className="bx-fig bx-fig-big">
+        <ArchitectureDiagram kind={tile.id} tall={tall} inst="open" />
+        <figcaption>{tile.caption}</figcaption>
+      </figure>
+      <p>{tile.body}</p>
+    </div>
+  )
+}
+
+function MorePanel({ item }) {
+  return (
+    <div className="bx-panel-body">
+      <PreviewMedia item={item} big />
+      <p>{item.line}</p>
+      <Chips tags={item.tags} />
+    </div>
+  )
+}
+
+function LegacyBody({ project, onOpen }) {
   const parts = (project.parts || []).map((id) => projects.find((item) => item.id === id)).filter(Boolean)
-  const parent = project.parentId ? projects.find((item) => item.id === project.parentId) : null
+  const parentItem = project.parentId ? projects.find((item) => item.id === project.parentId) : null
 
   return (
     <>
@@ -62,9 +337,9 @@ function ProjectBody({ project, onOpen }) {
         </div>
       ) : null}
       <div className="case-links">
-        {parent ? (
-          <button type="button" className="button button--flex button--ghost" onClick={() => onOpen(parent.id)}>
-            Back to {parent.title}
+        {parentItem ? (
+          <button type="button" className="button button--flex button--ghost" onClick={() => onOpen(parentItem.id)}>
+            Back to {parentItem.title}
             <Icon name="uil-arrow-left" className="button__icon" />
           </button>
         ) : null}
@@ -84,64 +359,59 @@ function ProjectBody({ project, onOpen }) {
   )
 }
 
-
-function ProjectTile({ project, onOpen }) {
-  const [moreOpen, setMoreOpen] = useState(false)
-
-  return (
-    <div className={`project-tile${project.parentId ? ' project-tile--part' : ''}${moreOpen ? ' is-more-open' : ''}`}>
-      <button type="button" className="project-tile__open" onClick={() => onOpen(project.id)}>
-        <span className="project-tile__media">
-          <ProjectMedia project={project} />
-        </span>
-        <span className="project-tile__copy">
-          {project.parentId ? <span className="project-tile__kicker">Component</span> : null}
-          <span className="project-tile__title">{project.title}</span>
-        </span>
-      </button>
-      {project.outcome ? (
-        <div className="project-tile__fold">
-          <p className={`project-tile__outcome${moreOpen ? ' is-open' : ''}`}>{project.outcome}</p>
-          <button
-            type="button"
-            className="project-tile__more"
-            aria-expanded={moreOpen}
-            onClick={() => setMoreOpen((open) => !open)}
-          >
-            {moreOpen ? 'Less' : 'More'}
-          </button>
-        </div>
-      ) : null}
-    </div>
-  )
-}
-
 export default function Projects({ openId, onOpen }) {
-  const openProject = projects.find((project) => project.id === openId)
+  const tall = useNarrow()
+  const open = resolveOpen(openId)
+  const modalTitle =
+    open.kind === 'lead'
+      ? COPY.lead.title
+      : open.kind === 'tile'
+        ? open.tile.title
+        : open.kind === 'more'
+          ? open.more.title
+          : open.kind === 'legacy'
+            ? open.project.modalTitle
+            : undefined
+  const modalKicker =
+    open.kind === 'lead'
+      ? 'Lead project'
+      : open.kind === 'tile'
+        ? KICKERS[open.tile.id]
+        : open.kind === 'more'
+          ? 'More shipped work'
+          : undefined
 
   return (
     <section className="projects section" id="projects">
-      <SectionHeader title="Projects" subtitle="Open a tile. SOF and Household Ledger components sit with the system they belong to." />
+      <SectionHeader title={COPY.section.title} subtitle={COPY.section.kicker} />
 
-      <div className="projects__stack container">
-        {projectGroups.map((group) => (
-          <div className="project-group" key={group}>
-            <h3 className="project-group__label">{group}</h3>
-            <ul className={`project-grid${projects.some((item) => item.group === group && item.featured) ? ' project-grid--ledger' : ''}`}>
-              {projects
-                .filter((project) => project.group === group)
-                .map((project) => (
-                  <li key={project.id} className={project.featured ? 'is-featured' : project.parentId ? 'is-part' : undefined}>
-                    <ProjectTile project={project} onOpen={onOpen} />
-                  </li>
-                ))}
-            </ul>
-          </div>
-        ))}
+      <div className="container bx">
+        <p className="bx-intro">{COPY.section.intro}</p>
+        <div className="bx-grid">
+          <LeadTile onOpen={onOpen} tall={tall} />
+          {COPY.tiles.map((tile) => (
+            <ArchitectureTile key={tile.id} tile={tile} onOpen={onOpen} tall={tall} />
+          ))}
+        </div>
+        <h3 className="bx-morehead">More shipped work</h3>
+        <div className="bx-grid bx-more">
+          {moreItems.map((item, index) => (
+            <MoreCard key={item.id} item={item} featured={index === 0} onOpen={onOpen} />
+          ))}
+        </div>
       </div>
 
-      <Modal open={Boolean(openProject)} title={openProject?.modalTitle} onClose={() => onOpen(null)}>
-        {openProject ? <ProjectBody key={openProject.id} project={openProject} onOpen={onOpen} /> : null}
+      <Modal
+        open={Boolean(open.kind)}
+        title={modalTitle}
+        kicker={modalKicker}
+        onClose={() => onOpen(null)}
+        className={open.kind && open.kind !== 'legacy' ? 'bx-dialog' : undefined}
+      >
+        {open.kind === 'lead' ? <LeadPanel tall={tall} /> : null}
+        {open.kind === 'tile' ? <TilePanel tile={open.tile} tall={tall} /> : null}
+        {open.kind === 'more' ? <MorePanel item={open.more} /> : null}
+        {open.kind === 'legacy' ? <LegacyBody key={open.project.id} project={open.project} onOpen={onOpen} /> : null}
       </Modal>
     </section>
   )

@@ -56,7 +56,7 @@ export const skillGroups = [
       'DirectQuery to Snowflake',
       'Streamlit',
       'Tableau',
-      'Semantic HR metrics',
+      'HR Intelligence metrics',
     ],
   },
   {

@@ -6,19 +6,20 @@ export function canUseNativeDialog() {
     && typeof HTMLDialogElement.prototype.showModal === 'function'
 }
 
-function ModalBody({ title, onClose, children }) {
+function ModalBody({ title, kicker, onClose, children }) {
   return (
     <>
       <button type="button" className="services__modal-close" onClick={onClose} aria-label="Close">
         <Icon name="uil-times" />
       </button>
-      <h4 className="services__modal-title">{title}</h4>
+      {kicker ? <p className="bx-kicker">{kicker}</p> : null}
+      {title ? <h4 className="services__modal-title">{title}</h4> : null}
       <div className="services__modal-services">{children}</div>
     </>
   )
 }
 
-export default function Modal({ open, title, onClose, children }) {
+export default function Modal({ open, title, kicker, onClose, children, className }) {
   const dialogRef = useRef(null)
   const triggerRef = useRef(null)
   const native = canUseNativeDialog()
@@ -70,14 +71,14 @@ export default function Modal({ open, title, onClose, children }) {
     return (
       <dialog
         ref={dialogRef}
-        className="services__modal-content case-modal project-dialog"
+        className={`services__modal-content case-modal project-dialog${className ? ` ${className}` : ''}`}
         aria-label={typeof title === 'string' ? title : 'Project details'}
         onClose={handleNativeClose}
         onClick={(event) => {
           if (event.target === event.currentTarget) event.currentTarget.close()
         }}
       >
-        <ModalBody title={title} onClose={() => dialogRef.current && dialogRef.current.close()}>
+        <ModalBody title={title} kicker={kicker} onClose={() => dialogRef.current && dialogRef.current.close()}>
           {children}
         </ModalBody>
       </dialog>
@@ -91,8 +92,8 @@ export default function Modal({ open, title, onClose, children }) {
         if (event.target === event.currentTarget) onClose()
       }}
     >
-      <div className="services__modal-content case-modal" role="dialog" aria-modal="true" aria-label={typeof title === 'string' ? title : 'Project details'}>
-        <ModalBody title={title} onClose={onClose}>{children}</ModalBody>
+      <div className={`services__modal-content case-modal${className ? ` ${className}` : ''}`} role="dialog" aria-modal="true" aria-label={typeof title === 'string' ? title : 'Project details'}>
+        <ModalBody title={title} kicker={kicker} onClose={onClose}>{children}</ModalBody>
       </div>
     </div>
   )

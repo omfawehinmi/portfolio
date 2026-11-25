@@ -28,6 +28,12 @@ export const IMAGE_INTRINSIC_SIZE = {
   'sof-portal.png': { width: 2326, height: 1437 },
   'sof-tax.png': { width: 2159, height: 1103 },
   'sof.png': { width: 3325, height: 1816 },
+  'camera.jpg': { width: 442, height: 584 },
+  'hr-intelligence.jpg': { width: 1400, height: 765 },
+  'inpainting.jpg': { width: 795, height: 400 },
+  'myorglab.jpg': { width: 1400, height: 765 },
+  'palms.jpg': { width: 1330, height: 750 },
+  'sof-portal.jpg': { width: 1400, height: 865 },
 }
 
 export function intrinsicImageSize(src) {

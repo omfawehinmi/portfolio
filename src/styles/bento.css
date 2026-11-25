@@ -1,0 +1,568 @@
+/* Approved portfolio redesign: bento project cards, More shipped work, and
+   diagram panels. Uses the site's existing tokens (Poppins, #29b5e8, #1689b5,
+   #0b1d36). Hover motion is skipped when the user prefers reduced motion. */
+
+.bx {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0 1rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.bx-intro {
+  max-width: 46rem;
+  margin: 0 auto 0.25rem;
+  text-align: center;
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+.bx-tile {
+  position: relative;
+  background: var(--container-color);
+  border: 1px solid rgb(224, 227, 235);
+  border-radius: 1.25rem;
+  box-shadow: 0 1px 4px rgba(30, 50, 100, 0.07);
+  padding: 1.25rem;
+  min-width: 0;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  text-align: left;
+}
+
+.bx-tile:hover,
+.bx-tile:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(22, 137, 181, 0.16);
+  border-color: var(--first-color);
+  outline: none;
+}
+
+.bx-tile:focus-visible {
+  box-shadow: 0 0 0 3px #29b5e8;
+}
+
+.bx-head,
+.bx-leadtop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.bx-open {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: var(--first-color-lighter);
+  color: #1689b5;
+  font-size: 1.25rem;
+  transition: background 0.2s, color 0.2s;
+  pointer-events: none;
+}
+
+.bx-tile:hover .bx-open,
+.bx-tile:focus-visible .bx-open {
+  background: #29b5e8;
+  color: #fff;
+}
+
+.bx-kicker {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: #1689b5;
+  margin-bottom: 0.25rem;
+}
+
+.bx-h1 {
+  font-size: 1.6rem;
+  line-height: 1.25;
+  color: var(--title-color);
+}
+
+.bx-h2 {
+  font-size: 1.15rem;
+  line-height: 1.3;
+  color: var(--title-color);
+}
+
+.bx-h3 {
+  font-size: 1rem;
+  line-height: 1.3;
+  color: var(--title-color);
+  margin-bottom: 0.2rem;
+}
+
+.bx-tile p,
+.bx-panel-body p {
+  color: var(--text-color);
+  line-height: 1.6;
+  font-size: 0.92rem;
+}
+
+p.bx-subhead {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: #1689b5 !important;
+  margin-top: 0.2rem;
+}
+
+.bx-lede {
+  color: var(--title-color) !important;
+  font-weight: 500;
+  font-size: 1rem !important;
+}
+
+.bx-tile .project-tile__fold {
+  padding: 0;
+  margin-top: 0.5rem;
+}
+
+.bx-tile .project-tile__outcome {
+  margin-top: 0;
+}
+
+.bx-body {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.bx-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bx-chips li {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--title-color);
+  background: var(--first-color-lighter);
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+}
+
+.bx-fig {
+  margin: 0.75rem 0 0;
+  min-width: 0;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.bx-fig .bx-svg,
+.bx-fig svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.bx-fig figcaption {
+  font-size: 0.8rem;
+  color: var(--title-color);
+  margin-top: 0.6rem;
+  line-height: 1.5;
+}
+
+.bx-lead {
+  border: 2px solid var(--first-color);
+  background: linear-gradient(180deg, #eef9fd, var(--container-color) 70%);
+}
+
+.bx-leadfig {
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+.bx-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.bx-morehead {
+  font-size: 1.15rem;
+  color: var(--title-color);
+  margin-top: 0.75rem;
+}
+
+.bx-media {
+  border-radius: 0.8rem;
+  overflow: hidden;
+  background: var(--input-color);
+  flex: none;
+}
+
+.bx-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+.bx-svgprev {
+  display: grid;
+  place-items: center;
+  background: #f4fbfe;
+}
+
+.bx-svgprev .bx-svg,
+.bx-svgprev svg {
+  width: 92%;
+  height: auto;
+}
+
+.bx-feat .bx-media {
+  aspect-ratio: 16 / 9;
+  margin-bottom: 0.75rem;
+}
+
+.bx-feat .bx-open {
+  position: absolute;
+  right: 1.6rem;
+  top: 1.6rem;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.bx-row {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.75rem;
+}
+
+.bx-row .bx-media {
+  width: 104px;
+  height: 70px;
+}
+
+.bx-row .bx-open {
+  width: 36px;
+  height: 36px;
+  font-size: 1.05rem;
+}
+
+.bx-row .bx-cardtext {
+  flex: 1;
+  min-width: 0;
+}
+
+.bx-row .project-tile__outcome {
+  -webkit-line-clamp: 2;
+  margin-top: 0;
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.bx-panel-body .bx-h1 {
+  padding-right: 3.5rem;
+}
+
+.bx-panel-body p {
+  margin-top: 0.75rem;
+}
+
+.bx-big {
+  margin-top: 1rem;
+}
+
+.bx-big img {
+  object-fit: contain;
+  max-height: 50vh;
+  background: #f4f8fa;
+}
+
+.bx-fig-big svg {
+  max-height: 56vh;
+}
+
+@media (max-width: 767px) {
+  .bx {
+    padding: 0 0.25rem;
+  }
+
+  .bx-leadbody {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bx-leadfig {
+    margin-top: 0.75rem;
+  }
+
+  .bx-h1 {
+    font-size: 1.45rem;
+  }
+
+  dialog.project-dialog.bx-dialog {
+    width: 100vw;
+    max-width: 100vw;
+    max-height: 100vh;
+    height: 100%;
+    border-radius: 0;
+    margin: 0;
+    padding: 1.25rem;
+  }
+
+  .bx-fig-big {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .bx-fig-big svg {
+    min-width: 560px;
+    max-height: none;
+  }
+
+  .bx-fig-big figcaption {
+    position: sticky;
+    left: 0;
+    max-width: calc(100vw - 2.5rem);
+  }
+}
+
+@media (min-width: 1024px) {
+  .bx-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-auto-rows: 40px;
+    grid-auto-flow: dense;
+  }
+
+  .bx-lead {
+    grid-column: span 12;
+    grid-row: span 8;
+    padding: 1.5rem 1.75rem;
+  }
+
+  .bx-h1 {
+    font-size: 1.9rem;
+  }
+
+  .bx-leadbody {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: 1.75rem;
+    margin-top: 0.5rem;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .bx-leadfig {
+    margin: 0;
+    justify-content: center;
+  }
+
+  .bx-t-mcp,
+  .bx-t-domains {
+    grid-column: span 6;
+    grid-row: span 11;
+  }
+
+  .bx-t-pipes,
+  .bx-t-security {
+    grid-column: span 4;
+    grid-row: span 10;
+  }
+
+  .bx-t-stack,
+  .bx-t-features {
+    grid-column: span 4;
+    grid-row: span 5;
+  }
+
+  .bx-t-stack .project-tile__outcome,
+  .bx-t-features .project-tile__outcome {
+    display: none;
+  }
+
+  .bx-t-pipes .project-tile__outcome,
+  .bx-t-security .project-tile__outcome {
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: auto;
+  }
+
+  .bx-lead .project-tile__outcome,
+  .bx-t-mcp .project-tile__outcome,
+  .bx-t-domains .project-tile__outcome {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: auto;
+  }
+
+  .bx-tile .bx-fig {
+    justify-content: flex-end;
+  }
+
+  .bx-tile .bx-fig svg {
+    max-height: 100%;
+  }
+
+  .bx-more {
+    grid-auto-rows: 48px;
+  }
+
+  .bx-feat {
+    grid-column: span 4;
+    grid-row: span 6;
+  }
+
+  .bx-row {
+    grid-column: span 4;
+    grid-row: span 2;
+  }
+
+  .bx-row .project-tile__outcome {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: auto;
+  }
+
+  .bx-feat .project-tile__outcome {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bx-tile,
+  .bx-open {
+    transition: none;
+  }
+
+  .bx-tile:hover,
+  .bx-tile:focus-visible {
+    transform: none;
+  }
+}
+
+.dark-theme .bx-tile {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.dark-theme .bx-lead {
+  background: linear-gradient(180deg, #10263f, var(--container-color) 70%);
+}
+
+.dark-theme .bx-kicker,
+.dark-theme p.bx-subhead {
+  color: var(--first-color-alt) !important;
+}
+
+.dark-theme .bx-svgprev,
+.dark-theme .bx-big img {
+  background: #10263f;
+}
+
+dialog.project-dialog.bx-dialog,
+.bx-dialog.services__modal-content {
+  width: min(960px, calc(100vw - 4rem));
+  max-height: calc(100vh - 4rem);
+  padding: 2rem;
+  border-radius: 1.25rem;
+}
+
+.bx-dialog .services__modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 12px;
+  border: 0;
+  background: var(--first-color-lighter);
+  color: #0b1d36;
+  font-size: 1.4rem;
+  display: grid;
+  place-items: center;
+}
+
+.bx-dialog .services__modal-close:focus-visible {
+  outline: 3px solid #29b5e8;
+}
+
+.bx-dialog .services__modal-title {
+  font-size: 1.6rem;
+  line-height: 1.25;
+  color: var(--title-color);
+  padding-right: 3.5rem;
+  margin: 0.15rem 0 0;
+}
+
+.bx-dialog .bx-kicker {
+  margin: 0;
+  padding-right: 3.5rem;
+}
+
+@media (min-width: 1024px) {
+  .bx-dialog .services__modal-title {
+    font-size: 1.9rem;
+  }
+}
+
+/* .services__modal-content sets position: relative, which pulls a modal
+   dialog out of the viewport. Pin it to the viewport instead. While it is
+   open, hide the site header and scroll button so they do not sit above the
+   backdrop. */
+dialog.project-dialog {
+  position: fixed;
+  z-index: var(--z-modal);
+}
+
+dialog.project-dialog.bx-dialog {
+  overflow-y: auto;
+  padding-bottom: 2.25rem;
+}
+
+dialog.project-dialog.bx-dialog .bx-fig-big svg {
+  max-height: 46vh;
+}
+
+body:has(dialog.project-dialog[open]) .header,
+body:has(dialog.project-dialog[open]) .scrollup {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@media (max-width: 767px) {
+  dialog.project-dialog.bx-dialog {
+    width: 100vw;
+    max-width: 100vw;
+    max-height: 100vh;
+    height: 100%;
+    border-radius: 0;
+    margin: 0;
+    padding: 1.25rem;
+  }
+}
