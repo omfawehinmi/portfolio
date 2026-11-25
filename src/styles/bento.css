@@ -166,12 +166,18 @@ p.bx-subhead {
   min-height: 0;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .bx-fig .bx-svg,
 .bx-fig svg {
   width: 100%;
+  max-width: 100%;
   height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center;
   display: block;
 }
 
@@ -228,8 +234,12 @@ p.bx-subhead {
 
 .bx-svgprev .bx-svg,
 .bx-svgprev svg {
-  width: 92%;
-  height: auto;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center;
 }
 
 .bx-feat .bx-media {
@@ -254,6 +264,11 @@ p.bx-subhead {
 .bx-row .bx-media {
   width: 104px;
   height: 70px;
+}
+
+.bx-row .bx-media img {
+  object-fit: cover;
+  object-position: center;
 }
 
 .bx-row .bx-open {
@@ -415,11 +430,18 @@ p.bx-subhead {
   }
 
   .bx-tile .bx-fig {
-    justify-content: flex-end;
+    justify-content: center;
+    align-items: center;
   }
 
-  .bx-tile .bx-fig svg {
+  .bx-tile .bx-fig svg,
+  .bx-leadfig svg {
+    max-width: 100%;
     max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    object-position: center;
   }
 
   .bx-more {
