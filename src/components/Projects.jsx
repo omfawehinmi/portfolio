@@ -1,4 +1,5 @@
 import { projectGroups, projects } from '../data/projects.js'
+import { intrinsicImageSize } from '../utils.js'
 import Icon from './ui/Icon.jsx'
 import Modal from './ui/Modal.jsx'
 import ProjectMedia from './ui/ProjectMedia.jsx'
@@ -28,6 +29,8 @@ function ProjectBody({ project, onOpen }) {
           src={project.thumb}
           alt=""
           className="case-still"
+          width={intrinsicImageSize(project.thumb)?.width}
+          height={intrinsicImageSize(project.thumb)?.height}
           style={{ objectPosition: project.thumbPos || 'center top' }}
         />
       ) : null}

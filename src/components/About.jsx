@@ -1,5 +1,5 @@
 import { profile } from '../data/profile.js'
-import { publicUrl } from '../utils.js'
+import { publicUrl, intrinsicImageSize } from '../utils.js'
 import Icon from './ui/Icon.jsx'
 import Fold from './ui/Fold.jsx'
 import SectionHeader from './ui/SectionHeader.jsx'
@@ -10,7 +10,13 @@ export default function About() {
       <SectionHeader title="About" subtitle="Snowflake-first, production-shaped" />
 
       <div className="about__container container grid">
-        <img src={publicUrl('assets/img/michael_fawehinmi.png')} alt="Michael Fawehinmi" className="about__img" />
+        <img
+          src={publicUrl('assets/img/michael_fawehinmi.png')}
+          alt="Michael Fawehinmi"
+          className="about__img"
+          width={intrinsicImageSize('assets/img/michael_fawehinmi.png')?.width}
+          height={intrinsicImageSize('assets/img/michael_fawehinmi.png')?.height}
+        />
 
         <div className="about__data">
           <p className="about__description">

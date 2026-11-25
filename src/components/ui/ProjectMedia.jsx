@@ -1,4 +1,5 @@
 import Icon from './Icon.jsx'
+import { intrinsicImageSize } from '../../utils.js'
 
 export default function ProjectMedia({ project }) {
   if (project.videoFile) {
@@ -8,7 +9,16 @@ export default function ProjectMedia({ project }) {
     return <iframe src={project.embed} title="" allow="autoplay; fullscreen" tabIndex={-1} />
   }
   if (project.thumb) {
-    return <img src={project.thumb} alt="" style={{ objectPosition: project.thumbPos || 'center top' }} />
+    const size = intrinsicImageSize(project.thumb)
+    return (
+      <img
+        src={project.thumb}
+        alt=""
+        width={size?.width}
+        height={size?.height}
+        style={{ objectPosition: project.thumbPos || 'center top' }}
+      />
+    )
   }
   return <Icon name={project.icon} />
 }
