@@ -429,6 +429,12 @@ body.dark-theme .home {
   color: var(--title-color);
 }
 
+.project-tile__outcome {
+  font-size: var(--smaller-font-size);
+  line-height: 1.45;
+  color: var(--text-color);
+}
+
 .project-grid--ledger .is-featured {
   grid-column: 1 / -1;
 }
@@ -715,6 +721,14 @@ body.dark-theme .home {
   .home__actions .button {
     width: 100%;
     justify-content: center;
+  }
+
+  /* Approved More fold: clamp card bodies on phones; full text is in the open sheet. */
+  .project-tile__outcome {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
   }
 }
 
