@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { projectGroups, projects } from '../data/projects.js'
 import { intrinsicImageSize } from '../utils.js'
 import Icon from './ui/Icon.jsx'
@@ -83,6 +84,38 @@ function ProjectBody({ project, onOpen }) {
   )
 }
 
+
+function ProjectTile({ project, onOpen }) {
+  const [moreOpen, setMoreOpen] = useState(false)
+
+  return (
+    <div className={`project-tile${project.parentId ? ' project-tile--part' : ''}${moreOpen ? ' is-more-open' : ''}`}>
+      <button type="button" className="project-tile__open" onClick={() => onOpen(project.id)}>
+        <span className="project-tile__media">
+          <ProjectMedia project={project} />
+        </span>
+        <span className="project-tile__copy">
+          {project.parentId ? <span className="project-tile__kicker">Component</span> : null}
+          <span className="project-tile__title">{project.title}</span>
+        </span>
+      </button>
+      {project.outcome ? (
+        <div className="project-tile__fold">
+          <p className={`project-tile__outcome${moreOpen ? ' is-open' : ''}`}>{project.outcome}</p>
+          <button
+            type="button"
+            className="project-tile__more"
+            aria-expanded={moreOpen}
+            onClick={() => setMoreOpen((open) => !open)}
+          >
+            {moreOpen ? 'Less' : 'More'}
+          </button>
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
 export default function Projects({ openId, onOpen }) {
   const openProject = projects.find((project) => project.id === openId)
 
@@ -99,16 +132,7 @@ export default function Projects({ openId, onOpen }) {
                 .filter((project) => project.group === group)
                 .map((project) => (
                   <li key={project.id} className={project.featured ? 'is-featured' : project.parentId ? 'is-part' : undefined}>
-                    <button type="button" className={`project-tile${project.parentId ? ' project-tile--part' : ''}`} onClick={() => onOpen(project.id)}>
-                      <span className="project-tile__media">
-                        <ProjectMedia project={project} />
-                      </span>
-                      <span className="project-tile__copy">
-                        {project.parentId ? <span className="project-tile__kicker">Component</span> : null}
-                        <span className="project-tile__title">{project.title}</span>
-                        <span className="project-tile__outcome">{project.outcome}</span>
-                      </span>
-                    </button>
+                    <ProjectTile project={project} onOpen={onOpen} />
                   </li>
                 ))}
             </ul>

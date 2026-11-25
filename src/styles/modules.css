@@ -385,6 +385,20 @@ body.dark-theme .home {
   color: inherit;
 }
 
+.project-tile__open {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
 .project-tile:hover {
   border-color: var(--first-color);
 }
@@ -723,13 +737,7 @@ body.dark-theme .home {
     justify-content: center;
   }
 
-  /* Approved More fold: clamp card bodies on phones; full text is in the open sheet. */
-  .project-tile__outcome {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    overflow: hidden;
-  }
+  /* Approved More fold: first line on phones, full outcome when More is open. */
 }
 
 /*==================== CASE STUDY DIAGRAMS ====================*/
