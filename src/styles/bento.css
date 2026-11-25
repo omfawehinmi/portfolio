@@ -82,7 +82,7 @@
   font-weight: 600;
   letter-spacing: 1.4px;
   text-transform: uppercase;
-  color: #1689b5;
+  color: var(--title-color);
   margin-bottom: 0.25rem;
 }
 
@@ -475,7 +475,7 @@ p.bx-subhead {
 
 .dark-theme .bx-kicker,
 .dark-theme p.bx-subhead {
-  color: var(--first-color-alt) !important;
+  color: var(--title-color) !important;
 }
 
 .dark-theme .bx-svgprev,

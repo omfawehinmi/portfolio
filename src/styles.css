@@ -536,7 +536,7 @@ img {
 
 .skills__subtitle {
   font-size: var(--smaller-font-size);
-  color: var(--text-color-light);
+  color: var(--text-color);
 }
 
 .skills__arrow {
@@ -1552,7 +1552,7 @@ h1, h2, h3, h4 {
 }
 
 .section__subtitle {
-  color: var(--first-color);
+  color: var(--title-color);
   font-weight: 600;
   font-size: var(--smaller-font-size);
   letter-spacing: 1.5px;
@@ -1702,7 +1702,7 @@ h1, h2, h3, h4 {
 
 .skills__subtitle {
   font-size: var(--smaller-font-size);
-  color: var(--text-color-light);
+  color: var(--text-color);
 }
 
 .skills__bar, .skills__percentage {
@@ -1987,7 +1987,7 @@ dialog.project-dialog::backdrop {
   border: 0;
   background: none;
   padding: 0;
-  color: var(--first-color);
+  color: var(--title-color);
   font: inherit;
   font-weight: 600;
   cursor: pointer;
@@ -1995,19 +1995,12 @@ dialog.project-dialog::backdrop {
 
 @media screen and (max-width: 767px) {
   .project-tile__more {
-    display: inline-flex;
-    min-height: 44px;
-    align-items: center;
+    display: none;
   }
   .project-tile__outcome {
     display: block;
-    height: 1lh;
-    overflow: hidden;
-    transition: height 240ms ease;
-    -webkit-line-clamp: unset;
-  }
-  .project-tile__outcome.is-open {
     height: auto;
+    overflow: visible;
   }
 }
 

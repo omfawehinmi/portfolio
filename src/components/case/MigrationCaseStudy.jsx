@@ -33,7 +33,7 @@ const prodEnv = (dir) => `flowchart ${dir}
   pr[Pipeline role] --> prod
   subgraph prod[PROD: 5 databases]
     direction TB
-    p1[(Ledger database)]
+    p1[(Finance database)]
     p2[(Projects database)]
     p3[(Agent workforce database)]
     p4[(Control database)]
@@ -46,7 +46,7 @@ const devEnv = (dir) => `flowchart ${dir}
   dr[DEV pipeline role] --> dev
   subgraph dev[DEV: 4 databases, synthetic data only]
     direction TB
-    d1[(Ledger DEV)]
+    d1[(Finance DEV)]
     d2[(Projects DEV)]
     d3[(Agent workforce DEV)]
     d4[(Control DEV)]
@@ -116,7 +116,7 @@ const architecture = (
     <p>Sources land in a raw layer, move through staging and intermediate layers, and publish to analytics marts read by a desktop app and MCP read clients. Each domain database follows the same pattern.</p>
     <Mermaid chart={dataFlow} label="Data flow from five sources through raw, staging and marts to read-only clients, with test results feeding a dashboard" />
     <h4>Environments</h4>
-    <p>PROD has 5 databases: a finance ledger, a projects domain, an agent workforce domain, a control plane and an audit store. DEV has 4 matching databases with their own warehouse, resource monitor and pipeline role, holding synthetic fixtures only.</p>
+    <p>PROD has 5 databases: a finance domain, a projects domain, an agent workforce domain, a control plane and an audit store. DEV has 4 matching databases with their own warehouse, resource monitor and pipeline role, holding synthetic fixtures only.</p>
     <Mermaid chart={prodEnv} label="Terraform and the pipeline role manage 5 PROD databases" />
     <Mermaid chart={devEnv} label="The same Terraform state and a DEV pipeline role manage 4 DEV databases with synthetic data" />
     <h4>Roles</h4>

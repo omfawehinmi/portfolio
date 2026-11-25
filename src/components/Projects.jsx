@@ -94,24 +94,11 @@ function Chips({ tags }) {
 }
 
 function FoldBody({ project, className = '' }) {
-  const [moreOpen, setMoreOpen] = useState(false)
-
   return (
     <div className="project-tile__fold">
-      <p className={`project-tile__outcome bx-body${className ? ` ${className}` : ''}${moreOpen ? ' is-open' : ''}`}>
+      <p className={`project-tile__outcome bx-body${className ? ` ${className}` : ''}`}>
         {project.outcome}
       </p>
-      <button
-        type="button"
-        className="project-tile__more"
-        aria-expanded={moreOpen}
-        onClick={(event) => {
-          event.stopPropagation()
-          setMoreOpen((open) => !open)
-        }}
-      >
-        {moreOpen ? 'Less' : 'More'}
-      </button>
     </div>
   )
 }
@@ -149,12 +136,10 @@ function PreviewMedia({ item, big = false }) {
 }
 
 function openTile(event, id, onOpen) {
-  if (event.target.closest('.project-tile__more')) return
   onOpen(id)
 }
 
 function onTileKey(event, id, onOpen) {
-  if (event.target.closest('.project-tile__more')) return
   if (event.key === 'Enter' || event.key === ' ') {
     event.preventDefault()
     onOpen(id)
@@ -170,7 +155,6 @@ function LeadTile({ onOpen, tall }) {
       tabIndex={0}
       role="button"
       aria-haspopup="dialog"
-      aria-label={`${L.title}: ${L.subhead}`}
       onClick={(event) => openTile(event, 'lead', onOpen)}
       onKeyDown={(event) => onTileKey(event, 'lead', onOpen)}
     >
@@ -203,7 +187,6 @@ function ArchitectureTile({ tile, onOpen, tall }) {
       tabIndex={0}
       role="button"
       aria-haspopup="dialog"
-      aria-label={tile.title}
       onClick={(event) => openTile(event, tile.id, onOpen)}
       onKeyDown={(event) => onTileKey(event, tile.id, onOpen)}
     >
@@ -230,7 +213,6 @@ function MoreCard({ item, featured, onOpen }) {
       tabIndex={0}
       role="button"
       aria-haspopup="dialog"
-      aria-label={item.title}
       onClick={(event) => openTile(event, item.id, onOpen)}
       onKeyDown={(event) => onTileKey(event, item.id, onOpen)}
     >

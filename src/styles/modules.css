@@ -98,12 +98,12 @@ body.dark-theme .home {
 
 .role__years {
   font-size: var(--smaller-font-size);
-  color: var(--text-color-light);
+  color: var(--title-color);
 }
 
 .role__org {
   margin: 0.15rem 0 0.45rem;
-  color: var(--first-color);
+  color: var(--title-color);
   font-size: var(--small-font-size);
   font-weight: 600;
 }
@@ -360,7 +360,7 @@ body.dark-theme .home {
   font-size: var(--smaller-font-size);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--first-color);
+  color: var(--title-color);
 }
 
 .project-grid {
@@ -449,22 +449,22 @@ body.dark-theme .home {
   color: var(--text-color);
 }
 
-.project-grid--ledger .is-featured {
+.project-grid--featured .is-featured {
   grid-column: 1 / -1;
 }
 
-.project-grid--ledger .is-featured .project-tile__media {
+.project-grid--featured .is-featured .project-tile__media {
   height: 240px;
 }
 
 /* Full-width featured screenshot: match its 16:9 frame so it is not clipped.
    Icon-only featured tiles keep the 240px band above. */
-.project-grid--ledger .is-featured .project-tile__media:has(> img) {
+.project-grid--featured .is-featured .project-tile__media:has(> img) {
   height: auto;
   aspect-ratio: 16 / 9;
 }
 
-.project-grid--ledger .is-featured .project-tile__media:has(> img) img {
+.project-grid--featured .is-featured .project-tile__media:has(> img) img {
   position: absolute;
   inset: 0;
 }
@@ -478,7 +478,7 @@ body.dark-theme .home {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   font-weight: 700;
-  color: var(--first-color);
+  color: var(--title-color);
 }
 
 .case-parts {
@@ -676,7 +676,7 @@ body.dark-theme .home {
   background: none;
   border: 0;
   padding: 0.25rem 0;
-  color: var(--first-color);
+  color: var(--title-color);
   font-weight: 600;
   font-size: var(--small-font-size);
 }
@@ -845,19 +845,20 @@ img {
 body:not(.dark-theme) .button:not(.button--ghost):hover {
   background-color: var(--button-hover-bg);
 }
-/* Text on light surfaces: #29b5e8 is 2.32:1. Use the diagram ink blue
-   (#0a6688, 6.30:1 on #fbfdfe). */
+/* Text that was #29b5e8 (2.32:1 on light surfaces) uses the navy title
+   color, matching portfolio PRs #37 and #38. --title-color is #0b1d36 in
+   light theme and #f4fbfe in dark theme, both at least 4.5:1. */
+.section__subtitle,
 #projects .section__subtitle,
 .project-group__label,
 .project-tile__kicker,
-.qualification__button.qualification__active {
-  color: #0a6688;
-}
-body.dark-theme #projects .section__subtitle,
-body.dark-theme .project-group__label,
-body.dark-theme .project-tile__kicker,
-body.dark-theme .qualification__button.qualification__active {
-  color: var(--first-color);
+.project-tile__more,
+.role__years,
+.role__org,
+.qualification__button.qualification__active,
+.fold__toggle,
+.bx-kicker {
+  color: var(--title-color);
 }
 
 /* a11y (WCAG 2.5.8 target size, 24px min; 12px text floor). */
