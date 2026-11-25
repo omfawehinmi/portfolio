@@ -27,11 +27,17 @@ From this `e2e/` folder, after `npm ci` and `npx playwright install chromium`:
 The four Chromium viewport projects are `chromium-375`, `chromium-768`,
 `chromium-1280`, and `chromium-1440`.
 
-- Functional gate (nav + click-through) at those viewports:
+- Functional gate (nav + click-through + tile geometry) at those viewports:
 
   `npm run test:e2e`
 
-  Equivalent: `PLAYWRIGHT_GATE=1 npx playwright test --project=chromium-375 --project=chromium-768 --project=chromium-1280 --project=chromium-1440 nav.spec.js clickthrough.spec.js`
+  Equivalent: `PLAYWRIGHT_GATE=1 npx playwright test --project=chromium-375 --project=chromium-768 --project=chromium-1280 --project=chromium-1440 nav.spec.js clickthrough.spec.js geometry.spec.js`
+
+- Tile media geometry (same-row height, centering, aspect, overflow):
+
+  `npm run test:e2e:geometry`
+
+  Equivalent: `PLAYWRIGHT_GATE=1 npx playwright test --project=chromium-375 --project=chromium-768 --project=chromium-1280 --project=chromium-1440 geometry.spec.js`
 
 - Accessibility (axe, serious and critical fail the test):
 

@@ -39,7 +39,7 @@ function wantsViewportProjects() {
   const job = process.env.GITHUB_JOB || '';
   if (job === 'test-gate' || job === 'update-visual-baselines') return true;
   const args = process.argv.join(' ');
-  if (/(visual|a11y|accessibility)[^ ]*\.spec\.js/.test(args)) return true;
+  if (/(visual|a11y|accessibility|geometry)[^ ]*\.spec\.js/.test(args)) return true;
   if (/--project(?:=|\s+)chromium-\d+/.test(args)) return true;
   return false;
 }
