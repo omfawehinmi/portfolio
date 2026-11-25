@@ -32,6 +32,7 @@ function ProjectBody({ project, onOpen }) {
         />
       ) : null}
       {project.caseStudy === 'migration' ? <MigrationCaseStudy /> : null}
+      {project.outcome ? <p className="case-outcome">{project.outcome}</p> : null}
       {project.summary?.map((paragraph) => (
         <p key={paragraph}>{paragraph}</p>
       ))}
