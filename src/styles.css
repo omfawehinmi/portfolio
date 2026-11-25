@@ -98,6 +98,7 @@ body.dark-theme {
 
 html {
   scroll-behavior: smooth;
+  interpolate-size: allow-keywords;
 }
 
 body {
@@ -771,14 +772,26 @@ img {
   width: 95%;
 }
 
+.skills__list {
+  overflow: hidden;
+  height: 0;
+  transition: height 240ms ease, margin-bottom 240ms ease;
+}
+
 .skills__close .skills__list {
-  height: 0px;
+  height: 0;
   overflow: hidden;
 }
 
 .skills__open .skills__list {
-  height: max-content;
+  height: auto;
   margin-bottom: var(--mb-2-5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skills__list {
+    transition: none;
+  }
 }
 
 .skills__open .skills__arrow {
@@ -1924,4 +1937,92 @@ body.dark-theme .qualification__button.qualification__active {
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--first-color);
+}
+
+
+/* Native project dialog and intrinsic-height folds. */
+dialog.project-dialog {
+  margin: auto;
+  inset: 0;
+  height: fit-content;
+  border: none;
+  transform: scale(1);
+  opacity: 1;
+  transition: transform 200ms ease, opacity 200ms ease, overlay 200ms allow-discrete, display 200ms allow-discrete;
+}
+
+dialog.project-dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 1;
+  transition: opacity 200ms ease, overlay 200ms allow-discrete, display 200ms allow-discrete;
+}
+
+@starting-style {
+  dialog.project-dialog {
+    transform: scale(0.98);
+    opacity: 0;
+  }
+  dialog.project-dialog::backdrop {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  dialog.project-dialog,
+  dialog.project-dialog::backdrop {
+    transition: none;
+  }
+}
+
+.project-tile__fold {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  padding: 0 0.95rem 1rem;
+}
+
+.project-tile__more {
+  display: none;
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--first-color);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 767px) {
+  .project-tile__more {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+  }
+  .project-tile__outcome {
+    display: block;
+    height: 1lh;
+    overflow: hidden;
+    transition: height 240ms ease;
+    -webkit-line-clamp: unset;
+  }
+  .project-tile__outcome.is-open {
+    height: auto;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .project-tile__more {
+    display: none;
+  }
+  .project-tile__outcome {
+    height: auto;
+    overflow: visible;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-tile__outcome {
+    transition: none;
+  }
 }
