@@ -292,6 +292,20 @@ p.bx-subhead {
   max-height: min(26rem, 52vh);
 }
 
+/* Domains tile: pin Liam green ERD chrome in the thumbnail (top-left crop) */
+.bx-t-domains .bx-fig {
+  overflow: hidden;
+}
+
+.bx-t-domains .bx-fig .bx-svg,
+.bx-t-domains .bx-fig svg.bx-arch--liam {
+  width: 100%;
+  height: 100%;
+  max-height: min(26rem, 52vh);
+  object-fit: cover;
+  object-position: left top;
+}
+
 .bx-chips {
   display: flex;
   flex-wrap: wrap;
@@ -937,19 +951,20 @@ p.bx-subhead {
   filter: drop-shadow(0 2px 3px rgba(16, 24, 40, 0.12));
 }
 
-.bx-svg svg.bx-arch .nd:hover:not(.nd-tag) .nd-face,
-.bx-svg svg.bx-arch .nd:focus-visible:not(.nd-tag) .nd-face {
-  stroke: #8b97a8;
-}
-
 .bx-svg svg.bx-arch .nd.is-selected:not(.nd-tag) {
   transform: scale(1.07);
   filter: drop-shadow(0 2px 4px rgba(16, 24, 40, 0.14));
 }
 
+/* Liam Style A — green selection/hover on all diagrams (never Issuing blue) */
+.bx-svg svg.bx-arch .nd:hover:not(.nd-tag) .nd-face,
+.bx-svg svg.bx-arch .nd:focus-visible:not(.nd-tag) .nd-face {
+  stroke: #86d4ad;
+}
+
 .bx-svg svg.bx-arch .nd.is-selected:not(.nd-tag) .nd-face {
-  stroke: #0a6688;
-  stroke-width: 1.5px;
+  stroke: #12b76a;
+  stroke-width: 2px;
 }
 
 .bx-svg svg.bx-arch:has(.nd:hover:not(.nd-tag)) .edge,
@@ -1039,6 +1054,20 @@ dialog.project-dialog.bx-dialog .bx-fig-big svg {
   max-height: min(46vh, 30rem);
 }
 
+/* Full-inventory Liam ERDs need room + scroll — not a clipped Issuing strip */
+dialog.project-dialog.bx-dialog .bx-fig-big:has(.bx-arch--liam) {
+  overflow: auto;
+  max-height: min(72vh, 44rem);
+}
+
+dialog.project-dialog.bx-dialog .bx-fig-big:has(.bx-arch--liam) .bx-svg,
+dialog.project-dialog.bx-dialog .bx-fig-big:has(.bx-arch--liam) svg.bx-arch--liam {
+  width: max(100%, 980px);
+  max-width: none;
+  height: auto;
+  max-height: none;
+}
+
 body:has(dialog.project-dialog[open]) .header,
 body:has(dialog.project-dialog[open]) .scrollup {
   visibility: hidden;
@@ -1057,46 +1086,140 @@ body:has(dialog.project-dialog[open]) .scrollup {
   }
 }
 
+/* Domains DB switcher — Liam Style A chrome (not childish pills / cyan wash) */
 .bx-dbtabs {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem;
-  margin: 0.25rem 0 0.85rem;
+  gap: 0.5rem;
+  margin: 0.25rem 0 0.9rem;
+  list-style: none;
+  padding: 0;
 }
 
 .bx-dbtab {
   appearance: none;
-  border: 1px solid rgb(200, 208, 218);
-  background: var(--body-color);
-  color: var(--title-color);
-  border-radius: 0.7rem;
-  padding: 0.55rem 0.75rem;
+  border: 1px solid #e2e5eb;
+  background: #ffffff;
+  color: #1a1f2c;
+  border-radius: 8px;
+  padding: 0.55rem 0.8rem 0.5rem;
   text-align: left;
   cursor: pointer;
-  min-width: 9.5rem;
-  transition: border-color 0.2s, background 0.2s;
+  min-width: 10rem;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
 .bx-dbtab strong {
   display: block;
-  font-size: 0.78rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #1a1f2c;
 }
 
 .bx-dbtab span {
   display: block;
-  margin-top: 0.15rem;
-  font-size: 0.7rem;
-  color: var(--text-color);
+  margin-top: 0.2rem;
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: #6b7280;
+  letter-spacing: 0.01em;
 }
 
-.bx-dbtab.is-active,
+.bx-dbtab.is-active {
+  border-color: #12b76a;
+  border-width: 1.5px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.08), inset 0 0 0 1px rgba(18, 183, 106, 0.12);
+}
+
+.bx-dbtab.is-active strong {
+  color: #0f7a4c;
+}
+
 .bx-dbtab:hover,
 .bx-dbtab:focus-visible {
-  border-color: var(--first-color);
-  background: var(--first-color-lighter);
+  border-color: #86d4ad;
   outline: none;
+  box-shadow: 0 2px 4px rgba(16, 24, 40, 0.1);
+}
+
+/* Tile thumbnail strip — same Liam language, compact */
+.bx-dbtabs--tile {
+  margin: 0.55rem 0 0.65rem;
+  gap: 0.35rem;
+  pointer-events: none;
+}
+
+.bx-dbtabs--tile .bx-dbtab {
+  min-width: 0;
+  padding: 0.4rem 0.55rem 0.35rem;
+  flex: 1 1 auto;
+}
+
+.bx-dbtabs--tile .bx-dbtab strong {
+  font-size: 0.62rem;
+}
+
+.bx-dbtabs--tile .bx-dbtab span {
+  font-size: 0.58rem;
+  margin-top: 0.1rem;
+}
+
+/* Schema chips inside Domains panel — Liam header-bar chips, not oval pills */
+.bx-dbchips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.65rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bx-dbchips li {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #6b7280;
+  background: #f3f5f8;
+  border: 1px solid #e2e5eb;
+  border-radius: 6px;
+  padding: 0.28rem 0.55rem;
+}
+
+/* Fullscreen Domains ERD dialog */
+dialog.project-dialog.bx-dialog.bx-dialog--erd-full {
+  width: calc(100vw - 1rem);
+  max-width: calc(100vw - 1rem);
+  height: calc(100vh - 1rem);
+  max-height: calc(100vh - 1rem);
+  padding: 1rem 1.15rem 1.15rem;
+  border-radius: 10px;
+}
+
+dialog.project-dialog.bx-dialog.bx-dialog--erd-full .bx-fig--erd {
+  overflow: auto;
+  max-height: calc(100vh - 11rem);
+  margin: 0.25rem 0 0.55rem;
+  padding: 0.25rem 0;
+  background: transparent;
+}
+
+dialog.project-dialog.bx-dialog.bx-dialog--erd-full .bx-fig--erd .bx-svg,
+dialog.project-dialog.bx-dialog.bx-dialog--erd-full .bx-fig--erd svg.bx-arch--liam {
+  width: max(100%, 980px);
+  max-width: none;
+  height: auto;
+  max-height: none;
+}
+
+.bx-dialog.bx-dialog--erd-full .services__modal-close:focus-visible {
+  outline: 3px solid #12b76a;
 }
 
 .bx-feat-block {

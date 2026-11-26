@@ -2,33 +2,42 @@ import { ERD_MODELS } from '../../data/erdModels.js'
 
 // Flat architecture diagrams. Object names are real structural names from the
 // platform repos (see README SOURCES). Do not invent names.
-// Diagram language: Stripe Docs → How Issuing works → Issuing architecture →
-// Issuing balance funding source. Soft white rounded nodes, circular actor
-// discs, thin gray connectors, blended transparent canvas. Light-mode only.
-// Domains ERDs: Liam ERD light mode (Style A — green accent).
-/* Diagram-only palette (ERDs + process flows). Page chrome / cards / nav stay on site tokens. */
+// Visual language: Liam ERD Style A (green accent) for ALL diagrams — process
+// flows and ERDs share chrome (white cards, soft shadows, gray borders, green
+// accent). Process flows keep flow structure (not table/column ERD layout).
+// Light-mode only. Page chrome / cards / nav stay on site tokens.
+/* Liam Style A — shared by process flows + ERDs */
+const LIAM={
+  green:'#12b76a',
+  soft:'rgba(18,183,106,0.12)',
+  header:'#f3f5f8',
+  border:'#e2e5eb',
+  type:'#9aa3b2',
+  ink:'#1a1f2c',
+  conn:'#98a2b3',
+  schema:'#6b7280',
+};
 const C={
-  ink:'#0b1d36',          /* node titles — matches site navy */
-  sub:'#5b6b7c',          /* secondary labels */
-  line:'#c5d0dc',         /* node borders */
-  conn:'#7b8fa3',         /* default edges */
-  acc:'#0f8ecf',          /* read-path accent (vivid cyan-blue) */
-  tint:'#dff3fb',         /* soft accent wash */
-  accInk:'#0a6fa3',       /* accent ink / markers */
-  dark:'#0b1d36',
+  ink:LIAM.ink,
+  sub:LIAM.schema,
+  line:LIAM.border,
+  conn:LIAM.conn,
+  acc:LIAM.green,
+  tint:'#e8f8ef',
+  accInk:'#0f7a4c',
+  dark:LIAM.ink,
   dot:'transparent',
   panel:'transparent',
-  soft:'#e8eef4',         /* lane rules */
+  soft:LIAM.header,
   node:'#ffffff',
-  disc:'#eef6fb'          /* actor discs */
+  disc:LIAM.header,
 };
-/* Liam ERD Style A */
-const LIAM={green:'#12b76a', soft:'#e8f8ef', header:'#f3f5f8', border:'#e2e5eb', type:'#9aa3b2', ink:'#1a1f2c'};
+/* Zone tints stay light; strokes lean Liam gray with green hero accents */
 const Z={
-  data:{f:'#ffffff',s:'#7eb8d4',k:'#0a6fa3',n:'Snowflake data and catalogs',tint:'#d7f0fb'},
-  agent:{f:'#ffffff',s:'#a78bda',k:'#5b3fa6',n:'MCP and agents',tint:'#ebe4fb'},
-  sec:{f:'#ffffff',s:'#d4a15c',k:'#8a4b12',n:'Roles and access',tint:'#fcebd8'},
-  src:{f:'#ffffff',s:'#5fbf9a',k:'#0f6b4c',n:'Sources and scheduling',tint:'#d9f5ea'}
+  data:{f:'#ffffff',s:'#86d4ad',k:'#0f7a4c',n:'Snowflake data and catalogs',tint:'#eefaf3'},
+  agent:{f:'#ffffff',s:'#c4b5e8',k:'#5b3fa6',n:'MCP and agents',tint:'#f6f3fc'},
+  sec:{f:'#ffffff',s:'#e0c08a',k:'#8a4b12',n:'Roles and access',tint:'#fdf6ea'},
+  src:{f:'#ffffff',s:'#86d4ad',k:'#0f6b4c',n:'Sources and scheduling',tint:'#eefaf3'}
 };
 let COMPACT=false;
 /** Tile density: shrink fonts/icons/spacing so diagrams fill the block without empty gaps. Lead tiles stay slightly larger. */
@@ -44,13 +53,13 @@ const fs=(n)=>Math.max(6.8,(COMPACT?Math.max(7.2,n-1.15):n)*DENSITY);
 const T=(x,y,t,o={})=>`<text x="${x}" y="${y}" text-anchor="${o.a||'middle'}" dominant-baseline="middle" font-family="${o.mono?MONO:F}" font-size="${o.sz||fs(10)}" font-weight="${o.w||400}"${o.it?' font-style="italic"':''}${o.ls?` letter-spacing="${o.ls}"`:''} fill="${o.c||C.ink}">${esc(t)}</text>`;
 const lab=(x,y,t,c=C.accInk,a='start')=>T(x,y,t.toUpperCase(),{sz:fs(8.2),w:500,ls:.55,c,a,mono:1});
 let ID='a';
-const defs=()=>`<defs><filter id="${ID}sh" x="-40%" y="-40%" width="180%" height="200%"><feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#101828" flood-opacity="0.06"/></filter>
- <filter id="${ID}shH" x="-40%" y="-40%" width="180%" height="200%"><feDropShadow dx="0" dy="2" stdDeviation="2.2" flood-color="#101828" flood-opacity="0.10"/></filter>
- <marker id="${ID}a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1.5,1.5 L8.5,5 L1.5,8.5 Z" fill="${C.conn}"/></marker>
- <marker id="${ID}c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1.5,1.5 L8.5,5 L1.5,8.5 Z" fill="${C.accInk}"/></marker>
- <marker id="${ID}w" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1.5,1.5 L8.5,5 L1.5,8.5 Z" fill="${C.ink}"/></marker></defs>`;
-// kinds: default grey, 'c' accent (read and data path), 'w' write path (ink, dashed), 'd' dashed grey
-const arrow=(d,k)=>{const col=k==='c'?C.accInk:k==='w'?C.ink:C.conn;return `<path class="edge" d="${d}" fill="none" stroke="${col}" stroke-width="${COMPACT?1.1:1.35}"${k==='w'||k==='d'?' stroke-dasharray="4 3.5"':''} stroke-linecap="round" stroke-linejoin="round" marker-end="url(#${ID}${k==='c'?'c':k==='w'?'w':'a'})"/>`};
+const defs=()=>`<defs><filter id="${ID}sh" x="-50%" y="-50%" width="200%" height="220%"><feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#101828" flood-opacity="0.10"/></filter>
+ <filter id="${ID}shH" x="-50%" y="-50%" width="200%" height="220%"><feDropShadow dx="0" dy="3" stdDeviation="3.2" flood-color="#101828" flood-opacity="0.14"/></filter>
+ <marker id="${ID}a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1.5,1.5 L8.5,5 L1.5,8.5 Z" fill="${LIAM.conn}"/></marker>
+ <marker id="${ID}c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1.5,1.5 L8.5,5 L1.5,8.5 Z" fill="${LIAM.green}"/></marker>
+ <marker id="${ID}w" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1.5,1.5 L8.5,5 L1.5,8.5 Z" fill="${LIAM.ink}"/></marker></defs>`;
+// kinds: default Liam gray, 'c' green accent path, 'w' write path (ink, dashed), 'd' dashed grey
+const arrow=(d,k)=>{const col=k==='c'?LIAM.green:k==='w'?LIAM.ink:LIAM.conn;return `<path class="edge" d="${d}" fill="none" stroke="${col}" stroke-width="${COMPACT?1.15:1.35}"${k==='w'||k==='d'?' stroke-dasharray="4 3.5"':''} stroke-linecap="round" stroke-linejoin="round" marker-end="url(#${ID}${k==='c'?'c':k==='w'?'w':'a'})"/>`};
 // Transparent canvas — card color shows through; no bordered diagram panel.
 const panel=(W,H)=>`<rect x="0" y="0" width="${W}" height="${H}" fill="${C.panel}" stroke="none"/>`;
 const group=(x,y,w,h,t,o={})=>{const z=o.z?Z[o.z]:null;return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${COMPACT?10:14}" fill="${o.fill||'none'}" stroke="${z?z.s:o.grey?C.line:C.line}" stroke-width="1.15" stroke-dasharray="${o.solid?'0':'3.5 3.5'}"/>`+(t?lab(x+10,y+12,t,z?z.k:o.grey?C.sub:C.accInk):'')};
@@ -64,23 +73,35 @@ const outline={
  cyl:(x,y,w,h)=>{const ry=COMPACT?5:6;return `<path d="M${x},${y+ry} a${w/2},${ry} 0 0 1 ${w},0 v${h-2*ry} a${w/2},${ry} 0 0 1 -${w},0 z"/><path d="M${x},${y+ry} a${w/2},${ry} 0 0 0 ${w},0" fill="none"/>`},
  disc:(x,y,w,h)=>{const r=Math.min(w,h)/2;return `<circle cx="${x+w/2}" cy="${y+h/2}" r="${r}"/>`}};
 const insetFor=(shape)=>{const base={box:[12,8],pill:[12,5],doc:[10,6],dia:[0,0],cyl:[10,8],disc:[6,6]};const c={box:[8,4],pill:[8,3],doc:[7,3.5],dia:[0,0],cyl:[7,5],disc:[4,4]};const pick=COMPACT||DENSITY<0.95?c:base;return pick[shape]};
-const block=(shape,x,y,w,h,o={})=>{const z=o.z?Z[o.z]:o.e?Z.data:null;const fill=shape==='disc'?(C.disc):(z?(z.tint||C.node):C.node);const stroke=z?z.s:C.line;const hero=o.hero||o.lift||shape==='disc'||!z;return `<g class="nd-face" fill="${fill}" stroke="${stroke}" stroke-width="${DENSITY<0.95?1:1.15}"${o.dash?' stroke-dasharray="3.5 3.5"':''}${hero?` filter="url(#${ID}sh)"`:''}>${outline[shape](x,y,w,h)}</g>`};
+const block=(shape,x,y,w,h,o={})=>{
+  const z=o.z?Z[o.z]:o.e?Z.data:null;
+  // Liam chrome: white cards that pop (always shadowed); hero gets green border
+  const fill=shape==='disc'?C.disc:(z?(z.tint||C.node):C.node);
+  const hero=!!(o.hero||o.lift);
+  const stroke=hero?LIAM.green:(z?z.s:LIAM.border);
+  const sw=hero?1.75:(DENSITY<0.95?1.1:1.25);
+  const filt=hero?` filter="url(#${ID}shH)"`:` filter="url(#${ID}sh)"`;
+  return `<g class="nd-face" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"${o.dash?' stroke-dasharray="3.5 3.5"':''}${filt}>${outline[shape](x,y,w,h)}</g>`;
+};
 /** Small real-platform marks for bottom-right node badges (not letter chips). */
 const platMark=(kind,cx,cy,s)=>{
   const r=s/2;
   if(kind==='snowflake'){
-    // Simplified Snowflake crystal mark
-    let p=`<g stroke="#29B5E8" stroke-width="${Math.max(1.1,s*0.09)}" stroke-linecap="round" fill="none">`;
-    p+=`<path d="M${cx},${cy-r*0.72} V${cy+r*0.72} M${cx-r*0.72},${cy} H${cx+r*0.72}"/>`;
-    p+=`<path d="M${cx-r*0.5},${cy-r*0.5} L${cx+r*0.5},${cy+r*0.5} M${cx+r*0.5},${cy-r*0.5} L${cx-r*0.5},${cy+r*0.5}"/>`;
-    for(const a of [0,60,120]){const rad=a*Math.PI/180;const dx=Math.cos(rad)*r*0.28,dy=Math.sin(rad)*r*0.28;
-      p+=`<path d="M${cx+dx*1.6},${cy+dy*1.6} l${-dy*0.55},${dx*0.55} M${cx+dx*1.6},${cy+dy*1.6} l${dy*0.55},${-dx*0.55}"/>`;
-      p+=`<path d="M${cx-dx*1.6},${cy-dy*1.6} l${-dy*0.55},${dx*0.55} M${cx-dx*1.6},${cy-dy*1.6} l${dy*0.55},${-dx*0.55}"/>`;}
-    return p+'</g>';
+    // Filled Snowflake crystal (brand blue) — recognizable at badge size
+    const arms=[];
+    for(let i=0;i<6;i++){
+      const a=(i*60)*Math.PI/180;
+      const x2=cx+Math.cos(a)*r*0.78, y2=cy+Math.sin(a)*r*0.78;
+      const px=Math.cos(a+Math.PI/2)*r*0.14, py=Math.sin(a+Math.PI/2)*r*0.14;
+      const mx=cx+Math.cos(a)*r*0.28, my=cy+Math.sin(a)*r*0.28;
+      arms.push(`M${cx+px},${cy+py} L${x2+px*0.35},${y2+py*0.35} L${x2-px*0.35},${y2-py*0.35} L${cx-px},${cy-py}`);
+      arms.push(`M${mx+px*1.6},${my+py*1.6} L${mx},${my} L${mx-px*1.6},${my-py*1.6}`);
+    }
+    return `<g fill="#29B5E8"><circle cx="${cx}" cy="${cy}" r="${r*0.16}"/><path d="${arms.join(' ')}"/></g>`;
   }
   if(kind==='airflow'){
-    // Apache Airflow–style plane mark (teal)
-    return `<g fill="#017CEE"><path d="M${cx-r*0.55},${cy+r*0.15} L${cx+r*0.05},${cy-r*0.55} L${cx+r*0.15},${cy-r*0.15} L${cx+r*0.65},${cy-r*0.25} L${cx+r*0.2},${cy+r*0.05} L${cx+r*0.55},${cy+r*0.55} L${cx+r*0.05},${cy+r*0.2} L${cx-r*0.25},${cy+r*0.55} Z"/></g>`;
+    // Apache Airflow plane mark (brand blue) — clearer silhouette
+    return `<g fill="#017CEE"><path d="M${cx-r*0.05},${cy+r*0.55} L${cx-r*0.05},${cy-r*0.15} L${cx-r*0.55},${cy+r*0.05} L${cx-r*0.55},${cy-r*0.15} L${cx-r*0.05},${cy-r*0.45} L${cx-r*0.05},${cy-r*0.72} L${cx+r*0.12},${cy-r*0.45} L${cx+r*0.72},${cy-r*0.55} L${cx+r*0.72},${cy-r*0.28} L${cx+r*0.2},${cy-r*0.18} L${cx+r*0.55},${cy+r*0.42} L${cx+r*0.32},${cy+r*0.55} L${cx+r*0.02},${cy+r*0.05} L${cx-r*0.05},${cy+r*0.55} Z"/></g>`;
   }
   if(kind==='dbt'){
     // dbt hex + dot
@@ -106,10 +127,10 @@ const PLATFORM={
 };
 const platformBadge=(x,y,w,h,plat)=>{
   if(!plat||!PLATFORM[plat]) return '';
-  const s=Math.max(13, Math.round(15*Math.min(1,DENSITY+0.08)));
-  const bx=x+w-s*0.28, by=y+h-s*0.28;
+  const s=Math.max(15, Math.round(17*Math.min(1,DENSITY+0.1)));
+  const bx=x+w-s*0.22, by=y+h-s*0.22;
   const p=PLATFORM[plat];
-  return `<g class="nd-plat" pointer-events="none" aria-hidden="true"><circle cx="${bx}" cy="${by}" r="${s/2}" fill="${p.bg}" stroke="${p.stroke}" stroke-width="1" filter="url(#${ID}sh)"/>${platMark(plat,bx,by,s*0.92)}</g>`;
+  return `<g class="nd-plat" pointer-events="none" aria-hidden="true"><circle cx="${bx}" cy="${by}" r="${s/2}" fill="${p.bg}" stroke="${p.stroke}" stroke-width="1.1" filter="url(#${ID}sh)"/>${platMark(plat,bx,by,s*0.9)}</g>`;
 };
 // node: soft Issuing-style block; interactive .nd group for hover/click enlarge.
 const node=(shape,x,y,w,lines,o={})=>{const [px,py]=insetFor(shape);const maxW=w-2*px;const L=[];
@@ -133,7 +154,7 @@ const discNode=(cx,cy,r,label,glyph='●',o={})=>{
   return {g:`<g class="nd nd-disc" tabindex="0" role="button" data-node="${esc(nid)}" data-b="${x},${y},${w},${h+ (label?16:0)},0,0" data-shape="disc">${face}${icon}${lbl}</g>`,h:h+(label?16:0),x,y,w}};
 const badge=(cx,cy,n)=>{const r=(COMPACT?6.5:8)*Math.min(1,DENSITY+0.05);return `<g class="nd" tabindex="0" role="button" data-node="badge-${n}" data-b="${cx-r},${cy-r},${r*2},${r*2},0,0" data-shape="badge"><circle cx="${cx}" cy="${cy}" r="${r}" fill="${C.ink}" filter="url(#${ID}sh)"/>`+T(cx,cy+0.4,String(n),{sz:fs(8),w:600,c:'#fff'})+`</g>`};
 const tag=(cx,cy,t,o={})=>{const tw=meas(t,fs(8),500,0,1)/0.9+14;const h=(COMPACT?14:16)*Math.min(1,DENSITY+0.05);return `<g class="nd nd-tag" data-b="${cx-tw/2},${cy-h/2},${tw},${h},4,0" data-shape="pill"><rect x="${cx-tw/2}" y="${cy-h/2}" width="${tw}" height="${h}" rx="${h/2}" fill="${C.node}" stroke="${C.line}" filter="url(#${ID}sh)"/>`+T(cx,cy+0.4,t,{sz:fs(8),w:500,mono:1,c:C.sub})+`</g>`};
-const svg=(W,H,title,body)=>`<svg class="bx-arch" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMin meet" text-rendering="geometricPrecision" role="img" aria-label="${esc(title)}" xmlns="http://www.w3.org/2000/svg">${defs()}<title>${esc(title)}</title>${panel(W,H)}${body}</svg>`;
+const svg=(W,H,title,body,cls='')=>`<svg class="bx-arch bx-arch--liam${cls&&!String(cls).includes('liam')?` ${cls}`:cls?` ${cls}`:''}" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMin meet" text-rendering="geometricPrecision" role="img" aria-label="${esc(title)}" xmlns="http://www.w3.org/2000/svg">${defs()}<title>${esc(title)}</title>${panel(W,H)}${body}</svg>`;
 const ns=(n,L)=>L.find(x=>x.label===n);
 /** compact: denser lanes; density from inst — tile denser than open; lead tile milder. */
 const begin=(compact,inst="",opts={})=>{
@@ -150,10 +171,10 @@ export function dLead(D,tall, inst=""){
  if(!tall){const W=740,H=316;
   [[12,'Sources'],[104,'Scheduler'],[244,'Snowflake'],[412,'Catalogs'],[550,'MCP servers'],[666,'Clients']].forEach(([x,t])=>o+=lab(x,20,t,C.sub));
   ['Files','APIs','Documents'].forEach((t,i)=>o+=node('doc',12,52+i*70,74,n2(t),{h:40,z:'src'}).g);
-  const af=n2(N.airflow.t,N.airflow.s,10,K.airflow,'src');const ah=node('box',104,0,112,af,{h:66}).h;o+=node('box',104,Math.round(141-ah/2),112,af,{h:66,z:'src'}).g;
+  const af=n2(N.airflow.t,N.airflow.s,10,K.airflow,'src');const ah=node('box',104,0,112,af,{h:66}).h;o+=node('box',104,Math.round(141-ah/2),112,af,{h:66,z:'src',hero:1,platform:'airflow'}).g;
   o+=group(236,32,152,250,'',{z:'data'});
-  [['Landing schema',46,K.raw],['Conformed schema',120,K.core],['Analytics schema',194,K.analytics]].forEach(([t,y,k])=>o+=node('cyl',252,y,120,n2(t,'',10,k,'data'),{h:52,z:'data',hero:k===K.core}).g);
-  o+=node('box',412,90,118,n2('Semantic views','',10,K.svOps,'data'),{h:44,z:'data'}).g+node('box',412,166,118,n2('Cortex Search services','',10,K.cs,'data'),{h:48,z:'data'}).g;
+  [['Landing schema',46,K.raw],['Conformed schema',120,K.core],['Analytics schema',194,K.analytics]].forEach(([t,y,k])=>o+=node('cyl',252,y,120,n2(t,'',10,k,'data'),{h:52,z:'data',hero:k===K.core,platform:'snowflake'}).g);
+  o+=node('box',412,90,118,n2('Semantic views','',10,K.svOps,'data'),{h:44,z:'data',platform:'snowflake'}).g+node('box',412,166,118,n2('Cortex Search services','',10,K.cs,'data'),{h:48,z:'data',platform:'snowflake'}).g;
   o+=node('box',550,88,104,[{t:'MCP',sz:8.6,mono:1,c:Z.agent.k}].concat(n2('Read MCP server')),{h:50,z:'agent',hero:1,platform:'mcp'}).g+node('box',550,166,104,[{t:'MCP',sz:8.6,mono:1,c:Z.agent.k}].concat(n2('Write MCP server')),{h:50,z:'agent',hero:1,platform:'mcp'}).g;
   o+=node('box',666,90,64,n2('Read clients'),{h:44}).g+node('box',666,168,64,n2('Write client'),{h:44}).g;
   [72,142,212].forEach(y=>a+=arrow(`M86,${y} H94 Q98,${y} 98,${y<141?y+4:y-4} V${y<141?137:145} Q98,141 102,141`,'c'));
@@ -167,7 +188,7 @@ export function dLead(D,tall, inst=""){
  const W=330;let y=10;const row=(label,h,f)=>{o+=lab(12,y+8,label,C.sub);f(y+18);y+=h+18+18};
  row('Sources',40,yy=>['Files','APIs','Documents'].forEach((t,i)=>o+=node('doc',12+i*104,yy,96,n2(t),{h:40,z:'src'}).g));
  a+=arrow(`M165,${y-16} V${y-2}`,'c');
- row('Scheduler',50,yy=>o+=node('box',50,yy,230,n2(N.airflow.t,N.airflow.s,10,K.airflow,'src'),{h:50,z:'src'}).g);
+ row('Scheduler',50,yy=>o+=node('box',50,yy,230,n2(N.airflow.t,N.airflow.s,10,K.airflow,'src'),{h:50,z:'src',hero:1,platform:'airflow'}).g);
  a+=arrow(`M165,${y-16} V${y-2}`,'c');const sy=y;
  o+=group(6,y+12,318,82,'',{z:'data'});
  row('Snowflake',58,yy=>[['Landing schema',K.raw],['Conformed schema',K.core],['Analytics schema',K.analytics]].forEach(([t,k],i)=>o+=node('cyl',14+i*102,yy+4,96,n2(t,'',9.6,k,'data'),{h:52,z:'data',hero:i==1,platform:'snowflake'}).g));
@@ -359,31 +380,30 @@ export function dWorkflow(D, inst=""){
   o+=legend(12,38+Wf.steps.length*step+2,['src','data']);
   return svg(W,38+Wf.steps.length*step+18,Wf.title,a+o)};
 
-/** Liam ERD Style A (green) — real tables/columns/relationships per database. */
+/** Liam ERD Style A (green) — full per-DB table inventory; matches Style A sample chrome. */
 export function dDatabase(D, dbId, inst=""){
   begin(false,inst);ID='liam'+inst+(dbId||'ledger');
   const model=ERD_MODELS[dbId]||ERD_MODELS.ledger;
   if(!model) return '';
   const isTile=String(inst||'').includes('tile')||inst==='t'||inst==='tile';
-  const scale=isTile?0.72:1;
-  // Two-line header (name + schema) so long table names never collide with schema tags.
-  const headH=Math.round(44*scale), rowH=Math.round(24*scale);
+  // Tile: denser so the green Liam chrome fills the Domains thumbnail (not Issuing blue).
+  const scale=isTile?0.55:0.92;
+  // Single-line header (name LEFT + schema RIGHT) — matches Style A sample.
+  const headH=Math.round(36*scale), rowH=Math.round(26*scale);
   const padX=Math.round(12*scale);
-  const nameSz=Math.max(9,10.2*scale), typeSz=Math.max(8,9.5*scale), schemaSz=Math.max(7.5,8.8*scale);
+  const nameSz=Math.max(8.5,11*scale), typeSz=Math.max(7.5,10*scale), schemaSz=Math.max(7,9*scale);
   const tables={}; let maxX=0,maxY=0; let o='',a='';
-  // Title
-  o+=T(20,22,model.title,{sz:Math.max(11,13*scale),w:600,a:'start',c:LIAM.ink});
-  o+=T(20,40,model.subtitle,{sz:Math.max(8.5,10*scale),c:C.sub,a:'start'});
+  o+=T(20,Math.round(18*scale),model.title,{sz:Math.max(11,14*scale),w:600,a:'start',c:LIAM.ink});
+  o+=T(20,Math.round(34*scale),model.subtitle,{sz:Math.max(8,10*scale),c:LIAM.schema,a:'start'});
 
   const tableGeom=(t)=>{
     const w=Math.round((t.w||220)*scale);
     const x=Math.round(t.x*scale)+4;
-    const y=Math.round(t.y*scale)+12;
-    const h=headH+t.cols.length*rowH+4;
+    const y=Math.round(t.y*scale)+Math.round(8*scale);
+    const h=headH+t.cols.length*rowH+Math.round(4*scale);
     return {x,y,w,h};
   };
 
-  // Edges under cards
   const colY=(t,colName)=>{
     const g=tableGeom(t);
     const idx=t.cols.findIndex(c=>c.name===colName);
@@ -398,11 +418,12 @@ export function dDatabase(D, dbId, inst=""){
     const ag=tableGeom(aT), bg=tableGeom(bT);
     const y1=colY(aT,e.fromCol), y2=colY(bT,e.toCol);
     let x1,x2;
-    if(ag.x+ag.w < bg.x){ x1=ag.x+ag.w; x2=bg.x; }
-    else if(bg.x+bg.w < ag.x){ x1=ag.x; x2=bg.x+bg.w; }
+    if(ag.x+ag.w+8 < bg.x){ x1=ag.x+ag.w; x2=bg.x; }
+    else if(bg.x+bg.w+8 < ag.x){ x1=ag.x; x2=bg.x+bg.w; }
     else { x1=ag.x+ag.w/2; x2=bg.x+bg.w/2; }
+    // Orthogonal-ish cubic like Style A (no Issuing arrowheads, Liam gray connectors)
     const mx=(x1+x2)/2;
-    a+=`<path class="edge" d="M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}" fill="none" stroke="${C.conn}" stroke-width="1.2"/>`;
+    a+=`<path class="edge" d="M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}" fill="none" stroke="${LIAM.conn}" stroke-width="${Math.max(1.1,1.25*scale)}"/>`;
   });
 
   model.tables.forEach((t,ti)=>{
@@ -414,37 +435,49 @@ export function dDatabase(D, dbId, inst=""){
     g+=`<rect x="${x}" y="${y}" width="${w}" height="${headH}" rx="8" fill="${LIAM.header}"/>`;
     g+=`<rect x="${x}" y="${y+headH-8}" width="${w}" height="8" fill="${LIAM.header}"/>`;
     g+=`<path d="M${x},${y+headH} H${x+w}" stroke="${LIAM.border}"/>`;
-    const nameLines=wrapW(t.name,w-2*padX,nameSz,600,0,1).slice(0,1);
-    g+=T(x+padX,y+Math.round(14*scale),nameLines[0]||t.name,{sz:nameSz,w:600,a:'start',c:LIAM.ink,mono:1});
-    g+=T(x+padX,y+Math.round(30*scale),t.schema,{sz:schemaSz,c:C.sub,a:'start',mono:1});
+    const schemaW=meas(t.schema,schemaSz,500,0,1)/0.9+8;
+    const nameMax=Math.max(48,w-2*padX-schemaW-6);
+    const nameLines=wrapW(t.name,nameMax,nameSz,600,0,1).slice(0,1);
+    g+=T(x+padX,y+headH/2,nameLines[0]||t.name,{sz:nameSz,w:600,a:'start',c:LIAM.ink,mono:1});
+    g+=T(x+w-padX,y+headH/2,t.schema,{sz:schemaSz,c:LIAM.schema,a:'end',mono:1});
     t.cols.forEach((c,i)=>{
       const yy=y+headH+i*rowH;
       if(i) g+=`<path d="M${x},${yy} H${x+w}" stroke="${LIAM.border}"/>`;
       if(hi && (c.key==='pk'||c.key==='fk')) g+=`<rect x="${x}" y="${yy}" width="${w}" height="${rowH}" fill="${LIAM.soft}"/>`;
       const ix=x+padX+4, iy=yy+rowH/2;
       if(c.key==='pk'){
-        g+=`<circle cx="${ix}" cy="${iy}" r="5" fill="none" stroke="${LIAM.green}" stroke-width="1.25"/><circle cx="${ix}" cy="${iy}" r="1.8" fill="${LIAM.green}"/>`;
+        g+=`<circle cx="${ix}" cy="${iy}" r="${5*Math.min(1,scale+0.15)}" fill="none" stroke="${LIAM.green}" stroke-width="1.3"/><circle cx="${ix}" cy="${iy}" r="${1.8*Math.min(1,scale+0.15)}" fill="${LIAM.green}"/>`;
       } else if(c.key==='fk'){
-        g+=`<path d="M${ix-4},${iy-3} h5 a3,3 0 0 1 0,6 h-3" fill="none" stroke="${LIAM.green}" stroke-width="1.25"/>`;
+        g+=`<path d="M${ix-4},${iy-3} h5 a3,3 0 0 1 0,6 h-3" fill="none" stroke="${LIAM.green}" stroke-width="1.3"/>`;
       } else {
-        g+=`<circle cx="${ix}" cy="${iy}" r="2" fill="${LIAM.type}"/>`;
+        g+=`<circle cx="${ix}" cy="${iy}" r="2.2" fill="${LIAM.type}"/>`;
       }
-      g+=T(x+padX+16,iy,c.name,{sz:nameSz-0.8,a:'start',c:LIAM.ink,mono:1});
-      g+=T(x+w-padX,iy,c.type,{sz:typeSz,a:'end',c:LIAM.type,mono:1});
+      const typeLabel=String(c.type||'');
+      const typeW=meas(typeLabel,typeSz,400,0,1)/0.9+6;
+      const colNameMax=Math.max(40,w-padX-16-padX-typeW-4);
+      const colName=(wrapW(c.name,colNameMax,nameSz-0.5,400,0,1)[0])||c.name;
+      g+=T(x+padX+16,iy,colName,{sz:nameSz-0.5,a:'start',c:LIAM.ink,mono:1});
+      g+=T(x+w-padX,iy,typeLabel,{sz:typeSz,a:'end',c:LIAM.type,mono:1});
     });
-    g+=platformBadge(x,y,w,h,'snowflake');
+    // No platform logos on ERD table cards — logos BR are process-flow only
     o+=g+'</g>';
   });
 
-  const legendY=maxY+28;
-  o+=`<circle cx="28" cy="${legendY}" r="5" fill="none" stroke="${LIAM.green}" stroke-width="1.25"/><circle cx="28" cy="${legendY}" r="1.8" fill="${LIAM.green}"/>`;
-  o+=T(40,legendY,'PK',{sz:10,c:C.sub,a:'start'});
-  o+=`<path d="M70,${legendY-3} h6 a3.2,3.2 0 0 1 0,6 h-3" fill="none" stroke="${LIAM.green}" stroke-width="1.25"/>`;
-  o+=T(92,legendY,'FK',{sz:10,c:C.sub,a:'start'});
-  o+=T(130,legendY,'Liam light · metadata only · no row values',{sz:10,c:C.sub,a:'start'});
-  const W=Math.max(720, maxX+28);
-  const H=legendY+28;
-  return svg(W,H,`${model.title} ERD`,a+o)};
+  const legendY=maxY+Math.round(24*scale);
+  o+=`<circle cx="28" cy="${legendY}" r="5" fill="none" stroke="${LIAM.green}" stroke-width="1.3"/><circle cx="28" cy="${legendY}" r="1.8" fill="${LIAM.green}"/>`;
+  o+=T(40,legendY,'PK',{sz:Math.max(9,11*scale),c:LIAM.schema,a:'start'});
+  o+=`<path d="M70,${legendY-3} h6 a3.2,3.2 0 0 1 0,6 h-3" fill="none" stroke="${LIAM.green}" stroke-width="1.3"/>`;
+  o+=T(92,legendY,'FK',{sz:Math.max(9,11*scale),c:LIAM.schema,a:'start'});
+  o+=T(130,legendY,'Liam light · metadata only · no row values',{sz:Math.max(9,10*scale),c:LIAM.schema,a:'start'});
+  const fullW=Math.max(980, maxX+28);
+  const fullH=legendY+Math.round(24*scale);
+  // Domains tile thumbnail: crop to top-left Liam green chrome (not a tiny full-map / Issuing overview)
+  if(isTile){
+    const cropW=Math.min(fullW, 1020);
+    const cropH=Math.min(fullH, 380);
+    return svg(cropW,cropH,`${model.title} ERD`,a+o,'bx-arch--liam');
+  }
+  return svg(fullW,fullH,`${model.title} ERD`,a+o,'bx-arch--liam')};
 
 export function dAirflow(D, inst=""){
   begin(true,inst);ID='af'+inst;const A=D.airflow;const W=420;let o='';

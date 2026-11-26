@@ -357,6 +357,16 @@ function ArchitectureTile({ tile, onOpen, tall }) {
       </div>
       <FoldBody project={{ outcome: tile.body }} lines={isHero ? 4 : 3} />
       {showRowsOnTile ? <RowTable rows={tile.rows} collapsed /> : null}
+      {tile.id === 'domains' && tile.databases?.length ? (
+        <ul className="bx-dbtabs bx-dbtabs--tile" aria-hidden="true">
+          {tile.databases.map((db, i) => (
+            <li key={db.id} className={`bx-dbtab${i === 0 ? ' is-active' : ''}`}>
+              <strong>{db.name}</strong>
+              <span>{db.status}</span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
       <figure className="bx-fig">
         <ArchitectureDiagram kind={tile.id} tall={tall} inst="tile" />
       </figure>
@@ -475,7 +485,7 @@ function DomainsPanel({ tile, tall }) {
   const [dbId, setDbId] = useState(databases[0]?.id || null)
   const active = databases.find((db) => db.id === dbId) || databases[0]
   return (
-    <div className="bx-panel-body">
+    <div className="bx-panel-body bx-panel-body--erd">
       <div className="bx-dbtabs" role="tablist" aria-label="Snowflake databases">
         {databases.map((db) => (
           <button
@@ -491,14 +501,14 @@ function DomainsPanel({ tile, tall }) {
           </button>
         ))}
       </div>
-      <figure className="bx-fig bx-fig-big">
+      <figure className="bx-fig bx-fig-big bx-fig--erd">
         <ArchitectureDiagram kind="domains" tall={tall} inst="open" dbId={active?.id} />
         <figcaption>{active ? `${active.name}: ${active.oneLine}` : tile.caption}</figcaption>
       </figure>
       {active ? (
         <>
           <p className="bx-lede">{active.detail}</p>
-          <ul className="bx-chips">
+          <ul className="bx-dbchips" aria-label={`${active.name} schemas`}>
             {active.schemas.map((schema) => (
               <li key={schema}>{schema}</li>
             ))}
@@ -700,7 +710,11 @@ export default function Projects({ openId, onOpen }) {
         title={modalTitle}
         kicker={modalKicker}
         onClose={() => onOpen(null)}
-        className={open.kind && open.kind !== 'legacy' ? 'bx-dialog' : undefined}
+        className={
+          open.kind && open.kind !== 'legacy'
+            ? `bx-dialog${open.kind === 'tile' && open.tile?.id === 'domains' ? ' bx-dialog--erd-full' : ''}`
+            : undefined
+        }
       >
         {open.kind === 'lead' ? <LeadPanel tall={tall} /> : null}
         {open.kind === 'tile' ? <TilePanel tile={open.tile} tall={tall} /> : null}
