@@ -9,16 +9,17 @@ export const COPY = {
     kicker: 'Projects',
     title: 'Work that shows the platform',
     intro:
-      'The lead project is HOUSEHOLD_LEDGER on Snowflake: 4 production databases, 3 MCP servers, 16 Airflow DAG files on the office-PC scheduler, and dbt targets hl_prod / hl_dev that build ANALYTICS and SV_* catalogs agents actually query. The tiles under it break that stack into MCP, schemas, every DAG, dbt/deploy, feeds, roles, and catalogs. Other shipped work follows in a shorter list.',
+      'The lead project is the household Snowflake platform: 4 production databases (HOUSEHOLD_LEDGER, MOONSHOTS, AGENTIC_WORKFORCE, CONTROL), 3 MCP servers, 16 Airflow DAG files, and a PR → CI → merge → Terraform apply → Airflow pin ship path. Tiles under the lead break that into MCP, workflow, every database, DAGs, dbt, feeds, roles, and catalogs. Other shipped work follows in a shorter list.',
   },
   lead: {
     title: 'HOUSEHOLD_LEDGER and MCP',
     subhead: 'Snowflake data architecture and MCP',
     oneLine:
-      '4 prod Snowflake databases · 3 MCP servers · 16 Airflow DAG files (13 prod-shaped + 3 *_dev) · 3 ledger feeds (Monarch, Gmail, Drive) plus YouTube · 15 SV_* Analyst views · 6 Cortex Search services. Agents hit MCP catalogs, not an open warehouse login.',
+      '4 prod databases · 3 MCP servers · 16 Airflow DAG files · Monarch, Gmail, Drive, YouTube (plus planned Epic MyChart) · AI chat history in AGENTIC_WORKFORCE · 15 SV_* · 6 CS_*. Agents hit MCP catalogs, not an open warehouse login.',
     tags: [
       'Snowflake',
       'HOUSEHOLD_LEDGER',
+      'AGENTIC_WORKFORCE',
       'Airflow',
       'dbt',
       'Terraform',
@@ -31,12 +32,12 @@ export const COPY = {
       { n: '4', label: 'prod databases' },
       { n: '3', label: 'MCP servers' },
       { n: '16', label: 'Airflow DAG files' },
-      { n: '3', label: 'ledger source feeds' },
+      { n: '4', label: 'live source feeds' },
       { n: '15', label: 'SV_* Analyst views' },
       { n: '6', label: 'CS_* search services' },
     ],
     intro:
-      'This is the household data platform I build and run. Snowflake holds HOUSEHOLD_LEDGER (finance), MOONSHOTS (YouTube), AGENTIC_WORKFORCE, and CONTROL — layers as schemas (RAW, CORE, CTRL, ANALYTICS, AI), not one database per layer. Airflow on the office PC is the production scheduler (pinned releases such as airflow-20261107-02cbc74); Snowflake tasks are retired. Monarch GraphQL, Gmail, and Drive feed the ledger through EAIs. Grok bots and Cursor attach to MCP servers that bind Analyst on SV_*, Cortex Search on CS_*, and approved procedures — never a general warehouse login.',
+      'This is the household data platform I build and run. Snowflake holds HOUSEHOLD_LEDGER (finance), MOONSHOTS (YouTube), AGENTIC_WORKFORCE (agent roster, conversations, graph, and chat-history capture across desks), and CONTROL (procs, queues, MCP, tests) — layers as schemas, not one database per layer. HOUSEHOLD_HEALTH is the planned Epic MyChart database, not a separate product card. Airflow on the office PC is the production scheduler; Snowflake tasks are retired. Monarch, Gmail, and Drive feed the ledger; YouTube feeds Moonshots; workforce capture and nightly chat backup land AI history. Grok bots and Cursor attach to MCP servers bound to SV_*, CS_*, and approved procedures.',
   },
   tiles: [
     {
@@ -50,18 +51,153 @@ export const COPY = {
         'Read path through MCP_HOUSEHOLD_LEDGER_GROK to SV_* and CS_*. Write path through MCP_HOUSEHOLD_LEDGER into approved CORE / pipeline procedures.',
     },
     {
-      id: 'domains',
+      id: 'workflow',
       n: '3',
+      title: 'Ship path: PR → prod',
+      svg: 'workflow',
+      body:
+        'Change reaches Snowflake and Airflow in separate gates — merge never applies and never deploys. Branch work opens a PR. Required CI in the migration chapters: ruff + pytest, gitleaks, static, and Terraform plan. dbt PR CI can use HOUSEHOLD_LEDGER_CI.DBT_PR_<n> when secrets exist; otherwise it skips. Merge lands code on main only. Snowflake infra (databases, schemas, roles, warehouses, monitors) applies from a manual GitHub Actions dispatch with apply=true against the production environment. Production environment required reviewer is not enforced in those chapters — Michael’s go for apply is the team rule. Airflow reaches the office PC only after a tagged release (for example airflow-20261107-02cbc74) and a manual PC pull (deploy_airflow.ps1). PLATFORM_ENV and PLATFORM_STUB on the pin decide prod vs stub. Unpause, grants, and drops also need an explicit go.',
+      caption:
+        'PR CI → merge (code only) → Terraform apply (Snowflake) → Airflow tag + PC pull. Merge ≠ apply ≠ deploy.',
+      rows: [
+        {
+          name: '1. Branch + PR',
+          role: 'Feature work opens a pull request on household-platform',
+          status: 'Author',
+        },
+        {
+          name: '2. PR CI',
+          role: 'ruff + pytest, gitleaks, static, Terraform plan; optional dbt in HOUSEHOLD_LEDGER_CI.DBT_PR_<n>',
+          status: 'GitHub Actions',
+        },
+        {
+          name: '3. Merge to main',
+          role: 'Code only — merge does not apply Terraform and does not pull Airflow',
+          status: 'Gate',
+        },
+        {
+          name: '4. Terraform apply',
+          role: 'Manual workflow_dispatch apply=true → environment production (Michael’s go)',
+          status: 'Snowflake infra',
+        },
+        {
+          name: '5. Airflow release tag',
+          role: 'Pin such as airflow-20261107-02cbc74 / later 20261112 pins',
+          status: 'Scheduler artifact',
+        },
+        {
+          name: '6. Office-PC pull',
+          role: 'Manual deploy_airflow.ps1 on the Docker worker — git tag ≠ live until pulled',
+          status: 'Prod scheduler',
+        },
+        {
+          name: '7. Unpause / grants',
+          role: 'Separate go for unpause, grants, and drops (doc 17 approval gates)',
+          status: 'Ops',
+        },
+      ],
+    },
+    {
+      id: 'domains',
+      n: '4',
       title: 'Databases and schemas',
       svg: 'erd',
       body:
-        'Production databases: HOUSEHOLD_LEDGER, MOONSHOTS, AGENTIC_WORKFORCE, CONTROL (plus *_DEV twins with synthetic fixtures). HOUSEHOLD_LEDGER schemas: PUBLIC, RAW, CORE, CTRL, ANALYTICS, AI, with transient STAGING and INTERMEDIATE. CONTROL holds PROC, QUEUE, STAGE, FLAGS, TASKS, MCP, SECURITY, TESTS. A RAW row is one landed payload. A CORE row is one business object. ANALYTICS is reporting grain and the SV_* Analyst catalogs. Several landing procedures write RAW and CORE in the same call, so CORE is not only a later rebuild of RAW. dbt reads CORE into staging/marts (and Cosmos dbt_daily targets hl_prod / ANALYTICS_DBT) — see the dbt tile for the deploy path.',
+        'Four production databases plus *_DEV twins with synthetic fixtures. Open a database below to see its schemas and shape. HOUSEHOLD_LEDGER: PUBLIC, RAW, CORE, CTRL, ANALYTICS, AI, transient STAGING / INTERMEDIATE. MOONSHOTS: RAW, CORE, CTRL, AI. AGENTIC_WORKFORCE: AGENTS, CONVERSATIONS, GRAPH, CAPTURE, plus STAGING, INTERMEDIATE, ANALYTICS, AI, TRANSFORM, SECURITY — this is where desk AI history accumulates (capture MERGE + nightly RAW.CHAT_MESSAGES backup), then agentic_workforce_dbt_daily builds ANALYTICS. CONTROL: PROC, QUEUE, STAGE, FLAGS, TASKS, MCP, SECURITY, TESTS. HOUSEHOLD_HEALTH is planned (Epic MyChart FHIR), not production — same product-database idea, not a separate portfolio card. A RAW row is one landed payload; a CORE row is one business object; ANALYTICS is reporting grain and SV_* catalogs.',
       caption:
-        'Product databases hold layers as schemas. Example documents path: DOCUMENTS_RAW → DOCUMENTS → FACT_DOCUMENT_STANDING → SV_DOCUMENT_STANDING / CS_DOCUMENTS.',
+        'Select a database to see its schemas. Prod: HOUSEHOLD_LEDGER, MOONSHOTS, AGENTIC_WORKFORCE, CONTROL. Planned: HOUSEHOLD_HEALTH.',
+      databases: [
+        {
+          id: 'ledger',
+          name: 'HOUSEHOLD_LEDGER',
+          status: 'Production',
+          oneLine: 'Finance ledger — Monarch, Gmail, Drive documents',
+          schemas: ['PUBLIC', 'RAW', 'CORE', 'CTRL', 'ANALYTICS', 'AI', 'STAGING', 'INTERMEDIATE'],
+          detail:
+            'Landing and conformed finance data. CTRL hosts MCP_HOUSEHOLD_LEDGER_GROK and MCP_HOUSEHOLD_LEDGER. ANALYTICS holds reporting grain and the 15 SV_* Analyst views; Cortex Search CS_DOCUMENTS, CS_EMAIL_MESSAGES, CS_GAPS_IDEA, CS_PARSE_REVIEW sit on ledger text. Example path: DOCUMENTS_RAW → DOCUMENTS → FACT_DOCUMENT_STANDING → SV_DOCUMENT_STANDING / CS_DOCUMENTS.',
+          objects: [
+            { layer: 'RAW', name: 'DOCUMENTS_RAW', note: 'One landed file / payload' },
+            { layer: 'CORE', name: 'DOCUMENTS', note: 'One business document' },
+            { layer: 'ANALYTICS', name: 'FACT_DOCUMENT_STANDING', note: 'Reporting grain' },
+            { layer: 'Catalog', name: 'SV_* / CS_*', note: 'Analyst + Search' },
+          ],
+        },
+        {
+          id: 'moonshots',
+          name: 'MOONSHOTS',
+          status: 'Production',
+          oneLine: 'YouTube catalog — sync DAGs + MCP_MOONSHOTS',
+          schemas: ['RAW', 'CORE', 'CTRL', 'AI'],
+          detail:
+            'YouTube / EYL domain. moonshots_yt_sync_daily and moonshots_eyl_sync were the two confirmed-unpaused DAGs on the 2026-11-07 pin. CTRL hosts MCP_MOONSHOTS for Cynthia. CS_TRANSCRIPTS and CS_VIDEOS are the Moonshots Cortex Search services. Phase 5 added ANALYTICS views over CORE for reporting reads.',
+          objects: [
+            { layer: 'Scheduler', name: 'moonshots_yt_sync_daily', note: 'Unpaused on pin' },
+            { layer: 'Scheduler', name: 'moonshots_eyl_sync', note: 'Unpaused on pin' },
+            { layer: 'CTRL', name: 'MCP_MOONSHOTS', note: 'YouTube MCP catalog' },
+            { layer: 'Search', name: 'CS_TRANSCRIPTS / CS_VIDEOS', note: 'Cortex Search' },
+          ],
+        },
+        {
+          id: 'workforce',
+          name: 'AGENTIC_WORKFORCE',
+          status: 'Production',
+          oneLine: 'AI desk history — agents, conversations, graph, capture',
+          schemas: [
+            'AGENTS',
+            'CONVERSATIONS',
+            'GRAPH',
+            'CAPTURE',
+            'STAGING',
+            'INTERMEDIATE',
+            'ANALYTICS',
+            'AI',
+            'TRANSFORM',
+            'SECURITY',
+          ],
+          detail:
+            'Where multi-platform AI history accumulates. A daily capture routine MERGEs agents, conversations, graph, and capture tables. A nightly chat backup MERGEs RAW.CHAT_MESSAGES (SVC_BOX_PIPELINE / R_PIPELINE). agentic_workforce_dbt_daily builds tag:agentic_workforce into AGENTIC_WORKFORCE.ANALYTICS (dev twin AGENTIC_WORKFORCE_DEV); that DAG was created paused. Desk marts for the Desks app (AW-MART-INFRA) remain queued — not treated as shipped.',
+          objects: [
+            { layer: 'Capture', name: 'AGENTS / CONVERSATIONS / GRAPH', note: 'Daily MERGE' },
+            { layer: 'Landing', name: 'RAW.CHAT_MESSAGES', note: 'Nightly chat backup' },
+            { layer: 'dbt', name: 'agentic_workforce_dbt_daily', note: '→ ANALYTICS (paused on create)' },
+            { layer: 'Planned', name: 'AW desk marts', note: 'Queued, not prod' },
+          ],
+        },
+        {
+          id: 'control',
+          name: 'CONTROL',
+          status: 'Production',
+          oneLine: 'Shared control plane — procs, queues, MCP, tests',
+          schemas: ['PROC', 'QUEUE', 'STAGE', 'FLAGS', 'TASKS', 'MCP', 'SECURITY', 'TESTS'],
+          detail:
+            'Cross-product control database. Procedures, queues, stages, feature flags, retired Snowflake tasks inventory, MCP registration, security objects, and test-result tables used by the test-results dashboard. Not a customer domain database — the ops and governance plane for the account.',
+          objects: [
+            { layer: 'PROC', name: 'Pipeline procedures', note: 'Loader-owned' },
+            { layer: 'QUEUE / STAGE', name: 'Work queues + stages', note: 'Ingest support' },
+            { layer: 'MCP', name: 'Server registration', note: 'Catalog bind' },
+            { layer: 'TESTS', name: 'Test-result tables', note: 'Dashboard reads' },
+          ],
+        },
+        {
+          id: 'health',
+          name: 'HOUSEHOLD_HEALTH',
+          status: 'Planned — not production',
+          oneLine: 'Epic MyChart FHIR — sandbox auth exists; prod load not built',
+          schemas: ['RAW', 'STAGING', 'CORE', 'CTRL'],
+          detail:
+            'Planned healthcare database, same product-DB pattern as the ledger — not a separate “healthcare project” card. SMART on FHIR R4 from Epic MyChart: OAuth patient auth, token vault on Lambda / DynamoDB / SSM, designed Airflow load onto an internal stage, then procedures into VARIANT RAW. Weekly Monday step inside pipeline_load_window was decided; first production sign-in has not succeeded. No patient data is shown.',
+          objects: [
+            { layer: 'Auth', name: 'OAuth + token vault', note: 'Sandbox tested' },
+            { layer: 'Scheduler', name: 'pipeline_load_window (Mon)', note: 'Decided, not built' },
+            { layer: 'Stage', name: 'Internal stage', note: 'FHIR resources' },
+            { layer: 'RAW', name: 'VARIANT tables', note: 'Not in production' },
+          ],
+        },
+      ],
     },
     {
       id: 'airflow',
-      n: '4',
+      n: '5',
       title: 'Airflow on the office PC — every DAG',
       svg: 'airflow',
       body:
@@ -169,13 +305,13 @@ export const COPY = {
     },
     {
       id: 'dbt',
-      n: '5',
-      title: 'dbt, schemas, and prod deploys',
+      n: '6',
+      title: 'dbt layers and targets',
       svg: 'dbt',
       body:
-        'RAW lands payloads. CORE holds business objects (often written in the same procedure pass as RAW). dbt builds STAGING / marts / ANALYTICS on top of CORE: ledger_dbt_daily runs Bash dbt on LEDGER_WH or COMPUTE_WH; dbt_daily runs Cosmos against target hl_prod (docstring: ANALYTICS_DBT) with per-model tasks when a manifest is present. Dev twins force hl_dev / *_DEV and have no schedule. PR CI can use schema HOUSEHOLD_LEDGER_CI.DBT_PR_<n> when secrets exist, otherwise it skips. Terraform plan/apply on main (apply=true, environment production) owns DBs, schemas, roles, warehouses; procedures stay loader-owned. Required CI checks in the migration chapters: ruff + pytest, gitleaks, static, plan. Production environment required reviewer is not enforced in those chapters — Michael’s go for apply is the team rule. Airflow reaches the PC by tagged release + manual pull deploy, not by Snowflake tasks.',
+        'RAW lands payloads. CORE holds business objects (often written in the same procedure pass as RAW). dbt builds STAGING / marts / ANALYTICS on top of CORE: ledger_dbt_daily runs Bash dbt on LEDGER_WH or COMPUTE_WH; dbt_daily runs Cosmos against target hl_prod (docstring: ANALYTICS_DBT) with per-model tasks when a manifest is present. Dev twins force hl_dev / *_DEV and have no schedule. agentic_workforce_dbt_daily builds workforce ANALYTICS the same way. How a PR becomes a Terraform apply or an Airflow pin lives on the Ship path tile — this tile is the transform contract.',
       caption:
-        'RAW → CORE → dbt STAGING/marts → ANALYTICS + SV_*. hl_prod vs hl_dev. PR CI schema, then merge/apply to prod.',
+        'RAW → CORE → dbt STAGING/marts → ANALYTICS + SV_*. hl_prod vs hl_dev. PR CI schema is on the Ship path tile.',
       rows: [
         {
           name: 'RAW',
@@ -204,34 +340,24 @@ export const COPY = {
         },
         {
           name: 'HOUSEHOLD_LEDGER_CI.DBT_PR_<n>',
-          role: 'Per-PR dbt CI schema when secrets exist',
-          status: 'Not prod',
-        },
-        {
-          name: 'Terraform apply on main',
-          role: 'Manual dispatch apply=true → environment production',
-          status: 'Infra deploy',
-        },
-        {
-          name: 'Airflow pin pull',
-          role: 'Tagged release + manual PC pull deploy',
-          status: 'Scheduler deploy',
+          role: 'Per-PR dbt CI schema when secrets exist (see Ship path)',
+          status: 'CI only',
         },
       ],
     },
     {
       id: 'pipes',
-      n: '6',
+      n: '7',
       title: 'Source feeds into Snowflake',
       svg: 'pipes',
       body:
-        'Three ledger feeds hit Airflow, then HOUSEHOLD_LEDGER: Monarch via EAI_MONARCH (monarch_load / proc_monarch_extract), Gmail via EAI_GMAIL (ledger_email_alerts → classify → reconcile_pending), and Drive via drive_poll → doc_extract (pypdf then local Tesseract — Cortex is not used for OCR). YouTube feeds MOONSHOTS through the two confirmed-unpaused Moonshots DAGs. Shape is extract/land → transform (dbt) → test. No S3/Snowpipe path — that design was dropped.',
+        'Live feeds: Monarch via EAI_MONARCH (monarch_load / proc_monarch_extract) into HOUSEHOLD_LEDGER; Gmail via EAI_GMAIL (ledger_email_alerts → classify → reconcile_pending); Drive via drive_poll → doc_extract (pypdf then local Tesseract — no Cortex OCR); YouTube into MOONSHOTS via the two confirmed-unpaused Moonshots DAGs. Workforce AI history lands through capture MERGE and the nightly chat backup into AGENTIC_WORKFORCE (and RAW.CHAT_MESSAGES). Planned feed: Epic MyChart SMART on FHIR R4 into HOUSEHOLD_HEALTH (sandbox auth exists; weekly Monday load inside pipeline_load_window decided, not built). Shape is extract/land → transform (dbt) → test. No S3/Snowpipe path — that design was dropped.',
       caption:
-        'Monarch / Gmail / Drive → Airflow → RAW/CORE → dbt → ANALYTICS → MCP. YouTube → MOONSHOTS.',
+        'Monarch / Gmail / Drive → ledger. YouTube → Moonshots. Chat capture → AGENTIC_WORKFORCE. MyChart FHIR → planned HOUSEHOLD_HEALTH.',
     },
     {
       id: 'security',
-      n: '7',
+      n: '8',
       title: 'Roles and Cortex gate',
       svg: 'security',
       body:
@@ -241,7 +367,7 @@ export const COPY = {
     },
     {
       id: 'stack',
-      n: '8',
+      n: '9',
       title: 'Stack',
       svg: 'stack',
       body:
@@ -251,7 +377,7 @@ export const COPY = {
     },
     {
       id: 'features',
-      n: '9',
+      n: '10',
       title: 'Catalogs and Snowflake features',
       svg: 'features',
       body:
@@ -506,8 +632,14 @@ export const DIAG = {
   },
   erd: {
     title:
-      'Schema ERD for the documents path in HOUSEHOLD_LEDGER: RAW → CORE → ANALYTICS, plus catalogs',
-    areas: ['HOUSEHOLD_LEDGER', 'MOONSHOTS', 'AGENTIC_WORKFORCE', 'CONTROL'],
+      'Four prod databases plus planned HOUSEHOLD_HEALTH — select a database in the open panel for its schemas',
+    areas: [
+      'HOUSEHOLD_LEDGER',
+      'MOONSHOTS',
+      'AGENTIC_WORKFORCE',
+      'CONTROL',
+      'HOUSEHOLD_HEALTH (planned)',
+    ],
     schemas: ['RAW', 'CORE', 'CTRL', 'ANALYTICS'],
     entities: [
       {
@@ -555,6 +687,17 @@ export const DIAG = {
         rows: [['SEARCH_TEXT'], ['attributes']],
         meaning: 'Search catalog (serving may be suspended; indexing active)',
       },
+    ],
+  },
+  workflow: {
+    title: 'Ship path from PR to production Snowflake and Airflow',
+    steps: [
+      { t: 'Branch + PR', s: 'household-platform' },
+      { t: 'PR CI', s: 'ruff · gitleaks · static · plan' },
+      { t: 'Merge', s: 'code only' },
+      { t: 'Terraform apply', s: 'apply=true · production' },
+      { t: 'Airflow tag', s: 'release pin' },
+      { t: 'PC pull', s: 'deploy_airflow.ps1' },
     ],
   },
 }
@@ -646,33 +789,12 @@ DIAG.features.rows = [
   },
 ]
 
-COPY.mychart = {
-  id: 'mychart',
-  kicker: 'Healthcare data ingestion',
-  title: 'MyChart data in Snowflake',
-  summary:
-    'SMART on FHIR R4 path from Epic MyChart into a planned HOUSEHOLD_HEALTH database (RAW / STAGING / CORE / CTRL). App registration, JWKS, and sandbox token exchange exist; production patient loads are not live yet.',
-  open:
-    'Designed a SMART on FHIR R4 ingestion path from an Epic MyChart patient portal toward Snowflake. Patient authorization is OAuth; tokens are kept in a token vault on AWS Lambda, DynamoDB, and SSM Parameter Store. A scheduled Airflow load is designed to pull FHIR R4 resources onto a Snowflake internal stage, then stored procedures load VARIANT raw tables. Infrastructure is Terraform. Weekly Monday load inside pipeline_load_window was decided; it is not built. HOUSEHOLD_HEALTH objects are not in production. No patient data is shown.',
-  caption:
-    'Ingestion path from patient authorization to Snowflake raw tables. Built through sandbox auth; awaiting production consent and first load. No patient data is shown.',
-  status: 'Sandbox auth tested; prod load not built',
-  chip: 'HOUSEHOLD_HEALTH planned',
-  nodes: [
-    'MyChart (FHIR R4)',
-    'Patient authorization (OAuth)',
-    'Token vault (Lambda, DynamoDB, SSM)',
-    'Scheduled load (Airflow)',
-    'Internal stage',
-    'Load procedures',
-    'HOUSEHOLD_HEALTH.RAW (VARIANT)',
-  ],
-}
-
 COPY.industries = {
   line: 'The same pattern also covers Healthcare, Logistics, Legal, Finance and Operations, and Public Sector.',
   link: 'See all industries',
   href: 'https://www.myorglab.com/intelligence',
 }
 
-DIAG.mychart = COPY.mychart
+DIAG.databases = Object.fromEntries(
+  (COPY.tiles.find((t) => t.id === 'domains')?.databases || []).map((db) => [db.id, db]),
+)

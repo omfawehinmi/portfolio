@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { COPY } from '../data/architecture.js'
 import { projects } from '../data/projects.js'
 import { intrinsicImageSize, publicUrl } from '../utils.js'
@@ -8,14 +8,14 @@ import Modal from './ui/Modal.jsx'
 import SectionHeader from './ui/SectionHeader.jsx'
 const KICKERS = {
   mcp: 'Request path',
-  domains: "ERD, crow\u2019s foot",
+  workflow: 'CI / CD ship path',
+  domains: 'All databases',
   airflow: 'Scheduler inventory',
-  dbt: 'Transform and deploy',
+  dbt: 'Transform layers',
   pipes: 'Source feeds',
   security: 'Access zones',
   stack: 'Layer stack',
   features: 'Capability matrix',
-  mychart: 'Healthcare data ingestion',
 }
 
 const LEAD_CAPTION =
@@ -33,6 +33,7 @@ const MORE_PREVIEW = {
 const OPEN_ALIASES = {
   lead: 'lead',
   mcp: 'mcp',
+  workflow: 'workflow',
   domains: 'domains',
   airflow: 'airflow',
   dbt: 'dbt',
@@ -40,6 +41,7 @@ const OPEN_ALIASES = {
   security: 'security',
   stack: 'stack',
   features: 'features',
+  mychart: 'domains',
   myorglab: 'more-myorglab',
   'semantic-hr': 'more-hr-intelligence',
   'cortex-self-serve': 'more-hr-intelligence',
@@ -59,7 +61,6 @@ function resolveOpen(openId) {
   if (!openId) return { kind: null }
   const mapped = OPEN_ALIASES[openId] || openId
   if (mapped === 'lead') return { kind: 'lead' }
-  if (mapped === 'mychart') return { kind: 'mychart' }
   const tile = COPY.tiles.find((item) => item.id === mapped)
   if (tile) return { kind: 'tile', tile }
   const more = moreItems.find((item) => item.id === mapped)
@@ -202,46 +203,6 @@ function ArchitectureTile({ tile, onOpen, tall }) {
   )
 }
 
-function HealthcareTile({ onOpen, tall }) {
-  const M = COPY.mychart
-  return (
-    <article
-      className="bx-tile bx-t-mychart"
-      data-testid="mychart-tile"
-      tabIndex={0}
-      role="button"
-      aria-haspopup="dialog"
-      onClick={(event) => openTile(event, 'mychart', onOpen)}
-      onKeyDown={(event) => onTileKey(event, 'mychart', onOpen)}
-    >
-      <div className="bx-head">
-        <div>
-          <p className="bx-kicker">{M.kicker}</p>
-          <h4 className="bx-h2">{M.title}</h4>
-        </div>
-        <OpenIcon />
-      </div>
-      <p className="bx-lede">{M.summary}</p>
-      <figure className="bx-fig">
-        <ArchitectureDiagram kind="mychart" tall={tall} inst="tile" />
-      </figure>
-    </article>
-  )
-}
-
-function MychartPanel({ tall }) {
-  const M = COPY.mychart
-  return (
-    <div className="bx-panel-body bx-mychart-panel">
-      <figure className="bx-fig bx-fig-big">
-        <ArchitectureDiagram kind="mychart" tall={tall} inst="open" />
-        <figcaption>{M.caption}</figcaption>
-      </figure>
-      <p>{M.open}</p>
-    </div>
-  )
-}
-
 function MoreCard({ item, featured, onOpen }) {
   const industries = item.prev === 'hr-intelligence' ? COPY.industries : null
   const card = (
@@ -321,7 +282,48 @@ function LeadPanel({ tall }) {
   )
 }
 
+function DomainsPanel({ tile, tall }) {
+  const databases = tile.databases || []
+  const [dbId, setDbId] = useState(databases[0]?.id || null)
+  const active = databases.find((db) => db.id === dbId) || databases[0]
+  return (
+    <div className="bx-panel-body">
+      <div className="bx-dbtabs" role="tablist" aria-label="Snowflake databases">
+        {databases.map((db) => (
+          <button
+            key={db.id}
+            type="button"
+            role="tab"
+            aria-selected={active?.id === db.id}
+            className={`bx-dbtab${active?.id === db.id ? ' is-active' : ''}`}
+            onClick={() => setDbId(db.id)}
+          >
+            <strong>{db.name}</strong>
+            <span>{db.status}</span>
+          </button>
+        ))}
+      </div>
+      <figure className="bx-fig bx-fig-big">
+        <ArchitectureDiagram kind="domains" tall={tall} inst="open" dbId={active?.id} />
+        <figcaption>{active ? `${active.name}: ${active.oneLine}` : tile.caption}</figcaption>
+      </figure>
+      {active ? (
+        <>
+          <p className="bx-lede">{active.detail}</p>
+          <ul className="bx-chips">
+            {active.schemas.map((schema) => (
+              <li key={schema}>{schema}</li>
+            ))}
+          </ul>
+        </>
+      ) : null}
+      <p>{tile.body}</p>
+    </div>
+  )
+}
+
 function TilePanel({ tile, tall }) {
+  if (tile.id === 'domains') return <DomainsPanel tile={tile} tall={tall} />
   return (
     <div className="bx-panel-body">
       <figure className="bx-fig bx-fig-big">
@@ -428,23 +430,19 @@ export default function Projects({ openId, onOpen }) {
       ? COPY.lead.title
       : open.kind === 'tile'
         ? open.tile.title
-        : open.kind === 'mychart'
-          ? COPY.mychart.title
-          : open.kind === 'more'
-            ? open.more.title
-            : open.kind === 'legacy'
-              ? open.project.modalTitle
-              : undefined
+        : open.kind === 'more'
+          ? open.more.title
+          : open.kind === 'legacy'
+            ? open.project.modalTitle
+            : undefined
   const modalKicker =
     open.kind === 'lead'
       ? 'Lead project'
       : open.kind === 'tile'
         ? KICKERS[open.tile.id]
-        : open.kind === 'mychart'
-          ? KICKERS.mychart
-          : open.kind === 'more'
-            ? 'More shipped work'
-            : undefined
+        : open.kind === 'more'
+          ? 'More shipped work'
+          : undefined
 
   return (
     <section className="projects section" id="projects">
@@ -461,10 +459,7 @@ export default function Projects({ openId, onOpen }) {
         <h3 className="bx-morehead">More shipped work</h3>
         <div className="bx-grid bx-more">
           {moreItems.map((item, index) => (
-            <Fragment key={item.id}>
-              <MoreCard item={item} featured={index === 0} onOpen={onOpen} />
-              {index === 0 ? <HealthcareTile onOpen={onOpen} tall={tall} /> : null}
-            </Fragment>
+            <MoreCard key={item.id} item={item} featured={index === 0} onOpen={onOpen} />
           ))}
         </div>
       </div>
@@ -478,7 +473,6 @@ export default function Projects({ openId, onOpen }) {
       >
         {open.kind === 'lead' ? <LeadPanel tall={tall} /> : null}
         {open.kind === 'tile' ? <TilePanel tile={open.tile} tall={tall} /> : null}
-        {open.kind === 'mychart' ? <MychartPanel tall={tall} /> : null}
         {open.kind === 'more' ? <MorePanel item={open.more} /> : null}
         {open.kind === 'legacy' ? <LegacyBody key={open.project.id} project={open.project} onOpen={onOpen} /> : null}
       </Modal>

@@ -4,10 +4,17 @@
 // Inline SVG builders. Flat style after Cloudflare's reference architecture diagrams: hairline 1px strokes, a dot-grid panel,
 // numbered step badges, dashed groups, small uppercase labels. Restrained color: one soft tint per zone (data, agents and MCP,
 // access, sources and scheduling) plus neutral. Object names are real structural names from the platform repos (see README SOURCES).
-const C={ink:'#0b1d36',sub:'#57606a',line:'#d0d7de',conn:'#6e7781',acc:'#29b5e8',tint:'#eaf7fd',accInk:'#0a6688',dark:'#24292f',dot:'#dfe4e9',panel:'#fbfcfd',soft:'#f3f5f7'};
-// Zone tints: fill, stroke, ink. Every ink and #0b1d36 pass AA on every fill (README palette table).
-const Z={data:{f:'#eaf7fd',s:'#29b5e8',k:'#0a6688',n:'Snowflake data and catalogs'},agent:{f:'#f2f0fb',s:'#9b8fd6',k:'#5b4bb5',n:'MCP and agents'},
- sec:{f:'#fdf4e7',s:'#d6a24e',k:'#8a5300',n:'Roles and access'},src:{f:'#eaf6f0',s:'#5aae8a',k:'#1d6e4f',n:'Sources and scheduling'}};
+// Restrained architectural palette (slate / steel). Avoid candy pastels in light or dark.
+const lightC={ink:'#0b1d36',sub:'#5c6570',line:'#c9d0d8',conn:'#6a7380',acc:'#3d6f8c',tint:'#e8eef3',accInk:'#1f4f66',dark:'#1c2430',dot:'#d5dbe3',panel:'#f7f8fa',soft:'#eef1f4',node:'#ffffff'};
+const darkC={ink:'#e8eef4',sub:'#9aa3ad',line:'#2c3644',conn:'#8b95a1',acc:'#6a9bb3',tint:'#15202c',accInk:'#9ec4d6',dark:'#0a1018',dot:'#1a2430',panel:'#0f1620',soft:'#15202c',node:'#151e2a'};
+const lightZ={data:{f:'#e8eef3',s:'#3d6f8c',k:'#1f4f66',n:'Snowflake data and catalogs'},agent:{f:'#eceff3',s:'#5a6675',k:'#2c3848',n:'MCP and agents'},
+ sec:{f:'#f1eee9',s:'#8a7a62',k:'#5a4c38',n:'Roles and access'},src:{f:'#e9f0ed',s:'#4d7a68',k:'#2a5344',n:'Sources and scheduling'}};
+const darkZ={data:{f:'#152433',s:'#6a9bb3',k:'#9ec4d6',n:'Snowflake data and catalogs'},agent:{f:'#171e28',s:'#7a8796',k:'#c0c8d2',n:'MCP and agents'},
+ sec:{f:'#221e18',s:'#a09078',k:'#d2c4ae',n:'Roles and access'},src:{f:'#15241f',s:'#6a9a86',k:'#a8cfc0',n:'Sources and scheduling'}};
+const isDark=()=>typeof document!=='undefined'&&document.body.classList.contains('dark-theme');
+let C=lightC,Z=lightZ;
+const syncTheme=()=>{if(isDark()){C=darkC;Z=darkZ}else{C=lightC;Z=lightZ}};
+syncTheme();
 const F="Poppins, sans-serif",MONO="ui-monospace, SFMono-Regular, Menlo, monospace";
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
 let mt;const meas=(t,sz,w,it,mono)=>{if(!mt){const m=document.createElementNS('http://www.w3.org/2000/svg','svg');m.setAttribute('style','position:absolute;left:-9999px;top:0;width:10px;height:10px');m.setAttribute('text-rendering','geometricPrecision');mt=document.createElementNS('http://www.w3.org/2000/svg','text');m.appendChild(mt);document.body.appendChild(m)}
@@ -22,7 +29,7 @@ const defs=()=>`<defs><filter id="${ID}sh" x="-20%" y="-20%" width="140%" height
  <marker id="${ID}w" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M1,1 L9,5 L1,9" fill="none" stroke="${C.ink}" stroke-width="1.6"/></marker></defs>`;
 // kinds: default grey, 'c' accent (read and data path), 'w' write path (ink, dashed), 'd' dashed grey
 const arrow=(d,k)=>{const col=k==='c'?C.accInk:k==='w'?C.ink:C.conn;return `<path d="${d}" fill="none" stroke="${col}" stroke-width="1.1"${k==='w'||k==='d'?' stroke-dasharray="4 3"':''} stroke-linejoin="round" marker-end="url(#${ID}${k==='c'?'c':k==='w'?'w':'a'})"/>`};
-const panel=(W,H)=>`<rect x="0.5" y="0.5" width="${W-1}" height="${H-1}" rx="10" fill="${C.panel}" stroke="#e6eaee"/><rect x="0.5" y="0.5" width="${W-1}" height="${H-1}" rx="10" fill="url(#${ID}dg)"/>`;
+const panel=(W,H)=>`<rect x="0.5" y="0.5" width="${W-1}" height="${H-1}" rx="10" fill="${C.panel}" stroke="${C.line}"/><rect x="0.5" y="0.5" width="${W-1}" height="${H-1}" rx="10" fill="url(#${ID}dg)"/>`;
 const group=(x,y,w,h,t,o={})=>{const z=o.z?Z[o.z]:null;return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="${o.fill||'none'}" stroke="${z?z.s:o.grey?C.line:C.acc}" stroke-width="1" stroke-dasharray="${o.solid?'0':'3 3'}"/>`+(t?lab(x+8,y+11,t,z?z.k:o.grey?C.sub:C.accInk):'')};
 // legend: small swatches plus free text, one row; keys are zone ids.
 const legend=(x,y,keys,maxX=1e9)=>{let g='',xx=x;keys.forEach(k=>{const z=Z[k];const iw=15+meas(z.n,8.6,400)/0.88;if(xx>x&&xx+iw>maxX){xx=x;y+=14}g+=`<rect x="${xx}" y="${y-5}" width="10" height="10" rx="2" fill="${z.f}" stroke="${z.s}"/>`+T(xx+15,y,z.n,{sz:8.6,c:C.sub,a:'start'});xx+=15+meas(z.n,8.6,400)+16});return g};
@@ -33,7 +40,7 @@ const outline={
  dia:(x,y,w,h)=>`<path d="M${x+w/2},${y} L${x+w},${y+h/2} L${x+w/2},${y+h} L${x},${y+h/2} Z"/>`,
  cyl:(x,y,w,h)=>{const ry=5;return `<path d="M${x},${y+ry} a${w/2},${ry} 0 0 1 ${w},0 v${h-2*ry} a${w/2},${ry} 0 0 1 -${w},0 z"/><path d="M${x},${y+ry} a${w/2},${ry} 0 0 0 ${w},0" fill="none"/>`}};
 const inset={box:[9,5],pill:[10,4],doc:[8,5],dia:[0,0],cyl:[8,8]};
-const block=(shape,x,y,w,h,o={})=>{const z=o.z?Z[o.z]:o.e?Z.data:null;return `<g fill="${z?z.f:'#fff'}" stroke="${z?z.s:C.line}" stroke-width="1"${o.dash?' stroke-dasharray="3 3"':''}${o.hero?` filter="url(#${ID}sh)"`:''}>${outline[shape](x,y,w,h)}</g>`};
+const block=(shape,x,y,w,h,o={})=>{const z=o.z?Z[o.z]:o.e?Z.data:null;return `<g fill="${z?z.f:C.node}" stroke="${z?z.s:C.line}" stroke-width="1"${o.dash?' stroke-dasharray="3 3"':''}${o.hero?` filter="url(#${ID}sh)"`:''}>${outline[shape](x,y,w,h)}</g>`};
 // node: flat block plus wrapped lines; height grows to fit. lines: [{t, sz, w, c, it, mono, sub}]
 const node=(shape,x,y,w,lines,o={})=>{const [px,py]=inset[shape];const maxW=w-2*px;const L=[];
  lines.forEach(l=>{const sz=l.sz||10,ww=l.w||400;wrapW(l.t,maxW,sz,ww,l.it,l.mono).forEach(s=>L.push({...l,t:s,sz,lh:sz*1.3}))});
@@ -43,11 +50,12 @@ const node=(shape,x,y,w,lines,o={})=>{const [px,py]=inset[shape];const maxW=w-2*
 const n2=(t,s,sz=10,code,z)=>[{t,w:600,sz}].concat(s?[{t:s,sz:8.6,sub:1}]:[]).concat(code?[{t:code,sz:8.6,mono:1,c:z?Z[z].k:C.accInk}]:[]);
 const badge=(cx,cy,n)=>`<g class="nd badge" data-b="${cx-8},${cy-8},16,16,0,0" data-shape="badge"><circle cx="${cx}" cy="${cy}" r="8" fill="${C.ink}"/>`+T(cx,cy+0.5,String(n),{sz:8.6,w:600,c:'#fff'})+`</g>`;
 const tag=(cx,cy,t,o={})=>{const w=meas(t,8.6,500,0,1)/0.88+14;return `<g class="nd" data-b="${cx-w/2},${cy-8},${w},16,4,0" data-shape="pill"><rect x="${cx-w/2}" y="${cy-8}" width="${w}" height="16" rx="8" fill="${o.light?'#fff':C.dark}" stroke="${o.light?C.line:C.dark}"/>`+T(cx,cy+0.5,t,{sz:8.6,w:500,mono:1,c:o.light?C.sub:'#fff'})+`</g>`};
-const svg=(W,H,title,body)=>`<svg viewBox="0 0 ${W} ${H}" text-rendering="geometricPrecision" role="img" aria-label="${esc(title)}" xmlns="http://www.w3.org/2000/svg">${defs()}<title>${esc(title)}</title>${panel(W,H)}${body}</svg>`;
+const svg=(W,H,title,body)=>{syncTheme();return `<svg viewBox="0 0 ${W} ${H}" text-rendering="geometricPrecision" role="img" aria-label="${esc(title)}" xmlns="http://www.w3.org/2000/svg">${defs()}<title>${esc(title)}</title>${panel(W,H)}${body}</svg>`};
 const ns=(n,L)=>L.find(x=>x.label===n);
 
 // 1. Lead: zone overview, left to right. Data and read path in accent; the write path is ink and dashed.
-export function dLead(D,tall, inst=""){ID=(tall?'lT':'lW')+inst;const N=D.lead,K=D.code;let o='',a='';
+export function dLead(D,tall, inst=""){
+  syncTheme();ID=(tall?'lT':'lW')+inst;const N=D.lead,K=D.code;let o='',a='';
  if(!tall){const W=740,H=316;
   [[12,'Sources'],[104,'Scheduler'],[244,'Snowflake'],[412,'Catalogs'],[550,'MCP servers'],[666,'Clients']].forEach(([x,t])=>o+=lab(x,20,t,C.sub));
   ['Files','APIs','Documents'].forEach((t,i)=>o+=node('doc',12,52+i*70,74,n2(t),{h:40,z:'src'}).g);
@@ -83,7 +91,8 @@ export function dLead(D,tall, inst=""){ID=(tall?'lT':'lW')+inst;const N=D.lead,K
  return svg(W,y+26,N.title,a+o)};
 
 // 2. MCP: numbered request paths, read path in accent, write path dashed ink.
-export function dMcp(D, inst=""){ID='m'+inst;const L=D.lead.layers,K=D.code;const W=420;let o='',a='';const cx=[106,316],w=184;
+export function dMcp(D, inst=""){
+  syncTheme();ID='m'+inst;const L=D.lead.layers,K=D.code;const W=420;let o='',a='';const cx=[106,316],w=184;
  o+=lab(cx[0]-w/2,20,'Read path')+lab(cx[1]-w/2,20,'Write path',C.ink);
  const c0=ns('Clients',L).nodes,m=ns('MCP servers',L).nodes,cx2=ns('Cortex',L).nodes,cat=ns('Catalogs',L).nodes,sn=ns('Snowflake',L).nodes;
  const st=(n,x,y,shape,t,s,z,k,hero)=>{const r=node(shape,x-w/2,y,w,n2(t,s,10,k,z),{h:46,z,hero});return {g:r.g+badge(x-w/2,y,n),h:r.h}};
@@ -97,8 +106,10 @@ export function dMcp(D, inst=""){ID='m'+inst;const L=D.lead.layers,K=D.code;cons
  return svg(W,444,D.lead.title,a+o)};
 
 // 3. Data domains: crow's-foot ERD, flat tables with mono names and hairline rows.
-export function dErd(D, inst=""){ID='e'+inst;const E=D.erd.entities;const W=452;let o='',a='';
- D.erd.areas.forEach((t,i)=>o+=node('pill',8+(i%2)*222,10+Math.floor(i/2)*38,214,[{t,sz:8.6,w:500,c:i==0?Z.data.k:C.sub}],{h:32,z:i==0?'data':null}).g);
+export function dErd(D, inst=""){
+  syncTheme();ID='e'+inst;const E=D.erd.entities;const W=452;let o='',a='';
+ D.erd.areas.forEach((t,i)=>{const cols=3;const x=8+(i%cols)*148,y=10+Math.floor(i/cols)*34;
+  o+=node('pill',x,y,140,[{t,sz:8.2,w:500,c:i===4?Z.sec.k:(i===0?Z.data.k:C.sub)}],{h:28,z:i===4?'sec':(i===0?'data':null)}).g});
  const ent=(x,y,w,e,cat,hero)=>{const rows=cat?[]:e.rows;const ml=cat?[]:wrapW(e.meaning,w-16,8.6,400,1);const h=36+rows.length*15+(cat?0:8+ml.length*11);
   let g=`<g class="nd" data-b="${x},${y},${w},${h},6,3" data-shape="box"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="${cat?Z.data.f:'#fff'}" stroke="${cat?Z.data.s:C.line}"${hero?` filter="url(#${ID}sh)"`:''}/><path d="M${x+0.5},${y+33} H${x+w-0.5}" stroke="${cat?Z.data.s:C.line}"/>`;
   g+=T(x+8,y+11,e.layer,{sz:8.6,w:500,ls:.4,c:cat?Z.data.k:C.sub,a:'start',mono:1})+T(x+8,y+24,e.name,{sz:e.name.length>18?8.6:9.4,w:600,a:'start',mono:1});
@@ -122,13 +133,14 @@ export function dErd(D, inst=""){ID='e'+inst;const E=D.erd.entities;const W=452;
  return svg(W,H,D.erd.title,a+o)};
 
 // 4. Pipelines: BPMN-style lanes with hairline separators and mono lane labels, events, gateway, tasks.
-export function dPipes(D, inst=""){ID='p'+inst;const Pp=D.pipes,K=D.code;const W=400,H=328;let o='',a='';
+export function dPipes(D, inst=""){
+  syncTheme();ID='p'+inst;const Pp=D.pipes,K=D.code;const W=400,H=328;let o='',a='';
  const lanes=[['Sources',0,72],['Airflow on office PC',72,138],['Snowflake',210,96]];
  lanes.forEach(([t,y,h],i)=>{if(i)o+=`<line x1="1" y1="${y}" x2="${W-1}" y2="${y}" stroke="${C.line}"/>`;o+=lab(10,y+11,t,i<2?Z.src.k:Z.data.k)});
  const ev=(cx,cy,r,sw)=>`<circle cx="${cx}" cy="${cy}" r="${r}" fill="#fff" stroke="${C.ink}" stroke-width="${sw}"/>`;
- o+=ev(24,40,9,1.2)+T(24,59,'Start',{sz:8.6,c:C.sub});
- const t1=node('box',46,24,118,n2('Monarch, Gmail, Drive','',9.6),{h:34,z:'src'});o+=t1.g;
- o+=T(180,33,'EAI_MONARCH · EAI_GMAIL',{sz:8.6,mono:1,c:Z.src.k,a:'start'})+T(180,47,'drive_poll → stages',{sz:8.6,c:C.sub,a:'start'});
+  o+=ev(24,40,9,1.2)+T(24,59,'Start',{sz:8.6,c:C.sub});
+  const t1=node('box',46,24,118,n2('Monarch · Gmail · Drive · YT','',9.6),{h:34,z:'src'});o+=t1.g;
+  o+=T(180,28,'EAI_MONARCH · EAI_GMAIL',{sz:8.6,mono:1,c:Z.src.k,a:'start'})+T(180,40,'drive_poll · moonshots_*',{sz:8.6,c:C.sub,a:'start'})+T(180,52,'MyChart FHIR planned',{sz:8.6,c:Z.sec.k,a:'start'});
  o+=T(10,96,Pp.airflow.s,{sz:8.6,it:1,c:C.sub,a:'start'});
  o+=`<g class="nd" data-b="83,124,34,34,0,0" data-shape="dia">${block('dia',83,124,34,34)}<path d="M94,135 l12,12 M106,135 l-12,12" stroke="${C.ink}" stroke-width="1.2"/></g>`;
  const ex=node('box',214,102,166,n2('Extract and land','',9.6,K.land,'src'),{h:34,z:'src',hero:1});o+=ex.g;
@@ -143,7 +155,8 @@ export function dPipes(D, inst=""){ID='p'+inst;const Pp=D.pipes,K=D.code;const W
  return svg(W,H,Pp.title,a+o)};
 
 // 5. Security: nested access zones as dashed outlines, accent only on the MCP split.
-export function dSec(D, inst=""){ID='s'+inst;const S=D.security,K=D.code;const W=380,H=342;let o='';
+export function dSec(D, inst=""){
+  syncTheme();ID='s'+inst;const S=D.security,K=D.code;const W=380,H=342;let o='';
  o+=group(8,8,364,310,'Roles',{z:'sec'})+group(20,70,340,240,'MCP split',{z:'agent'})+group(32,152,316,150,'Cortex gate',{z:'sec'})+group(44,214,292,80,'Catalogs',{z:'data'});
  S.roles.forEach((t,i)=>o+=node('pill',18+i*116,28,108,[{t,sz:9.6,w:500}],{h:28,z:'sec'}).g);
  o+=node('box',36,88,148,n2(S.write,'',10,K.writeSrv,'agent'),{h:50,z:'agent',hero:1}).g+node('box',196,88,148,n2(S.read.t,S.read.s,10,K.readSrv,'agent'),{h:50,z:'agent',hero:1}).g;
@@ -154,7 +167,8 @@ export function dSec(D, inst=""){ID='s'+inst;const S=D.security,K=D.code;const W
  return svg(W,H,S.title,o)};
 
 // 6. Stack: flat layer bands, the agent interface in accent.
-export function dStack(D, inst=""){ID='k'+inst;const L=D.stack.layers;const W=360;let o='';const x=10,w=340,h=34;
+export function dStack(D, inst=""){
+  syncTheme();ID='k'+inst;const L=D.stack.layers;const W=360;let o='';const x=10,w=340,h=34;
  const zs=['agent','src','data','src',null];L.forEach((l,i)=>{const y=10+i*(h+6);const z=zs[i]?Z[zs[i]]:null;const one=l.nodes.length==1&&l.nodes[0].s;
   o+=`<g class="nd" data-b="${x},${y},${w},${h},8,2" data-shape="box"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="${z?z.f:'#fff'}" stroke="${z?z.s:C.line}"${i==0||i==2?` filter="url(#${ID}sh)"`:''}/>`+
   (one?T(x+12,y+12,l.nodes[0].t,{sz:9.6,w:600,a:'start'})+T(x+12,y+25,l.nodes[0].s,{sz:8.6,c:C.sub,a:'start'}):T(x+12,y+h/2,l.nodes.map(n=>n.t).join(' and '),{sz:9.6,w:600,a:'start'}))+
@@ -162,7 +176,8 @@ export function dStack(D, inst=""){ID='k'+inst;const L=D.stack.layers;const W=36
  return svg(W,10+L.length*(h+6)+4,D.stack.title,o)};
 
 // 7. Snowflake features: capability matrix, hairline cells, accent icons.
-export function dFeat(D, inst=""){ID='f'+inst;const R=D.features.rows;const W=448;let o='';const rh=38,hx=84,cw=177,pad=6;const FH=pad*2+R.length*(rh+6)-6;
+export function dFeat(D, inst=""){
+  syncTheme();ID='f'+inst;const R=D.features.rows;const W=448;let o='';const rh=38,hx=84,cw=177,pad=6;const FH=pad*2+R.length*(rh+6)-6;
  const icon=(k,x,y,s)=>{switch(k){
   case 'hex':return `<rect x="${x}" y="${y+1}" width="13" height="12" rx="3" fill="none" stroke="${s}" stroke-width="1.2"/><path d="M${x+3},${y+7} h7" stroke="${s}" stroke-width="1.2"/>`;
   case 'grid':return `<rect x="${x-1}" y="${y}" width="15" height="14" rx="2" fill="none" stroke="${s}" stroke-width="1.2"/><path d="M${x-1},${y+5} h15 M${x+5},${y} v14" stroke="${s}" stroke-width="1.1"/>`;
@@ -177,8 +192,31 @@ export function dFeat(D, inst=""){ID='f'+inst;const R=D.features.rows;const W=44
  o+=legend(pad+6,FH+10,['agent','data']);
  return svg(W,FH+20,D.features.title,o)};
 
+export function dWorkflow(D, inst=""){
+  syncTheme();ID='wf'+inst;const Wf=D.workflow;const W=440;let o='',a='';
+  o+=T(14,18,'Merge ≠ apply ≠ deploy',{sz:11,w:600,a:'start'})+T(14,34,'Michael’s go gates apply, unpause, grants',{sz:8.6,c:C.sub,a:'start'});
+  Wf.steps.forEach((s,i)=>{const y=52+i*42;const z=i<2?'src':i===2?null:i===3?'data':'src';
+   o+=badge(24,y+16,i+1)+node('box',44,y,360,n2(s.t,s.s,10),{h:34,z:z||undefined,hero:i===3||i===5}).g;
+   if(i<Wf.steps.length-1)a+=arrow(`M24,${y+34} V${y+40}`,'c')});
+  o+=legend(14,52+Wf.steps.length*42+6,['src','data']);
+  return svg(W,52+Wf.steps.length*42+28,Wf.title,a+o)};
+
+export function dDatabase(D, dbId, inst=""){
+  syncTheme();ID='dbx'+inst+(dbId||'');const db=D.databases?.[dbId]||D.databases?.ledger;if(!db)return '';
+  const W=440;let o='';
+  o+=T(14,18,db.name,{sz:12,w:600,a:'start'})+T(14,34,db.status+' · '+db.oneLine,{sz:8.6,c:C.sub,a:'start'});
+  const cols=Math.min(4,Math.max(2,db.schemas.length));
+  db.schemas.forEach((s,i)=>{const x=14+(i%cols)*106,y=52+Math.floor(i/cols)*36;
+   o+=node('pill',x,y,98,[{t:s,sz:8.8,w:500,mono:1}],{h:26,z:db.status.startsWith('Planned')?'sec':'data'}).g});
+  const schemaRows=Math.ceil(db.schemas.length/cols);let y=52+schemaRows*36+16;
+  o+=lab(14,y,'Objects / path',C.sub);y+=10;
+  (db.objects||[]).forEach((obj,i)=>{const yy=y+i*40;
+   o+=node('box',14,yy,412,[{t:obj.layer+' · '+obj.name,sz:9.4,w:600,mono:1},{t:obj.note,sz:8.6,sub:1}],{h:34,z:i===0?'data':null}).g});
+  o+=legend(14,y+(db.objects||[]).length*40+10,db.status.startsWith('Planned')?['sec','data']:['data']);
+  return svg(W,y+(db.objects||[]).length*40+30,db.name+' schemas',o)};
+
 export function dAirflow(D, inst=""){
-  ID='af'+inst;const A=D.airflow;const W=420;let o='';
+  syncTheme();ID='af'+inst;const A=D.airflow;const W=420;let o='';
   o+=T(14,18,A.headline,{sz:12,w:600,a:'start'})+T(14,34,'Office-PC Airflow pin · git ≠ unpaused',{sz:8.6,c:C.sub,a:'start'});
   A.counts.forEach((c,i)=>{const x=14+i*132;o+=node('box',x,48,120,[{t:c.n,sz:16,w:600,c:Z.src.k},{t:c.label,sz:8.6,sub:1}],{h:48,z:'src',hero:i===2}).g});
   const rows=[
@@ -197,6 +235,7 @@ export function dAirflow(D, inst=""){
   return svg(W,118+rows.length*22+28,A.title,o)};
 
 export function dDbt(D, inst=""){
+  syncTheme();
   ID='db'+inst;const L=D.dbt.layers;const W=400;let o='',a='';
   L.forEach((l,i)=>{const y=16+i*52;const z=i<2?'data':i<4?'data':'src';
    o+=node(i<2?'cyl':'box',40,y,320,n2(l.t,l.s,10),{h:40,z,hero:i===3||i===4}).g;
@@ -204,11 +243,13 @@ export function dDbt(D, inst=""){
   o+=legend(14,16+L.length*52+4,['data','src']);
   return svg(W,16+L.length*52+24,D.dbt.title,a+o)};
 
-export function dRearch(inst=""){ID='r'+inst;let o='',a='';['Terraform','dbt','Airflow','Snowflake'].forEach((t,i)=>{const xx=12+i*88;o+=node(i==3?'cyl':'box',xx,22,72,n2(t),{h:42,e:i==3}).g;if(i<3)a+=arrow(`M${xx+72},43 H${xx+86}`,'c')});
+export function dRearch(inst=""){
+  syncTheme();ID='r'+inst;let o='',a='';['Terraform','dbt','Airflow','Snowflake'].forEach((t,i)=>{const xx=12+i*88;o+=node(i==3?'cyl':'box',xx,22,72,n2(t),{h:42,e:i==3}).g;if(i<3)a+=arrow(`M${xx+72},43 H${xx+86}`,'c')});
  return svg(370,86,'Re-architecture preview: Terraform, dbt and Airflow managing a Snowflake platform',a+o)};
 
 
 export function dMychart(D,tall, inst=""){
+  syncTheme();
   ID=(tall?'hT':'hW')+inst;
   const M=D.mychart;
   const compact=inst==='tile';
