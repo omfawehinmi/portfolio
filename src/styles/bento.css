@@ -36,7 +36,7 @@
     z-index: 40;
     width: calc(var(--bx-rail-width) - 0.85rem);
     max-width: calc(var(--bx-rail-width) - 0.85rem);
-    max-height: min(36rem, calc(100vh - 9.5rem));
+    max-height: min(42rem, calc(100vh - 6.5rem));
     overflow-x: hidden;
     overflow-y: auto;
     padding: 0.35rem 0.2rem;
@@ -55,7 +55,8 @@
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.12rem;
+    /* More vertical air between each timeline selection. */
+    gap: 0.55rem;
     border-left: 1px solid color-mix(in srgb, var(--first-color) 35%, transparent);
     pointer-events: auto;
   }
@@ -64,8 +65,8 @@
     display: flex;
     align-items: center;
     gap: 0.45rem;
-    min-height: 1.55rem;
-    padding: 0.12rem 0.2rem 0.12rem 0;
+    min-height: 2.15rem;
+    padding: 0.35rem 0.2rem 0.35rem 0;
     margin-left: -1px;
     color: var(--text-color);
     text-decoration: none;
@@ -142,8 +143,9 @@ body:has(dialog.project-dialog[open]) .bx-rail {
   transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
   display: flex;
   flex-direction: column;
-  /* Clip chrome only; diagrams scale inside .bx-fig so they stay whole. */
-  overflow: hidden;
+  /* Hard no-clip: tiles grow with content; never crop copy or diagrams. */
+  overflow: visible;
+  height: auto;
   text-align: left;
 }
 
@@ -245,10 +247,8 @@ p.bx-subhead {
 }
 
 .bx-body {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  display: block;
+  overflow: visible;
 }
 
 .bx-chips {
@@ -465,10 +465,10 @@ p.bx-subhead {
 }
 
 .bx-row .project-tile__outcome {
-  -webkit-line-clamp: 2;
   margin-top: 0;
   font-size: 0.84rem;
   line-height: 1.45;
+  overflow: visible;
 }
 
 .bx-panel-body .bx-h1 {
@@ -543,15 +543,16 @@ p.bx-subhead {
 }
 
 @media (min-width: 1024px) {
+  /* Content-sized rows: column spans only — never lock height that clips copy. */
   .bx-grid {
     grid-template-columns: repeat(12, minmax(0, 1fr));
-    grid-auto-rows: 40px;
+    grid-auto-rows: auto;
     grid-auto-flow: dense;
+    align-items: start;
   }
 
   .bx-lead {
     grid-column: span 12;
-    grid-row: span 11;
     padding: 1.5rem 1.75rem;
     min-height: 0;
   }
@@ -567,133 +568,82 @@ p.bx-subhead {
     margin-top: 0.5rem;
     flex: 1 1 auto;
     min-height: 0;
-    align-items: stretch;
+    align-items: start;
   }
 
   .bx-leadfig {
     margin: 0;
-    justify-content: center;
+    justify-content: flex-start;
     min-height: 0;
-    overflow: hidden;
+    overflow: visible;
   }
 
-  .bx-t-mcp {
-    grid-column: span 6;
-    grid-row: span 11;
-  }
-
-  .bx-t-workflow {
-    grid-column: span 6;
-    grid-row: span 9;
-  }
-
-  .bx-t-domains {
-    grid-column: span 12;
-    grid-row: span 12;
-  }
-
-  .bx-t-airflow {
-    grid-column: span 12;
-    grid-row: span 12;
-  }
-
-  .bx-t-dbt {
-    grid-column: span 6;
-    grid-row: span 9;
-  }
-
+  .bx-t-mcp,
+  .bx-t-workflow,
+  .bx-t-dbt,
   .bx-t-pipes,
-  .bx-t-security {
-    grid-column: span 6;
-    grid-row: span 10;
-  }
-
+  .bx-t-security,
   .bx-t-stack,
   .bx-t-features {
     grid-column: span 6;
-    grid-row: span 7;
+  }
+
+  .bx-t-domains,
+  .bx-t-airflow {
+    grid-column: span 12;
   }
 
   .bx-t-stack .project-tile__outcome,
-  .bx-t-features .project-tile__outcome {
-    display: none;
-  }
-
+  .bx-t-features .project-tile__outcome,
   .bx-t-pipes .project-tile__outcome,
   .bx-t-security .project-tile__outcome,
   .bx-t-airflow .project-tile__outcome,
   .bx-t-dbt .project-tile__outcome,
   .bx-t-workflow .project-tile__outcome,
-  .bx-t-domains .project-tile__outcome {
-    display: -webkit-box;
-    -webkit-line-clamp: 5;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    height: auto;
-  }
-
+  .bx-t-domains .project-tile__outcome,
   .bx-lead .project-tile__outcome,
   .bx-t-mcp .project-tile__outcome {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    display: block;
+    overflow: visible;
     height: auto;
+    -webkit-line-clamp: unset;
   }
 
   .bx-tile .bx-fig {
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    flex: 1 1 auto;
+    flex: 0 0 auto;
     min-height: 0;
   }
 
-  .bx-tile .bx-fig svg {
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    max-height: 100%;
-    object-fit: contain;
-    object-position: center;
-  }
-
+  .bx-tile .bx-fig svg,
   .bx-lead .bx-leadfig svg {
     width: 100%;
     max-width: 100%;
     height: auto;
-    max-height: 100%;
+    max-height: min(22rem, 48vh);
     object-fit: contain;
     object-position: center;
   }
 
   .bx-more {
-    grid-auto-rows: 48px;
+    grid-auto-rows: auto;
   }
 
   .bx-feat {
     grid-column: span 4;
-    grid-row: span 6;
   }
 
   .bx-row {
     grid-column: span 4;
-    grid-row: span 2;
   }
 
-  .bx-row .project-tile__outcome {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    height: auto;
-  }
-
+  .bx-row .project-tile__outcome,
   .bx-feat .project-tile__outcome {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    display: block;
+    overflow: visible;
     height: auto;
+    -webkit-line-clamp: unset;
   }
 }
 
@@ -883,7 +833,8 @@ body:has(dialog.project-dialog[open]) .scrollup {
   border: 1px solid rgb(224, 227, 235);
   border-radius: 1.25rem;
   box-shadow: 0 1px 4px rgba(30, 50, 100, 0.07);
-  overflow: hidden;
+  overflow: visible;
+  height: auto;
 }
 
 .bx-feat-block .bx-tile {
@@ -918,6 +869,5 @@ body:has(dialog.project-dialog[open]) .scrollup {
 @media (min-width: 1024px) {
   .bx-feat-block {
     grid-column: span 12;
-    grid-row: span 8;
   }
 }
