@@ -1,21 +1,21 @@
 // Portfolio Snowflake section rewritten from the as-built in
-// myorglab-repos/household-data-architecture (prod-vs-planned, snowflake-objects,
-// agents-and-mcp). Real databases, MCP servers, catalogs, EAIs, and DAG names.
-// No secrets, PATs, or account locators. Status language matches the as-built:
-// production vs planned vs paused. Edit or cut anything you do not want public.
+// myorglab-repos/household-data-architecture (synced to household-platform
+// fdff221 via HDA PR #12 — 20 DAG pages). Real databases, MCP servers, catalogs,
+// EAIs, and DAG names. No secrets, PATs, or account locators. Status language
+// matches the as-built: production vs planned vs paused.
 
 export const COPY = {
   section: {
     kicker: 'Projects',
     title: 'Work that shows the platform',
     intro:
-      'The lead project is the household Snowflake platform: 4 production databases (HOUSEHOLD_LEDGER, MOONSHOTS, AGENTIC_WORKFORCE, CONTROL), 3 MCP servers, 16 Airflow DAG files, and a PR → CI → merge → Terraform apply → Airflow pin ship path. Tiles under the lead walk CI/CD with source feeds, schemas and modeling, Airflow + dbt, MCP and roles, catalogs, then Grokbot agents per MCP. Other shipped work follows in a shorter list.',
+      'The lead project is the household Snowflake platform: 4 production databases (HOUSEHOLD_LEDGER, MOONSHOTS, AGENTIC_WORKFORCE, CONTROL), 3 MCP servers, 20 Airflow DAG files, and a PR → CI → merge → Terraform apply → Airflow pin ship path. Tiles under the lead walk CI/CD with source feeds, schemas and modeling, Airflow + dbt, MCP and roles, catalogs, then Grokbot agents per MCP. Other shipped work follows in a shorter list.',
   },
   lead: {
     title: 'HOUSEHOLD_LEDGER and MCP',
     subhead: 'Snowflake data architecture and MCP',
     oneLine:
-      '4 prod databases · 3 MCP servers · 16 Airflow DAG files · Monarch, Gmail, Drive, YouTube (plus planned Epic MyChart) · AI chat history in AGENTIC_WORKFORCE · 15 SV_* · 6 CS_*. Agents hit MCP catalogs, not an open warehouse login.',
+      '4 prod databases · 3 MCP servers · 20 Airflow DAG files · Monarch, Gmail, Drive, YouTube (plus planned Epic MyChart) · AI chat history in AGENTIC_WORKFORCE · 15 SV_* · 6 CS_*. Agents hit MCP catalogs, not an open warehouse login.',
     tags: [
       'Snowflake',
       'HOUSEHOLD_LEDGER',
@@ -31,7 +31,7 @@ export const COPY = {
     stats: [
       { n: '4', label: 'prod databases' },
       { n: '3', label: 'MCP servers' },
-      { n: '16', label: 'Airflow DAG files' },
+      { n: '20', label: 'Airflow DAG files' },
       { n: '4', label: 'source feeds (by target DB)' },
       { n: '15', label: 'SV_* Analyst views' },
       { n: '6', label: 'CS_* search services' },
@@ -46,7 +46,7 @@ export const COPY = {
       title: 'Ship path: PR → prod',
       svg: 'workflow',
       body:
-        'Change reaches Snowflake and Airflow in separate gates — merge never applies and never deploys. Branch work opens a PR. Required CI in the migration chapters: ruff + pytest, gitleaks, static, and Terraform plan. dbt PR CI can use HOUSEHOLD_LEDGER_CI.DBT_PR_<n> when secrets exist; otherwise it skips. Merge lands code on main only. Snowflake infra (databases, schemas, roles, warehouses, monitors) applies from a manual GitHub Actions dispatch with apply=true against the production environment. Production environment required reviewer is not enforced in those chapters — Michael’s go for apply is the team rule. Airflow reaches the office PC only after a tagged release (for example airflow-20261107-02cbc74) and a manual PC pull (deploy_airflow.ps1). PLATFORM_ENV and PLATFORM_STUB on the pin decide prod vs stub. Unpause, grants, and drops also need an explicit go.',
+        'Change reaches Snowflake and Airflow in separate gates — merge never applies and never deploys. Branch work opens a PR. Required CI in the migration chapters: ruff + pytest, gitleaks, static, and Terraform plan. dbt PR CI can use HOUSEHOLD_LEDGER_CI.DBT_PR_<n> when secrets exist; otherwise it skips. Merge lands code on main only. Snowflake infra (databases, schemas, roles, warehouses, monitors) applies from a manual GitHub Actions dispatch with apply=true against the production environment. Production environment required reviewer is not enforced in those chapters — Michael’s go for apply is the team rule. Airflow reaches the office PC only after a tagged release and a manual PC pull (deploy_airflow.ps1). Last recorded PC apply in household-tracker is airflow-20261113-d64a1c8; git tags continue through airflow-20261123-b6a02d7 on household-platform fdff221 — a tag is not a live pin. PLATFORM_ENV and PLATFORM_STUB on the pin decide prod vs stub. Unpause, grants, and drops also need an explicit go.',
       caption:
         'PR CI → merge (code only) → Terraform apply (Snowflake) → Airflow tag + PC pull. Merge ≠ apply ≠ deploy.',
       rows: [
@@ -72,7 +72,7 @@ export const COPY = {
         },
         {
           name: '5. Airflow release tag',
-          role: 'Pin such as airflow-20261107-02cbc74 / later 20261112 pins',
+          role: 'Annotated pin (e.g. airflow-20261113-d64a1c8); later tags through 20261123 exist in git',
           status: 'Scheduler artifact',
         },
         {
@@ -93,9 +93,9 @@ export const COPY = {
       title: 'Source feeds into Snowflake',
       svg: 'pipes',
       body:
-        'Live feeds land in product database schemas — not a shared dump. Monarch via EAI_MONARCH (monarch_load / proc_monarch_extract) into HOUSEHOLD_LEDGER RAW/CORE; Gmail via EAI_GMAIL (ledger_email_alerts → classify → reconcile_pending); Drive via drive_poll → doc_extract (pypdf then local Tesseract — no Cortex OCR); YouTube into MOONSHOTS via the two confirmed-unpaused Moonshots DAGs. Workforce AI history lands through capture MERGE and the nightly chat backup into AGENTIC_WORKFORCE (and RAW.CHAT_MESSAGES). Planned feed: Epic MyChart SMART on FHIR R4 into HOUSEHOLD_HEALTH (sandbox auth exists; weekly Monday load inside pipeline_load_window decided, not built). Shape is extract/land → transform (dbt) → test. No S3/Snowpipe path — that design was dropped.',
+        'Live feeds land in product database schemas — not a shared dump. Morning ingest is one pipeline_load_window at 07:15 ET on INGEST_WH (email + Monarch daily; YouTube Monday, then trigger moonshots_yt_sync_daily; Epic FHIR only when EPIC_FHIR_LOAD_ENABLED). Monarch via EAI_MONARCH (monarch_load / proc_monarch_extract); Gmail via EAI_GMAIL (ledger_email_alerts → classify → reconcile_pending); Drive via drive_poll (same 07:15 minute, no warehouse) → doc_extract (pypdf then local Tesseract — no Cortex OCR). Workforce AI history lands through capture MERGE and the nightly chat backup into AGENTIC_WORKFORCE (and RAW.CHAT_MESSAGES). Planned feed: Epic MyChart SMART on FHIR R4 into HOUSEHOLD_HEALTH (in git, not recorded as applied). Shape is extract/land → transform (dbt) → test. No S3/Snowpipe path — that design was dropped.',
       caption:
-        'Monarch / Gmail / Drive → ledger schemas. YouTube → Moonshots. Chat capture → AGENTIC_WORKFORCE. MyChart FHIR → planned HOUSEHOLD_HEALTH.',
+        'pipeline_load_window → ledger + Monday YouTube. Drive → OCR. Chat capture → AGENTIC_WORKFORCE. MyChart FHIR → planned HOUSEHOLD_HEALTH.',
     },
     {
       id: 'airflow',
@@ -103,81 +103,105 @@ export const COPY = {
       title: 'Airflow on the office PC — every DAG',
       svg: 'airflow',
       body:
-        '16 DAG files in household-platform Airflow. Production scheduling is the office-PC Docker pin (airflow-20261107-02cbc74 on the 2026-11-07 check; later pins exist in the change log). A file in git is not the same as an unpaused job: only moonshots_yt_sync_daily and moonshots_eyl_sync were confirmed unpaused in that check. Open the tile for the full inventory — schedule, responsibility, and prod status for each DAG.',
+        '20 DAG files in household-platform Airflow (household-platform fdff221 / HDA PR #12 — one docs page per DAG). Code on main is not the running pin: last office-PC apply recorded in household-tracker is airflow-20261113-d64a1c8 (2026-11-13); later git tags exist through airflow-20261123-b6a02d7. A file in git is not an unpaused job: only moonshots_yt_sync_daily and moonshots_eyl_sync were confirmed unpaused on the 2026-11-07 pin check (not re-read since). Open the tile for the full inventory — schedule, responsibility, and prod status for each DAG.',
       caption:
-        '16 DAG files · 13 prod-shaped · 3 *_dev · 2 confirmed unpaused on the 2026-11-07 pin. Pause unknown ≠ running.',
+        '20 DAG files · 17 prod-shaped · 3 *_dev · 2 confirmed unpaused on the 2026-11-07 pin. Last PC apply: airflow-20261113-d64a1c8. Pause unknown ≠ running.',
       rows: [
         {
+          name: 'pipeline_load_window',
+          role: '07:15 ET INGEST_WH window — email + Monarch daily; YouTube Mondays; optional Epic',
+          schedule: '15 7 * * *',
+          status: 'Prod-shaped ingest window. Created paused',
+        },
+        {
+          name: 'ledger_dbt_daily',
+          role: 'Bash dbt for ledger (LEDGER_WH / COMPUTE_WH); triggers HR then agentic workforce',
+          schedule: '0 6 * * *',
+          status: 'Prod-shaped (fixed prod). Pause unknown',
+        },
+        {
+          name: 'hr_dbt_daily',
+          role: 'HR domain dbt blueprint — started by ledger_dbt_daily',
+          schedule: 'none',
+          status: 'No cron — HR account still a blueprint',
+        },
+        {
+          name: 'agentic_workforce_dbt_daily',
+          role: 'dbt for AGENTIC_WORKFORCE analytics — after HR in the morning chain',
+          schedule: 'none',
+          status: 'No cron. Started after HR. Pause unknown',
+        },
+        {
+          name: 'dbt_daily',
+          role: 'Astronomer Cosmos dbt, target hl_prod / ANALYTICS_DBT — not in the morning chain',
+          schedule: '0 6 * * *',
+          status: 'Created paused. Not the morning chain',
+        },
+        {
+          name: 'drive_poll',
+          role: 'Google Drive poll → document stages (same minute as load window)',
+          schedule: '15 7 * * *',
+          status: 'Created paused. No warehouse',
+        },
+        {
+          name: 'doc_extract',
+          role: 'PC OCR (pypdf then Tesseract) → CORE document facts',
+          schedule: 'none, triggered',
+          status: 'Do not mark unpaused — quota pause in change log',
+        },
+        {
+          name: 'monarch_load',
+          role: 'Monarch GraphQL → HOUSEHOLD_LEDGER RAW/CORE via EAI_MONARCH (called by window)',
+          schedule: 'none',
+          status: 'Prod-shaped (fixed prod / INGEST_WH). Created paused',
+        },
+        {
+          name: 'ledger_email_alerts',
+          role: 'Gmail card/bank alerts → RAW/CORE via EAI_GMAIL (called by window)',
+          schedule: 'none',
+          status: 'Called by window. Created paused',
+        },
+        {
+          name: 'ledger_email_pull_poll',
+          role: 'Metadata count for email pull requests — window loads the requests',
+          schedule: 'none',
+          status: 'Metadata only. Pause unknown',
+        },
+        {
           name: 'moonshots_yt_sync_daily',
-          role: 'YouTube catalog sync into MOONSHOTS',
-          schedule: '40 7 * * *',
-          status: 'Production — unpaused on 2026-11-07 pin',
+          role: 'YouTube catalog sync into MOONSHOTS (triggered by Monday window)',
+          schedule: 'none',
+          status: 'Triggered Mondays · unpaused on 2026-11-07 pin',
         },
         {
           name: 'moonshots_eyl_sync',
-          role: 'EYL / YouTube companion sync',
-          schedule: '10 7,23 * * *',
-          status: 'Production — unpaused on 2026-11-07 pin',
+          role: 'EYL captions / companion — Monday work is the load window',
+          schedule: 'none',
+          status: 'Unscheduled · unpaused on 2026-11-07 pin',
         },
         {
           name: 'moonshots_transcript_backfill',
           role: 'Transcript backfill (Airflow port of Windows job)',
           schedule: 'none',
-          status: 'Not running — stayed paused',
+          status: 'Not running — stayed paused on 2026-11-07 check',
         },
         {
-          name: 'monarch_load',
-          role: 'Monarch GraphQL → HOUSEHOLD_LEDGER RAW/CORE via EAI_MONARCH',
-          schedule: '0 7 * * *',
-          status: 'Prod-shaped (fixed prod). Pause unknown',
+          name: 'nightly_app_backup',
+          role: 'Office-PC nightly bundle push (no Snowflake)',
+          schedule: '33 19 * * *',
+          status: 'Created paused. No Snowflake',
         },
         {
-          name: 'ledger_email_alerts',
-          role: 'Gmail card/bank alerts → RAW/CORE via EAI_GMAIL',
-          schedule: '15 7,12,17 * * *',
-          status: 'Code on pin. Pause unknown',
+          name: 'pc_usage_check',
+          role: 'Weekday PC usage / My Machines snapshot thresholds (no Snowflake)',
+          schedule: '17 9,13,17 * * 1-5',
+          status: 'Created paused. No Snowflake',
         },
         {
-          name: 'ledger_email_pull_poll',
-          role: 'Poll / follow-up for the email pipeline',
-          schedule: '*/5 * * * *',
-          status: 'Code on pin. Pause unknown',
-        },
-        {
-          name: 'drive_poll',
-          role: 'Google Drive poll → document stages',
-          schedule: '0 * * * *',
-          status: 'Code on pin. Pause unknown',
-        },
-        {
-          name: 'doc_extract',
-          role: 'PC OCR (pypdf then Tesseract) → CORE document facts',
-          schedule: 'triggered',
-          status: 'Do not mark unpaused — quota pause in change log',
-        },
-        {
-          name: 'ledger_dbt_daily',
-          role: 'Bash dbt for ledger models (LEDGER_WH / COMPUTE_WH, staging + marts)',
-          schedule: '0 6 * * *',
-          status: 'Prod-shaped (fixed prod). Pause unknown',
-        },
-        {
-          name: 'dbt_daily',
-          role: 'Astronomer Cosmos dbt, target hl_prod / ANALYTICS_DBT, per-model tasks when manifest exists',
-          schedule: '0 6 * * *',
-          status: 'Prod-shaped Cosmos. Pause unknown',
-        },
-        {
-          name: 'agentic_workforce_dbt_daily',
-          role: 'dbt for AGENTIC_WORKFORCE analytics',
-          schedule: '15 7 * * *',
-          status: 'Code on pin. Pause unknown',
-        },
-        {
-          name: 'hr_dbt_daily',
-          role: 'HR domain dbt blueprint',
-          schedule: '30 6 * * *',
-          status: 'Code on pin — HR account still a blueprint',
+          name: 'epic_fhir_load_manual',
+          role: 'Manual Epic FHIR → HOUSEHOLD_HEALTH (needs EPIC_FHIR_LOAD_ENABLED)',
+          schedule: 'none',
+          status: 'Manual only — not a production load; DB not recorded applied',
         },
         {
           name: 'platform_smoke',
@@ -211,7 +235,7 @@ export const COPY = {
       title: 'dbt layers and targets',
       svg: 'dbt',
       body:
-        'RAW lands payloads. CORE holds business objects (often written in the same procedure pass as RAW). dbt builds STAGING / marts / ANALYTICS on top of CORE: ledger_dbt_daily runs Bash dbt on LEDGER_WH or COMPUTE_WH; dbt_daily runs Cosmos against target hl_prod (docstring: ANALYTICS_DBT) with per-model tasks when a manifest is present. Dev twins force hl_dev / *_DEV and have no schedule. agentic_workforce_dbt_daily builds workforce ANALYTICS the same way. How a PR becomes a Terraform apply or an Airflow pin lives on the Ship path tile — this tile is the transform contract.',
+        'RAW lands payloads. CORE holds business objects (often written in the same procedure pass as RAW). dbt builds STAGING / marts / ANALYTICS on top of CORE: at 06:00 ET ledger_dbt_daily runs Bash dbt on LEDGER_WH or COMPUTE_WH, then triggers hr_dbt_daily, then agentic_workforce_dbt_daily, and waits — one LEDGER_WH window. dbt_daily keeps its own 06:00 Cosmos cron (target hl_prod / ANALYTICS_DBT) and is created paused — not in that chain. Dev twins force hl_dev / *_DEV and have no schedule. How a PR becomes a Terraform apply or an Airflow pin lives on the Ship path tile — this tile is the transform contract.',
       caption:
         'RAW → CORE → dbt STAGING/marts → ANALYTICS + SV_*. hl_prod vs hl_dev. PR CI schema is on the Ship path tile.',
       rows: [
@@ -279,10 +303,10 @@ export const COPY = {
           oneLine: 'YouTube catalog — sync DAGs + MCP_MOONSHOTS',
           schemas: ['RAW', 'CORE', 'CTRL', 'AI'],
           detail:
-            'YouTube / EYL domain. moonshots_yt_sync_daily and moonshots_eyl_sync were the two confirmed-unpaused DAGs on the 2026-11-07 pin. CTRL hosts MCP_MOONSHOTS for Cynthia. CS_TRANSCRIPTS and CS_VIDEOS are the Moonshots Cortex Search services. Phase 5 added ANALYTICS views over CORE for reporting reads.',
+            'YouTube / EYL domain. Monday pipeline_load_window triggers moonshots_yt_sync_daily after the INGEST_WH work; EYL captions write in that window. moonshots_yt_sync_daily and moonshots_eyl_sync were the two confirmed-unpaused DAGs on the 2026-11-07 pin (not re-read). CTRL hosts MCP_MOONSHOTS for Cynthia. CS_TRANSCRIPTS and CS_VIDEOS are the Moonshots Cortex Search services. Phase 5 added ANALYTICS views over CORE for reporting reads.',
           objects: [
-            { layer: 'Scheduler', name: 'moonshots_yt_sync_daily', note: 'Unpaused on pin' },
-            { layer: 'Scheduler', name: 'moonshots_eyl_sync', note: 'Unpaused on pin' },
+            { layer: 'Scheduler', name: 'moonshots_yt_sync_daily', note: 'Monday window trigger · unpaused on pin' },
+            { layer: 'Scheduler', name: 'moonshots_eyl_sync', note: 'Unscheduled · unpaused on pin' },
             { layer: 'CTRL', name: 'MCP_MOONSHOTS', note: 'YouTube MCP catalog' },
             { layer: 'Search', name: 'CS_TRANSCRIPTS / CS_VIDEOS', note: 'Cortex Search' },
           ],
@@ -305,7 +329,7 @@ export const COPY = {
             'SECURITY',
           ],
           detail:
-            'Where multi-platform AI history accumulates. A daily capture routine MERGEs agents, conversations, graph, and capture tables. A nightly chat backup MERGEs RAW.CHAT_MESSAGES (SVC_BOX_PIPELINE / R_PIPELINE). agentic_workforce_dbt_daily builds tag:agentic_workforce into AGENTIC_WORKFORCE.ANALYTICS (dev twin AGENTIC_WORKFORCE_DEV); that DAG was created paused. Desk marts for the Desks app (AW-MART-INFRA) remain queued — not treated as shipped.',
+            'Where multi-platform AI history accumulates. A daily capture routine MERGEs agents, conversations, graph, and capture tables. A nightly chat backup MERGEs RAW.CHAT_MESSAGES (SVC_BOX_PIPELINE / R_PIPELINE). agentic_workforce_dbt_daily builds tag:agentic_workforce into AGENTIC_WORKFORCE.ANALYTICS (dev twin AGENTIC_WORKFORCE_DEV); no cron of its own — started after hr_dbt_daily in the 06:00 ledger_dbt_daily chain. Desk marts for the Desks app (AW-MART-INFRA) remain queued — not treated as shipped.',
           objects: [
             { layer: 'Capture', name: 'AGENTS / CONVERSATIONS / GRAPH', note: 'Daily MERGE' },
             { layer: 'Landing', name: 'RAW.CHAT_MESSAGES', note: 'Nightly chat backup' },
@@ -811,13 +835,13 @@ export const DIAG = {
 
 DIAG.lead.airflow = {
   t: 'Airflow on office PC',
-  s: '16 DAG files · 2 confirmed unpaused on 2026-11-07 pin',
+  s: '20 DAG files · 2 confirmed unpaused on 2026-11-07 pin',
 }
 DIAG.airflow = {
   title: 'Airflow DAG inventory on the office-PC pin',
-  headline: '16 files in git',
+  headline: '20 files in git (fdff221)',
   counts: [
-    { n: '13', label: 'prod-shaped' },
+    { n: '17', label: 'prod-shaped' },
     { n: '3', label: '*_dev' },
     { n: '2', label: 'confirmed unpaused' },
   ],
@@ -844,10 +868,10 @@ DIAG.code = {
   svOps: 'CTRL.SV_OPS_FRESHNESS',
   svDoc: 'SV_DOCUMENT_STANDING',
   cs: 'CS_DOCUMENTS',
-  airflow: '16 DAGs · pin airflow-20261107-02cbc74',
-  land: 'monarch_load, ledger_email_alerts',
+  airflow: '20 DAGs · last PC apply airflow-20261113-d64a1c8',
+  land: 'pipeline_load_window → monarch + email',
   ocr: 'doc_extract (paused for WH quota)',
-  dbt: 'ledger_dbt_daily, dbt_daily → hl_prod',
+  dbt: 'ledger_dbt_daily → hr → agentic · dbt_daily paused',
 }
 
 Object.assign(DIAG.pipes, {

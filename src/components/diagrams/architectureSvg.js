@@ -183,7 +183,7 @@ export function dPipes(D, inst=""){
  const ev=(cx,cy,r,sw)=>`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${C.node}" stroke="${C.ink}" stroke-width="${sw}"/>`;
   o+=ev(22,32,7,1.1)+T(22,46,'Start',{sz:fs(7.8),c:C.sub});
   const t1=node('box',44,18,120,n2('Monarch · Gmail · Drive · YT','',8.8),{h:26,z:'src'});o+=t1.g;
-  o+=T(176,24,'EAI_MONARCH · EAI_GMAIL',{sz:fs(7.8),mono:1,c:Z.src.k,a:'start'})+T(176,35,'drive_poll · moonshots_*',{sz:fs(7.8),c:C.sub,a:'start'})+T(176,46,'MyChart FHIR planned',{sz:fs(7.8),c:Z.sec.k,a:'start'});
+  o+=T(176,24,'EAI_MONARCH · EAI_GMAIL',{sz:fs(7.8),mono:1,c:Z.src.k,a:'start'})+T(176,35,'pipeline_load_window · drive_poll',{sz:fs(7.8),c:C.sub,a:'start'})+T(176,46,'MyChart FHIR planned',{sz:fs(7.8),c:Z.sec.k,a:'start'});
  o+=T(10,78,Pp.airflow.s,{sz:fs(7.8),it:1,c:C.sub,a:'start'});
  o+=`<g class="nd" data-b="86,108,28,28,0,0" data-shape="dia">${block('dia',86,108,28,28)}<path d="M95,117 l10,10 M105,117 l-10,10" stroke="${C.ink}" stroke-width="1.1"/></g>`;
  const ex=node('box',210,92,168,n2('Extract and land','',8.8,K.land,'src'),{h:28,z:'src'});o+=ex.g;
@@ -276,15 +276,15 @@ export function dAirflow(D, inst=""){
   o+=T(12,14,A.headline,{sz:fs(11),w:600,a:'start'})+T(12,27,'Office-PC Airflow pin · git ≠ unpaused',{sz:fs(7.8),c:C.sub,a:'start'});
   A.counts.forEach((c,i)=>{const x=12+i*134;o+=node('box',x,38,126,[{t:c.n,sz:fs(12),w:600,c:Z.src.k},{t:c.label,sz:fs(7.6),sub:1}],{h:30,z:'src'}).g});
   const rows=[
-    ['moonshots_yt_sync_daily','YT sync · unpaused'],
-    ['moonshots_eyl_sync','EYL sync · unpaused'],
-    ['monarch_load','Monarch → RAW/CORE'],
-    ['ledger_email_*','Gmail alerts + poll'],
+    ['pipeline_load_window','07:15 ET INGEST_WH window'],
+    ['moonshots_yt / eyl','YT · unpaused on 11-07 pin'],
+    ['monarch_load · ledger_email_*','called by window'],
     ['drive_poll / doc_extract','Drive → OCR → CORE'],
-    ['ledger_dbt_daily / dbt_daily','dbt → ANALYTICS'],
-    ['agentic_workforce_dbt_daily','workforce dbt'],
-    ['hr_dbt_daily · platform_smoke','blueprint / manual'],
-    ['*_dev twins (3)','not production'],
+    ['ledger_dbt_daily → hr → aw','06:00 ET dbt chain'],
+    ['dbt_daily (Cosmos)','created paused'],
+    ['nightly_app_backup · pc_usage','PC routines · no SF'],
+    ['epic_fhir_load_manual','manual · not applied'],
+    ['platform_smoke · *_dev (3)','manual / not production'],
   ];
   rows.forEach((r,i)=>{const y=84+i*17;o+=T(16,y,r[0],{sz:fs(8),mono:1,c:Z.src.k,a:'start'})+T(244,y,r[1],{sz:fs(7.8),c:C.sub,a:'start'})});
   o+=legend(12,84+rows.length*17+6,['src'],W-20);
