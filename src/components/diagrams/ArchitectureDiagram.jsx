@@ -4,36 +4,22 @@ import {
   dAirflow,
   dDatabase,
   dDbt,
-  dDrillMap,
-  dErd,
   dFeat,
-  dFeedFlow,
   dGrokbot,
   dLead,
   dMcp,
   dPipes,
   dRearch,
   dSec,
-  dToolFlow,
-  dWarehouseFlow,
   dWorkflow,
 } from './architectureSvg.js'
-
-function buildDrillItem(item, tall, inst) {
-  if (!item) return ''
-  const kind = item.diagram
-  if (kind === 'database') return dDatabase(DIAG, item.id, inst)
-  if (kind === 'feed' || kind === 'workflow') return dFeedFlow(item, inst)
-  if (kind === 'warehouse') return dWarehouseFlow(item, inst)
-  if (kind === 'tool') return dToolFlow(item, inst)
-  return dFeedFlow(item, inst)
-}
 
 const builders = {
   lead: (tall, inst) => dLead(DIAG, tall, inst),
   mcp: (_tall, inst) => dMcp(DIAG, inst),
   workflow: (_tall, inst) => dWorkflow(DIAG, inst),
-  domains: (_tall, inst, dbId) => (dbId ? dDatabase(DIAG, dbId, inst) : dErd(DIAG, inst)),
+  // Per-DB Liam ERD (Style A green). Tile defaults to ledger; modal tabs pass dbId.
+  domains: (_tall, inst, dbId) => dDatabase(DIAG, dbId || 'ledger', inst),
   airflow: (_tall, inst) => dAirflow(DIAG, inst),
   dbt: (_tall, inst) => dDbt(DIAG, inst),
   pipes: (_tall, inst) => dPipes(DIAG, inst),
@@ -41,8 +27,6 @@ const builders = {
   features: (_tall, inst) => dFeat(DIAG, inst),
   grokbot: (_tall, inst) => dGrokbot(DIAG, inst),
   rearch: (_tall, inst) => dRearch(inst),
-  'drill-map': (_tall, inst) => dDrillMap(inst),
-  'drill-item': (tall, inst, _dbId, drillItem) => buildDrillItem(drillItem, tall, inst),
 }
 
 export default function ArchitectureDiagram({
@@ -50,7 +34,6 @@ export default function ArchitectureDiagram({
   tall = false,
   inst = 't',
   dbId = null,
-  drillItem = null,
 }) {
   const [markup, setMarkup] = useState('')
   const hostRef = useRef(null)
@@ -63,7 +46,7 @@ export default function ArchitectureDiagram({
     }
     let cancelled = false
     const render = () => {
-      if (!cancelled) setMarkup(build(tall, inst, dbId, drillItem))
+      if (!cancelled) setMarkup(build(tall, inst, dbId))
     }
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(render)
@@ -73,7 +56,7 @@ export default function ArchitectureDiagram({
     return () => {
       cancelled = true
     }
-  }, [kind, tall, inst, dbId, drillItem])
+  }, [kind, tall, inst, dbId])
 
   useLayoutEffect(() => {
     const host = hostRef.current

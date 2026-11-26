@@ -310,6 +310,38 @@ p.bx-subhead {
   padding: 0.25rem 0.65rem;
 }
 
+.bx-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bx-stats li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid rgb(224, 227, 235);
+  border-radius: 0.75rem;
+  background: var(--body-color);
+}
+
+.bx-stats strong {
+  font-size: 1.25rem;
+  line-height: 1.1;
+  color: var(--title-color);
+  font-variant-numeric: tabular-nums;
+}
+
+.bx-stats span {
+  font-size: 0.72rem;
+  color: var(--text-color);
+  line-height: 1.3;
+}
+
 .bx-rows {
   display: grid;
   gap: 0.65rem;
@@ -537,6 +569,8 @@ p.bx-subhead {
 
 .bx-row .project-tile__outcome.is-clamped,
 .bx-feat .project-tile__outcome.is-clamped,
+.bx-more-hero .project-tile__outcome.is-clamped,
+.bx-more-card .project-tile__outcome.is-clamped,
 .bx-card--myorglab .project-tile__outcome.is-clamped {
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -769,6 +803,64 @@ p.bx-subhead {
 
   .bx-more {
     grid-auto-rows: auto;
+    align-items: stretch;
+  }
+
+  /* Option 3: featured full-width strip, then even media-top cards. */
+  .bx-more-hero {
+    grid-column: span 12;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 1.25rem;
+    padding: 1.1rem 1.25rem;
+  }
+
+  .bx-more-hero .bx-media {
+    width: min(280px, 34%);
+    flex: 0 0 auto;
+    aspect-ratio: 16 / 10;
+    margin: 0;
+    max-height: 11.5rem;
+  }
+
+  .bx-more-hero .bx-cardtext {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .bx-more-hero .bx-open {
+    position: absolute;
+    right: 1.25rem;
+    top: 1.25rem;
+  }
+
+  .bx-more-card {
+    grid-column: span 4;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .bx-more-card .bx-media {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    margin: 0 0 0.75rem;
+    max-height: 11rem;
+    flex: 0 0 auto;
+  }
+
+  .bx-more-card .bx-cardtext {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .bx-more-card .bx-open {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    background: rgba(255, 255, 255, 0.92);
   }
 
   .bx-feat {
@@ -780,11 +872,31 @@ p.bx-subhead {
   }
 
   .bx-row .project-tile__outcome:not(.is-clamped),
-  .bx-feat .project-tile__outcome:not(.is-clamped) {
+  .bx-feat .project-tile__outcome:not(.is-clamped),
+  .bx-more-hero .project-tile__outcome:not(.is-clamped),
+  .bx-more-card .project-tile__outcome:not(.is-clamped) {
     display: block;
     overflow: visible;
     height: auto;
     -webkit-line-clamp: unset;
+  }
+}
+
+/* Mobile/tablet: stack hero; keep cards consistent. */
+.bx-more-hero .bx-media,
+.bx-more-card .bx-media {
+  border-radius: 0.8rem;
+  overflow: hidden;
+}
+
+@media (max-width: 1023px) {
+  .bx-more-hero {
+    flex-direction: column;
+  }
+
+  .bx-more-hero .bx-media {
+    width: 100%;
+    max-height: 14rem;
   }
 }
 
@@ -1033,147 +1145,3 @@ body:has(dialog.project-dialog[open]) .scrollup {
     grid-column: span 12;
   }
 }
-
-/* Layered diagram drill-in (high-level → detail). */
-.bx-drill {
-  margin-top: 0.85rem;
-  min-width: 0;
-}
-
-.bx-drill__heading {
-  margin: 1.25rem 0 0.5rem;
-  font-size: 1rem;
-  color: var(--title-color);
-}
-
-.bx-drill__hint {
-  margin: 0.35rem 0 0.55rem;
-  font-size: 0.82rem;
-  color: var(--text-color);
-}
-
-.bx-drill__map {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
-  gap: 0.55rem;
-}
-
-.bx-drill__entry {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.2rem;
-  width: 100%;
-  text-align: left;
-  padding: 0.7rem 0.8rem;
-  border: 1px solid rgb(224, 227, 235);
-  border-radius: 0.75rem;
-  background: var(--container-color);
-  cursor: pointer;
-  font: inherit;
-  color: inherit;
-  transition: border-color 0.15s, box-shadow 0.15s;
-}
-
-.bx-drill__entry strong {
-  font-size: 0.9rem;
-  color: var(--title-color);
-}
-
-.bx-drill__entry span {
-  font-size: 0.72rem;
-  line-height: 1.35;
-  color: var(--text-color);
-}
-
-.bx-drill__entry:hover,
-.bx-drill__entry:focus-visible {
-  border-color: var(--first-color);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--first-color) 22%, transparent);
-  outline: none;
-}
-
-.bx-drill__nav {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.55rem;
-}
-
-.bx-drill__back {
-  border: 0;
-  background: none;
-  padding: 0;
-  font: inherit;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--first-color-alt, #1689b5);
-  cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.bx-drill__area {
-  margin: 0;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--title-color);
-}
-
-.bx-drill__tabs {
-  margin-bottom: 0.65rem;
-}
-
-.bx-drill__tabs .bx-dbtab span {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.bx-drill__meta {
-  display: grid;
-  gap: 0.45rem;
-  margin: 0.85rem 0 0;
-  padding: 0;
-}
-
-.bx-drill__meta > div {
-  display: grid;
-  grid-template-columns: minmax(5rem, 8rem) minmax(0, 1fr);
-  gap: 0.5rem;
-  font-size: 0.84rem;
-  line-height: 1.4;
-}
-
-.bx-drill__meta dt {
-  margin: 0;
-  font-weight: 600;
-  color: var(--title-color);
-}
-
-.bx-drill__meta dd {
-  margin: 0;
-  color: var(--text-color);
-  min-width: 0;
-}
-
-.bx-drill--strip .bx-dbtabs {
-  margin-top: 0.55rem;
-}
-
-.bx-drill--strip .bx-dbtab span {
-  display: none;
-}
-
-.bx-fig-drill {
-  margin-top: 0.35rem;
-}
-
-.bx-tile .bx-drill--strip {
-  pointer-events: auto;
-}
-

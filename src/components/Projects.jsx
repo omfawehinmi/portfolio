@@ -3,7 +3,6 @@ import { COPY } from '../data/architecture.js'
 import { projects } from '../data/projects.js'
 import { intrinsicImageSize, publicUrl } from '../utils.js'
 import ArchitectureDiagram from './diagrams/ArchitectureDiagram.jsx'
-import DiagramDrill, { DiagramDrillStrip } from './diagrams/DiagramDrill.jsx'
 import Icon from './ui/Icon.jsx'
 import Modal from './ui/Modal.jsx'
 import SectionHeader from './ui/SectionHeader.jsx'
@@ -17,7 +16,7 @@ const PROJECT_RAIL = [
   { id: 'dbt', label: 'dbt transforms' },
   { id: 'domains', label: 'DBs · tables · models' },
   { id: 'mcp', label: 'MCP · agents · tools' },
-  { id: 'security', label: 'Roles · Cortex gate' },
+  { id: 'security', label: 'Roles · WH · cost' },
   { id: 'features', label: 'SV_* · CS_* catalogs' },
   { id: 'grokbot', label: 'Grokbot · per MCP' },
   { id: 'more', label: 'More work' },
@@ -30,7 +29,7 @@ const KICKERS = {
   airflow: 'Scheduler inventory',
   dbt: 'Transform layers',
   pipes: 'Source feeds → schemas',
-  security: 'Roles · Cortex gate',
+  security: 'Roles · warehouses · cost',
   features: 'SV_* · CS_* catalogs',
   grokbot: 'Agents per MCP server',
 }
@@ -324,6 +323,7 @@ function LeadTile({ onOpen, tall }) {
         <div className="bx-leadtext">
           <p className="bx-lede">{L.oneLine}</p>
           <FoldBody project={{ outcome: L.intro }} lines={3} />
+          <StatStrip stats={L.stats} />
           <Chips tags={L.tags} />
         </div>
         <figure className="bx-fig bx-leadfig">
@@ -334,22 +334,9 @@ function LeadTile({ onOpen, tall }) {
   )
 }
 
-const TILE_DRILL_AREA = {
-  domains: 'databases',
-  pipes: 'feeds',
-  mcp: 'tools',
-  grokbot: 'tools',
-  features: 'warehouses',
-  workflow: 'workflows',
-  airflow: 'workflows',
-  dbt: 'workflows',
-  security: 'warehouses',
-}
-
 function ArchitectureTile({ tile, onOpen, tall }) {
-  const showRowsOnTile = tile.id === 'mcp' || tile.id === 'grokbot'
+  const showRowsOnTile = tile.id === 'mcp' || tile.id === 'grokbot' || tile.id === 'security'
   const isHero = tile.id === 'mcp' || tile.id === 'domains' || tile.id === 'grokbot'
-  const drillArea = TILE_DRILL_AREA[tile.id]
   return (
     <article
       id={`project-${tile.id}`}
@@ -370,13 +357,9 @@ function ArchitectureTile({ tile, onOpen, tall }) {
       </div>
       <FoldBody project={{ outcome: tile.body }} lines={isHero ? 4 : 3} />
       {showRowsOnTile ? <RowTable rows={tile.rows} collapsed /> : null}
-      {drillArea ? (
-        <DiagramDrillStrip areaId={drillArea} tall={tall} inst={`tile-${tile.id}`} />
-      ) : (
-        <figure className="bx-fig">
-          <ArchitectureDiagram kind={tile.id} tall={tall} inst="tile" />
-        </figure>
-      )}
+      <figure className="bx-fig">
+        <ArchitectureDiagram kind={tile.id} tall={tall} inst="tile" />
+      </figure>
     </article>
   )
 }
@@ -400,9 +383,10 @@ function MoreCard({ item, featured, onOpen }) {
       <ShotStrip title="Industry pages" shots={MYORGLAB_INDUSTRIES} />
     </div>
   ) : null
+  // Option 3: full-width featured strip + uniform media-top cards in an even grid.
   return (
     <article
-      className={`bx-tile bx-card ${featured ? 'bx-feat' : 'bx-row'}${isMyOrgLab ? ' bx-card--myorglab' : ''}${
+      className={`bx-tile bx-card ${featured ? 'bx-more-hero' : 'bx-more-card'}${isMyOrgLab ? ' bx-card--myorglab' : ''}${
         item.prev === 'palms' ? ' bx-card--palms' : ''
       }`}
       data-testid="project-tile"
@@ -412,13 +396,27 @@ function MoreCard({ item, featured, onOpen }) {
       onClick={(event) => openTile(event, item.id, onOpen)}
       onKeyDown={(event) => onTileKey(event, item.id, onOpen)}
     >
-      <PreviewMedia item={item} />
+      <PreviewMedia item={item} big={featured} />
       <div className="bx-cardtext">
         <h4 className="bx-h3">{item.title}</h4>
         <FoldBody project={item} expandedExtra={industryExtra} lines={isMyOrgLab ? 3 : 3} />
       </div>
       <OpenIcon />
     </article>
+  )
+}
+
+function StatStrip({ stats }) {
+  if (!stats?.length) return null
+  return (
+    <ul className="bx-stats">
+      {stats.map((stat) => (
+        <li key={stat.label}>
+          <strong>{stat.n}</strong>
+          <span>{stat.label}</span>
+        </li>
+      ))}
+    </ul>
   )
 }
 
@@ -460,6 +458,7 @@ function LeadPanel({ tall }) {
   return (
     <div className="bx-panel-body">
       <p className="bx-subhead">{L.subhead}</p>
+      <StatStrip stats={L.stats} />
       <figure className="bx-fig bx-leadfig bx-fig-big">
         <ArchitectureDiagram kind="lead" tall={tall} inst="open" />
         <figcaption>{LEAD_CAPTION}</figcaption>
@@ -467,17 +466,45 @@ function LeadPanel({ tall }) {
       <p className="bx-lede">{L.oneLine}</p>
       <p>{L.intro}</p>
       <Chips tags={L.tags} />
-      <h4 className="bx-drill__heading">Drill into the platform</h4>
-      <DiagramDrill tall={tall} inst="lead-open" />
     </div>
   )
 }
 
 function DomainsPanel({ tile, tall }) {
+  const databases = tile.databases || []
+  const [dbId, setDbId] = useState(databases[0]?.id || null)
+  const active = databases.find((db) => db.id === dbId) || databases[0]
   return (
     <div className="bx-panel-body">
-      <p className="bx-lede">{tile.caption}</p>
-      <DiagramDrill tall={tall} inst="domains-open" startArea="databases" />
+      <div className="bx-dbtabs" role="tablist" aria-label="Snowflake databases">
+        {databases.map((db) => (
+          <button
+            key={db.id}
+            type="button"
+            role="tab"
+            aria-selected={active?.id === db.id}
+            className={`bx-dbtab${active?.id === db.id ? ' is-active' : ''}`}
+            onClick={() => setDbId(db.id)}
+          >
+            <strong>{db.name}</strong>
+            <span>{db.status}</span>
+          </button>
+        ))}
+      </div>
+      <figure className="bx-fig bx-fig-big">
+        <ArchitectureDiagram kind="domains" tall={tall} inst="open" dbId={active?.id} />
+        <figcaption>{active ? `${active.name}: ${active.oneLine}` : tile.caption}</figcaption>
+      </figure>
+      {active ? (
+        <>
+          <p className="bx-lede">{active.detail}</p>
+          <ul className="bx-chips">
+            {active.schemas.map((schema) => (
+              <li key={schema}>{schema}</li>
+            ))}
+          </ul>
+        </>
+      ) : null}
       <p>{tile.body}</p>
     </div>
   )
@@ -485,7 +512,6 @@ function DomainsPanel({ tile, tall }) {
 
 function TilePanel({ tile, tall }) {
   if (tile.id === 'domains') return <DomainsPanel tile={tile} tall={tall} />
-  const startArea = TILE_DRILL_AREA[tile.id] || null
   return (
     <div className="bx-panel-body">
       <figure className="bx-fig bx-fig-big">
@@ -493,12 +519,6 @@ function TilePanel({ tile, tall }) {
         <figcaption>{tile.caption}</figcaption>
       </figure>
       <p>{tile.body}</p>
-      {startArea ? (
-        <>
-          <h4 className="bx-drill__heading">Drill into {tile.title}</h4>
-          <DiagramDrill tall={tall} inst={`open-${tile.id}`} startArea={startArea} />
-        </>
-      ) : null}
       <RowTable rows={tile.rows} />
     </div>
   )

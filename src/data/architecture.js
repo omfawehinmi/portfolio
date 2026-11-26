@@ -9,7 +9,7 @@ export const COPY = {
     kicker: 'Projects',
     title: 'Work that shows the platform',
     intro:
-      'The lead project is the household Snowflake platform: 5 production databases (HOUSEHOLD_LEDGER, MOONSHOTS, AGENTIC_WORKFORCE, CONTROL, HOUSEHOLD_HEALTH), 3 MCP servers, 20 Airflow DAG files, and a PR → CI → merge → Terraform apply → Airflow pin ship path. Tiles under the lead walk CI/CD with source feeds, schemas and modeling, Airflow + dbt, MCP and roles, catalogs, then Grokbot agents per MCP. Other shipped work follows in a shorter list.',
+      'The lead project is the household data platform I run on Snowflake: five production databases for finance, YouTube, agents, control-plane ops, and health records; assistant tools that only touch approved catalogs; and a careful path from pull request to production. The tiles under it walk how work ships, how feeds land, how models and schedules run, how access and warehouses are gated, and how agents attach. A shorter list of other shipped work follows.',
   },
   lead: {
     title: 'HOUSEHOLD_LEDGER and MCP',
@@ -27,6 +27,14 @@ export const COPY = {
       'MCP',
       'Monarch',
       'Gmail',
+    ],
+    stats: [
+      { n: '5', label: 'prod databases' },
+      { n: '3', label: 'MCP servers' },
+      { n: '20', label: 'Airflow DAG files' },
+      { n: '4', label: 'warehouses (prod paths)' },
+      { n: '15', label: 'SV_* Analyst views' },
+      { n: '6', label: 'CS_* search services' },
     ],
     intro:
       'This is the household data platform I build and run. Snowflake holds HOUSEHOLD_LEDGER (finance), MOONSHOTS (YouTube), AGENTIC_WORKFORCE (agent roster, conversations, graph, and chat-history capture across desks), CONTROL (procs, queues, MCP, tests), and HOUSEHOLD_HEALTH (Epic MyChart FHIR) — layers as schemas, not one database per layer. HOUSEHOLD_HEALTH’s architecture and Snowflake model are production; underlying MyChart patient data is not loaded yet — not a separate product card. Airflow on the office PC is the production scheduler; Snowflake tasks are retired. Monarch, Gmail, and Drive feed the ledger; YouTube feeds Moonshots; workforce capture and nightly chat backup land AI history; Epic MyChart SMART on FHIR R4 targets HOUSEHOLD_HEALTH when source data is available. Grok bots and Cursor attach to MCP servers bound to SV_*, CS_*, and approved procedures.',
@@ -406,12 +414,39 @@ export const COPY = {
     {
       id: 'security',
       n: '8',
-      title: 'Roles and Cortex gate',
+      title: 'Roles, warehouses & cost',
       svg: 'security',
       body:
-        'Access is split by role and by which MCP server a client is attached to. Pipeline work uses R_PIPELINE / R_PC_PIPELINE; interactive and agent clients use MCP_LEDGER_CLIENT against the MCP path, not a shared open warehouse login. R_CORTEX_GATE is the sole holder of SNOWFLAKE.CORTEX_USER. Answers are supposed to come from certified SV_* views and CS_* search services. Public copy stops at that architecture: no account locators, hostnames, or PATs.',
+        'Access and spend sit on the same control surface. Pipeline work uses R_PIPELINE / R_PC_PIPELINE; interactive and agent clients use MCP_LEDGER_CLIENT on the MCP path — not an open warehouse login. R_CORTEX_GATE is the sole holder of SNOWFLAKE.CORTEX_USER; answers are supposed to come from certified SV_* views and CS_* search. Warehouses are split by job: LEDGER_WH (dbt / ledger, auto_suspend 30s, LEDGER_WH_MONITOR), INGEST_WH (07:15 ET load window, auto_suspend 60s, INGEST_MONITOR), ADHOC_WH (agent and desk reads under RM_ADHOC; SVC_GROK_* defaults here so Q&A does not wake LEDGER_WH), and YT_SYNC_WH (Moonshots sync/embed, QUERY_TAG splits embed). Cost controls in git — no dollar figures here: STD-WH-BATCH (batch wake-ups, no row-by-row inserts, QUERY_TAG required), ACCOUNT_MONITOR_40/50, BUDGET_CORTEX_AI_20 → PROC_CORTEX_REVOKE_AGENTS at 100%, PC Tesseract/Whisper instead of Cortex OCR/ASR, Airflow instead of Snowflake tasks, drive_poll hourly, CI JUnit one INSERT per run (CD-004), ROUTINE-PRUNE into existing windows (CD-008). Prod jobs never select DEV_MIGRATION_WH.',
       caption:
-        'Role separation plus MCP_HOUSEHOLD_LEDGER vs MCP_HOUSEHOLD_LEDGER_GROK, with Cortex gated behind R_CORTEX_GATE.',
+        'Roles + MCP split + Cortex gate on top; LEDGER_WH / INGEST_WH / ADHOC_WH / YT_SYNC_WH and monitors / STD-WH-BATCH / Cortex budget below.',
+      rows: [
+        {
+          name: 'LEDGER_WH',
+          role: 'X-Small · auto_suspend 30s · LEDGER_WH_MONITOR · ledger_dbt_daily / COMPUTE_WH path · STD-WH-BATCH',
+          status: 'Prod batch',
+        },
+        {
+          name: 'INGEST_WH',
+          role: 'auto_suspend 60s · INGEST_MONITOR · pipeline_load_window 07:15 ET (email + Monarch; YouTube Mondays)',
+          status: 'Load window',
+        },
+        {
+          name: 'ADHOC_WH',
+          role: 'RM_ADHOC · SVC_GROK_* default · agent/desk reads · QUERY_TAG then suspend (CD-003 / CD-005)',
+          status: 'Agents',
+        },
+        {
+          name: 'YT_SYNC_WH',
+          role: 'moonshots_yt_sync_daily · PROC_EMBED_TRANSCRIPTS · QUERY_TAG embed vs sync',
+          status: 'Moonshots',
+        },
+        {
+          name: 'Caps & savings',
+          role: 'BUDGET_CORTEX_AI_20 → PROC_CORTEX_REVOKE_AGENTS · ACCOUNT_MONITOR_* · PC OCR · Airflow not tasks · no DEV_MIGRATION_WH on prod',
+          status: 'Controls',
+        },
+      ],
     },
     {
       id: 'features',
@@ -621,7 +656,7 @@ export const DIAG = {
     ],
   },
   security: {
-    title: 'Access split by role and MCP server',
+    title: 'Roles, warehouses, and cost controls',
     layers: [
       {
         label: 'Roles',
@@ -646,6 +681,18 @@ export const DIAG = {
         label: 'Catalogs',
         nodes: [{ t: 'SV_* certified views' }, { t: 'CS_* search services' }],
       },
+    ],
+    warehouses: [
+      { t: 'LEDGER_WH', s: '30s · LEDGER_WH_MONITOR' },
+      { t: 'INGEST_WH', s: '60s · load window' },
+      { t: 'ADHOC_WH', s: 'RM_ADHOC · agents' },
+      { t: 'YT_SYNC_WH', s: 'embed QUERY_TAG' },
+    ],
+    cost: [
+      { t: 'STD-WH-BATCH', s: 'batch wake-ups' },
+      { t: 'BUDGET_CORTEX_AI_20', s: 'revoke at 100%' },
+      { t: 'PC OCR / Whisper', s: 'off Cortex bill' },
+      { t: 'Airflow not tasks', s: 'scheduler cost' },
     ],
   },
   stack: {
