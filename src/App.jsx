@@ -22,7 +22,7 @@ export default function App() {
     <>
       <Header dark={dark} onToggleTheme={toggleTheme} scrolled={scrolled} activeSection={activeSection} />
       <main className="main">
-        <Home onOpenProject={setOpenProjectId} />
+        <Home />
         <Projects openId={openProjectId} onOpen={setOpenProjectId} />
         <Qualification />
         <Leadership />

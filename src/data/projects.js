@@ -335,14 +335,6 @@ export const projects = [
 
 export const projectGroups = ['Production', 'Private platform', 'Financial services', 'Lab']
 
-export const heroMedia = [
-  { id: 'camera-tracking', label: 'Tracking' },
-  { id: 'palms-bag', label: 'PALMS' },
-  { id: 'myorglab', label: 'MyOrgLab' },
-  { id: 'sof', label: 'SOF portal' },
-  { id: 'private-platform', label: 'Platform' },
-]
-
 export const highlights = [
   {
     projectId: 'myorglab',

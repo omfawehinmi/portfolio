@@ -311,13 +311,13 @@ img {
 }
 
 .home__blob {
-  width: 300px;
+  width: 360px;
   fill: var(--first-color);
 }
 
 .home__blob-img {
-  width: 200px;
-  height: 200px;
+  width: 230px;
+  height: 230px;
 }
 
 .home__data {
@@ -1253,7 +1253,7 @@ img {
     grid-template-columns: .25fr 3fr;
   }
   .home__blob {
-    width: 180px;
+    width: 220px;
   }
   .skills__title {
     font-size: var(--normal-font-size);
@@ -1362,7 +1362,7 @@ img {
     column-gap: 2rem;
   }
   .home__blob {
-    width: 270px;
+    width: 360px;
   }
   .home__scroll {
     display: block;
@@ -1457,7 +1457,7 @@ img {
     padding: 0 3rem;
   }
   .home__blob {
-    width: 320px;
+    width: 420px;
   }
   .home__social {
     transform: translateX(-6rem);
