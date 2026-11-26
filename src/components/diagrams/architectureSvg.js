@@ -1,15 +1,14 @@
 // Flat architecture diagrams. Object names are real structural names from the
 // platform repos (see README SOURCES). Do not invent names.
-// Diagram language: Stripe docs ERD — simple, modern, light. Soft panel +
-// hairline strokes, white rounded boxes, light gray connectors, restrained
-// zone tints. Lead/MCP keep fuller node scale; other flows stay compact but
-// ERD boxes/notes are sized so current text fits without clipping.
-const lightC={ink:'#0a2540',sub:'#697386',line:'#e3e8ee',conn:'#a3acb9',acc:'#29b5e8',tint:'#eaf7fd',accInk:'#0a6688',dark:'#0a2540',dot:'#e6ebf1',panel:'#f6f9fc',soft:'#eef2f6',node:'#ffffff'};
-const darkC={ink:'#eef7fb',sub:'#9db6c6',line:'#3a5568',conn:'#8aa3b4',acc:'#5cc8ef',tint:'#14344a',accInk:'#8ad8f4',dark:'#071422',dot:'#1b3346',panel:'#06101a',soft:'#0c1a28',node:'#163348'};
-const lightZ={data:{f:'#e8f6fc',s:'#29b5e8',k:'#0a6688',n:'Snowflake data and catalogs'},agent:{f:'#eef0fb',s:'#7a78c9',k:'#3f3d8f',n:'MCP and agents'},
- sec:{f:'#f7f0e4',s:'#c4923f',k:'#7a4a00',n:'Roles and access'},src:{f:'#e8f4ee',s:'#4f9d7c',k:'#1a5f45',n:'Sources and scheduling'}};
-const darkZ={data:{f:'#1e4d66',s:'#5cc8ef',k:'#b6e6f7',n:'Snowflake data and catalogs'},agent:{f:'#32365a',s:'#a99be0',k:'#d2c8f5',n:'MCP and agents'},
- sec:{f:'#453820',s:'#d6a24e',k:'#f0d39a',n:'Roles and access'},src:{f:'#214a3a',s:'#6fbf9a',k:'#b6e4cf',n:'Sources and scheduling'}};
+// Diagram language: Stripe docs ERD — simple, modern. Diagram canvas blends
+// into the bento card (no contrasted panel). Nodes, edges, and labels keep
+// enough contrast on that shared surface so nothing disappears into the card.
+const lightC={ink:'#0a2540',sub:'#4d5d6d',line:'#9aa8b6',conn:'#5c6b7a',acc:'#29b5e8',tint:'#eaf7fd',accInk:'#0a6688',dark:'#0a2540',dot:'transparent',panel:'transparent',soft:'#d7dee6',node:'#ffffff'};
+const darkC={ink:'#f2f8fc',sub:'#b4c7d4',line:'#5a7388',conn:'#9db6c6',acc:'#5cc8ef',tint:'#14344a',accInk:'#8ad8f4',dark:'#071422',dot:'transparent',panel:'transparent',soft:'#2a3d50',node:'#243447'};
+const lightZ={data:{f:'#e0f3fb',s:'#1689b5',k:'#0a6688',n:'Snowflake data and catalogs'},agent:{f:'#e8e9f8',s:'#6b68b8',k:'#3f3d8f',n:'MCP and agents'},
+ sec:{f:'#f3e8d4',s:'#b07f2e',k:'#7a4a00',n:'Roles and access'},src:{f:'#dcefe4',s:'#3f8a68',k:'#1a5f45',n:'Sources and scheduling'}};
+const darkZ={data:{f:'#1a455c',s:'#5cc8ef',k:'#c5ebf8',n:'Snowflake data and catalogs'},agent:{f:'#2e3258',s:'#b4a6e8',k:'#ddd4f8',n:'MCP and agents'},
+ sec:{f:'#4a3c22',s:'#d6a24e',k:'#f0d39a',n:'Roles and access'},src:{f:'#1d4536',s:'#6fbf9a',k:'#b6e4cf',n:'Sources and scheduling'}};
 const isDark=()=>typeof document!=='undefined'&&document.body.classList.contains('dark-theme');
 let C=lightC,Z=lightZ,COMPACT=false;
 const syncTheme=()=>{if(isDark()){C=darkC;Z=darkZ}else{C=lightC;Z=lightZ}};
@@ -24,14 +23,15 @@ const fs=(n)=>COMPACT?Math.max(7.8,n-1):n;
 const T=(x,y,t,o={})=>`<text x="${x}" y="${y}" text-anchor="${o.a||'middle'}" dominant-baseline="middle" font-family="${o.mono?MONO:F}" font-size="${o.sz||fs(10)}" font-weight="${o.w||400}"${o.it?' font-style="italic"':''}${o.ls?` letter-spacing="${o.ls}"`:''} fill="${o.c||C.ink}">${esc(t)}</text>`;
 const lab=(x,y,t,c=C.accInk,a='start')=>T(x,y,t.toUpperCase(),{sz:fs(8.2),w:500,ls:.55,c,a,mono:1});
 let ID='a';
-const defs=()=>`<defs><filter id="${ID}sh" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="1" stdDeviation="1.1" flood-color="${isDark()?'#000':'#0a2540'}" flood-opacity="${COMPACT?0.06:0.1}"/></filter><pattern id="${ID}dg" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1.25" cy="1.25" r="0.7" fill="${C.dot}"/></pattern>
+const defs=()=>`<defs><filter id="${ID}sh" x="-25%" y="-25%" width="150%" height="170%"><feDropShadow dx="0" dy="1" stdDeviation="1.2" flood-color="${isDark()?'#000':'#0a2540'}" flood-opacity="${COMPACT?0.1:0.14}"/></filter>
  <marker id="${ID}a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1,1 L9,5 L1,9" fill="none" stroke="${C.conn}" stroke-width="1.5"/></marker>
  <marker id="${ID}c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1,1 L9,5 L1,9" fill="none" stroke="${C.accInk}" stroke-width="1.5"/></marker>
  <marker id="${ID}w" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1,1 L9,5 L1,9" fill="none" stroke="${C.ink}" stroke-width="1.5"/></marker></defs>`;
 // kinds: default grey, 'c' accent (read and data path), 'w' write path (ink, dashed), 'd' dashed grey
-const arrow=(d,k)=>{const col=k==='c'?C.accInk:k==='w'?C.ink:C.conn;return `<path d="${d}" fill="none" stroke="${col}" stroke-width="${COMPACT?0.95:1.1}"${k==='w'||k==='d'?' stroke-dasharray="4 3"':''} stroke-linejoin="round" marker-end="url(#${ID}${k==='c'?'c':k==='w'?'w':'a'})"/>`};
-const panel=(W,H)=>`<rect x="0.5" y="0.5" width="${W-1}" height="${H-1}" rx="${COMPACT?8:10}" fill="${C.panel}" stroke="${C.line}"/><rect x="0.5" y="0.5" width="${W-1}" height="${H-1}" rx="${COMPACT?8:10}" fill="url(#${ID}dg)"/>`;
-const group=(x,y,w,h,t,o={})=>{const z=o.z?Z[o.z]:null;return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${COMPACT?6:8}" fill="${o.fill||'none'}" stroke="${z?z.s:o.grey?C.line:C.acc}" stroke-width="1" stroke-dasharray="${o.solid?'0':'3 3'}"/>`+(t?lab(x+8,y+10,t,z?z.k:o.grey?C.sub:C.accInk):'')};
+const arrow=(d,k)=>{const col=k==='c'?C.accInk:k==='w'?C.ink:C.conn;return `<path d="${d}" fill="none" stroke="${col}" stroke-width="${COMPACT?1.05:1.2}"${k==='w'||k==='d'?' stroke-dasharray="4 3"':''} stroke-linejoin="round" marker-end="url(#${ID}${k==='c'?'c':k==='w'?'w':'a'})"/>`};
+// Transparent canvas — card color shows through; no bordered/dotted diagram panel.
+const panel=(W,H)=>`<rect x="0" y="0" width="${W}" height="${H}" fill="${C.panel}" stroke="none"/>`;
+const group=(x,y,w,h,t,o={})=>{const z=o.z?Z[o.z]:null;return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${COMPACT?6:8}" fill="${o.fill||'none'}" stroke="${z?z.s:o.grey?C.line:C.acc}" stroke-width="1.15" stroke-dasharray="${o.solid?'0':'3 3'}"/>`+(t?lab(x+8,y+10,t,z?z.k:o.grey?C.sub:C.accInk):'')};
 // legend: small swatches plus free text, one row; keys are zone ids.
 const legend=(x,y,keys,maxX=1e9)=>{let g='',xx=x;keys.forEach(k=>{const z=Z[k];const iw=15+meas(z.n,fs(8.2),400)/0.9;if(xx>x&&xx+iw>maxX){xx=x;y+=13}g+=`<rect x="${xx}" y="${y-4}" width="9" height="9" rx="2" fill="${z.f}" stroke="${z.s}"/>`+T(xx+13,y,z.n,{sz:fs(8.2),c:C.sub,a:'start'});xx+=13+meas(z.n,fs(8.2),400)+14});return g};
 const rxBox=()=>COMPACT?3.5:5;
@@ -42,7 +42,7 @@ const outline={
  dia:(x,y,w,h)=>`<path d="M${x+w/2},${y} L${x+w},${y+h/2} L${x+w/2},${y+h} L${x},${y+h/2} Z"/>`,
  cyl:(x,y,w,h)=>{const ry=COMPACT?4:5;return `<path d="M${x},${y+ry} a${w/2},${ry} 0 0 1 ${w},0 v${h-2*ry} a${w/2},${ry} 0 0 1 -${w},0 z"/><path d="M${x},${y+ry} a${w/2},${ry} 0 0 0 ${w},0" fill="none"/>`}};
 const insetFor=(shape)=>{const base={box:[10,6],pill:[10,4],doc:[8,5],dia:[0,0],cyl:[8,7]};const c={box:[8,3.5],pill:[9,2.5],doc:[7,3],dia:[0,0],cyl:[7,5]};return COMPACT?c[shape]:base[shape]};
-const block=(shape,x,y,w,h,o={})=>{const z=o.z?Z[o.z]:o.e?Z.data:null;const hero=o.hero||o.lift;return `<g fill="${z?z.f:C.node}" stroke="${z?z.s:C.line}" stroke-width="1"${o.dash?' stroke-dasharray="3 3"':''}${hero?` filter="url(#${ID}sh)"`:''}>${outline[shape](x,y,w,h)}</g>`};
+const block=(shape,x,y,w,h,o={})=>{const z=o.z?Z[o.z]:o.e?Z.data:null;const hero=o.hero||o.lift||!z;return `<g fill="${z?z.f:C.node}" stroke="${z?z.s:C.line}" stroke-width="1.15"${o.dash?' stroke-dasharray="3 3"':''}${hero?` filter="url(#${ID}sh)"`:''}>${outline[shape](x,y,w,h)}</g>`};
 // node: flat block plus wrapped lines; height grows to fit. lines: [{t, sz, w, c, it, mono, sub}]
 const node=(shape,x,y,w,lines,o={})=>{const [px,py]=insetFor(shape);const maxW=w-2*px;const L=[];
  lines.forEach(l=>{const sz=fs(l.sz||10),ww=l.w||400;wrapW(l.t,maxW,sz,ww,l.it,l.mono).forEach(s=>L.push({...l,t:s,sz,lh:sz*(COMPACT?1.08:1.22)}))});

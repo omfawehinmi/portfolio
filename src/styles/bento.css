@@ -411,7 +411,8 @@ p.bx-subhead {
 .bx-svgprev {
   display: grid;
   place-items: center;
-  background: #f4fbfe;
+  /* Blend with the card — no contrasted diagram well. */
+  background: transparent;
 }
 
 .bx-svgprev .bx-svg,
@@ -672,15 +673,23 @@ p.bx-subhead {
   color: var(--title-color) !important;
 }
 
-.dark-theme .bx-svgprev,
+.dark-theme .bx-svgprev {
+  background: transparent;
+}
+
 .dark-theme .bx-big img {
-  background: #071422;
+  background: var(--container-color);
 }
 
 .dark-theme .bx-fig .bx-svg,
 .dark-theme .bx-fig svg {
-  /* Keep diagram panels readable against dark cards. */
   filter: none;
+}
+
+.bx-fig,
+.bx-fig .bx-svg,
+.bx-fig svg {
+  background: transparent;
 }
 
 dialog.project-dialog.bx-dialog,
