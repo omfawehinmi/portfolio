@@ -2,20 +2,20 @@
 // myorglab-repos/household-data-architecture (synced to household-platform
 // fdff221 via HDA PR #12 — 20 DAG pages). Real databases, MCP servers, catalogs,
 // EAIs, and DAG names. No secrets, PATs, or account locators. Status language
-// matches the as-built: production vs planned vs paused.
+// matches the as-built: production vs paused; source-data gaps called out honestly.
 
 export const COPY = {
   section: {
     kicker: 'Projects',
     title: 'Work that shows the platform',
     intro:
-      'The lead project is the household Snowflake platform: 4 production databases (HOUSEHOLD_LEDGER, MOONSHOTS, AGENTIC_WORKFORCE, CONTROL), 3 MCP servers, 20 Airflow DAG files, and a PR → CI → merge → Terraform apply → Airflow pin ship path. Tiles under the lead walk CI/CD with source feeds, schemas and modeling, Airflow + dbt, MCP and roles, catalogs, then Grokbot agents per MCP. Other shipped work follows in a shorter list.',
+      'The lead project is the household Snowflake platform: 5 production databases (HOUSEHOLD_LEDGER, MOONSHOTS, AGENTIC_WORKFORCE, CONTROL, HOUSEHOLD_HEALTH), 3 MCP servers, 20 Airflow DAG files, and a PR → CI → merge → Terraform apply → Airflow pin ship path. Tiles under the lead walk CI/CD with source feeds, schemas and modeling, Airflow + dbt, MCP and roles, catalogs, then Grokbot agents per MCP. Other shipped work follows in a shorter list.',
   },
   lead: {
     title: 'HOUSEHOLD_LEDGER and MCP',
     subhead: 'Snowflake data architecture and MCP',
     oneLine:
-      '4 prod databases · 3 MCP servers · 20 Airflow DAG files · Monarch, Gmail, Drive, YouTube (plus planned Epic MyChart) · AI chat history in AGENTIC_WORKFORCE · 15 SV_* · 6 CS_*. Agents hit MCP catalogs, not an open warehouse login.',
+      '5 prod databases · 3 MCP servers · 20 Airflow DAG files · Monarch, Gmail, Drive, YouTube, Epic MyChart · AI chat history in AGENTIC_WORKFORCE · 15 SV_* · 6 CS_*. Agents hit MCP catalogs, not an open warehouse login.',
     tags: [
       'Snowflake',
       'HOUSEHOLD_LEDGER',
@@ -29,7 +29,7 @@ export const COPY = {
       'Gmail',
     ],
     intro:
-      'This is the household data platform I build and run. Snowflake holds HOUSEHOLD_LEDGER (finance), MOONSHOTS (YouTube), AGENTIC_WORKFORCE (agent roster, conversations, graph, and chat-history capture across desks), and CONTROL (procs, queues, MCP, tests) — layers as schemas, not one database per layer. HOUSEHOLD_HEALTH is the planned Epic MyChart database, not a separate product card. Airflow on the office PC is the production scheduler; Snowflake tasks are retired. Monarch, Gmail, and Drive feed the ledger; YouTube feeds Moonshots; workforce capture and nightly chat backup land AI history. Grok bots and Cursor attach to MCP servers bound to SV_*, CS_*, and approved procedures.',
+      'This is the household data platform I build and run. Snowflake holds HOUSEHOLD_LEDGER (finance), MOONSHOTS (YouTube), AGENTIC_WORKFORCE (agent roster, conversations, graph, and chat-history capture across desks), CONTROL (procs, queues, MCP, tests), and HOUSEHOLD_HEALTH (Epic MyChart FHIR) — layers as schemas, not one database per layer. HOUSEHOLD_HEALTH’s architecture and Snowflake model are production; underlying MyChart patient data is not loaded yet — not a separate product card. Airflow on the office PC is the production scheduler; Snowflake tasks are retired. Monarch, Gmail, and Drive feed the ledger; YouTube feeds Moonshots; workforce capture and nightly chat backup land AI history; Epic MyChart SMART on FHIR R4 targets HOUSEHOLD_HEALTH when source data is available. Grok bots and Cursor attach to MCP servers bound to SV_*, CS_*, and approved procedures.',
   },
   tiles: [
     {
@@ -85,9 +85,9 @@ export const COPY = {
       title: 'Source feeds into Snowflake',
       svg: 'pipes',
       body:
-        'Live feeds land in product database schemas — not a shared dump. Morning ingest is one pipeline_load_window at 07:15 ET on INGEST_WH (email + Monarch daily; YouTube Monday, then trigger moonshots_yt_sync_daily; Epic FHIR only when EPIC_FHIR_LOAD_ENABLED). Monarch via EAI_MONARCH (monarch_load / proc_monarch_extract); Gmail via EAI_GMAIL (ledger_email_alerts → classify → reconcile_pending); Drive via drive_poll (same 07:15 minute, no warehouse) → doc_extract (pypdf then local Tesseract — no Cortex OCR). Workforce AI history lands through capture MERGE and the nightly chat backup into AGENTIC_WORKFORCE (and RAW.CHAT_MESSAGES). Planned feed: Epic MyChart SMART on FHIR R4 into HOUSEHOLD_HEALTH (in git, not recorded as applied). Shape is extract/land → transform (dbt) → test. No S3/Snowpipe path — that design was dropped.',
+        'Live feeds land in product database schemas — not a shared dump. Morning ingest is one pipeline_load_window at 07:15 ET on INGEST_WH (email + Monarch daily; YouTube Monday, then trigger moonshots_yt_sync_daily; Epic FHIR when EPIC_FHIR_LOAD_ENABLED and source data is present). Monarch via EAI_MONARCH (monarch_load / proc_monarch_extract); Gmail via EAI_GMAIL (ledger_email_alerts → classify → reconcile_pending); Drive via drive_poll (same 07:15 minute, no warehouse) → doc_extract (pypdf then local Tesseract — no Cortex OCR). Workforce AI history lands through capture MERGE and the nightly chat backup into AGENTIC_WORKFORCE (and RAW.CHAT_MESSAGES). Epic MyChart SMART on FHIR R4 lands into HOUSEHOLD_HEALTH (architecture and Snowflake model are production; underlying patient data is not loaded yet). Shape is extract/land → transform (dbt) → test. No S3/Snowpipe path — that design was dropped.',
       caption:
-        'pipeline_load_window → ledger + Monday YouTube. Drive → OCR. Chat capture → AGENTIC_WORKFORCE. MyChart FHIR → planned HOUSEHOLD_HEALTH.',
+        'pipeline_load_window → ledger + Monday YouTube. Drive → OCR. Chat capture → AGENTIC_WORKFORCE. MyChart FHIR → HOUSEHOLD_HEALTH (model ready; source data pending).',
     },
     {
       id: 'airflow',
@@ -191,9 +191,9 @@ export const COPY = {
         },
         {
           name: 'epic_fhir_load_manual',
-          role: 'Manual Epic FHIR → HOUSEHOLD_HEALTH (needs EPIC_FHIR_LOAD_ENABLED)',
+          role: 'Manual Epic FHIR → HOUSEHOLD_HEALTH (EPIC_FHIR_LOAD_ENABLED; awaits source data)',
           schedule: 'none',
-          status: 'Manual only — not a production load; DB not recorded applied',
+          status: 'Manual — DB model production; underlying MyChart data not loaded',
         },
         {
           name: 'platform_smoke',
@@ -269,9 +269,9 @@ export const COPY = {
       title: 'Databases: columns, tables, modeling',
       svg: 'erd',
       body:
-        'Four production databases plus *_DEV twins with synthetic fixtures. Open a database below for schemas, example tables, and grain. HOUSEHOLD_LEDGER: PUBLIC, RAW, CORE, CTRL, ANALYTICS, AI, transient STAGING / INTERMEDIATE. MOONSHOTS: RAW, CORE, CTRL, AI. AGENTIC_WORKFORCE: AGENTS, CONVERSATIONS, GRAPH, CAPTURE, plus STAGING, INTERMEDIATE, ANALYTICS, AI, TRANSFORM, SECURITY — this is where desk AI history accumulates (capture MERGE + nightly RAW.CHAT_MESSAGES backup), then agentic_workforce_dbt_daily builds ANALYTICS. CONTROL: PROC, QUEUE, STAGE, FLAGS, TASKS, MCP, SECURITY, TESTS. HOUSEHOLD_HEALTH is planned (Epic MyChart FHIR), not production — same product-database idea, not a separate portfolio card. A RAW row is one landed payload; a CORE row is one business object; ANALYTICS is reporting grain and SV_* catalogs.',
+        'Five production databases plus *_DEV twins with synthetic fixtures. Open a database below for schemas, example tables, and grain. HOUSEHOLD_LEDGER: PUBLIC, RAW, CORE, CTRL, ANALYTICS, AI, transient STAGING / INTERMEDIATE. MOONSHOTS: RAW, CORE, CTRL, AI. AGENTIC_WORKFORCE: AGENTS, CONVERSATIONS, GRAPH, CAPTURE, plus STAGING, INTERMEDIATE, ANALYTICS, AI, TRANSFORM, SECURITY — this is where desk AI history accumulates (capture MERGE + nightly RAW.CHAT_MESSAGES backup), then agentic_workforce_dbt_daily builds ANALYTICS. CONTROL: PROC, QUEUE, STAGE, FLAGS, TASKS, MCP, SECURITY, TESTS. HOUSEHOLD_HEALTH: Epic MyChart FHIR product database (architecture and Snowflake model production; underlying patient data not loaded yet) — same product-database idea, not a separate portfolio card. A RAW row is one landed payload; a CORE row is one business object; ANALYTICS is reporting grain and SV_* catalogs.',
       caption:
-        'Select a database for schemas and modeling grain. Prod: HOUSEHOLD_LEDGER, MOONSHOTS, AGENTIC_WORKFORCE, CONTROL. Planned: HOUSEHOLD_HEALTH.',
+        'Select a database for schemas and modeling grain. Prod: HOUSEHOLD_LEDGER, MOONSHOTS, AGENTIC_WORKFORCE, CONTROL, HOUSEHOLD_HEALTH.',
       databases: [
         {
           id: 'ledger',
@@ -347,16 +347,16 @@ export const COPY = {
         {
           id: 'health',
           name: 'HOUSEHOLD_HEALTH',
-          status: 'Planned — not production',
-          oneLine: 'Epic MyChart FHIR — sandbox auth exists; prod load not built',
+          status: 'Production',
+          oneLine: 'Epic MyChart FHIR — architecture + model built; source data pending',
           schemas: ['RAW', 'STAGING', 'CORE', 'CTRL'],
           detail:
-            'Planned healthcare database, same product-DB pattern as the ledger — not a separate “healthcare project” card. SMART on FHIR R4 from Epic MyChart: OAuth patient auth, token vault on Lambda / DynamoDB / SSM, designed Airflow load onto an internal stage, then procedures into VARIANT RAW. Weekly Monday step inside pipeline_load_window was decided; first production sign-in has not succeeded. No patient data is shown.',
+            'Production healthcare database, same product-DB pattern as the ledger — not a separate “healthcare project” card. Architecture and Snowflake data model are built. SMART on FHIR R4 from Epic MyChart: OAuth patient auth, token vault on Lambda / DynamoDB / SSM, Airflow load onto an internal stage, then procedures into VARIANT RAW. Weekly Monday step inside pipeline_load_window is wired; underlying MyChart patient data is not loaded yet, so no patient rows are shown.',
           objects: [
-            { layer: 'Auth', name: 'OAuth + token vault', note: 'Sandbox tested' },
-            { layer: 'Scheduler', name: 'pipeline_load_window (Mon)', note: 'Decided, not built' },
+            { layer: 'Auth', name: 'OAuth + token vault', note: 'Built' },
+            { layer: 'Scheduler', name: 'pipeline_load_window (Mon)', note: 'Wired; awaits source data' },
             { layer: 'Stage', name: 'Internal stage', note: 'FHIR resources' },
-            { layer: 'RAW', name: 'VARIANT tables', note: 'Not in production' },
+            { layer: 'RAW', name: 'VARIANT tables', note: 'Model ready; no patient data yet' },
           ],
         },
       ],
@@ -755,13 +755,13 @@ export const DIAG = {
   },
   erd: {
     title:
-      'Four prod databases plus planned HOUSEHOLD_HEALTH — select a database in the open panel for its schemas',
+      'Five prod databases including HOUSEHOLD_HEALTH — select a database in the open panel for its schemas',
     areas: [
       'HOUSEHOLD_LEDGER',
       'MOONSHOTS',
       'AGENTIC_WORKFORCE',
       'CONTROL',
-      'HOUSEHOLD_HEALTH (planned)',
+      'HOUSEHOLD_HEALTH',
     ],
     schemas: ['RAW', 'CORE', 'CTRL', 'ANALYTICS'],
     entities: [

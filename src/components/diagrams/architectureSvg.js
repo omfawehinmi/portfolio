@@ -216,7 +216,7 @@ export function dPipes(D, inst=""){
  lanes.forEach(([t,y],i)=>{if(i)o+=`<line x1="8" y1="${y}" x2="${W-8}" y2="${y}" stroke="${C.soft}"/>`;o+=lab(12,y+10,t,i<2?Z.src.k:Z.data.k)});
   o+=discNode(22,32,11,'', '▶',{id:'start',glyphSz:9}).g;
   const t1=node('box',44,18,120,n2('Monarch · Gmail · Drive · YT','',8.8),{h:26,z:'src'});o+=t1.g;
-  o+=T(176,24,'EAI_MONARCH · EAI_GMAIL',{sz:fs(7.8),mono:1,c:Z.src.k,a:'start'})+T(176,35,'pipeline_load_window · drive_poll',{sz:fs(7.8),c:C.sub,a:'start'})+T(176,46,'MyChart FHIR planned',{sz:fs(7.8),c:Z.sec.k,a:'start'});
+  o+=T(176,24,'EAI_MONARCH · EAI_GMAIL',{sz:fs(7.8),mono:1,c:Z.src.k,a:'start'})+T(176,35,'pipeline_load_window · drive_poll',{sz:fs(7.8),c:C.sub,a:'start'})+T(176,46,'MyChart FHIR → HOUSEHOLD_HEALTH',{sz:fs(7.8),c:Z.data.k,a:'start'});
  o+=T(10,78,Pp.airflow.s,{sz:fs(7.8),it:1,c:C.sub,a:'start'});
  o+=discNode(100,122,14,'','◇',{id:'gateway',glyphSz:11}).g;
  const ex=node('box',210,92,168,n2('Extract and land','',8.8,K.land,'src'),{h:28,z:'src'});o+=ex.g;
@@ -301,7 +301,7 @@ export function dDatabase(D, dbId, inst=""){
   const rowH=44;
   (db.objects||[]).forEach((obj,i)=>{const yy=y+i*rowH;
    o+=node('box',14,yy,432,[{t:obj.layer+' · '+obj.name,sz:9.4,w:600,mono:1},{t:obj.note,sz:8.4,sub:1}],{h:38,z:i===0?'data':null,lift:1}).g});
-  o+=legend(14,y+(db.objects||[]).length*rowH+10,db.status.startsWith('Planned')?['sec','data']:['data']);
+  o+=legend(14,y+(db.objects||[]).length*rowH+10,db.id==='health'?['src','data']:['data']);
   return svg(W,y+(db.objects||[]).length*rowH+28,db.name+' schemas',o)};
 
 export function dAirflow(D, inst=""){
@@ -316,7 +316,7 @@ export function dAirflow(D, inst=""){
     ['ledger_dbt_daily → hr → aw','06:00 ET dbt chain'],
     ['dbt_daily (Cosmos)','created paused'],
     ['nightly_app_backup · pc_usage','PC routines · no SF'],
-    ['epic_fhir_load_manual','manual · not applied'],
+    ['epic_fhir_load_manual','manual · awaits source data'],
     ['platform_smoke · *_dev (3)','manual / not production'],
   ];
   rows.forEach((r,i)=>{const y=84+i*17;o+=T(16,y,r[0],{sz:fs(8),mono:1,c:Z.src.k,a:'start'})+T(244,y,r[1],{sz:fs(7.8),c:C.sub,a:'start'})});
