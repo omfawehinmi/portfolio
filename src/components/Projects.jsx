@@ -22,8 +22,6 @@ const PROJECT_RAIL = [
   { id: 'more', label: 'More work' },
 ]
 
-const RAIL_TOP = { id: 'home', label: 'Top', href: '#home' }
-
 const KICKERS = {
   mcp: 'Servers · agents · tools',
   workflow: 'CI / CD ship path',
@@ -261,12 +259,6 @@ function ProjectsJumpRail({ items, activeId }) {
   return (
     <nav className="bx-rail" aria-label="Projects sections">
       <ol className="bx-rail__list">
-        <li>
-          <a href={RAIL_TOP.href} className="bx-rail__link bx-rail__link--top">
-            <span className="bx-rail__dot" aria-hidden="true" />
-            <span className="bx-rail__label">{RAIL_TOP.label}</span>
-          </a>
-        </li>
         {items.map((item) => (
           <li key={item.id}>
             <a
@@ -647,23 +639,27 @@ export default function Projects({ openId, onOpen }) {
   return (
     <section className="projects section" id="projects">
       <SectionHeader title={COPY.section.title} subtitle={COPY.section.kicker} />
-      {railVisible ? <ProjectsJumpRail items={PROJECT_RAIL} activeId={activeRail} /> : null}
 
-      <div className="container bx">
-        <p className="bx-intro">{COPY.section.intro}</p>
-        <div className="bx-grid">
-          <LeadTile onOpen={onOpen} tall={tall} />
-          {COPY.tiles.map((tile) => (
-            <ArchitectureTile key={tile.id} tile={tile} onOpen={onOpen} tall={tall} />
-          ))}
-        </div>
-        <h3 id="project-more" className="bx-morehead">
-          More shipped work
-        </h3>
-        <div className="bx-grid bx-more">
-          {moreItems.map((item, index) => (
-            <MoreCard key={item.id} item={item} featured={index === 0} onOpen={onOpen} />
-          ))}
+      {/* Rail padding applies only to this shell — title stays flush above content. */}
+      <div className="bx-with-rail">
+        {railVisible ? <ProjectsJumpRail items={PROJECT_RAIL} activeId={activeRail} /> : null}
+
+        <div className="container bx">
+          <p className="bx-intro">{COPY.section.intro}</p>
+          <div className="bx-grid">
+            <LeadTile onOpen={onOpen} tall={tall} />
+            {COPY.tiles.map((tile) => (
+              <ArchitectureTile key={tile.id} tile={tile} onOpen={onOpen} tall={tall} />
+            ))}
+          </div>
+          <h3 id="project-more" className="bx-morehead">
+            More shipped work
+          </h3>
+          <div className="bx-grid bx-more">
+            {moreItems.map((item, index) => (
+              <MoreCard key={item.id} item={item} featured={index === 0} onOpen={onOpen} />
+            ))}
+          </div>
         </div>
       </div>
 

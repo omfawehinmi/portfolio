@@ -14,21 +14,25 @@
 }
 
 /* Left labeled jump rail. Hard rule: never overlap tiles/diagrams/chrome.
-   Lives inside #projects only — never beside site header/hero. */
+   Lives in .bx-with-rail only (beside bento content) — never beside header/hero,
+   and never padding the section title away from the content below. */
 .bx-rail {
   display: none;
 }
 
+.bx-with-rail {
+  position: relative;
+}
+
 @media (min-width: 1280px) {
-  #projects.section {
+  .bx-with-rail {
     --bx-rail-width: 11rem;
-    position: relative;
-    /* Reserve a full column so the rail cannot paint over content. */
+    /* Reserve the rail column for content only — section title stays full-width. */
     padding-left: var(--bx-rail-width);
     box-sizing: border-box;
   }
 
-  /* Absolute track spanning the projects section; list sticks while scrolling it. */
+  /* Absolute track spanning the content shell; list sticks while scrolling it. */
   .bx-rail {
     display: block;
     position: absolute;
@@ -39,11 +43,6 @@
     width: calc(var(--bx-rail-width) - 0.85rem);
     max-width: calc(var(--bx-rail-width) - 0.85rem);
     pointer-events: none;
-  }
-
-  /* Top lives on the rail — hide floating scrollup so it cannot cover tiles. */
-  .scrollup {
-    display: none !important;
   }
 
   .bx-rail__list {
