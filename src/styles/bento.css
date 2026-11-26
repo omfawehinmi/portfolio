@@ -33,6 +33,7 @@
   transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
   display: flex;
   flex-direction: column;
+  /* Clip chrome only; diagrams scale inside .bx-fig so they stay whole. */
   overflow: hidden;
   text-align: left;
 }
@@ -239,6 +240,7 @@ p.bx-subhead {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  overflow: visible;
 }
 
 .bx-fig .bx-svg,
@@ -246,7 +248,7 @@ p.bx-subhead {
   width: 100%;
   max-width: 100%;
   height: auto;
-  max-height: 100%;
+  max-height: min(100%, 22rem);
   object-fit: contain;
   object-position: center;
   display: block;
@@ -378,8 +380,12 @@ p.bx-subhead {
   background: #f4f8fa;
 }
 
+.bx-fig-big .bx-svg,
 .bx-fig-big svg {
-  max-height: 56vh;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: min(56vh, 34rem);
 }
 
 @media (max-width: 767px) {
@@ -411,19 +417,19 @@ p.bx-subhead {
   }
 
   .bx-fig-big {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: visible;
   }
 
+  .bx-fig-big .bx-svg,
   .bx-fig-big svg {
-    min-width: 560px;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
     max-height: none;
   }
 
   .bx-fig-big figcaption {
-    position: sticky;
-    left: 0;
-    max-width: calc(100vw - 2.5rem);
+    max-width: 100%;
   }
 }
 
@@ -525,12 +531,16 @@ p.bx-subhead {
 
   .bx-tile .bx-fig svg,
   .bx-leadfig svg {
+    width: 100%;
     max-width: 100%;
-    max-height: 100%;
-    width: auto;
     height: auto;
+    max-height: min(100%, 22rem);
     object-fit: contain;
     object-position: center;
+  }
+
+  .bx-lead .bx-leadfig svg {
+    max-height: min(100%, 28rem);
   }
 
   .bx-more {
@@ -591,7 +601,13 @@ p.bx-subhead {
 
 .dark-theme .bx-svgprev,
 .dark-theme .bx-big img {
-  background: #10263f;
+  background: #071422;
+}
+
+.dark-theme .bx-fig .bx-svg,
+.dark-theme .bx-fig svg {
+  /* Keep diagram panels readable against dark cards. */
+  filter: none;
 }
 
 dialog.project-dialog.bx-dialog,
@@ -656,8 +672,12 @@ dialog.project-dialog.bx-dialog {
   padding-bottom: 2.25rem;
 }
 
+dialog.project-dialog.bx-dialog .bx-fig-big .bx-svg,
 dialog.project-dialog.bx-dialog .bx-fig-big svg {
-  max-height: 46vh;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: min(46vh, 30rem);
 }
 
 body:has(dialog.project-dialog[open]) .header,
