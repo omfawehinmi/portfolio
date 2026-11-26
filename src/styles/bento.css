@@ -786,6 +786,13 @@ p.bx-subhead {
     max-height: min(22rem, 44vh);
   }
 
+  /* Domains thumb stays original compact size even when the tile is hero */
+  .bx-t-domains .bx-fig svg,
+  .bx-t-domains .bx-fig svg.bx-arch--liam {
+    max-height: min(16rem, 36vh);
+    object-fit: contain;
+  }
+
   .bx-lead .bx-leadfig svg {
     max-height: min(24rem, 48vh);
   }
@@ -1223,22 +1230,16 @@ dialog.project-dialog.bx-dialog.bx-dialog--erd-full,
   overflow: hidden;
 }
 
-.bx-dialog.bx-dialog--erd-full .bx-erd-meta {
-  flex: 0 0 auto;
-  max-height: 6.5rem;
-  overflow: auto;
-  margin-top: 0.15rem;
-}
-
-.bx-dialog.bx-dialog--erd-full .bx-erd-meta .bx-lede,
-.bx-dialog.bx-dialog--erd-full .bx-erd-meta > p {
-  font-size: 0.82rem;
-  margin: 0.25rem 0;
-}
-
 .bx-dialog.bx-dialog--erd-full .bx-dbtabs {
   flex: 0 0 auto;
   margin: 0.1rem 0 0.35rem;
+}
+
+.bx-dialog.bx-dialog--erd-full .bx-fig--erd figcaption {
+  flex: 0 0 auto;
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-top: 0.35rem;
 }
 
 .bx-dialog.bx-dialog--erd-full .bx-fig--erd {

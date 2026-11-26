@@ -505,19 +505,7 @@ function DomainsPanel({ tile, tall }) {
         <ArchitectureDiagram kind="domains" tall={tall} inst="open" dbId={active?.id} />
         <figcaption>{active ? `${active.name}: ${active.oneLine}` : tile.caption}</figcaption>
       </figure>
-      {active ? (
-        <div className="bx-erd-meta">
-          <p className="bx-lede">{active.detail}</p>
-          <ul className="bx-dbchips" aria-label={`${active.name} schemas`}>
-            {active.schemas.map((schema) => (
-              <li key={schema}>{schema}</li>
-            ))}
-          </ul>
-          <p>{tile.body}</p>
-        </div>
-      ) : (
-        <p>{tile.body}</p>
-      )}
+      {/* ERD + short oneLine caption only — no long detail/body dump */}
     </div>
   )
 }
