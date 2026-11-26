@@ -57,9 +57,13 @@ The four Chromium viewport projects are `chromium-375`, `chromium-768`,
   Tagged `@visual`.
 
 `PLAYWRIGHT_GATE=1` is required for every gate command. Without it, the
-config loads only a placeholder project that matches no files, so a later
-CI job that runs `npx playwright test` will not start failing on missing
-visual baselines. This folder does not add a required CI job.
+config loads only a placeholder project that matches no files, so a job
+that runs bare `npx playwright test` will not start failing on missing
+visual baselines.
+
+`.github/workflows/test.yml` runs `npm run test:e2e` on every pull request
+and on pushes to main. The job is named `test-gate`. It does not run the
+visual specs or the accessibility spec.
 
 ## Visual baselines (Courtland)
 

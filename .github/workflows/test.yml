@@ -1,0 +1,42 @@
+name: Tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Job name is test-gate so playwright.config.js loads the viewport
+  # projects when a step runs bare `npx playwright test`. This workflow
+  # calls `npm run test:e2e`, which already sets PLAYWRIGHT_GATE=1 and
+  # names the spec files. Visual baselines and the accessibility spec
+  # stay out of this job: there are no committed baselines, and
+  # color-contrast still fails on the current page.
+  test-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install and build
+        run: |
+          npm ci
+          npm run build
+      - name: Install Playwright
+        working-directory: e2e
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Nav, click-through, and geometry
+        working-directory: e2e
+        run: npm run test:e2e
