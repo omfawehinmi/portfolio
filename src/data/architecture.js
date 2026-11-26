@@ -105,7 +105,7 @@ DIAG.features.rows=[
 COPY.mychart = {
   id: "mychart",
   kicker: "Healthcare data ingestion",
-  title: "MyChart to Snowflake ingestion",
+  title: "MyChart data in Snowflake",
   summary: "A SMART on FHIR ingestion path from a MyChart patient portal into Snowflake raw tables. Built and deployed, awaiting first patient authorization.",
   open: "Designed and deployed a SMART on FHIR R4 ingestion path from an Epic MyChart patient portal into Snowflake. The patient authorizes access through OAuth, and tokens are kept in a token vault on AWS Lambda, DynamoDB and SSM Parameter Store. A scheduled Apache Airflow load is designed to pull FHIR R4 resources onto a Snowflake internal stage, and stored procedures load them into VARIANT raw tables. Infrastructure is defined in Terraform. The path is pending its first patient authorization, so no health data has been loaded yet.",
   caption: "Ingestion path from patient authorization to Snowflake raw tables. Built, awaiting first load. No patient data is shown.",
