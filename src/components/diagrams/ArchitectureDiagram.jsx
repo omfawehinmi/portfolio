@@ -1,11 +1,13 @@
 import { useLayoutEffect, useState } from 'react'
 import { DIAG } from '../../data/architecture.js'
-import { dErd, dFeat, dLead, dMcp, dMychart, dPipes, dRearch, dSec, dStack } from './architectureSvg.js'
+import { dAirflow, dDbt, dErd, dFeat, dLead, dMcp, dMychart, dPipes, dRearch, dSec, dStack } from './architectureSvg.js'
 
 const builders = {
   lead: (tall, inst) => dLead(DIAG, tall, inst),
   mcp: (_tall, inst) => dMcp(DIAG, inst),
   domains: (_tall, inst) => dErd(DIAG, inst),
+  airflow: (_tall, inst) => dAirflow(DIAG, inst),
+  dbt: (_tall, inst) => dDbt(DIAG, inst),
   pipes: (_tall, inst) => dPipes(DIAG, inst),
   security: (_tall, inst) => dSec(DIAG, inst),
   stack: (_tall, inst) => dStack(DIAG, inst),

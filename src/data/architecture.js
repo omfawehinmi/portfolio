@@ -9,13 +9,13 @@ export const COPY = {
     kicker: 'Projects',
     title: 'Work that shows the platform',
     intro:
-      'The lead project is HOUSEHOLD_LEDGER on Snowflake: Airflow on my office PC schedules production work, dbt and procedures transform landed data, and separate MCP servers expose governed catalogs to agents. The tiles under it are how that platform is shaped. Other shipped work follows in a shorter list.',
+      'The lead project is HOUSEHOLD_LEDGER on Snowflake: 4 production databases, 3 MCP servers, 16 Airflow DAG files on the office-PC scheduler, and dbt targets hl_prod / hl_dev that build ANALYTICS and SV_* catalogs agents actually query. The tiles under it break that stack into MCP, schemas, every DAG, dbt/deploy, feeds, roles, and catalogs. Other shipped work follows in a shorter list.',
   },
   lead: {
     title: 'HOUSEHOLD_LEDGER and MCP',
     subhead: 'Snowflake data architecture and MCP',
     oneLine:
-      'A production Snowflake platform I operate: HOUSEHOLD_LEDGER, MOONSHOTS, AGENTIC_WORKFORCE, and CONTROL; Airflow as the scheduler; MCP_HOUSEHOLD_LEDGER (write) and MCP_HOUSEHOLD_LEDGER_GROK (read) so agents use semantic views and Cortex Search instead of an open warehouse login.',
+      '4 prod Snowflake databases · 3 MCP servers · 16 Airflow DAG files (13 prod-shaped + 3 *_dev) · 3 ledger feeds (Monarch, Gmail, Drive) plus YouTube · 15 SV_* Analyst views · 6 Cortex Search services. Agents hit MCP catalogs, not an open warehouse login.',
     tags: [
       'Snowflake',
       'HOUSEHOLD_LEDGER',
@@ -27,8 +27,16 @@ export const COPY = {
       'Monarch',
       'Gmail',
     ],
+    stats: [
+      { n: '4', label: 'prod databases' },
+      { n: '3', label: 'MCP servers' },
+      { n: '16', label: 'Airflow DAG files' },
+      { n: '3', label: 'ledger source feeds' },
+      { n: '15', label: 'SV_* Analyst views' },
+      { n: '6', label: 'CS_* search services' },
+    ],
     intro:
-      'This is the household data platform I build and run. Snowflake holds four production databases: HOUSEHOLD_LEDGER (finance), MOONSHOTS (YouTube catalog), AGENTIC_WORKFORCE, and CONTROL. Layers are schemas inside those databases (RAW, CORE, CTRL, ANALYTICS, AI), not one database per layer. Self-hosted Airflow on the office PC replaced Snowflake tasks as the production scheduler. Monarch GraphQL, Gmail, and Google Drive feed the ledger through External Access Integrations. Agents never get a general warehouse login: they call MCP servers that bind Analyst views, Cortex Search, and approved procedures.',
+      'This is the household data platform I build and run. Snowflake holds HOUSEHOLD_LEDGER (finance), MOONSHOTS (YouTube), AGENTIC_WORKFORCE, and CONTROL — layers as schemas (RAW, CORE, CTRL, ANALYTICS, AI), not one database per layer. Airflow on the office PC is the production scheduler (pinned releases such as airflow-20261107-02cbc74); Snowflake tasks are retired. Monarch GraphQL, Gmail, and Drive feed the ledger through EAIs. Grok bots and Cursor attach to MCP servers that bind Analyst on SV_*, Cortex Search on CS_*, and approved procedures — never a general warehouse login.',
   },
   tiles: [
     {
@@ -37,7 +45,7 @@ export const COPY = {
       title: 'MCP_HOUSEHOLD_LEDGER split',
       svg: 'mcp',
       body:
-        'HOUSEHOLD_LEDGER.CTRL hosts two MCP servers. MCP_HOUSEHOLD_LEDGER_GROK is the read catalog: household_finance_agent, ledger_ops_agent, analyst_* tools bound to SV_* views, search over CS_DOCUMENTS / CS_EMAIL_MESSAGES / CS_GAPS_IDEA / CS_PARSE_REVIEW, plus document stage list and download. MCP_HOUSEHOLD_LEDGER is the write catalog: the same read surface plus proc_monarch_extract, proc_monarch_mutate, proc_ledger_mutate, proc_gmail_ingest, proc_email_pipeline, proc_reconcile_pending, proc_document_extract, proc_rebuild_analytics, and related pipeline procs. MOONSHOTS.CTRL has a third server, MCP_MOONSHOTS, for the YouTube catalog only. Clients authenticate with a Snowflake PAT under role MCP_LEDGER_CLIENT. A read client never holds write tools.',
+        'HOUSEHOLD_LEDGER.CTRL hosts two of three MCP servers. MCP_HOUSEHOLD_LEDGER_GROK is the read catalog Grok desks attach to: household_finance_agent, ledger_ops_agent, analyst_* tools bound to the 15 SV_* views, search over CS_DOCUMENTS / CS_EMAIL_MESSAGES / CS_GAPS_IDEA / CS_PARSE_REVIEW, plus document stage list and download. Money answers are a staff rule for Stephen even though the SQL spec lists analyst tools on the read server. MCP_HOUSEHOLD_LEDGER is the write catalog Cursor / Eta use: the same read surface plus proc_monarch_extract, proc_monarch_mutate, proc_ledger_mutate, proc_gmail_ingest, proc_email_pipeline, proc_reconcile_pending, proc_document_extract, proc_rebuild_analytics, and related pipeline procs. MOONSHOTS.CTRL has MCP_MOONSHOTS for the YouTube catalog only (Cynthia). Auth is a Snowflake PAT under role MCP_LEDGER_CLIENT. A read client never holds write tools.',
       caption:
         'Read path through MCP_HOUSEHOLD_LEDGER_GROK to SV_* and CS_*. Write path through MCP_HOUSEHOLD_LEDGER into approved CORE / pipeline procedures.',
     },
@@ -47,13 +55,183 @@ export const COPY = {
       title: 'Databases and schemas',
       svg: 'erd',
       body:
-        'Production databases: HOUSEHOLD_LEDGER, MOONSHOTS, AGENTIC_WORKFORCE, CONTROL (plus *_DEV twins). HOUSEHOLD_LEDGER schemas: PUBLIC, RAW, CORE, CTRL, ANALYTICS, AI, with transient STAGING and INTERMEDIATE. CONTROL holds PROC, QUEUE, STAGE, FLAGS, TASKS, MCP, SECURITY, TESTS. A RAW row is one landed payload (email MIME, Monarch GraphQL page, staged document). A CORE row is one business object. ANALYTICS is reporting grain and the SV_* Analyst catalogs. Several landing procedures write RAW and CORE in the same call, so CORE is not only a later rebuild of RAW. Dev uses synthetic fixtures, not a copy of production data.',
+        'Production databases: HOUSEHOLD_LEDGER, MOONSHOTS, AGENTIC_WORKFORCE, CONTROL (plus *_DEV twins with synthetic fixtures). HOUSEHOLD_LEDGER schemas: PUBLIC, RAW, CORE, CTRL, ANALYTICS, AI, with transient STAGING and INTERMEDIATE. CONTROL holds PROC, QUEUE, STAGE, FLAGS, TASKS, MCP, SECURITY, TESTS. A RAW row is one landed payload. A CORE row is one business object. ANALYTICS is reporting grain and the SV_* Analyst catalogs. Several landing procedures write RAW and CORE in the same call, so CORE is not only a later rebuild of RAW. dbt reads CORE into staging/marts (and Cosmos dbt_daily targets hl_prod / ANALYTICS_DBT) — see the dbt tile for the deploy path.',
       caption:
         'Product databases hold layers as schemas. Example documents path: DOCUMENTS_RAW → DOCUMENTS → FACT_DOCUMENT_STANDING → SV_DOCUMENT_STANDING / CS_DOCUMENTS.',
     },
     {
-      id: 'security',
+      id: 'airflow',
+      n: '4',
+      title: 'Airflow on the office PC — every DAG',
+      svg: 'airflow',
+      body:
+        '16 DAG files in household-platform Airflow. Production scheduling is the office-PC Docker pin (airflow-20261107-02cbc74 on the 2026-11-07 check; later pins exist in the change log). A file in git is not the same as an unpaused job: only moonshots_yt_sync_daily and moonshots_eyl_sync were confirmed unpaused in that check. Open the tile for the full inventory — schedule, responsibility, and prod status for each DAG.',
+      caption:
+        '16 DAG files · 13 prod-shaped · 3 *_dev · 2 confirmed unpaused on the 2026-11-07 pin. Pause unknown ≠ running.',
+      rows: [
+        {
+          name: 'moonshots_yt_sync_daily',
+          role: 'YouTube catalog sync into MOONSHOTS',
+          schedule: '40 7 * * *',
+          status: 'Production — unpaused on 2026-11-07 pin',
+        },
+        {
+          name: 'moonshots_eyl_sync',
+          role: 'EYL / YouTube companion sync',
+          schedule: '10 7,23 * * *',
+          status: 'Production — unpaused on 2026-11-07 pin',
+        },
+        {
+          name: 'moonshots_transcript_backfill',
+          role: 'Transcript backfill (Airflow port of Windows job)',
+          schedule: 'none',
+          status: 'Not running — stayed paused',
+        },
+        {
+          name: 'monarch_load',
+          role: 'Monarch GraphQL → HOUSEHOLD_LEDGER RAW/CORE via EAI_MONARCH',
+          schedule: '0 7 * * *',
+          status: 'Prod-shaped (fixed prod). Pause unknown',
+        },
+        {
+          name: 'ledger_email_alerts',
+          role: 'Gmail card/bank alerts → RAW/CORE via EAI_GMAIL',
+          schedule: '15 7,12,17 * * *',
+          status: 'Code on pin. Pause unknown',
+        },
+        {
+          name: 'ledger_email_pull_poll',
+          role: 'Poll / follow-up for the email pipeline',
+          schedule: '*/5 * * * *',
+          status: 'Code on pin. Pause unknown',
+        },
+        {
+          name: 'drive_poll',
+          role: 'Google Drive poll → document stages',
+          schedule: '0 * * * *',
+          status: 'Code on pin. Pause unknown',
+        },
+        {
+          name: 'doc_extract',
+          role: 'PC OCR (pypdf then Tesseract) → CORE document facts',
+          schedule: 'triggered',
+          status: 'Do not mark unpaused — quota pause in change log',
+        },
+        {
+          name: 'ledger_dbt_daily',
+          role: 'Bash dbt for ledger models (LEDGER_WH / COMPUTE_WH, staging + marts)',
+          schedule: '0 6 * * *',
+          status: 'Prod-shaped (fixed prod). Pause unknown',
+        },
+        {
+          name: 'dbt_daily',
+          role: 'Astronomer Cosmos dbt, target hl_prod / ANALYTICS_DBT, per-model tasks when manifest exists',
+          schedule: '0 6 * * *',
+          status: 'Prod-shaped Cosmos. Pause unknown',
+        },
+        {
+          name: 'agentic_workforce_dbt_daily',
+          role: 'dbt for AGENTIC_WORKFORCE analytics',
+          schedule: '15 7 * * *',
+          status: 'Code on pin. Pause unknown',
+        },
+        {
+          name: 'hr_dbt_daily',
+          role: 'HR domain dbt blueprint',
+          schedule: '30 6 * * *',
+          status: 'Code on pin — HR account still a blueprint',
+        },
+        {
+          name: 'platform_smoke',
+          role: 'Manual smoke / health checks',
+          schedule: 'none',
+          status: 'Manual only',
+        },
+        {
+          name: 'ledger_dbt_daily_dev',
+          role: 'Isolated ledger dbt twin',
+          schedule: 'none',
+          status: 'Not production',
+        },
+        {
+          name: 'dbt_daily_dev',
+          role: 'Isolated Cosmos dbt twin',
+          schedule: 'none',
+          status: 'Not production',
+        },
+        {
+          name: 'monarch_load_dev',
+          role: 'Isolated Monarch load twin',
+          schedule: 'none',
+          status: 'Not production',
+        },
+      ],
+    },
+    {
+      id: 'dbt',
       n: '5',
+      title: 'dbt, schemas, and prod deploys',
+      svg: 'dbt',
+      body:
+        'RAW lands payloads. CORE holds business objects (often written in the same procedure pass as RAW). dbt builds STAGING / marts / ANALYTICS on top of CORE: ledger_dbt_daily runs Bash dbt on LEDGER_WH or COMPUTE_WH; dbt_daily runs Cosmos against target hl_prod (docstring: ANALYTICS_DBT) with per-model tasks when a manifest is present. Dev twins force hl_dev / *_DEV and have no schedule. PR CI can use schema HOUSEHOLD_LEDGER_CI.DBT_PR_<n> when secrets exist, otherwise it skips. Terraform plan/apply on main (apply=true, environment production) owns DBs, schemas, roles, warehouses; procedures stay loader-owned. Required CI checks in the migration chapters: ruff + pytest, gitleaks, static, plan. Production environment required reviewer is not enforced in those chapters — Michael’s go for apply is the team rule. Airflow reaches the PC by tagged release + manual pull deploy, not by Snowflake tasks.',
+      caption:
+        'RAW → CORE → dbt STAGING/marts → ANALYTICS + SV_*. hl_prod vs hl_dev. PR CI schema, then merge/apply to prod.',
+      rows: [
+        {
+          name: 'RAW',
+          role: 'One landed page, file, or API payload (Monarch, Gmail MIME, staged docs)',
+          status: 'Landing schema',
+        },
+        {
+          name: 'CORE',
+          role: 'One business object — often written with RAW in the same procedure',
+          status: 'Conformed schema',
+        },
+        {
+          name: 'STAGING / marts',
+          role: 'dbt factory schemas on the ledger path',
+          status: 'Transform',
+        },
+        {
+          name: 'ANALYTICS + SV_*',
+          role: 'Reporting grain and Cortex Analyst contracts (15 semantic views)',
+          status: 'Serve / MCP catalogs',
+        },
+        {
+          name: 'hl_prod / hl_dev',
+          role: 'dbt targets — fixed-prod DAGs refuse DEV_MIGRATION_WH',
+          status: 'Environment split',
+        },
+        {
+          name: 'HOUSEHOLD_LEDGER_CI.DBT_PR_<n>',
+          role: 'Per-PR dbt CI schema when secrets exist',
+          status: 'Not prod',
+        },
+        {
+          name: 'Terraform apply on main',
+          role: 'Manual dispatch apply=true → environment production',
+          status: 'Infra deploy',
+        },
+        {
+          name: 'Airflow pin pull',
+          role: 'Tagged release + manual PC pull deploy',
+          status: 'Scheduler deploy',
+        },
+      ],
+    },
+    {
+      id: 'pipes',
+      n: '6',
+      title: 'Source feeds into Snowflake',
+      svg: 'pipes',
+      body:
+        'Three ledger feeds hit Airflow, then HOUSEHOLD_LEDGER: Monarch via EAI_MONARCH (monarch_load / proc_monarch_extract), Gmail via EAI_GMAIL (ledger_email_alerts → classify → reconcile_pending), and Drive via drive_poll → doc_extract (pypdf then local Tesseract — Cortex is not used for OCR). YouTube feeds MOONSHOTS through the two confirmed-unpaused Moonshots DAGs. Shape is extract/land → transform (dbt) → test. No S3/Snowpipe path — that design was dropped.',
+      caption:
+        'Monarch / Gmail / Drive → Airflow → RAW/CORE → dbt → ANALYTICS → MCP. YouTube → MOONSHOTS.',
+    },
+    {
+      id: 'security',
+      n: '7',
       title: 'Roles and Cortex gate',
       svg: 'security',
       body:
@@ -62,34 +240,24 @@ export const COPY = {
         'Role separation plus MCP_HOUSEHOLD_LEDGER vs MCP_HOUSEHOLD_LEDGER_GROK, with Cortex gated behind R_CORTEX_GATE.',
     },
     {
-      id: 'pipes',
-      n: '4',
-      title: 'Airflow pipelines and feeds',
-      svg: 'pipes',
-      body:
-        'Production scheduling runs on Airflow on the office PC (release pins such as airflow-20261107-02cbc74), not on Snowflake tasks. Sources: Monarch via EAI_MONARCH (proc_monarch_extract), Gmail via EAI_GMAIL (proc_gmail_ingest → classify → reconcile_pending), Drive documents via drive_poll then doc_extract (pypdf text layer, then local Tesseract OCR — Cortex is not called for OCR). dbt runs through ledger_dbt_daily / dbt_daily / domain twins. Document S3 + Snowpipe intake was designed and dropped; intake stays on the Airflow path. Some DAGs are live (moonshots_yt_sync_daily, moonshots_eyl_sync confirmed unpaused on the 2026-11-07 check); others exist in git with live pause unconfirmed or intentionally paused (doc_extract pause for warehouse quota, moonshots_transcript_backfill stayed paused).',
-      caption:
-        'Monarch / Gmail / Drive → Airflow → HOUSEHOLD_LEDGER RAW/CORE → dbt ANALYTICS → MCP. Snowflake tasks are retired as the scheduler.',
-    },
-    {
       id: 'stack',
-      n: '6',
+      n: '8',
       title: 'Stack',
       svg: 'stack',
       body:
-        'Snowflake holds the data and the catalogs. Airflow on the office PC schedules production DAGs. dbt builds tested models (hl_prod / hl_dev targets; ANALYTICS_DBT). Terraform under infra/terraform/snowflake owns databases, schemas, roles, warehouses, and monitors; procedures stay loader-owned. GitHub Actions is the CI path. Cortex covers Agents, Analyst on SV_*, and Search on CS_*. Warehouses include LEDGER_WH, COMPUTE_WH, INGEST_WH, YT_SYNC_WH, DEV_MIGRATION_WH, ADHOC_WH. The same Terraform / dbt / Airflow / CI family is the pattern I also use in customer deployments through MyOrgLab.',
+        'Snowflake holds the data and the catalogs. Airflow on the office PC schedules the 16 DAG files. dbt builds tested models (hl_prod / hl_dev; ANALYTICS_DBT). Terraform under infra/terraform/snowflake owns databases, schemas, roles, warehouses, and monitors; procedures stay loader-owned. GitHub Actions is the CI path (ruff + pytest, gitleaks, static, plan). Cortex covers Agents, Analyst on SV_*, and Search on CS_*. Warehouses include LEDGER_WH, COMPUTE_WH, INGEST_WH, YT_SYNC_WH, DEV_MIGRATION_WH, ADHOC_WH. Same control plane pattern I use in MyOrgLab customer deployments.',
       caption:
         'Airflow, Snowflake, dbt, Terraform, GitHub Actions, with MCP as the agent interface.',
     },
     {
       id: 'features',
-      n: '7',
+      n: '9',
       title: 'Catalogs and Snowflake features',
       svg: 'features',
       body:
-        'Semantic views are the Analyst contracts: SV_SPENDING, SV_CASHFLOW, SV_BALANCES_NET_WORTH, SV_LIABILITIES_DUES, SV_EARLY_ACTIVITY, SV_BUDGET_VARIANCE, SV_INVESTMENTS, SV_OBLIGATIONS, SV_DOCUMENT_STANDING, SV_OPS_FRESHNESS, SV_TRANSACTIONS, SV_RECURRING_FIXED, SV_DEBT_PAYOFF, SV_ACCOUNTS_RECEIVABLE, SV_SAVINGS_GOALS. Cortex Search services: CS_DOCUMENTS, CS_EMAIL_MESSAGES, CS_GAPS_IDEA, CS_PARSE_REVIEW on the ledger; CS_TRANSCRIPTS and CS_VIDEOS on Moonshots. Cortex agents include AGENT_HOUSEHOLD_FINANCE, AGENT_HOUSEHOLD_FINANCE_RO, and AGENT_LEDGER_OPS. MCP servers in CTRL expose those catalogs as a read path or a write path. Warehouse work is batched so a warehouse wakes once per load window; interactive and agent work can sit on a warehouse separate from production loads.',
+        '15 semantic views are the Analyst contracts: SV_SPENDING, SV_CASHFLOW, SV_BALANCES_NET_WORTH, SV_LIABILITIES_DUES, SV_EARLY_ACTIVITY, SV_BUDGET_VARIANCE, SV_INVESTMENTS, SV_OBLIGATIONS, SV_DOCUMENT_STANDING, SV_OPS_FRESHNESS, SV_TRANSACTIONS, SV_RECURRING_FIXED, SV_DEBT_PAYOFF, SV_ACCOUNTS_RECEIVABLE, SV_SAVINGS_GOALS. Cortex Search: CS_DOCUMENTS, CS_EMAIL_MESSAGES, CS_GAPS_IDEA, CS_PARSE_REVIEW on the ledger; CS_TRANSCRIPTS and CS_VIDEOS on Moonshots (6 services). Cortex agents: AGENT_HOUSEHOLD_FINANCE, AGENT_HOUSEHOLD_FINANCE_RO, AGENT_LEDGER_OPS. MCP servers in CTRL expose those catalogs as read or write. Warehouse work is batched into a load window; interactive and agent work can sit on a separate warehouse.',
       caption:
-        'SV_* and CS_* are the catalogs. MCP_HOUSEHOLD_LEDGER_GROK and MCP_HOUSEHOLD_LEDGER sit in front of them.',
+        '15 SV_* and 6 CS_* catalogs. MCP_HOUSEHOLD_LEDGER_GROK and MCP_HOUSEHOLD_LEDGER sit in front of them.',
     },
   ],
   more: [
@@ -115,13 +283,6 @@ export const COPY = {
       line:
         'Customer-facing practice built from the same pattern as HOUSEHOLD_LEDGER: in-account Cortex agents, SV_* semantic views, and MCP bridges — not a multi-tenant copy of customer data.',
       tags: ['Snowflake', 'Cortex', 'semantic views', 'MCP', 'Streamlit', 'Power BI'],
-    },
-    {
-      prev: 'rearch',
-      title: 'Snowflake platform re-architecture',
-      line:
-        'Lift and shift of a Snowflake data platform into Terraform-managed objects, dbt models, and Airflow DAGs — the same control plane HOUSEHOLD_LEDGER runs on.',
-      tags: ['Terraform', 'dbt', 'Airflow', 'Snowflake'],
     },
     {
       prev: 'sof-portal',
@@ -229,11 +390,6 @@ export const DIAG = {
           {
             t: 'doc_extract',
             s: 'pypdf then Tesseract; no Cortex OCR',
-          },
-          {
-            t: 'S3 and Snowpipe',
-            s: 'dropped, not running',
-            d: 1,
           },
         ],
       },
@@ -405,7 +561,26 @@ export const DIAG = {
 
 DIAG.lead.airflow = {
   t: 'Airflow on office PC',
-  s: 'production scheduler (pinned releases)',
+  s: '16 DAG files · 2 confirmed unpaused on 2026-11-07 pin',
+}
+DIAG.airflow = {
+  title: 'Airflow DAG inventory on the office-PC pin',
+  headline: '16 files in git',
+  counts: [
+    { n: '13', label: 'prod-shaped' },
+    { n: '3', label: '*_dev' },
+    { n: '2', label: 'confirmed unpaused' },
+  ],
+}
+DIAG.dbt = {
+  title: 'dbt path from RAW/CORE to ANALYTICS and prod apply',
+  layers: [
+    { t: 'RAW', s: 'landed payloads' },
+    { t: 'CORE', s: 'business objects' },
+    { t: 'dbt STAGING / marts', s: 'hl_prod · ledger_dbt_daily / dbt_daily' },
+    { t: 'ANALYTICS + SV_*', s: '15 Analyst views' },
+    { t: 'CI → merge → apply', s: 'PR schema · Terraform · Airflow pin pull' },
+  ],
 }
 DIAG.erd.searchNote =
   'CS_DOCUMENTS indexes conformed document text. Object names are real. No row data is shown.'
@@ -419,16 +594,15 @@ DIAG.code = {
   svOps: 'CTRL.SV_OPS_FRESHNESS',
   svDoc: 'SV_DOCUMENT_STANDING',
   cs: 'CS_DOCUMENTS',
-  airflow: 'drive_poll, monarch_load, ledger_dbt_daily',
+  airflow: '16 DAGs · pin airflow-20261107-02cbc74',
   land: 'monarch_load, ledger_email_alerts',
   ocr: 'doc_extract (paused for WH quota)',
-  dbt: 'ledger_dbt_daily, dbt_daily',
+  dbt: 'ledger_dbt_daily, dbt_daily → hl_prod',
 }
 
 Object.assign(DIAG.pipes, {
   airflow: DIAG.pipes.layers[1].nodes[0],
   ocr: DIAG.pipes.layers[1].nodes[1],
-  dropped: DIAG.pipes.layers[1].nodes[2],
   dbt: DIAG.pipes.layers[3].nodes[0],
 })
 

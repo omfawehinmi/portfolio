@@ -123,22 +123,22 @@ export function dErd(D, inst=""){ID='e'+inst;const E=D.erd.entities;const W=452;
 
 // 4. Pipelines: BPMN-style lanes with hairline separators and mono lane labels, events, gateway, tasks.
 export function dPipes(D, inst=""){ID='p'+inst;const Pp=D.pipes,K=D.code;const W=400,H=328;let o='',a='';
- const lanes=[['Sources',0,72],['Self-hosted Airflow',72,138],['Snowflake',210,96]];
+ const lanes=[['Sources',0,72],['Airflow on office PC',72,138],['Snowflake',210,96]];
  lanes.forEach(([t,y,h],i)=>{if(i)o+=`<line x1="1" y1="${y}" x2="${W-1}" y2="${y}" stroke="${C.line}"/>`;o+=lab(10,y+11,t,i<2?Z.src.k:Z.data.k)});
  const ev=(cx,cy,r,sw)=>`<circle cx="${cx}" cy="${cy}" r="${r}" fill="#fff" stroke="${C.ink}" stroke-width="${sw}"/>`;
  o+=ev(24,40,9,1.2)+T(24,59,'Start',{sz:8.6,c:C.sub});
- const t1=node('box',46,24,108,n2('Files, APIs, Documents','',9.6),{h:34,z:'src'});o+=t1.g;
- o+=`<path d="M206,24 H200 V62 H206" fill="none" stroke="${C.conn}"/><line x1="154" y1="41" x2="198" y2="41" stroke="${C.conn}" stroke-dasharray="2 2"/>`+T(210,30,Pp.dropped.t,{sz:8.8,w:600,a:'start'})+T(210,43,Pp.dropped.s,{sz:8.6,it:1,c:C.sub,a:'start'})+T(210,56,'(text annotation)',{sz:8.6,c:C.sub,a:'start'});
+ const t1=node('box',46,24,118,n2('Monarch, Gmail, Drive','',9.6),{h:34,z:'src'});o+=t1.g;
+ o+=T(180,33,'EAI_MONARCH · EAI_GMAIL',{sz:8.6,mono:1,c:Z.src.k,a:'start'})+T(180,47,'drive_poll → stages',{sz:8.6,c:C.sub,a:'start'});
  o+=T(10,96,Pp.airflow.s,{sz:8.6,it:1,c:C.sub,a:'start'});
  o+=`<g class="nd" data-b="83,124,34,34,0,0" data-shape="dia">${block('dia',83,124,34,34)}<path d="M94,135 l12,12 M106,135 l-12,12" stroke="${C.ink}" stroke-width="1.2"/></g>`;
  const ex=node('box',214,102,166,n2('Extract and land','',9.6,K.land,'src'),{h:34,z:'src',hero:1});o+=ex.g;
  const oc=node('box',214,150,166,n2(Pp.ocr.t,Pp.ocr.s,9.6,K.ocr,'src'),{z:'src'});o+=oc.g;
- o+=tag(158,120,'files, APIs',{light:1})+tag(158,184,'documents',{light:1});
- const ld=node('box',236,234,144,n2('Landing and conformed schemas','',9.6,K.raw+', '+K.core,'data'),{h:46,z:'data',hero:1});o+=ld.g;
+ o+=tag(158,120,'Monarch / Gmail',{light:1})+tag(158,184,'Drive docs',{light:1});
+ const ld=node('box',236,234,144,n2('RAW and CORE','',9.6,K.raw+', '+K.core,'data'),{h:46,z:'data',hero:1});o+=ld.g;
  const db=node('box',138,241,82,n2(Pp.dbt.t,'',9.6),{h:32,z:'data'});o+=db.g;
  const ts=node('box',74,241,50,n2('Tests','',9.6),{h:32});o+=ts.g;
- o+=ev(36,257,10,2.6)+T(14,280,'Analytics,',{sz:8.6,c:C.sub,a:'start'})+T(14,292,'MCP servers',{sz:8.6,c:C.sub,a:'start'})+T(138,298,K.dbt,{sz:8.6,mono:1,c:Z.data.k,a:'start'})+legend(14,316,['src','data']);
- a+=arrow('M33,41 H44','c')+arrow(`M100,${24+t1.h} V122`,'c')+arrow('M117,141 H124 Q128,141 128,137 V124 Q128,120 132,120 H212','c')+arrow('M100,158 V180 Q100,184 104,184 H212','c');
+ o+=ev(36,257,10,2.6)+T(14,280,'ANALYTICS,',{sz:8.6,c:C.sub,a:'start'})+T(14,292,'MCP servers',{sz:8.6,c:C.sub,a:'start'})+T(138,298,K.dbt,{sz:8.6,mono:1,c:Z.data.k,a:'start'})+legend(14,316,['src','data']);
+ a+=arrow('M33,41 H44','c')+arrow(`M105,${24+t1.h} V122`,'c')+arrow('M117,141 H124 Q128,141 128,137 V124 Q128,120 132,120 H212','c')+arrow('M100,158 V180 Q100,184 104,184 H212','c');
  a+=arrow('M380,120 H386 Q390,120 390,124 V253 Q390,257 386,257 H382','c')+arrow(`M297,${150+oc.h} V232`,'c')+arrow('M236,257 H222','c')+arrow('M138,257 H126','c')+arrow('M74,257 H48','c');
  return svg(W,H,Pp.title,a+o)};
 
@@ -176,6 +176,33 @@ export function dFeat(D, inst=""){ID='f'+inst;const R=D.features.rows;const W=44
    o+=T(x+30,c.s?y+13:y+rh/2,c.t,{sz:9.2,w:600,a:'start'})+(c.s?T(x+30,y+26,c.s,{sz:8.6,c:c.m&&z?z.k:C.sub,a:'start',mono:c.m}):'')+'</g>'})});
  o+=legend(pad+6,FH+10,['agent','data']);
  return svg(W,FH+20,D.features.title,o)};
+
+export function dAirflow(D, inst=""){
+  ID='af'+inst;const A=D.airflow;const W=420;let o='';
+  o+=T(14,18,A.headline,{sz:12,w:600,a:'start'})+T(14,34,'Office-PC Airflow pin · git ≠ unpaused',{sz:8.6,c:C.sub,a:'start'});
+  A.counts.forEach((c,i)=>{const x=14+i*132;o+=node('box',x,48,120,[{t:c.n,sz:16,w:600,c:Z.src.k},{t:c.label,sz:8.6,sub:1}],{h:48,z:'src',hero:i===2}).g});
+  const rows=[
+    ['moonshots_yt_sync_daily','YT sync · unpaused'],
+    ['moonshots_eyl_sync','EYL sync · unpaused'],
+    ['monarch_load','Monarch → RAW/CORE'],
+    ['ledger_email_*','Gmail alerts + poll'],
+    ['drive_poll / doc_extract','Drive → OCR → CORE'],
+    ['ledger_dbt_daily / dbt_daily','dbt → ANALYTICS'],
+    ['agentic_workforce_dbt_daily','workforce dbt'],
+    ['hr_dbt_daily · platform_smoke','blueprint / manual'],
+    ['*_dev twins (3)','not production'],
+  ];
+  rows.forEach((r,i)=>{const y=118+i*22;o+=T(18,y,r[0],{sz:8.8,mono:1,c:Z.src.k,a:'start'})+T(248,y,r[1],{sz:8.6,c:C.sub,a:'start'})});
+  o+=legend(14,118+rows.length*22+8,['src'],W-20);
+  return svg(W,118+rows.length*22+28,A.title,o)};
+
+export function dDbt(D, inst=""){
+  ID='db'+inst;const L=D.dbt.layers;const W=400;let o='',a='';
+  L.forEach((l,i)=>{const y=16+i*52;const z=i<2?'data':i<4?'data':'src';
+   o+=node(i<2?'cyl':'box',40,y,320,n2(l.t,l.s,10),{h:40,z,hero:i===3||i===4}).g;
+   if(i<L.length-1)a+=arrow(`M200,${y+40} V${y+50}`,'c')});
+  o+=legend(14,16+L.length*52+4,['data','src']);
+  return svg(W,16+L.length*52+24,D.dbt.title,a+o)};
 
 export function dRearch(inst=""){ID='r'+inst;let o='',a='';['Terraform','dbt','Airflow','Snowflake'].forEach((t,i)=>{const xx=12+i*88;o+=node(i==3?'cyl':'box',xx,22,72,n2(t),{h:42,e:i==3}).g;if(i<3)a+=arrow(`M${xx+72},43 H${xx+86}`,'c')});
  return svg(370,86,'Re-architecture preview: Terraform, dbt and Airflow managing a Snowflake platform',a+o)};

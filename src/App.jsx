@@ -14,15 +14,13 @@ import useTheme from './hooks/useTheme.js'
 export default function App() {
   const { dark, toggleTheme } = useTheme()
   const { scrolled, showScroll, activeSection } = useScrollSpy()
-  const [openProjectId, setOpenProjectId] = useState(() =>
-    typeof window !== 'undefined' && window.location.hash === '#case-snowflake-migration' ? 'snowflake-migration' : null,
-  )
+  const [openProjectId, setOpenProjectId] = useState(null)
 
   return (
     <>
       <Header dark={dark} onToggleTheme={toggleTheme} scrolled={scrolled} activeSection={activeSection} />
       <main className="main">
-        <Home onOpenProject={setOpenProjectId} />
+        <Home />
         <Projects openId={openProjectId} onOpen={setOpenProjectId} />
         <Qualification />
         <Leadership />

@@ -7,15 +7,6 @@ const CAMERA_VIDEO =
 
 export const projects = [
   {
-    id: 'snowflake-migration',
-    group: 'Production',
-    icon: 'uil-server-network',
-    title: 'Snowflake platform re-architecture',
-    outcome: 'Lift-and-shift of a Snowflake data platform into a Terraform, dbt and Airflow managed architecture.',
-    modalTitle: 'Case study: Snowflake platform re-architecture',
-    caseStudy: 'migration',
-  },
-  {
     id: 'myorglab',
     group: 'Production',
     icon: 'uil-snowflake',
@@ -215,7 +206,7 @@ export const projects = [
     points: [
       'DOCUMENTS_STAGE / DOCUMENTS_DOWNLOAD_STAGE are the file system of record inside the account.',
       'Extracted fields feed SV_DOCUMENT_STANDING and SV_LIABILITIES_DUES.',
-      'S3 + Snowpipe document intake was designed and dropped; Airflow stays the path.',
+      'Intake is Airflow drive_poll → doc_extract → Snowflake stages — not object storage pipes.',
     ],
   },
   {
@@ -342,14 +333,6 @@ export const projects = [
 ]
 
 export const projectGroups = ['Production', 'Private platform', 'Financial services', 'Lab']
-
-export const heroMedia = [
-  { id: 'camera-tracking', label: 'Tracking' },
-  { id: 'palms-bag', label: 'PALMS' },
-  { id: 'myorglab', label: 'MyOrgLab' },
-  { id: 'sof', label: 'SOF portal' },
-  { id: 'private-platform', label: 'Platform' },
-]
 
 export const highlights = [
   {

@@ -6,12 +6,12 @@ import ArchitectureDiagram from './diagrams/ArchitectureDiagram.jsx'
 import Icon from './ui/Icon.jsx'
 import Modal from './ui/Modal.jsx'
 import SectionHeader from './ui/SectionHeader.jsx'
-import MigrationCaseStudy from './case/MigrationCaseStudy.jsx'
-
 const KICKERS = {
   mcp: 'Request path',
   domains: "ERD, crow\u2019s foot",
-  pipes: 'Process flow',
+  airflow: 'Scheduler inventory',
+  dbt: 'Transform and deploy',
+  pipes: 'Source feeds',
   security: 'Access zones',
   stack: 'Layer stack',
   features: 'Capability matrix',
@@ -34,11 +34,12 @@ const OPEN_ALIASES = {
   lead: 'lead',
   mcp: 'mcp',
   domains: 'domains',
+  airflow: 'airflow',
+  dbt: 'dbt',
   pipes: 'pipes',
   security: 'security',
   stack: 'stack',
   features: 'features',
-  'snowflake-migration': 'more-rearch',
   myorglab: 'more-myorglab',
   'semantic-hr': 'more-hr-intelligence',
   'cortex-self-serve': 'more-hr-intelligence',
@@ -114,13 +115,6 @@ function OpenIcon() {
 }
 
 function PreviewMedia({ item, big = false }) {
-  if (item.prev === 'rearch') {
-    return (
-      <div className={`bx-media bx-svgprev${big ? ' bx-big' : ''}`}>
-        <ArchitectureDiagram kind="rearch" inst={big ? 'open' : 'tile'} />
-      </div>
-    )
-  }
   const preview = MORE_PREVIEW[item.prev]
   if (!preview) return null
   const size = intrinsicImageSize(preview.src)
@@ -171,6 +165,7 @@ function LeadTile({ onOpen, tall }) {
       <div className="bx-leadbody">
         <div className="bx-leadtext">
           <p className="bx-lede">{L.oneLine}</p>
+          <StatStrip stats={L.stats} />
           <Chips tags={L.tags} />
         </div>
         <figure className="bx-fig bx-leadfig">
@@ -279,11 +274,42 @@ function MoreCard({ item, featured, onOpen }) {
   )
 }
 
+function StatStrip({ stats }) {
+  if (!stats?.length) return null
+  return (
+    <ul className="bx-stats">
+      {stats.map((stat) => (
+        <li key={stat.label}>
+          <strong>{stat.n}</strong>
+          <span>{stat.label}</span>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+function RowTable({ rows }) {
+  if (!rows?.length) return null
+  return (
+    <div className="bx-rows">
+      {rows.map((row) => (
+        <div className="bx-rowline" key={row.name}>
+          <code>{row.name}</code>
+          <p>{row.role}</p>
+          {row.schedule ? <span className="bx-rowmeta">{row.schedule}</span> : null}
+          {row.status ? <span className="bx-rowstatus">{row.status}</span> : null}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 function LeadPanel({ tall }) {
   const L = COPY.lead
   return (
     <div className="bx-panel-body">
       <p className="bx-subhead">{L.subhead}</p>
+      <StatStrip stats={L.stats} />
       <figure className="bx-fig bx-leadfig bx-fig-big">
         <ArchitectureDiagram kind="lead" tall={tall} inst="open" />
         <figcaption>{LEAD_CAPTION}</figcaption>
@@ -303,6 +329,7 @@ function TilePanel({ tile, tall }) {
         <figcaption>{tile.caption}</figcaption>
       </figure>
       <p>{tile.body}</p>
+      <RowTable rows={tile.rows} />
     </div>
   )
 }
@@ -345,7 +372,6 @@ function LegacyBody({ project, onOpen }) {
           style={{ objectPosition: project.thumbPos || 'center top' }}
         />
       ) : null}
-      {project.caseStudy === 'migration' ? <MigrationCaseStudy /> : null}
       {project.outcome ? <p className="case-outcome">{project.outcome}</p> : null}
       {project.summary?.map((paragraph) => (
         <p key={paragraph}>{paragraph}</p>
