@@ -21,6 +21,8 @@ const PROJECT_RAIL = [
   { id: 'more', label: 'More work' },
 ]
 
+const RAIL_TOP = { id: 'home', label: 'Top', href: '#home' }
+
 const KICKERS = {
   mcp: 'Request path',
   workflow: 'CI / CD ship path',
@@ -99,6 +101,23 @@ function useNarrow() {
   }, [])
 
   return narrow
+}
+
+/** Jump rail only when a reserved left column fits without colliding with tiles. */
+function useRailVisible() {
+  const [visible, setVisible] = useState(() =>
+    typeof window !== 'undefined' ? window.matchMedia('(min-width: 1280px)').matches : false,
+  )
+
+  useEffect(() => {
+    const media = window.matchMedia('(min-width: 1280px)')
+    const onChange = () => setVisible(media.matches)
+    onChange()
+    media.addEventListener('change', onChange)
+    return () => media.removeEventListener('change', onChange)
+  }, [])
+
+  return visible
 }
 
 function Chips({ tags }) {
@@ -198,6 +217,12 @@ function ProjectsJumpRail({ items, activeId }) {
   return (
     <nav className="bx-rail" aria-label="Projects sections">
       <ol className="bx-rail__list">
+        <li>
+          <a href={RAIL_TOP.href} className="bx-rail__link bx-rail__link--top">
+            <span className="bx-rail__dot" aria-hidden="true" />
+            <span className="bx-rail__label">{RAIL_TOP.label}</span>
+          </a>
+        </li>
         {items.map((item) => (
           <li key={item.id}>
             <a
@@ -498,9 +523,10 @@ function LegacyBody({ project, onOpen }) {
 
 export default function Projects({ openId, onOpen }) {
   const tall = useNarrow()
+  const railVisible = useRailVisible()
   const open = resolveOpen(openId)
   const railIds = PROJECT_RAIL.map((item) => item.id)
-  const activeRail = useProjectRailActive(railIds)
+  const activeRail = useProjectRailActive(railVisible ? railIds : [])
   const modalTitle =
     open.kind === 'lead'
       ? COPY.lead.title
@@ -523,7 +549,7 @@ export default function Projects({ openId, onOpen }) {
   return (
     <section className="projects section" id="projects">
       <SectionHeader title={COPY.section.title} subtitle={COPY.section.kicker} />
-      {!tall ? <ProjectsJumpRail items={PROJECT_RAIL} activeId={activeRail} /> : null}
+      {railVisible ? <ProjectsJumpRail items={PROJECT_RAIL} activeId={activeRail} /> : null}
 
       <div className="container bx">
         <p className="bx-intro">{COPY.section.intro}</p>

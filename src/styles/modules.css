@@ -763,6 +763,23 @@ video,
 img {
   max-width: 100%;
 }
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+.home__container,
+.home__content,
+.home__img {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.home__blob {
+  width: min(100%, 360px) !important;
+}
 .skills__content,
 .skills__header {
   min-width: 0;

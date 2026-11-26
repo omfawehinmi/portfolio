@@ -311,7 +311,8 @@ img {
 }
 
 .home__blob {
-  width: 360px;
+  width: min(360px, 100%);
+  max-width: 100%;
   fill: var(--first-color);
 }
 
@@ -1194,16 +1195,42 @@ img {
 }
 
 /*========== SCROLL UP ==========*/
+/* Hard no-overlap: scroll-up lives in a reserved right gutter, not over tiles. */
+:root {
+  --scrollup-gutter: 3.25rem;
+  --scrollup-size: 2.5rem;
+}
+
+.main,
+.footer {
+  padding-right: var(--scrollup-gutter);
+  box-sizing: border-box;
+}
+
+@media screen and (min-width: 1280px) {
+  /* Jump rail owns Top; release the right gutter on wide layouts. */
+  :root {
+    --scrollup-gutter: 0px;
+  }
+}
+
 .scrollup {
   position: fixed;
-  right: 1rem;
+  right: 0.4rem;
   bottom: -20%;
+  width: var(--scrollup-size);
+  height: var(--scrollup-size);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background-color: var(--first-color);
   opacity: .8;
-  padding: 0 .3rem;
+  padding: 0;
   border-radius: .4rem;
   z-index: var(--z-tooltip);
   transition: .4s;
+  /* Stay inside the reserved gutter (main padding-right). */
+  max-width: calc(var(--scrollup-gutter) - 0.5rem);
 }
 
 .scrollup:hover {
@@ -1215,9 +1242,15 @@ img {
   color: #FFF;
 }
 
-/* Show scroll */
+/* Show scroll — clear mobile bottom nav; still inside the right gutter. */
 .show-scroll {
-  bottom: 5rem;
+  bottom: 5.5rem;
+}
+
+@media screen and (min-width: 768px) {
+  .show-scroll {
+    bottom: 1.5rem;
+  }
 }
 
 /*========== SCROLL BAR ==========*/
@@ -1911,10 +1944,10 @@ body.dark-theme .qualification__button.qualification__active {
   color: #fff;
 }
 
-/* 14. Scroll-to-top button */
+/* 14. Scroll-to-top button — keep fixed size so it stays in the reserved gutter */
 .scrollup {
   border-radius: 0.45rem;
-  padding: 0.3rem 0.5rem;
+  padding: 0;
   box-shadow: 0 4px 12px rgba(30, 50, 100, 0.2);
   opacity: 1;
 }
