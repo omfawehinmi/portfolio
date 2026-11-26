@@ -32,11 +32,11 @@ const C={
   node:'#ffffff',
   disc:LIAM.header,
 };
-/* Zone tints stay light; strokes lean Liam gray with green hero accents */
+/* Zone chrome = same Liam Style A as ERDs (green/gray only — no purple/amber leftovers) */
 const Z={
   data:{f:'#ffffff',s:'#86d4ad',k:'#0f7a4c',n:'Snowflake data and catalogs',tint:'#eefaf3'},
-  agent:{f:'#ffffff',s:'#c4b5e8',k:'#5b3fa6',n:'MCP and agents',tint:'#f6f3fc'},
-  sec:{f:'#ffffff',s:'#e0c08a',k:'#8a4b12',n:'Roles and access',tint:'#fdf6ea'},
+  agent:{f:'#ffffff',s:'#86d4ad',k:'#0f7a4c',n:'MCP and agents',tint:'#eefaf3'},
+  sec:{f:'#ffffff',s:LIAM.border,k:LIAM.schema,n:'Roles and access',tint:LIAM.header},
   src:{f:'#ffffff',s:'#86d4ad',k:'#0f6b4c',n:'Sources and scheduling',tint:'#eefaf3'}
 };
 let COMPACT=false;
