@@ -251,6 +251,46 @@ p.bx-subhead {
   overflow: visible;
 }
 
+.bx-body.is-clamped {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.bx-moretoggle {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 0.45rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--first-color-alt, #1689b5);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.bx-moretoggle:hover,
+.bx-moretoggle:focus-visible {
+  color: var(--first-color);
+  outline: none;
+}
+
+.bx-tile--hero {
+  padding: 1.55rem 1.65rem;
+}
+
+.bx-tile--hero .bx-h2 {
+  font-size: 1.28rem;
+}
+
+.bx-tile--hero .bx-fig svg {
+  max-height: min(26rem, 52vh);
+}
+
 .bx-chips {
   display: flex;
   flex-wrap: wrap;
@@ -554,8 +594,18 @@ p.bx-subhead {
 
   .bx-lead {
     grid-column: span 12;
-    padding: 1.5rem 1.75rem;
+    padding: 1.85rem 2rem;
     min-height: 0;
+  }
+
+  .bx-tile--hero {
+    padding: 1.75rem 1.9rem;
+  }
+
+  .bx-t-workflow,
+  .bx-t-pipes {
+    /* CI/CD + feeds row — slightly more presence than secondary tiles. */
+    padding: 1.4rem 1.45rem;
   }
 
   .bx-h1 {
@@ -594,20 +644,25 @@ p.bx-subhead {
     grid-column: span 12;
   }
 
-  .bx-t-features .project-tile__outcome,
-  .bx-t-pipes .project-tile__outcome,
-  .bx-t-security .project-tile__outcome,
-  .bx-t-airflow .project-tile__outcome,
-  .bx-t-dbt .project-tile__outcome,
-  .bx-t-workflow .project-tile__outcome,
-  .bx-t-domains .project-tile__outcome,
-  .bx-lead .project-tile__outcome,
-  .bx-t-mcp .project-tile__outcome,
-  .bx-t-grokbot .project-tile__outcome {
+  .bx-t-features .project-tile__outcome:not(.is-clamped),
+  .bx-t-pipes .project-tile__outcome:not(.is-clamped),
+  .bx-t-security .project-tile__outcome:not(.is-clamped),
+  .bx-t-airflow .project-tile__outcome:not(.is-clamped),
+  .bx-t-dbt .project-tile__outcome:not(.is-clamped),
+  .bx-t-workflow .project-tile__outcome:not(.is-clamped),
+  .bx-t-domains .project-tile__outcome:not(.is-clamped),
+  .bx-lead .project-tile__outcome:not(.is-clamped),
+  .bx-t-mcp .project-tile__outcome:not(.is-clamped),
+  .bx-t-grokbot .project-tile__outcome:not(.is-clamped) {
     display: block;
     overflow: visible;
     height: auto;
     -webkit-line-clamp: unset;
+  }
+
+  .bx-tile--hero .bx-fig svg,
+  .bx-lead .bx-leadfig svg {
+    max-height: min(28rem, 56vh);
   }
 
   .bx-tile .bx-fig {
@@ -639,8 +694,8 @@ p.bx-subhead {
     grid-column: span 4;
   }
 
-  .bx-row .project-tile__outcome,
-  .bx-feat .project-tile__outcome {
+  .bx-row .project-tile__outcome:not(.is-clamped),
+  .bx-feat .project-tile__outcome:not(.is-clamped) {
     display: block;
     overflow: visible;
     height: auto;

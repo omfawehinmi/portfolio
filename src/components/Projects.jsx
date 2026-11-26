@@ -133,12 +133,37 @@ function Chips({ tags }) {
   )
 }
 
-function FoldBody({ project, className = '' }) {
+const COLLAPSE_CHARS = 160
+
+function FoldBody({ project, className = '', lines = 3 }) {
+  const text = project?.outcome || ''
+  const canCollapse = text.length > COLLAPSE_CHARS
+  const [open, setOpen] = useState(false)
+
   return (
-    <div className="project-tile__fold">
-      <p className={`project-tile__outcome bx-body${className ? ` ${className}` : ''}`}>
-        {project.outcome}
+    <div className={`project-tile__fold${canCollapse && !open ? ' is-collapsed' : ''}`}>
+      <p
+        className={`project-tile__outcome bx-body${className ? ` ${className}` : ''}${
+          canCollapse && !open ? ' is-clamped' : ''
+        }`}
+        style={canCollapse && !open ? { WebkitLineClamp: lines } : undefined}
+      >
+        {text}
       </p>
+      {canCollapse ? (
+        <button
+          type="button"
+          className="bx-moretoggle"
+          aria-expanded={open}
+          onClick={(event) => {
+            event.preventDefault()
+            event.stopPropagation()
+            setOpen((value) => !value)
+          }}
+        >
+          {open ? 'Show less' : 'Show more'}
+        </button>
+      ) : null}
     </div>
   )
 }
@@ -247,7 +272,7 @@ function LeadTile({ onOpen, tall }) {
   return (
     <article
       id="project-lead"
-      className="bx-tile bx-lead"
+      className="bx-tile bx-lead bx-tile--hero"
       data-testid="project-tile"
       tabIndex={0}
       role="button"
@@ -266,6 +291,7 @@ function LeadTile({ onOpen, tall }) {
       <div className="bx-leadbody">
         <div className="bx-leadtext">
           <p className="bx-lede">{L.oneLine}</p>
+          <FoldBody project={{ outcome: L.intro }} lines={3} />
           <StatStrip stats={L.stats} />
           <Chips tags={L.tags} />
         </div>
@@ -279,10 +305,11 @@ function LeadTile({ onOpen, tall }) {
 
 function ArchitectureTile({ tile, onOpen, tall }) {
   const showRowsOnTile = tile.id === 'mcp' || tile.id === 'grokbot'
+  const isHero = tile.id === 'mcp' || tile.id === 'domains' || tile.id === 'grokbot'
   return (
     <article
       id={`project-${tile.id}`}
-      className={`bx-tile bx-t-${tile.id}`}
+      className={`bx-tile bx-t-${tile.id}${isHero ? ' bx-tile--hero' : ''}`}
       data-testid="project-tile"
       tabIndex={0}
       role="button"
@@ -297,8 +324,8 @@ function ArchitectureTile({ tile, onOpen, tall }) {
         </div>
         <OpenIcon />
       </div>
-      <FoldBody project={{ outcome: tile.body }} />
-      {showRowsOnTile ? <RowTable rows={tile.rows} /> : null}
+      <FoldBody project={{ outcome: tile.body }} lines={isHero ? 4 : 3} />
+      {showRowsOnTile ? <RowTable rows={tile.rows} collapsed /> : null}
       <figure className="bx-fig">
         <ArchitectureDiagram kind={tile.id} tall={tall} inst="tile" />
       </figure>
@@ -352,11 +379,14 @@ function StatStrip({ stats }) {
   )
 }
 
-function RowTable({ rows }) {
+function RowTable({ rows, collapsed = false, previewCount = 2 }) {
+  const [open, setOpen] = useState(false)
   if (!rows?.length) return null
+  const canCollapse = collapsed && rows.length > previewCount
+  const visible = canCollapse && !open ? rows.slice(0, previewCount) : rows
   return (
     <div className="bx-rows">
-      {rows.map((row) => (
+      {visible.map((row) => (
         <div className="bx-rowline" key={row.name}>
           <code>{row.name}</code>
           <p>{row.role}</p>
@@ -364,6 +394,20 @@ function RowTable({ rows }) {
           {row.status ? <span className="bx-rowstatus">{row.status}</span> : null}
         </div>
       ))}
+      {canCollapse ? (
+        <button
+          type="button"
+          className="bx-moretoggle"
+          aria-expanded={open}
+          onClick={(event) => {
+            event.preventDefault()
+            event.stopPropagation()
+            setOpen((value) => !value)
+          }}
+        >
+          {open ? 'Show less' : `Show ${rows.length - previewCount} more`}
+        </button>
+      ) : null}
     </div>
   )
 }
