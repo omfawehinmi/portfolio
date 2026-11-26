@@ -1033,3 +1033,147 @@ body:has(dialog.project-dialog[open]) .scrollup {
     grid-column: span 12;
   }
 }
+
+/* Layered diagram drill-in (high-level → detail). */
+.bx-drill {
+  margin-top: 0.85rem;
+  min-width: 0;
+}
+
+.bx-drill__heading {
+  margin: 1.25rem 0 0.5rem;
+  font-size: 1rem;
+  color: var(--title-color);
+}
+
+.bx-drill__hint {
+  margin: 0.35rem 0 0.55rem;
+  font-size: 0.82rem;
+  color: var(--text-color);
+}
+
+.bx-drill__map {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 0.55rem;
+}
+
+.bx-drill__entry {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+  width: 100%;
+  text-align: left;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid rgb(224, 227, 235);
+  border-radius: 0.75rem;
+  background: var(--container-color);
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.bx-drill__entry strong {
+  font-size: 0.9rem;
+  color: var(--title-color);
+}
+
+.bx-drill__entry span {
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: var(--text-color);
+}
+
+.bx-drill__entry:hover,
+.bx-drill__entry:focus-visible {
+  border-color: var(--first-color);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--first-color) 22%, transparent);
+  outline: none;
+}
+
+.bx-drill__nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.55rem;
+}
+
+.bx-drill__back {
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--first-color-alt, #1689b5);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.bx-drill__area {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--title-color);
+}
+
+.bx-drill__tabs {
+  margin-bottom: 0.65rem;
+}
+
+.bx-drill__tabs .bx-dbtab span {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.bx-drill__meta {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0.85rem 0 0;
+  padding: 0;
+}
+
+.bx-drill__meta > div {
+  display: grid;
+  grid-template-columns: minmax(5rem, 8rem) minmax(0, 1fr);
+  gap: 0.5rem;
+  font-size: 0.84rem;
+  line-height: 1.4;
+}
+
+.bx-drill__meta dt {
+  margin: 0;
+  font-weight: 600;
+  color: var(--title-color);
+}
+
+.bx-drill__meta dd {
+  margin: 0;
+  color: var(--text-color);
+  min-width: 0;
+}
+
+.bx-drill--strip .bx-dbtabs {
+  margin-top: 0.55rem;
+}
+
+.bx-drill--strip .bx-dbtab span {
+  display: none;
+}
+
+.bx-fig-drill {
+  margin-top: 0.35rem;
+}
+
+.bx-tile .bx-drill--strip {
+  pointer-events: auto;
+}
+

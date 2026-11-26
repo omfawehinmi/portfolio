@@ -4,16 +4,30 @@ import {
   dAirflow,
   dDatabase,
   dDbt,
+  dDrillMap,
   dErd,
   dFeat,
+  dFeedFlow,
   dGrokbot,
   dLead,
   dMcp,
   dPipes,
   dRearch,
   dSec,
+  dToolFlow,
+  dWarehouseFlow,
   dWorkflow,
 } from './architectureSvg.js'
+
+function buildDrillItem(item, tall, inst) {
+  if (!item) return ''
+  const kind = item.diagram
+  if (kind === 'database') return dDatabase(DIAG, item.id, inst)
+  if (kind === 'feed' || kind === 'workflow') return dFeedFlow(item, inst)
+  if (kind === 'warehouse') return dWarehouseFlow(item, inst)
+  if (kind === 'tool') return dToolFlow(item, inst)
+  return dFeedFlow(item, inst)
+}
 
 const builders = {
   lead: (tall, inst) => dLead(DIAG, tall, inst),
@@ -27,9 +41,17 @@ const builders = {
   features: (_tall, inst) => dFeat(DIAG, inst),
   grokbot: (_tall, inst) => dGrokbot(DIAG, inst),
   rearch: (_tall, inst) => dRearch(inst),
+  'drill-map': (_tall, inst) => dDrillMap(inst),
+  'drill-item': (tall, inst, _dbId, drillItem) => buildDrillItem(drillItem, tall, inst),
 }
 
-export default function ArchitectureDiagram({ kind, tall = false, inst = 't', dbId = null }) {
+export default function ArchitectureDiagram({
+  kind,
+  tall = false,
+  inst = 't',
+  dbId = null,
+  drillItem = null,
+}) {
   const [markup, setMarkup] = useState('')
   const hostRef = useRef(null)
 
@@ -41,7 +63,7 @@ export default function ArchitectureDiagram({ kind, tall = false, inst = 't', db
     }
     let cancelled = false
     const render = () => {
-      if (!cancelled) setMarkup(build(tall, inst, dbId))
+      if (!cancelled) setMarkup(build(tall, inst, dbId, drillItem))
     }
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(render)
@@ -51,7 +73,7 @@ export default function ArchitectureDiagram({ kind, tall = false, inst = 't', db
     return () => {
       cancelled = true
     }
-  }, [kind, tall, inst, dbId])
+  }, [kind, tall, inst, dbId, drillItem])
 
   useLayoutEffect(() => {
     const host = hostRef.current

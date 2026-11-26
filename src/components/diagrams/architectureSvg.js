@@ -295,7 +295,7 @@ export function dDatabase(D, dbId, inst=""){
   o+=T(14,16,db.name,{sz:12,w:600,a:'start'})+T(14,32,db.status+' · '+db.oneLine,{sz:8.6,c:C.sub,a:'start'});
   const cols=Math.min(4,Math.max(2,db.schemas.length));
   db.schemas.forEach((s,i)=>{const x=14+(i%cols)*110,y=48+Math.floor(i/cols)*32;
-   o+=node('pill',x,y,104,[{t:s,sz:8.6,w:500,mono:1}],{h:26,z:db.status.startsWith('Planned')?'sec':'data',lift:1}).g});
+   o+=node('pill',x,y,104,[{t:s,sz:8.6,w:500,mono:1}],{h:26,z:'data',lift:1}).g});
   const schemaRows=Math.ceil(db.schemas.length/cols);let y=48+schemaRows*32+16;
   o+=lab(14,y,'Objects / path',C.sub);y+=12;
   const rowH=44;
@@ -431,3 +431,73 @@ export function dMychart(D,tall, inst=""){
   o+=legend(pad,y+26,['src','sec','data'],W-pad);
   return svg(W,y+48,M.caption,a+o);
 }
+
+/** High-level map of drill areas — clickable labels are rendered in React; this is the visual map. */
+export function dDrillMap(inst=""){
+  begin(true,inst);ID='map'+inst;const W=520;let o='',a='';
+  const areas=[
+    {t:'Source feeds',s:'Monarch · Gmail · Drive · YT · MyChart',x:14,y:36,z:'src'},
+    {t:'Databases',s:'5 prod DBs + *_DEV',x:270,y:36,z:'data'},
+    {t:'Warehouses & cost',s:'LEDGER · INGEST · ADHOC · caps',x:14,y:130,z:'sec'},
+    {t:'MCP & tools',s:'Read · write · Moonshots',x:270,y:130,z:'agent'},
+    {t:'Workflows',s:'Ship · ingest window · dbt chain',x:14,y:224,z:'src'},
+    {t:'E2E processing',s:'Land → transform → test → serve',x:270,y:224,z:'data'},
+  ];
+  o+=T(14,16,'Platform map — pick an area to drill in',{sz:fs(11),w:600,a:'start'});
+  areas.forEach((ar,i)=>{
+    o+=node('box',ar.x,ar.y,236,[{t:ar.t,sz:10,w:600},{t:ar.s,sz:8.2,sub:1}],{h:72,z:ar.z,hero:1,id:`map-${i}`}).g;
+  });
+  a+=arrow('M250,72 H268','c')+arrow('M132,108 V128','c')+arrow('M388,108 V128','c');
+  o+=legend(14,310,['src','data','sec','agent'],W-20);
+  return svg(W,336,'Household platform map',a+o)};
+
+/** Per-feed / E2E process flow from a DrillItem.steps list. */
+export function dFeedFlow(item, inst=""){
+  begin(false,inst);ID='ff'+inst+(item?.id||'');
+  const steps=item?.steps||[{t:item?.label||'Feed',s:item?.blurb}];
+  const W=Math.min(640,48+steps.length*110);let o='',a='';
+  o+=T(14,16,item?.label||'Feed path',{sz:fs(11),w:600,a:'start'});
+  o+=T(14,30,item?.blurb||'',{sz:fs(8.2),c:C.sub,a:'start'});
+  const nw=96,gap=14,y=52;
+  steps.forEach((s,i)=>{
+    const x=14+i*(nw+gap);
+    const z=i===0?'src':i>=steps.length-2?'data':(i===1?'sec':null);
+    o+=badge(x,y,i+1)+node('box',x,y+14,nw,n2(s.t,s.s,8.4),{h:56,z:z||'data',lift:1}).g;
+    if(i<steps.length-1)a+=arrow(`M${x+nw},${y+42} H${x+nw+gap}`,'c');
+  });
+  o+=legend(14,y+86,['src','sec','data'],W-20);
+  return svg(W,y+110,item?.label||'Feed',a+o)};
+
+/** Warehouse / cost diagram for a DrillItem. */
+export function dWarehouseFlow(item, inst=""){
+  begin(false,inst);ID='wh'+inst+(item?.id||'');
+  const W=520;let o='',a='';
+  o+=T(14,16,item?.label||'Warehouse',{sz:fs(12),w:600,a:'start'});
+  o+=T(14,32,item?.blurb||'',{sz:fs(8.4),c:C.sub,a:'start'});
+  const steps=item?.steps||[
+    {t:'Batch wake-ups',s:'STD-WH-BATCH'},
+    {t:'Dedicated WH',s:'prod vs ADHOC'},
+    {t:'auto_suspend',s:'30–60s'},
+    {t:'Monitors / budgets',s:'notify · suspend'},
+  ];
+  steps.forEach((s,i)=>{
+    const y=52+i*48;
+    o+=badge(20,y+16,i+1)+node('box',40,y,440,n2(s.t,s.s,9),{h:40,z:i%2?'sec':'data',lift:1}).g;
+    if(i<steps.length-1)a+=arrow(`M20,${y+40} V${y+48}`,'c');
+  });
+  const foot=52+steps.length*48+8;
+  o+=legend(14,foot,['data','sec'],W-20);
+  return svg(W,foot+22,item?.label||'Warehouse',a+o)};
+
+/** Single MCP / tool family diagram. */
+export function dToolFlow(item, inst=""){
+  begin(false,inst);ID='tf'+inst+(item?.id||'');
+  const W=480;let o='',a='';
+  o+=T(14,16,item?.label||'MCP',{sz:fs(11),w:600,a:'start'});
+  o+=T(14,30,item?.blurb||'',{sz:fs(8.2),c:C.sub,a:'start'});
+  o+=node('box',14,48,200,n2('MCP server',item?.label,9),{h:56,z:'agent',hero:1}).g;
+  o+=node('box',250,48,200,n2('Agents / clients', (item?.meta||[]).find(m=>m.k==='Agents'||m.k==='Clients'||m.k==='Desk')?.v||'Attached desks',8.6),{h:56,z:'agent'}).g;
+  o+=node('box',14,128,436,n2('Tool families', item?.detail?.slice(0,120)||'analyst_* · search_* · procs',8.4),{h:52,z:'data',lift:1}).g;
+  a+=arrow('M214,76 H248','c')+arrow('M114,104 V126','c');
+  o+=legend(14,198,['agent','data'],W-20);
+  return svg(W,220,item?.label||'Tool',a+o)};
