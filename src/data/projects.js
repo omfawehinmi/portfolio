@@ -20,11 +20,12 @@ export const projects = [
     group: 'Production',
     icon: 'uil-snowflake',
     title: 'MyOrgLab',
-    outcome: 'Snowflake-native practice: in-account agents, semantic views, and MCP bridges.',
+    outcome:
+      'Customer practice built like HOUSEHOLD_LEDGER: in-account Cortex agents, SV_* views, and MCP bridges — not a multi-tenant copy of their data.',
     modalTitle: 'MyOrgLab: governed agents in the customer account',
     thumb: publicUrl('assets/img/myorglab.png'),
     summary: [
-      'The Snowflake-native practice I am building. Domain analyst agents sit on semantic views, a master orchestrator handles multi-step work, and MCP bridges let other agents reuse that expertise under the customer’s identity and policy.',
+      'The same control plane I run on HOUSEHOLD_LEDGER, packaged for customers: domain analyst agents on semantic views, an orchestrator for multi-step work, and MCP bridges so other agents reuse that expertise under the customer’s identity and policy.',
     ],
     points: [
       'Runs in the customer’s Snowflake account: not a multi-tenant SaaS copy of their data.',
@@ -158,9 +159,10 @@ export const projects = [
     group: 'Private platform',
     featured: true,
     icon: 'uil-usd-circle',
-    title: 'Production agent system',
-    outcome: 'A private Snowflake platform: source apps, Gmail, and documents feed Cortex agents that ask and carefully write.',
-    modalTitle: 'Production agent system',
+    title: 'HOUSEHOLD_LEDGER agent system',
+    outcome:
+      'Production Snowflake finance platform: Monarch, Gmail, and Drive feed CORE; Cortex agents ask through MCP_HOUSEHOLD_LEDGER_GROK and write through MCP_HOUSEHOLD_LEDGER.',
+    modalTitle: 'HOUSEHOLD_LEDGER: production agent system',
     parts: [
       'household-gmail',
       'household-stage',
@@ -170,12 +172,12 @@ export const projects = [
       'household-tools',
     ],
     summary: [
-      'A production warehouse I actually run. Posted activity from the day-to-day finance app, early card alerts from Gmail, and rates and dues from documents, including facts the source app cannot store. The warehouse answers from governed catalogs instead of inventing missing figures.',
-      'Two Cortex agents sit on top: one for questions and guarded writes, and one for freshness. Cursor talks through the write server. Grok finance bots talk through a read-only twin. A private production system, not a public bank.',
+      'HOUSEHOLD_LEDGER is the warehouse I operate. Monarch is the system of record for posted accounts and transactions. Gmail card alerts land early through EAI_GMAIL. Drive documents land through drive_poll / doc_extract. Agents answer from SV_* and CS_* catalogs instead of inventing missing figures.',
+      'AGENT_HOUSEHOLD_FINANCE and AGENT_LEDGER_OPS sit on top. Cursor uses MCP_HOUSEHOLD_LEDGER (write). Grok finance bots use MCP_HOUSEHOLD_LEDGER_GROK (read-only). Same account, split catalogs.',
     ],
     points: [
-      'Layers: RAW land, CORE truth, ANALYTICS marts and semantic views, then CTRL jobs, agents, and MCP.',
-      'The tiles under this system are the real product: embeddings, EAIs, MCP splits, and the tools the agent is allowed to respect.',
+      'Schemas: RAW land, CORE truth, ANALYTICS marts + SV_*, CTRL jobs / agents / MCP.',
+      'Sibling prod DBs: MOONSHOTS, AGENTIC_WORKFORCE, CONTROL. Airflow on the office PC is the scheduler.',
     ],
   },
   {
@@ -183,17 +185,18 @@ export const projects = [
     group: 'Private platform',
     parentId: 'private-platform',
     icon: 'uil-envelope',
-    title: 'Gmail embedding',
-    outcome: 'Card alerts land in Snowflake hours before the source app posts: Cortex Search over the mailbox.',
-    modalTitle: 'Gmail embedding: Cortex Search on early spend',
+    title: 'Gmail early spend',
+    outcome:
+      'Card alerts land in HOUSEHOLD_LEDGER hours before Monarch posts: EAI_GMAIL → proc_gmail_ingest → CS_EMAIL_MESSAGES.',
+    modalTitle: 'Gmail path: EAI_GMAIL and CS_EMAIL_MESSAGES',
     summary: [
-      'Gmail is the early-warning channel. An External Access Integration pulls MIME into RAW.EMAIL_MESSAGES_RAW; classify-and-parse turns authorizations into pending spend; reconcile matches them to posted source transactions on amount + date + vendor.',
-      'Those messages are also embedded: Cortex Search CS_EMAIL_MESSAGES so the finance agent can retrieve what the card alert said without guessing.',
+      'EAI_GMAIL pulls MIME into RAW.EMAIL_MESSAGES_RAW. proc_email_pipeline classifies unclear bank mail and parses pending spend. proc_reconcile_pending matches pending email rows to posted Monarch rows.',
+      'Cortex Search CS_EMAIL_MESSAGES embeds the mailbox so household_finance_agent can retrieve what the card alert said without guessing.',
     ],
     points: [
-      'EAI_GMAIL to PROC_GMAIL_INGEST to EMAIL_MESSAGES_RAW to a pending bridge.',
-      'The warehouse combines posted source activity with email pending and source pending, so early alerts are visible before they post.',
-      'Search is RAG on CORE.EMAIL_MESSAGES: not the agent inventing a charge.',
+      'EAI_GMAIL → proc_gmail_ingest → EMAIL_MESSAGES_RAW → pending bridge.',
+      'SV_EARLY_ACTIVITY is email pending plus Monarch pending — not posted spend.',
+      'Search is RAG on CORE email text, not the agent inventing a charge.',
     ],
   },
   {
@@ -202,16 +205,17 @@ export const projects = [
     parentId: 'private-platform',
     icon: 'uil-file-alt',
     title: 'Document stage embedding',
-    outcome: 'PDFs and Drive files land on @RAW.DOCUMENTS_STAGE, then dues and rates get extracted and searchable.',
-    modalTitle: 'Stage embedding: documents as warehouse facts',
+    outcome:
+      'PDFs and Drive files land on DOCUMENTS_STAGE; proc_document_extract pulls dues and rates; CS_DOCUMENTS makes them searchable.',
+    modalTitle: 'Documents: DOCUMENTS_STAGE → CORE → CS_DOCUMENTS',
     summary: [
-      'Loan contracts, statements, and rate letters do not live cleanly in a source feed. They land as binaries on a Snowflake stage (Drive ingest when OAuth is on, local PUT as fallback), then PROC_DOCUMENT_EXTRACT pulls contractual dues and rates into CORE.',
-      'Cortex Search CS_DOCUMENTS embeds that corpus so the agent can cite a standing document instead of inventing a rate.',
+      'Loan contracts, statements, and rate letters do not live cleanly in Monarch. drive_poll stages bytes; doc_extract runs pypdf then local Tesseract (no Cortex OCR); proc_document_extract writes dues and rates into CORE.',
+      'CS_DOCUMENTS and SV_DOCUMENT_STANDING let the agent cite a standing document instead of inventing a rate. doc_extract has been paused for warehouse quota on some pins — status is called out in the as-built.',
     ],
     points: [
-      '@RAW.DOCUMENTS_STAGE is the file system of record inside the account.',
+      'DOCUMENTS_STAGE / DOCUMENTS_DOWNLOAD_STAGE are the file system of record inside the account.',
       'Extracted fields feed SV_DOCUMENT_STANDING and SV_LIABILITIES_DUES.',
-      'If a rate is not in the warehouse, the agent says so.',
+      'S3 + Snowpipe document intake was designed and dropped; Airflow stays the path.',
     ],
   },
   {
@@ -219,17 +223,18 @@ export const projects = [
     group: 'Private platform',
     parentId: 'private-platform',
     icon: 'uil-sync',
-    title: 'Source extract and MCP fallback',
-    outcome: 'Posted activity via an in-warehouse GraphQL EAI. A community MCP client is the fallback, not the system of record.',
-    modalTitle: 'Source extract and MCP fallback',
+    title: 'Monarch extract',
+    outcome:
+      'Posted Monarch activity via EAI_MONARCH and proc_monarch_extract into RAW/CORE. Community MCP is a client fallback, not the system of record.',
+    modalTitle: 'Monarch GraphQL extract (EAI_MONARCH)',
     summary: [
-      'The day-to-day finance app stays the place activity is posted. The warehouse copies posted accounts and transactions via a GraphQL External Access Integration inside Snowflake, MERGE into RAW and CORE.',
-      'If the warehouse path is down, Cursor can still talk to the source app through a community MCP. That is a client fallback: it does not replace the Snowflake extract as truth.',
+      'Monarch stays the place activity is posted. Snowflake copies accounts and transactions through EAI_MONARCH → proc_monarch_extract (and proc_monarch_holdings_extract for brokerage positions into CORE.HOLDINGS), MERGE into RAW and CORE.',
+      'proc_monarch_mutate and proc_ledger_mutate are write-MCP tools for approved changes. If the warehouse path is down, Cursor can still talk to Monarch through a community MCP client — that does not replace the Snowflake extract as truth.',
     ],
     points: [
-      'Account dedupe on mask + institution + type; analytics rebuild after MERGE.',
-      'Source write mutations audit to a mutation log; refresh queues a delayed warehouse extract.',
-      'Email status lines never overwrite figures already posted in the source app.',
+      'Account dedupe on mask + institution + type; proc_rebuild_analytics after MERGE.',
+      'proc_enqueue_monarch_extract_followup queues a delayed extract after a refresh.',
+      'Email pending never overwrites figures already posted in Monarch.',
     ],
   },
   {
@@ -237,16 +242,17 @@ export const projects = [
     group: 'Private platform',
     parentId: 'private-platform',
     icon: 'uil-comments',
-    title: 'MCP for Grok bots',
-    outcome: 'A read-only Snowflake MCP so Grok finance bots can ask the warehouse without write tools.',
-    modalTitle: 'Read-only MCP gateway',
+    title: 'MCP_HOUSEHOLD_LEDGER_GROK',
+    outcome:
+      'Read-only Snowflake MCP so Grok bots can ask HOUSEHOLD_LEDGER without write tools.',
+    modalTitle: 'Read MCP: MCP_HOUSEHOLD_LEDGER_GROK',
     summary: [
-      'Cursor and Cowork use the write server (agents, analyst, search, procedures). Grok finance bots get a parallel read-only server with no write tools.',
-      'Domain bots ask the warehouse through that gateway. Inbox bots stay on Gmail plugins: they do not get the write server, so they cannot change the source app or the warehouse.',
+      'Cursor and Cowork attach to MCP_HOUSEHOLD_LEDGER (agents, analyst, search, mutate/pipeline procs). Grok finance bots attach to MCP_HOUSEHOLD_LEDGER_GROK with no write tools.',
+      'MCP_MOONSHOTS on MOONSHOTS.CTRL is a separate YouTube catalog server — not household money. Auth is a Snowflake PAT under role MCP_LEDGER_CLIENT; the PAT is not in git.',
     ],
     points: [
-      'MCP is not the agent. It is the API catalog the bots are allowed to see.',
-      'Read-only split is the governance: Grok can analyze; writes stay on the Cursor-facing server and the finance agent.',
+      'MCP is the API catalog the bots are allowed to see, not the agent itself.',
+      'Read/write split is the governance: Grok can analyze; writes stay on MCP_HOUSEHOLD_LEDGER.',
     ],
   },
   {
@@ -254,17 +260,18 @@ export const projects = [
     group: 'Private platform',
     parentId: 'private-platform',
     icon: 'uil-chart-line',
-    title: 'Semantic views & model',
-    outcome: 'Star schema plus Cortex Analyst contracts: the agent writes SQL against SV_*, not against vibes.',
+    title: 'SV_* semantic views',
+    outcome:
+      'ANALYTICS star schema plus Cortex Analyst contracts: agents query SV_*, not ad-hoc vibes.',
     modalTitle: 'ANALYTICS semantic views',
     summary: [
-      'CORE holds operational truth. ANALYTICS is dims, facts, and semantic views so Cortex Analyst can answer without ad-hoc SQL every turn: spending, activity, standing documents, early activity, budgets, investments, obligations, and recurring items.',
-      'Each Analyst_* tool is bound to a view FQN. The agent is instructed to prefer Analyst for totals and to refuse rates or due dates the views do not have.',
+      'CORE holds operational truth. ANALYTICS holds dims, facts, and semantic views so Cortex Analyst answers without ad-hoc SQL every turn: SV_SPENDING, SV_CASHFLOW, SV_BALANCES_NET_WORTH, SV_LIABILITIES_DUES, SV_EARLY_ACTIVITY, SV_BUDGET_VARIANCE, SV_INVESTMENTS, SV_OBLIGATIONS, SV_DOCUMENT_STANDING, SV_OPS_FRESHNESS, SV_TRANSACTIONS, SV_RECURRING_FIXED, SV_DEBT_PAYOFF, SV_ACCOUNTS_RECEIVABLE, SV_SAVINGS_GOALS.',
+      'Each analyst_* MCP tool is bound to a view FQN. Agents prefer Analyst for totals and refuse rates or due dates the views do not have.',
     ],
     points: [
-      'Certified views are the core grain the agent is allowed to total from.',
-      'SV_EARLY_ACTIVITY is pending email plus source pending: not posted spend.',
-      'CTRL.SV_OPS_FRESHNESS is what the ops agent reads before anyone trusts a figure.',
+      'Certified SV_* views are the grain agents are allowed to total from.',
+      'SV_EARLY_ACTIVITY is pending email plus Monarch pending — not posted spend.',
+      'CTRL.SV_OPS_FRESHNESS is what ledger_ops_agent reads before anyone trusts a figure.',
     ],
   },
   {
@@ -272,17 +279,18 @@ export const projects = [
     group: 'Private platform',
     parentId: 'private-platform',
     icon: 'uil-wrench',
-    title: 'Cortex tools & EAIs',
-    outcome: 'The agent only gets tools I bound. EAIs reach the source app and Gmail; GENERIC procs do writes; Analyst and Search do reads.',
+    title: 'Cortex tools and EAIs',
+    outcome:
+      'Agents only get tools I bound. EAI_MONARCH and EAI_GMAIL reach out; procs mutate; Analyst and Search read.',
     modalTitle: 'Tool bindings and External Access Integrations',
     summary: [
-      'External Access Integrations are how Snowflake talks out: a GraphQL integration for the source app, and EAI_GMAIL for mail. The finance agent then gets a strict tool list (Analyst views, four Cortex Search services, Web_Search, Metal_Spot, and approved write procedures) plus skills on @CTRL.AGENT_SKILLS.',
-      'Tool priority is the product: Analyst first, Search second, metal spot, then writes, Web_Search last. The agent respects those tools. It does not get a general Python REPL or a silent path around the warehouse.',
+      'External Access Integrations: EAI_MONARCH (GraphQL), EAI_GMAIL, plus EAI_MARKET_DATA and EAI_MOONSHOTS_YOUTUBE where needed. AGENT_HOUSEHOLD_FINANCE gets Analyst on each SV_*, four ledger CS_* Search services, proc_metal_spot, and approved write procedures, plus skills on @CTRL.AGENT_SKILLS.',
+      'Tool priority is the product: Analyst first, Search second, metal spot, then writes. No general Python REPL around the warehouse.',
     ],
     points: [
-      'MCP catalog: agent-run tools, Analyst on each SV_*, Search on CS_*, GENERIC procs for ingest and mutate.',
-      'Skills: freshness check, refresh-then-ingest, explain-pending, approved-write-safe.',
-      'Ops agent is read-heavy (no source write tools), so "is data fresh?" cannot accidentally change posted activity.',
+      'MCP catalog: agents, analyst_* on SV_*, search_* on CS_*, pipeline and mutate procs on the write server.',
+      'R_CORTEX_GATE is the sole SNOWFLAKE.CORTEX_USER holder.',
+      'ledger_ops_agent stays read-heavy so a freshness check cannot mutate Monarch.',
     ],
   },
   {
@@ -359,8 +367,8 @@ export const highlights = [
   {
     projectId: 'private-platform',
     icon: 'uil-chart-line',
-    label: 'Production agents',
-    detail: 'Domain analysts, orchestrators, and MCP on semantic views I actually run.',
+    label: 'HOUSEHOLD_LEDGER + MCP',
+    detail: 'Monarch, Gmail, Drive → Snowflake; MCP_HOUSEHOLD_LEDGER write / _GROK read on SV_* and CS_*.',
   },
   {
     projectId: 'semantic-hr',

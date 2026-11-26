@@ -19,7 +19,7 @@ const KICKERS = {
 }
 
 const LEAD_CAPTION =
-  'Sample diagram, generic names. Separate read and write MCP servers in front of governed catalogs.'
+  'As-built: MCP_HOUSEHOLD_LEDGER_GROK (read) and MCP_HOUSEHOLD_LEDGER (write) in front of SV_* / CS_* on HOUSEHOLD_LEDGER.'
 
 const MORE_PREVIEW = {
   'hr-intelligence': { src: publicUrl('assets/img/bento/hr-intelligence.jpg'), sample: true },
