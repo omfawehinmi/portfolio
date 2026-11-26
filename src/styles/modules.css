@@ -13,15 +13,6 @@
   --hero-wash: linear-gradient(180deg, #e8f7fc 0%, var(--body-color) 42%);
 }
 
-body.dark-theme {
-  --first-color: #5cc8ef;
-  --first-color-second: #10263f;
-  --first-color-alt: #8ad8f4;
-  --first-color-lighter: #1a3a55;
-  --title-color: #f4fbfe;
-  --navy: #071422;
-}
-
 .home.section {
   padding-bottom: 1.25rem;
 }
@@ -32,10 +23,6 @@ body.dark-theme {
 
 .home__description {
   margin-bottom: 1rem;
-}
-
-body.dark-theme .home {
-  background: linear-gradient(180deg, #071422 0%, var(--body-color) 48%);
 }
 
 .home__eyebrow {
@@ -804,13 +791,11 @@ body {
   color: var(--title-color);
 }
 /* --first-color-alt (#1689b5) with navy text is 4.25:1; use the lighter
-   dark-theme accent for light-theme hover (navy on #5cc8ef is 8.9:1+). */
-body:not(.dark-theme) .button:not(.button--ghost):hover {
+   lighter accent for hover (navy on #5cc8ef is 8.9:1+). */
+
   background-color: var(--button-hover-bg);
 }
-/* Text that was #29b5e8 (2.32:1 on light surfaces) uses the navy title
-   color, matching portfolio PRs #37 and #38. --title-color is #0b1d36 in
-   light theme and #f4fbfe in dark theme, both at least 4.5:1. */
+/* Text that was #29b5e8 (2.32:1 on light surfaces) uses the navy title color. */
 .section__subtitle,
 #projects .section__subtitle,
 .project-group__label,
@@ -824,10 +809,6 @@ body:not(.dark-theme) .button:not(.button--ghost):hover {
   color: var(--title-color);
 }
 
-/* a11y (WCAG 2.5.8 target size, 24px min; 12px text floor). */
-.change-theme,
-.home__social-icon,
-.footer__social {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -837,20 +818,6 @@ body:not(.dark-theme) .button:not(.button--ghost):hover {
 .project-tile__kicker,
 .impact__kicker {
   font-size: max(0.75rem, 12px);
-}
-
-/* Theme toggle is a native <button> (WCAG 4.1.2); reset UA button chrome. */
-button.change-theme {
-  background: none;
-  border: 0;
-  padding: 0;
-  font: inherit;
-  font-size: 1.25rem;
-  color: var(--title-color);
-  cursor: pointer;
-}
-button.change-theme:hover {
-  color: var(--first-color);
 }
 
 /* Target size 24px+ (WCAG 2.5.8) for nav and contact links. */

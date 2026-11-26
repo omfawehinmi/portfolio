@@ -761,36 +761,61 @@ p.bx-subhead {
   }
 }
 
-.dark-theme .bx-tile {
-  border-color: rgba(255, 255, 255, 0.12);
-}
-
-.dark-theme .bx-lead {
-  background: linear-gradient(180deg, #10263f, var(--container-color) 70%);
-}
-
-.dark-theme .bx-kicker,
-.dark-theme p.bx-subhead {
-  color: var(--title-color) !important;
-}
-
-.dark-theme .bx-svgprev {
-  background: transparent;
-}
-
-.dark-theme .bx-big img {
-  background: var(--container-color);
-}
-
-.dark-theme .bx-fig .bx-svg,
-.dark-theme .bx-fig svg {
-  filter: none;
-}
-
 .bx-fig,
 .bx-fig .bx-svg,
 .bx-fig svg {
   background: transparent;
+}
+
+/* Issuing-style interaction: hover lift, click enlarge ~1.06–1.08 */
+.bx-svg svg.bx-arch .nd {
+  cursor: pointer;
+  outline: none;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.16s ease, filter 0.16s ease, opacity 0.16s ease;
+}
+
+.bx-svg svg.bx-arch .nd-tag {
+  cursor: default;
+}
+
+.bx-svg svg.bx-arch .nd:hover:not(.nd-tag),
+.bx-svg svg.bx-arch .nd:focus-visible:not(.nd-tag) {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 2px 3px rgba(16, 24, 40, 0.12));
+}
+
+.bx-svg svg.bx-arch .nd:hover:not(.nd-tag) .nd-face,
+.bx-svg svg.bx-arch .nd:focus-visible:not(.nd-tag) .nd-face {
+  stroke: #8b97a8;
+}
+
+.bx-svg svg.bx-arch .nd.is-selected:not(.nd-tag) {
+  transform: scale(1.07);
+  filter: drop-shadow(0 2px 4px rgba(16, 24, 40, 0.14));
+}
+
+.bx-svg svg.bx-arch .nd.is-selected:not(.nd-tag) .nd-face {
+  stroke: #0a6688;
+  stroke-width: 1.5px;
+}
+
+.bx-svg svg.bx-arch:has(.nd:hover:not(.nd-tag)) .edge,
+.bx-svg svg.bx-arch:has(.nd.is-selected:not(.nd-tag)) .edge {
+  opacity: 0.4;
+  transition: opacity 0.16s ease;
+}
+
+.bx-svg svg.bx-arch .edge {
+  transition: opacity 0.16s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bx-svg svg.bx-arch .nd,
+  .bx-svg svg.bx-arch .edge {
+    transition: none;
+  }
 }
 
 dialog.project-dialog.bx-dialog,
@@ -921,18 +946,6 @@ body:has(dialog.project-dialog[open]) .scrollup {
   border-color: var(--first-color);
   background: var(--first-color-lighter);
   outline: none;
-}
-
-.dark-theme .bx-dbtab {
-  border-color: rgba(255, 255, 255, 0.14);
-  background: #10263f;
-}
-
-.dark-theme .bx-dbtab.is-active,
-.dark-theme .bx-dbtab:hover,
-.dark-theme .bx-dbtab:focus-visible {
-  border-color: var(--first-color);
-  background: #1a3a55;
 }
 
 .bx-feat-block {

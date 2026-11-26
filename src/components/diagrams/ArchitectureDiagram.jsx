@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { DIAG } from '../../data/architecture.js'
 import {
   dAirflow,
@@ -29,20 +29,9 @@ const builders = {
   rearch: (_tall, inst) => dRearch(inst),
 }
 
-function themeDark() {
-  return typeof document !== 'undefined' && document.body.classList.contains('dark-theme')
-}
-
 export default function ArchitectureDiagram({ kind, tall = false, inst = 't', dbId = null }) {
   const [markup, setMarkup] = useState('')
-  const [dark, setDark] = useState(themeDark)
-
-  useLayoutEffect(() => {
-    const onTheme = () => setDark(themeDark())
-    const observer = new MutationObserver(onTheme)
-    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] })
-    return () => observer.disconnect()
-  }, [])
+  const hostRef = useRef(null)
 
   useLayoutEffect(() => {
     const build = builders[kind]
@@ -62,8 +51,50 @@ export default function ArchitectureDiagram({ kind, tall = false, inst = 't', db
     return () => {
       cancelled = true
     }
-  }, [kind, tall, inst, dbId, dark])
+  }, [kind, tall, inst, dbId])
+
+  useLayoutEffect(() => {
+    const host = hostRef.current
+    if (!host || !markup) return undefined
+    const svg = host.querySelector('svg.bx-arch')
+    if (!svg) return undefined
+
+    const clear = () => {
+      svg.querySelectorAll('.nd.is-selected').forEach((el) => el.classList.remove('is-selected'))
+    }
+
+    const select = (node) => {
+      if (!node || !node.classList.contains('nd') || node.classList.contains('nd-tag')) return
+      const already = node.classList.contains('is-selected')
+      clear()
+      if (!already) node.classList.add('is-selected')
+    }
+
+    const onPointer = (event) => {
+      const node = event.target.closest?.('.nd')
+      if (!node || !svg.contains(node)) return
+      if (node.classList.contains('nd-tag')) return
+      event.preventDefault()
+      event.stopPropagation()
+      select(node)
+    }
+
+    const onKey = (event) => {
+      if (event.key !== 'Enter' && event.key !== ' ') return
+      const node = event.target.closest?.('.nd')
+      if (!node || !svg.contains(node) || node.classList.contains('nd-tag')) return
+      event.preventDefault()
+      select(node)
+    }
+
+    svg.addEventListener('click', onPointer)
+    svg.addEventListener('keydown', onKey)
+    return () => {
+      svg.removeEventListener('click', onPointer)
+      svg.removeEventListener('keydown', onKey)
+    }
+  }, [markup])
 
   if (!markup) return null
-  return <div className="bx-svg" dangerouslySetInnerHTML={{ __html: markup }} />
+  return <div className="bx-svg" ref={hostRef} dangerouslySetInnerHTML={{ __html: markup }} />
 }

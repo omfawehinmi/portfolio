@@ -52,19 +52,12 @@ export default function Mermaid({ chart, wide = 'TB', label }) {
   const ref = useRef(null)
   const id = `mmd${useId().replace(/[^a-zA-Z0-9]/g, '')}`
   const narrow = useNarrow()
-  const [dark, setDark] = useState(() => document.body.classList.contains('dark-theme'))
-
-  useEffect(() => {
-    const observer = new MutationObserver(() => setDark(document.body.classList.contains('dark-theme')))
-    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] })
-    return () => observer.disconnect()
-  }, [])
 
   useEffect(() => {
     let cancelled = false
     import('mermaid').then(async ({ default: mermaid }) => {
       mermaid.initialize({ startOnLoad: false, theme: 'base', themeVariables: themeFromSite(), securityLevel: 'strict' })
-      const { svg } = await mermaid.render(`${id}${narrow ? 'n' : 'w'}${dark ? 'd' : 'l'}`, chart(narrow ? 'TB' : wide))
+      const { svg } = await mermaid.render(`${id}${narrow ? 'n' : 'w'}l`, chart(narrow ? 'TB' : wide))
       if (cancelled || !ref.current) return
       ref.current.innerHTML = svg
       // Render at natural size (text stays >= 12px); the card scrolls horizontally when needed.
@@ -79,7 +72,7 @@ export default function Mermaid({ chart, wide = 'TB', label }) {
     return () => {
       cancelled = true
     }
-  }, [chart, wide, narrow, dark, id])
+  }, [chart, wide, narrow, id])
 
   return (
     <div className="case-scroll" tabIndex={0} role="region" aria-label={`Diagram: ${label}`}>

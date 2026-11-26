@@ -1,19 +1,13 @@
 // Flat architecture diagrams. Object names are real structural names from the
 // platform repos (see README SOURCES). Do not invent names.
-// Diagram language: Stripe docs ERD — simple, modern. Diagram canvas blends
-// into the bento card (no contrasted panel). Nodes, edges, and labels keep
-// enough contrast on that shared surface so nothing disappears into the card.
-const lightC={ink:'#0a2540',sub:'#4d5d6d',line:'#9aa8b6',conn:'#5c6b7a',acc:'#29b5e8',tint:'#eaf7fd',accInk:'#0a6688',dark:'#0a2540',dot:'transparent',panel:'transparent',soft:'#d7dee6',node:'#ffffff'};
-const darkC={ink:'#f2f8fc',sub:'#b4c7d4',line:'#5a7388',conn:'#9db6c6',acc:'#5cc8ef',tint:'#14344a',accInk:'#8ad8f4',dark:'#071422',dot:'transparent',panel:'transparent',soft:'#2a3d50',node:'#243447'};
-const lightZ={data:{f:'#e0f3fb',s:'#1689b5',k:'#0a6688',n:'Snowflake data and catalogs'},agent:{f:'#e8e9f8',s:'#6b68b8',k:'#3f3d8f',n:'MCP and agents'},
- sec:{f:'#f3e8d4',s:'#b07f2e',k:'#7a4a00',n:'Roles and access'},src:{f:'#dcefe4',s:'#3f8a68',k:'#1a5f45',n:'Sources and scheduling'}};
-const darkZ={data:{f:'#1a455c',s:'#5cc8ef',k:'#c5ebf8',n:'Snowflake data and catalogs'},agent:{f:'#2e3258',s:'#b4a6e8',k:'#ddd4f8',n:'MCP and agents'},
- sec:{f:'#4a3c22',s:'#d6a24e',k:'#f0d39a',n:'Roles and access'},src:{f:'#1d4536',s:'#6fbf9a',k:'#b6e4cf',n:'Sources and scheduling'}};
-const isDark=()=>typeof document!=='undefined'&&document.body.classList.contains('dark-theme');
-let C=lightC,Z=lightZ,COMPACT=false;
-const syncTheme=()=>{if(isDark()){C=darkC;Z=darkZ}else{C=lightC;Z=lightZ}};
+// Diagram language: Stripe Docs → How Issuing works → Issuing architecture →
+// Issuing balance funding source. Soft white rounded nodes, circular actor
+// discs, thin gray connectors, blended transparent canvas. Light-mode only.
+const C={ink:'#0a2540',sub:'#697386',line:'#e3e8ee',conn:'#a3acb9',acc:'#29b5e8',tint:'#eaf7fd',accInk:'#0a6688',dark:'#0a2540',dot:'transparent',panel:'transparent',soft:'#eef2f6',node:'#ffffff',disc:'#f6f9fc'};
+const Z={data:{f:'#ffffff',s:'#c9d4de',k:'#0a6688',n:'Snowflake data and catalogs',tint:'#eaf7fd'},agent:{f:'#ffffff',s:'#c9d4de',k:'#3f3d8f',n:'MCP and agents',tint:'#f0eef8'},
+ sec:{f:'#ffffff',s:'#c9d4de',k:'#7a4a00',n:'Roles and access',tint:'#f7f1e6'},src:{f:'#ffffff',s:'#c9d4de',k:'#1a5f45',n:'Sources and scheduling',tint:'#e8f4ee'}};
+let COMPACT=false;
 const setCompact=(on)=>{COMPACT=!!on};
-syncTheme();
 const F="Poppins, sans-serif",MONO="ui-monospace, SFMono-Regular, Menlo, monospace";
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
 let mt;const meas=(t,sz,w,it,mono)=>{if(!mt){const m=document.createElementNS('http://www.w3.org/2000/svg','svg');m.setAttribute('style','position:absolute;left:-9999px;top:0;width:10px;height:10px');m.setAttribute('text-rendering','geometricPrecision');mt=document.createElementNS('http://www.w3.org/2000/svg','text');m.appendChild(mt);document.body.appendChild(m)}
@@ -23,38 +17,49 @@ const fs=(n)=>COMPACT?Math.max(7.8,n-1):n;
 const T=(x,y,t,o={})=>`<text x="${x}" y="${y}" text-anchor="${o.a||'middle'}" dominant-baseline="middle" font-family="${o.mono?MONO:F}" font-size="${o.sz||fs(10)}" font-weight="${o.w||400}"${o.it?' font-style="italic"':''}${o.ls?` letter-spacing="${o.ls}"`:''} fill="${o.c||C.ink}">${esc(t)}</text>`;
 const lab=(x,y,t,c=C.accInk,a='start')=>T(x,y,t.toUpperCase(),{sz:fs(8.2),w:500,ls:.55,c,a,mono:1});
 let ID='a';
-const defs=()=>`<defs><filter id="${ID}sh" x="-25%" y="-25%" width="150%" height="170%"><feDropShadow dx="0" dy="1" stdDeviation="1.2" flood-color="${isDark()?'#000':'#0a2540'}" flood-opacity="${COMPACT?0.1:0.14}"/></filter>
- <marker id="${ID}a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1,1 L9,5 L1,9" fill="none" stroke="${C.conn}" stroke-width="1.5"/></marker>
- <marker id="${ID}c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1,1 L9,5 L1,9" fill="none" stroke="${C.accInk}" stroke-width="1.5"/></marker>
- <marker id="${ID}w" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1,1 L9,5 L1,9" fill="none" stroke="${C.ink}" stroke-width="1.5"/></marker></defs>`;
+const defs=()=>`<defs><filter id="${ID}sh" x="-40%" y="-40%" width="180%" height="200%"><feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#101828" flood-opacity="0.06"/></filter>
+ <filter id="${ID}shH" x="-40%" y="-40%" width="180%" height="200%"><feDropShadow dx="0" dy="2" stdDeviation="2.2" flood-color="#101828" flood-opacity="0.10"/></filter>
+ <marker id="${ID}a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1.5,1.5 L8.5,5 L1.5,8.5 Z" fill="${C.conn}"/></marker>
+ <marker id="${ID}c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1.5,1.5 L8.5,5 L1.5,8.5 Z" fill="${C.accInk}"/></marker>
+ <marker id="${ID}w" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1.5,1.5 L8.5,5 L1.5,8.5 Z" fill="${C.ink}"/></marker></defs>`;
 // kinds: default grey, 'c' accent (read and data path), 'w' write path (ink, dashed), 'd' dashed grey
-const arrow=(d,k)=>{const col=k==='c'?C.accInk:k==='w'?C.ink:C.conn;return `<path d="${d}" fill="none" stroke="${col}" stroke-width="${COMPACT?1.05:1.2}"${k==='w'||k==='d'?' stroke-dasharray="4 3"':''} stroke-linejoin="round" marker-end="url(#${ID}${k==='c'?'c':k==='w'?'w':'a'})"/>`};
-// Transparent canvas — card color shows through; no bordered/dotted diagram panel.
+const arrow=(d,k)=>{const col=k==='c'?C.accInk:k==='w'?C.ink:C.conn;return `<path class="edge" d="${d}" fill="none" stroke="${col}" stroke-width="${COMPACT?1.1:1.35}"${k==='w'||k==='d'?' stroke-dasharray="4 3.5"':''} stroke-linecap="round" stroke-linejoin="round" marker-end="url(#${ID}${k==='c'?'c':k==='w'?'w':'a'})"/>`};
+// Transparent canvas — card color shows through; no bordered diagram panel.
 const panel=(W,H)=>`<rect x="0" y="0" width="${W}" height="${H}" fill="${C.panel}" stroke="none"/>`;
-const group=(x,y,w,h,t,o={})=>{const z=o.z?Z[o.z]:null;return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${COMPACT?6:8}" fill="${o.fill||'none'}" stroke="${z?z.s:o.grey?C.line:C.acc}" stroke-width="1.15" stroke-dasharray="${o.solid?'0':'3 3'}"/>`+(t?lab(x+8,y+10,t,z?z.k:o.grey?C.sub:C.accInk):'')};
-// legend: small swatches plus free text, one row; keys are zone ids.
-const legend=(x,y,keys,maxX=1e9)=>{let g='',xx=x;keys.forEach(k=>{const z=Z[k];const iw=15+meas(z.n,fs(8.2),400)/0.9;if(xx>x&&xx+iw>maxX){xx=x;y+=13}g+=`<rect x="${xx}" y="${y-4}" width="9" height="9" rx="2" fill="${z.f}" stroke="${z.s}"/>`+T(xx+13,y,z.n,{sz:fs(8.2),c:C.sub,a:'start'});xx+=13+meas(z.n,fs(8.2),400)+14});return g};
-const rxBox=()=>COMPACT?3.5:5;
+const group=(x,y,w,h,t,o={})=>{const z=o.z?Z[o.z]:null;return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${COMPACT?10:14}" fill="${o.fill||'none'}" stroke="${z?z.s:o.grey?C.line:C.line}" stroke-width="1.15" stroke-dasharray="${o.solid?'0':'3.5 3.5'}"/>`+(t?lab(x+10,y+12,t,z?z.k:o.grey?C.sub:C.accInk):'')};
+const legend=(x,y,keys,maxX=1e9)=>{let g='',xx=x;keys.forEach(k=>{const z=Z[k];const iw=15+meas(z.n,fs(8.2),400)/0.9;if(xx>x&&xx+iw>maxX){xx=x;y+=13}g+=`<rect x="${xx}" y="${y-4}" width="9" height="9" rx="2.5" fill="${z.tint||C.tint}" stroke="${z.s}"/>`+T(xx+13,y,z.n,{sz:fs(8.2),c:C.sub,a:'start'});xx+=13+meas(z.n,fs(8.2),400)+14});return g};
+const rxBox=()=>COMPACT?10:14;
 const outline={
  box:(x,y,w,h)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rxBox()}"/>`,
- pill:(x,y,w,h)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${COMPACT?Math.min(6,h/2):h/2}"/>`,
- doc:(x,y,w,h)=>`<path d="M${x+5},${y} H${x+w-9} L${x+w},${y+9} V${y+h-5} Q${x+w},${y+h} ${x+w-5},${y+h} H${x+5} Q${x},${y+h} ${x},${y+h-5} V${y+5} Q${x},${y} ${x+5},${y} Z"/><path d="M${x+w-9},${y} V${y+9} H${x+w}" fill="none"/>`,
+ pill:(x,y,w,h)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${COMPACT?Math.min(10,h/2):h/2}"/>`,
+ doc:(x,y,w,h)=>`<path d="M${x+6},${y} H${x+w-11} L${x+w},${y+11} V${y+h-6} Q${x+w},${y+h} ${x+w-6},${y+h} H${x+6} Q${x},${y+h} ${x},${y+h-6} V${y+6} Q${x},${y} ${x+6},${y} Z"/><path d="M${x+w-11},${y} V${y+11} H${x+w}" fill="none"/>`,
  dia:(x,y,w,h)=>`<path d="M${x+w/2},${y} L${x+w},${y+h/2} L${x+w/2},${y+h} L${x},${y+h/2} Z"/>`,
- cyl:(x,y,w,h)=>{const ry=COMPACT?4:5;return `<path d="M${x},${y+ry} a${w/2},${ry} 0 0 1 ${w},0 v${h-2*ry} a${w/2},${ry} 0 0 1 -${w},0 z"/><path d="M${x},${y+ry} a${w/2},${ry} 0 0 0 ${w},0" fill="none"/>`}};
-const insetFor=(shape)=>{const base={box:[10,6],pill:[10,4],doc:[8,5],dia:[0,0],cyl:[8,7]};const c={box:[8,3.5],pill:[9,2.5],doc:[7,3],dia:[0,0],cyl:[7,5]};return COMPACT?c[shape]:base[shape]};
-const block=(shape,x,y,w,h,o={})=>{const z=o.z?Z[o.z]:o.e?Z.data:null;const hero=o.hero||o.lift||!z;return `<g fill="${z?z.f:C.node}" stroke="${z?z.s:C.line}" stroke-width="1.15"${o.dash?' stroke-dasharray="3 3"':''}${hero?` filter="url(#${ID}sh)"`:''}>${outline[shape](x,y,w,h)}</g>`};
-// node: flat block plus wrapped lines; height grows to fit. lines: [{t, sz, w, c, it, mono, sub}]
+ cyl:(x,y,w,h)=>{const ry=COMPACT?5:6;return `<path d="M${x},${y+ry} a${w/2},${ry} 0 0 1 ${w},0 v${h-2*ry} a${w/2},${ry} 0 0 1 -${w},0 z"/><path d="M${x},${y+ry} a${w/2},${ry} 0 0 0 ${w},0" fill="none"/>`},
+ disc:(x,y,w,h)=>{const r=Math.min(w,h)/2;return `<circle cx="${x+w/2}" cy="${y+h/2}" r="${r}"/>`}};
+const insetFor=(shape)=>{const base={box:[12,8],pill:[12,5],doc:[10,6],dia:[0,0],cyl:[10,8],disc:[6,6]};const c={box:[10,5],pill:[10,3.5],doc:[8,4],dia:[0,0],cyl:[8,6],disc:[5,5]};return COMPACT?c[shape]:base[shape]};
+const block=(shape,x,y,w,h,o={})=>{const z=o.z?Z[o.z]:o.e?Z.data:null;const fill=shape==='disc'?(C.disc):(z?(z.tint||C.node):C.node);const stroke=z?z.s:C.line;const hero=o.hero||o.lift||shape==='disc'||!z;return `<g class="nd-face" fill="${fill}" stroke="${stroke}" stroke-width="1.15"${o.dash?' stroke-dasharray="3.5 3.5"':''}${hero?` filter="url(#${ID}sh)"`:''}>${outline[shape](x,y,w,h)}</g>`};
+// node: soft Issuing-style block; interactive .nd group for hover/click enlarge.
 const node=(shape,x,y,w,lines,o={})=>{const [px,py]=insetFor(shape);const maxW=w-2*px;const L=[];
- lines.forEach(l=>{const sz=fs(l.sz||10),ww=l.w||400;wrapW(l.t,maxW,sz,ww,l.it,l.mono).forEach(s=>L.push({...l,t:s,sz,lh:sz*(COMPACT?1.08:1.22)}))});
+ lines.forEach(l=>{const sz=fs(l.sz||10),ww=l.w||500;wrapW(l.t,maxW,sz,ww,l.it,l.mono).forEach(s=>L.push({...l,t:s,sz,lh:sz*(COMPACT?1.1:1.25)}))});
  const th=L.reduce((a,l)=>a+l.lh,0);const h=Math.max(o.h||0,th+2*py+(shape==='cyl'?(COMPACT?2:4):0));let ty=y+(h-th)/2+(shape==='cyl'?2:0),g='';
- L.forEach(l=>{g+=T(x+w/2,ty+l.lh/2,l.t,{sz:l.sz,w:l.w,c:l.c||(l.sub?C.sub:C.ink),it:l.it,mono:l.mono});ty+=l.lh});
- return {g:`<g class="nd" data-b="${x},${y},${w},${h},${px},${py}" data-shape="${shape}">${block(shape,x,y,w,h,o)}${g}</g>`,h}};
+ L.forEach(l=>{g+=T(x+w/2,ty+l.lh/2,l.t,{sz:l.sz,w:l.w||500,c:l.c||(l.sub?C.sub:C.ink),it:l.it,mono:l.mono});ty+=l.lh});
+ const nid=o.id||`${shape}-${Math.round(x)}-${Math.round(y)}`;
+ return {g:`<g class="nd" tabindex="0" role="button" data-node="${esc(nid)}" data-b="${x},${y},${w},${h},${px},${py}" data-shape="${shape}">${block(shape,x,y,w,h,o)}${g}</g>`,h,x,y,w}};
 const n2=(t,s,sz=10,code,z)=>[{t,w:600,sz:fs(sz)}].concat(s?[{t:s,sz:fs(8.2),sub:1}]:[]).concat(code?[{t:code,sz:fs(8),mono:1,c:z?Z[z].k:C.accInk}]:[]);
-const badge=(cx,cy,n)=>{const r=COMPACT?6.5:8;return `<g class="nd badge" data-b="${cx-r},${cy-r},${r*2},${r*2},0,0" data-shape="badge"><circle cx="${cx}" cy="${cy}" r="${r}" fill="${C.ink}"/>`+T(cx,cy+0.4,String(n),{sz:fs(8),w:600,c:isDark()?'#071422':'#fff'})+`</g>`};
-const tag=(cx,cy,t,o={})=>{const tw=meas(t,fs(8),500,0,1)/0.9+12;const h=COMPACT?14:16;return `<g class="nd" data-b="${cx-tw/2},${cy-h/2},${tw},${h},4,0" data-shape="pill"><rect x="${cx-tw/2}" y="${cy-h/2}" width="${tw}" height="${h}" rx="${h/2}" fill="${o.light?C.node:C.dark}" stroke="${o.light?C.line:C.dark}"/>`+T(cx,cy+0.4,t,{sz:fs(8),w:500,mono:1,c:o.light?C.sub:(isDark()?'#071422':'#fff')})+`</g>`};
-const svg=(W,H,title,body)=>{syncTheme();return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" text-rendering="geometricPrecision" role="img" aria-label="${esc(title)}" xmlns="http://www.w3.org/2000/svg">${defs()}<title>${esc(title)}</title>${panel(W,H)}${body}</svg>`};
+/** Circular actor/system disc with monoline glyph (Issuing-style). */
+const discNode=(cx,cy,r,label,glyph='●',o={})=>{
+  const x=cx-r,y=cy-r,w=r*2,h=r*2;
+  const face=`<g class="nd-face" fill="${C.disc}" stroke="${C.line}" stroke-width="1.15" filter="url(#${ID}sh)"><circle cx="${cx}" cy="${cy}" r="${r}"/></g>`;
+  const icon=T(cx,cy+0.5,glyph,{sz:fs(o.glyphSz||12),w:600,c:C.accInk});
+  const labY=cy+r+12;
+  const lbl=label?T(cx,labY,label,{sz:fs(8.4),w:500,c:C.ink}):'';
+  const nid=o.id||`disc-${Math.round(cx)}-${Math.round(cy)}`;
+  return {g:`<g class="nd nd-disc" tabindex="0" role="button" data-node="${esc(nid)}" data-b="${x},${y},${w},${h+ (label?16:0)},0,0" data-shape="disc">${face}${icon}${lbl}</g>`,h:h+(label?16:0),x,y,w}};
+const badge=(cx,cy,n)=>{const r=COMPACT?6.5:8;return `<g class="nd" tabindex="0" role="button" data-node="badge-${n}" data-b="${cx-r},${cy-r},${r*2},${r*2},0,0" data-shape="badge"><circle cx="${cx}" cy="${cy}" r="${r}" fill="${C.ink}" filter="url(#${ID}sh)"/>`+T(cx,cy+0.4,String(n),{sz:fs(8),w:600,c:'#fff'})+`</g>`};
+const tag=(cx,cy,t,o={})=>{const tw=meas(t,fs(8),500,0,1)/0.9+14;const h=COMPACT?14:16;return `<g class="nd nd-tag" data-b="${cx-tw/2},${cy-h/2},${tw},${h},4,0" data-shape="pill"><rect x="${cx-tw/2}" y="${cy-h/2}" width="${tw}" height="${h}" rx="${h/2}" fill="${C.node}" stroke="${C.line}" filter="url(#${ID}sh)"/>`+T(cx,cy+0.4,t,{sz:fs(8),w:500,mono:1,c:C.sub})+`</g>`};
+const svg=(W,H,title,body)=>`<svg class="bx-arch" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" text-rendering="geometricPrecision" role="img" aria-label="${esc(title)}" xmlns="http://www.w3.org/2000/svg">${defs()}<title>${esc(title)}</title>${panel(W,H)}${body}</svg>`;
 const ns=(n,L)=>L.find(x=>x.label===n);
-const begin=(compact)=>{syncTheme();setCompact(compact)};
+const begin=(compact)=>{setCompact(compact)};
 
 // 1. Lead: zone overview, left to right. Data and read path in accent; the write path is ink and dashed.
 export function dLead(D,tall, inst=""){
@@ -134,65 +139,62 @@ export function dGrokbot(D, inst=""){
   o+=legend(14,342,['agent','src']);
   return svg(W,366,G.title||'Grokbot architecture — agents per MCP',a+o)};
 
-// 3. Data domains: Stripe-docs crow's-foot ERD — larger boxes/notes so text fits.
+// 3. Data domains: Issuing-style system map (no crow's-foot). Soft cards + thin arrows.
 export function dErd(D, inst=""){
-  begin(false);ID='e'+inst;const E=D.erd.entities;const W=600;let o='',a='';
- D.erd.areas.forEach((t,i)=>{const cols=3;const x=14+(i%cols)*192,y=14+Math.floor(i/cols)*36;
-  o+=node('pill',x,y,180,[{t,sz:9.2,w:500,c:i===4?Z.sec.k:(i===0?Z.data.k:C.sub)}],{h:30,z:i===4?'sec':(i===0?'data':null),lift:1}).g});
+  begin(false);ID='e'+inst;const E=D.erd.entities;const W=620;let o='',a='';
+ D.erd.areas.forEach((t,i)=>{const cols=3;const x=16+(i%cols)*198,y=16+Math.floor(i/cols)*40;
+  o+=node('pill',x,y,186,[{t,sz:9.4,w:500,c:i===4?Z.sec.k:(i===0?Z.data.k:C.sub)}],{h:32,z:i===4?'sec':(i===0?'data':null),lift:1,id:`area-${i}`}).g});
  const ent=(x,y,w,e,cat)=>{
   const rows=cat?[]:e.rows;
-  const nameSz=e.name.length>20?9.4:10.4;
-  const nameLines=wrapW(e.name,w-24,nameSz,600,0,1);
-  const ml=cat?[]:wrapW(e.meaning,w-24,9.2,400,1);
-  const headH=18+nameLines.length*13+10,rowH=17,noteGap=10,noteLh=13,padX=12;
-  const h=headH+(rows.length?rows.length*rowH+8:0)+(cat?0:noteGap+Math.max(1,ml.length)*noteLh+6);
-  let g=`<g class="nd" data-b="${x},${y},${w},${h},8,4" data-shape="box">`;
-  g+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="${cat?Z.data.f:C.node}" stroke="${cat?Z.data.s:C.line}" filter="url(#${ID}sh)"/>`;
-  g+=`<path d="M${x+0.5},${y+headH} H${x+w-0.5}" stroke="${cat?Z.data.s:C.line}"/>`;
-  g+=T(x+padX,y+12,e.layer,{sz:8.6,w:500,ls:.4,c:cat?Z.data.k:C.sub,a:'start',mono:1});
-  nameLines.forEach((l,i)=>g+=T(x+padX,y+26+i*13,l,{sz:nameSz,w:600,a:'start',mono:1}));
-  rows.forEach((r,i)=>{const yy=y+headH+12+i*rowH;if(i)g+=`<path d="M${x+padX},${yy-rowH/2} H${x+w-padX}" stroke="${C.soft}"/>`;
-   g+=T(x+padX,yy,r[0],{sz:9.2,a:'start',mono:1})+((r[1]||r[2])?T(x+w-padX,yy,r[1]||r[2],{sz:8.6,w:500,c:r[1]?C.accInk:C.sub,a:'end',mono:1}):'')});
-  ml.forEach((l,i)=>g+=T(x+padX,y+h-12-(ml.length-1-i)*noteLh,l,{sz:9.2,it:1,c:C.sub,a:'start'}));
+  const nameSz=e.name.length>20?9.6:10.6;
+  const nameLines=wrapW(e.name,w-28,nameSz,600,0,1);
+  const ml=cat?[]:wrapW(e.meaning,w-28,9.4,400,1);
+  const headH=20+nameLines.length*14+10,rowH=18,noteGap=12,noteLh=14,padX=14;
+  const h=headH+(rows.length?rows.length*rowH+10:0)+(cat?0:noteGap+Math.max(1,ml.length)*noteLh+8);
+  let g=`<g class="nd" tabindex="0" role="button" data-node="${esc(e.name)}" data-b="${x},${y},${w},${h},10,6" data-shape="box">`;
+  g+=`<g class="nd-face" filter="url(#${ID}sh)"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="14" fill="${cat?(Z.data.tint||C.tint):C.node}" stroke="${C.line}" stroke-width="1.15"/></g>`;
+  g+=`<path d="M${x+10},${y+headH} H${x+w-10}" stroke="${C.line}"/>`;
+  g+=T(x+padX,y+14,e.layer,{sz:8.6,w:500,ls:.4,c:cat?Z.data.k:C.sub,a:'start',mono:1});
+  nameLines.forEach((l,i)=>g+=T(x+padX,y+28+i*14,l,{sz:nameSz,w:600,a:'start',mono:1}));
+  rows.forEach((r,i)=>{const yy=y+headH+14+i*rowH;if(i)g+=`<path d="M${x+padX},${yy-rowH/2} H${x+w-padX}" stroke="${C.soft}"/>`;
+   g+=T(x+padX,yy,r[0],{sz:9.4,a:'start',mono:1})+((r[1]||r[2])?T(x+w-padX,yy,r[1]||r[2],{sz:8.6,w:500,c:r[1]?C.accInk:C.sub,a:'end',mono:1}):'')});
+  ml.forEach((l,i)=>g+=T(x+padX,y+h-14-(ml.length-1-i)*noteLh,l,{sz:9.4,it:1,c:C.sub,a:'start'}));
   return {g:g+'</g>',h}};
- const w=180,xs=[14,210,406],y=108;const hs=[];[0,1,2].forEach(i=>{const r=ent(xs[i],y,w,E[i],0);o+=r.g;hs.push(r.h)});
- const cf=(x1,x2,yy)=>{const s=C.conn;let g=`<line x1="${x1}" y1="${yy}" x2="${x2}" y2="${yy}" stroke="${s}" stroke-width="1.15"/>`;
-  g+=`<line x1="${x1+5}" y1="${yy-5}" x2="${x1+5}" y2="${yy+5}" stroke="${s}"/><line x1="${x1+9}" y1="${yy-5}" x2="${x1+9}" y2="${yy+5}" stroke="${s}"/>`;
-  g+=`<path d="M${x2-8},${yy} L${x2},${yy-5} M${x2-8},${yy} L${x2},${yy+5}" stroke="${s}" fill="none"/><circle cx="${x2-12}" cy="${yy}" r="3.2" fill="${C.node}" stroke="${s}"/>`;return g};
- const mo=(x1,x2,yy)=>{const s=C.conn;return `<line x1="${x1}" y1="${yy}" x2="${x2}" y2="${yy}" stroke="${s}" stroke-width="1.15"/><path d="M${x1+8},${yy} L${x1},${yy-5} M${x1+8},${yy} L${x1},${yy+5}" stroke="${s}" fill="none"/><circle cx="${x1+11}" cy="${yy}" r="3.2" fill="${C.node}" stroke="${s}"/><line x1="${x2-5}" y1="${yy-5}" x2="${x2-5}" y2="${yy+5}" stroke="${s}"/><line x1="${x2-9}" y1="${yy-5}" x2="${x2-9}" y2="${yy+5}" stroke="${s}"/>`};
- a+=mo(xs[0]+w,xs[1],y+52)+cf(xs[1]+w,xs[2],y+68);
- const y2=y+Math.max(...hs)+48;const s1=ent(xs[1],y2,w,E[4],1),s2=ent(xs[2],y2,w,E[3],1);o+=s1.g+s2.g;
+ const w=186,xs=[16,218,420],y=116;const hs=[];[0,1,2].forEach(i=>{const r=ent(xs[i],y,w,E[i],0);o+=r.g;hs.push(r.h)});
+ // Simple directional links — no crow's-foot UML ends.
+ a+=arrow(`M${xs[0]+w},${y+56} H${xs[1]}`,'c')+arrow(`M${xs[1]+w},${y+72} H${xs[2]}`,'c');
+ const y2=y+Math.max(...hs)+56;const s1=ent(xs[1],y2,w,E[4],1),s2=ent(xs[2],y2,w,E[3],1);o+=s1.g+s2.g;
  a+=arrow(`M${xs[1]+w/2},${y+hs[1]} V${y2-2}`,'d')+arrow(`M${xs[2]+w/2},${y+hs[2]} V${y2-2}`,'d');
- o+=tag(xs[1]+w/2,y+hs[1]+22,'indexes',{light:1})+tag(xs[2]+w/2,y+hs[2]+22,'reads',{light:1});
- const ky=y2;o+=T(12,ky+6,'Key',{sz:10,w:600,a:'start'});
- o+=`<line x1="12" y1="${ky+24}" x2="40" y2="${ky+24}" stroke="${C.conn}"/><line x1="16" y1="${ky+19}" x2="16" y2="${ky+29}" stroke="${C.conn}"/><line x1="20" y1="${ky+19}" x2="20" y2="${ky+29}" stroke="${C.conn}"/>`+T(48,ky+24,'exactly one',{sz:9.2,c:C.sub,a:'start'});
- o+=`<line x1="12" y1="${ky+44}" x2="40" y2="${ky+44}" stroke="${C.conn}"/><path d="M32,${ky+44} L40,${ky+39} M32,${ky+44} L40,${ky+49}" stroke="${C.conn}" fill="none"/><circle cx="28" cy="${ky+44}" r="3.2" fill="${C.node}" stroke="${C.conn}"/>`+T(48,ky+44,'zero or many',{sz:9.2,c:C.sub,a:'start'});
- o+=`<line x1="12" y1="${ky+64}" x2="40" y2="${ky+64}" stroke="${C.conn}" stroke-dasharray="4 3"/>`+T(48,ky+64,'derived or read',{sz:9.2,c:C.sub,a:'start'});
- o+=T(12,ky+84,'Real object names, no row data',{sz:9.2,c:C.sub,a:'start'});
- const notePad=12,noteW=W-24;const nl=wrapW(D.erd.searchNote,noteW-2*notePad,9.4,400,1);
- const noteH=notePad*2+Math.max(1,nl.length)*13;const noteY=Math.max(y2+s1.h,ky+100)+16;
- o+=`<rect x="12" y="${noteY}" width="${noteW}" height="${noteH}" rx="8" fill="${C.node}" stroke="${C.line}" stroke-dasharray="4 3" filter="url(#${ID}sh)"/>`;
- nl.forEach((l,i)=>o+=T(12+notePad,noteY+notePad+7+i*13,l,{sz:9.4,it:1,c:C.sub,a:'start'}));
- return svg(W,noteY+noteH+14,D.erd.title,a+o)};
+ o+=tag(xs[1]+w/2,y+hs[1]+24,'indexes')+tag(xs[2]+w/2,y+hs[2]+24,'reads');
+ const ky=y2;
+ o+=T(16,ky+10,'Relationships',{sz:10,w:600,a:'start'});
+ o+=`<line class="edge" x1="16" y1="${ky+28}" x2="48" y2="${ky+28}" stroke="${C.conn}" stroke-width="1.35" stroke-linecap="round"/>`+T(56,ky+28,'primary path',{sz:9.2,c:C.sub,a:'start'});
+ o+=`<line class="edge" x1="16" y1="${ky+48}" x2="48" y2="${ky+48}" stroke="${C.conn}" stroke-width="1.35" stroke-dasharray="4 3.5" stroke-linecap="round"/>`+T(56,ky+48,'derived or read',{sz:9.2,c:C.sub,a:'start'});
+ o+=T(16,ky+70,'Real object names, no row data',{sz:9.2,c:C.sub,a:'start'});
+ const notePad=14,noteW=W-32;const nl=wrapW(D.erd.searchNote,noteW-2*notePad,9.6,400,1);
+ const noteH=notePad*2+Math.max(1,nl.length)*14;const noteY=Math.max(y2+s1.h,ky+92)+20;
+ o+=`<g class="nd" tabindex="0" role="button" data-node="search-note" data-b="16,${noteY},${noteW},${noteH},10,6" data-shape="box"><g class="nd-face" filter="url(#${ID}sh)"><rect x="16" y="${noteY}" width="${noteW}" height="${noteH}" rx="14" fill="${C.node}" stroke="${C.line}" stroke-width="1.15" stroke-dasharray="4 3.5"/></g>`;
+ nl.forEach((l,i)=>o+=T(16+notePad,noteY+notePad+8+i*14,l,{sz:9.6,it:1,c:C.sub,a:'start'}));
+ o+='</g>';
+ return svg(W,noteY+noteH+16,D.erd.title,a+o)};
 
 // 4. Pipelines: BPMN-style lanes with hairline separators and mono lane labels, events, gateway, tasks.
 export function dPipes(D, inst=""){
   begin(true);ID='p'+inst;const Pp=D.pipes,K=D.code;const W=400,H=300;let o='',a='';
  const lanes=[['Sources',0,60],['Airflow on office PC',60,120],['Snowflake',180,96]];
- lanes.forEach(([t,y],i)=>{if(i)o+=`<line x1="1" y1="${y}" x2="${W-1}" y2="${y}" stroke="${C.line}"/>`;o+=lab(10,y+9,t,i<2?Z.src.k:Z.data.k)});
- const ev=(cx,cy,r,sw)=>`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${C.node}" stroke="${C.ink}" stroke-width="${sw}"/>`;
-  o+=ev(22,32,7,1.1)+T(22,46,'Start',{sz:fs(7.8),c:C.sub});
+ lanes.forEach(([t,y],i)=>{if(i)o+=`<line x1="8" y1="${y}" x2="${W-8}" y2="${y}" stroke="${C.soft}"/>`;o+=lab(12,y+10,t,i<2?Z.src.k:Z.data.k)});
+  o+=discNode(22,32,11,'', '▶',{id:'start',glyphSz:9}).g;
   const t1=node('box',44,18,120,n2('Monarch · Gmail · Drive · YT','',8.8),{h:26,z:'src'});o+=t1.g;
   o+=T(176,24,'EAI_MONARCH · EAI_GMAIL',{sz:fs(7.8),mono:1,c:Z.src.k,a:'start'})+T(176,35,'pipeline_load_window · drive_poll',{sz:fs(7.8),c:C.sub,a:'start'})+T(176,46,'MyChart FHIR planned',{sz:fs(7.8),c:Z.sec.k,a:'start'});
  o+=T(10,78,Pp.airflow.s,{sz:fs(7.8),it:1,c:C.sub,a:'start'});
- o+=`<g class="nd" data-b="86,108,28,28,0,0" data-shape="dia">${block('dia',86,108,28,28)}<path d="M95,117 l10,10 M105,117 l-10,10" stroke="${C.ink}" stroke-width="1.1"/></g>`;
+ o+=discNode(100,122,14,'','◇',{id:'gateway',glyphSz:11}).g;
  const ex=node('box',210,92,168,n2('Extract and land','',8.8,K.land,'src'),{h:28,z:'src'});o+=ex.g;
  const oc=node('box',210,132,168,n2(Pp.ocr.t,Pp.ocr.s,8.6,K.ocr,'src'),{h:28,z:'src'});o+=oc.g;
  o+=tag(154,108,'Monarch / Gmail',{light:1})+tag(154,158,'Drive docs',{light:1});
  const ld=node('box',232,210,144,n2('RAW and CORE','',8.8,K.raw+', '+K.core,'data'),{h:34,z:'data'});o+=ld.g;
  const db=node('box',140,216,78,n2(Pp.dbt.t,'',8.6),{h:26,z:'data'});o+=db.g;
  const ts=node('box',78,216,48,n2('Tests','',8.6),{h:26});o+=ts.g;
- o+=ev(34,229,8,2)+T(12,250,'ANALYTICS,',{sz:fs(7.8),c:C.sub,a:'start'})+T(12,261,'MCP servers',{sz:fs(7.8),c:C.sub,a:'start'})+T(140,268,K.dbt,{sz:fs(7.8),mono:1,c:Z.data.k,a:'start'})+legend(14,286,['src','data']);
+ o+=discNode(34,229,10,'', '●',{id:'end',glyphSz:8}).g+T(12,250,'ANALYTICS,',{sz:fs(7.8),c:C.sub,a:'start'})+T(12,261,'MCP servers',{sz:fs(7.8),c:C.sub,a:'start'})+T(140,268,K.dbt,{sz:fs(7.8),mono:1,c:Z.data.k,a:'start'})+legend(14,286,['src','data']);
  a+=arrow('M29,32 H42','c')+arrow(`M104,${18+t1.h} V106`,'c')+arrow('M114,122 H120 Q124,122 124,118 V108 Q124,104 128,104 H208','c')+arrow('M100,136 V150 Q100,154 104,154 H208','c');
  a+=arrow('M378,106 H384 Q388,106 388,110 V225 Q388,229 384,229 H378','c')+arrow(`M294,${132+oc.h} V208`,'c')+arrow('M232,227 H220','c')+arrow('M140,229 H128','c')+arrow('M78,229 H44','c');
  return svg(W,H,Pp.title,a+o)};

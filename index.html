@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="text-scale" content="scale" />
+    <meta name="color-scheme" content="light only" />
     <link rel="stylesheet" href="./assets/unicons/line.css" />
     <title>Michael Fawehinmi | Senior Data Engineer &amp; Applied AI Engineer (Snowflake, LLM Agents)</title>
     <meta name="description" content="Michael Fawehinmi, Senior Data Engineer and applied AI engineer: Snowflake data architecture, Snowflake Cortex LLM agents and multi-agent systems, MCP, workforce data platforms, and Power BI enterprise reporting." />
@@ -15,11 +16,11 @@
   </head>
   <body>
     <script>
-      // Dark is the site default; only skip when the visitor chose light.
+      // Light-mode only: clear any leftover dark preference from earlier builds.
       try {
-        if (localStorage.getItem('selected-theme') !== 'light') {
-          document.body.classList.add('dark-theme')
-        }
+        document.body.classList.remove('dark-theme')
+        localStorage.removeItem('selected-theme')
+        localStorage.removeItem('selected-icon')
       } catch (_) {}
     </script>
     <div id="root"></div>

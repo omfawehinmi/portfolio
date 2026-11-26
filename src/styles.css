@@ -60,33 +60,10 @@
 }
 
 /*========== Variables Dark theme ==========*/
-body.dark-theme {
-  /* HSL color mode */
-  --first-color-second: hsl(var(--hue-color), 30%, 8%);
-  --title-color: hsl(var(--hue-color), 8%, 95%);
-  --text-color: hsl(var(--hue-color), 8%, 75%);
-  --input-color: hsl(var(--hue-color), 29%, 16%);
-  --body-color: hsl(var(--hue-color), 28%, 12%);
-  --container-color: hsl(var(--hue-color), 29%, 16%);
-  --scroll-bar-color: hsl(var(--hue-color), 12%, 48%);
-  --scroll-thumb-color: hsl(var(--hue-color), 12%, 36%);
-}
-
 /*========== Button Dark/Light ==========*/
 .nav__btns {
   display: flex;
   align-items: center;
-}
-
-.change-theme {
-  font-size: 1.25rem;
-  color: var(--title-color);
-  margin-right: var(--mb-1);
-  cursor: pointer;
-}
-
-.change-theme:hover {
-  color: var(--first-color);
 }
 
 /*==================== BASE ====================*/
@@ -97,6 +74,7 @@ body.dark-theme {
 }
 
 html {
+  color-scheme: light only;
   scroll-behavior: smooth;
   interpolate-size: allow-keywords;
 }
@@ -158,7 +136,6 @@ img {
   display: grid;
   gap: 1.5rem;
 }
-
 
 .header {
   width: 100%;
@@ -908,7 +885,6 @@ img {
   font-size: 0.75em; 
 }
 
-
 .services__button {
   cursor: pointer;
   font-size: var(--small-font-size);
@@ -1384,9 +1360,6 @@ img {
   .nav__menu {
     margin-left: auto;
   }
-  .change-theme {
-    margin: 0;
-  }
   .home__container {
     row-gap: 5rem;
   }
@@ -1538,16 +1511,6 @@ img {
   --card-shadow-hover: 0 8px 28px rgba(30, 50, 100, 0.13);
 }
 
-body.dark-theme {
-  --first-color: hsl(222, 65%, 62%);
-  --first-color-second: hsl(222, 45%, 15%);
-  --first-color-alt: hsl(222, 65%, 72%);
-  --first-color-lighter: hsl(222, 40%, 28%);
-  --border-color: hsl(222, 29%, 22%);
-  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --card-shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.45);
-}
-
 /* 2. Global typography polish */
 body {
   line-height: 1.75;
@@ -1601,11 +1564,6 @@ h1, h2, h3, h4 {
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border-color);
     box-shadow: none;
-  }
-
-  body.dark-theme .header {
-    background-color: hsla(222, 28%, 10%, 0.88);
-    border-bottom-color: var(--border-color);
   }
 }
 
@@ -1778,10 +1736,6 @@ h1, h2, h3, h4 {
   color: var(--first-color);
   border-color: var(--first-color);
   background-color: hsl(222, 70%, 96%);
-}
-
-body.dark-theme .qualification__button.qualification__active {
-  background-color: hsl(222, 30%, 18%);
 }
 
 .qualification__title {
@@ -1971,7 +1925,6 @@ body.dark-theme .qualification__button.qualification__active {
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--first-color);
 }
-
 
 /* Native project dialog and intrinsic-height folds. */
 dialog.project-dialog {

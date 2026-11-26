@@ -9,16 +9,14 @@ import Contact from './components/Contact.jsx'
 import Footer from './components/Footer.jsx'
 import ScrollUp from './components/ScrollUp.jsx'
 import useScrollSpy from './hooks/useScrollSpy.js'
-import useTheme from './hooks/useTheme.js'
 
 export default function App() {
-  const { dark, toggleTheme } = useTheme()
   const { scrolled, showScroll, activeSection } = useScrollSpy()
   const [openProjectId, setOpenProjectId] = useState(null)
 
   return (
     <>
-      <Header dark={dark} onToggleTheme={toggleTheme} scrolled={scrolled} activeSection={activeSection} />
+      <Header scrolled={scrolled} activeSection={activeSection} />
       <main className="main">
         <Home />
         <Projects openId={openProjectId} onOpen={setOpenProjectId} />

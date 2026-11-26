@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { navLinks, profile } from '../data/profile.js'
 import Icon from './ui/Icon.jsx'
 
-export default function Header({ dark, onToggleTheme, scrolled, activeSection }) {
+export default function Header({ scrolled, activeSection }) {
   const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
@@ -47,16 +47,6 @@ export default function Header({ dark, onToggleTheme, scrolled, activeSection })
         </div>
 
         <div className="nav__btns">
-          <button
-            type="button"
-            className="change-theme"
-            id="theme-button"
-            onClick={onToggleTheme}
-            aria-label="Toggle color theme"
-            aria-pressed={dark}
-          >
-            <i className={`uil ${dark ? 'uil-sun' : 'uil-moon'}`} aria-hidden="true"></i>
-          </button>
           <button
             type="button"
             className="nav__toggle"
