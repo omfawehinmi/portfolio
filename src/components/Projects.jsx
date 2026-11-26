@@ -41,7 +41,13 @@ const MORE_PREVIEW = {
   'hr-intelligence': { src: publicUrl('assets/img/bento/hr-intelligence.jpg'), sample: false },
   myorglab: { src: publicUrl('assets/img/bento/myorglab.jpg'), sample: false },
   'sof-portal': { src: publicUrl('assets/img/bento/sof-portal.jpg'), sample: true },
-  palms: { src: publicUrl('assets/img/bento/palms.jpg'), sample: false },
+  /* Full assembly still + Blender punch clip (repo assets — not the cropped bento crop alone). */
+  palms: {
+    src: publicUrl('assets/img/palms-punch.png'),
+    sample: false,
+    fit: true,
+    video: publicUrl('assets/video/hybrid-punches.mp4'),
+  },
   camera: { src: publicUrl('assets/img/bento/camera.jpg'), sample: false },
   inpainting: { src: publicUrl('assets/img/bento/inpainting.jpg'), sample: false },
 }
@@ -150,9 +156,9 @@ function Chips({ tags }) {
 
 const COLLAPSE_CHARS = 160
 
-function FoldBody({ project, className = '', lines = 3 }) {
+function FoldBody({ project, className = '', lines = 3, expandedExtra = null }) {
   const text = project?.outcome || ''
-  const canCollapse = text.length > COLLAPSE_CHARS
+  const canCollapse = text.length > COLLAPSE_CHARS || Boolean(expandedExtra)
   const [open, setOpen] = useState(false)
 
   return (
@@ -165,6 +171,9 @@ function FoldBody({ project, className = '', lines = 3 }) {
       >
         {text}
       </p>
+      {canCollapse && open && expandedExtra ? (
+        <div className="bx-fold-extra">{expandedExtra}</div>
+      ) : null}
       {canCollapse ? (
         <button
           type="button"
@@ -196,14 +205,27 @@ function PreviewMedia({ item, big = false }) {
   if (!preview) return null
   const size = intrinsicImageSize(preview.src)
   const alt = `${item.title} preview${preview.sample ? ', sample data' : ''}`
+  const fitClass = preview.fit || preview.video ? ' bx-media--fit' : ''
   return (
-    <div className={`bx-media${big ? ' bx-big' : ''}`}>
-      <img
-        alt={alt}
-        src={preview.src}
-        width={size?.width}
-        height={size?.height}
-      />
+    <div className={`bx-media${big ? ' bx-big' : ''}${fitClass}`}>
+      {preview.video ? (
+        <video
+          className="bx-media__video"
+          src={preview.video}
+          poster={preview.src}
+          controls={big}
+          autoPlay={!big}
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-label={alt}
+          width={size?.width}
+          height={size?.height}
+        />
+      ) : (
+        <img alt={alt} src={preview.src} width={size?.width} height={size?.height} />
+      )}
     </div>
   )
 }
@@ -301,7 +323,6 @@ function LeadTile({ onOpen, tall }) {
         <div className="bx-leadtext">
           <p className="bx-lede">{L.oneLine}</p>
           <FoldBody project={{ outcome: L.intro }} lines={3} />
-          <StatStrip stats={L.stats} />
           <Chips tags={L.tags} />
         </div>
         <figure className="bx-fig bx-leadfig">
@@ -343,10 +364,29 @@ function ArchitectureTile({ tile, onOpen, tall }) {
 }
 
 function MoreCard({ item, featured, onOpen }) {
-  const industries = item.prev === 'hr-intelligence' ? COPY.industries : null
-  const card = (
+  const isMyOrgLab = item.prev === 'myorglab'
+  const industries = isMyOrgLab ? COPY.industries : null
+  const industryExtra = industries ? (
+    <div className="bx-fold-industries">
+      <p className="bx-industries">
+        {industries.line}{' '}
+        <a
+          href={industries.href}
+          onClick={(event) => event.stopPropagation()}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {industries.link}
+        </a>
+      </p>
+      <ShotStrip title="Industry pages" shots={MYORGLAB_INDUSTRIES} />
+    </div>
+  ) : null
+  return (
     <article
-      className={`bx-tile bx-card ${featured ? 'bx-feat' : 'bx-row'}`}
+      className={`bx-tile bx-card ${featured ? 'bx-feat' : 'bx-row'}${isMyOrgLab ? ' bx-card--myorglab' : ''}${
+        item.prev === 'palms' ? ' bx-card--palms' : ''
+      }`}
       data-testid="project-tile"
       tabIndex={0}
       role="button"
@@ -357,34 +397,10 @@ function MoreCard({ item, featured, onOpen }) {
       <PreviewMedia item={item} />
       <div className="bx-cardtext">
         <h4 className="bx-h3">{item.title}</h4>
-        <FoldBody project={item} />
+        <FoldBody project={item} expandedExtra={industryExtra} lines={isMyOrgLab ? 3 : 3} />
       </div>
       <OpenIcon />
     </article>
-  )
-  if (!industries) return card
-  return (
-    <div className="bx-feat-block">
-      {card}
-      <p className="bx-industries">
-        {industries.line}{' '}
-        <a href={industries.href}>{industries.link}</a>
-      </p>
-    </div>
-  )
-}
-
-function StatStrip({ stats }) {
-  if (!stats?.length) return null
-  return (
-    <ul className="bx-stats">
-      {stats.map((stat) => (
-        <li key={stat.label}>
-          <strong>{stat.n}</strong>
-          <span>{stat.label}</span>
-        </li>
-      ))}
-    </ul>
   )
 }
 
@@ -426,7 +442,6 @@ function LeadPanel({ tall }) {
   return (
     <div className="bx-panel-body">
       <p className="bx-subhead">{L.subhead}</p>
-      <StatStrip stats={L.stats} />
       <figure className="bx-fig bx-leadfig bx-fig-big">
         <ArchitectureDiagram kind="lead" tall={tall} inst="open" />
         <figcaption>{LEAD_CAPTION}</figcaption>

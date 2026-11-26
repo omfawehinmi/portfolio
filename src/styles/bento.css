@@ -310,38 +310,6 @@ p.bx-subhead {
   padding: 0.25rem 0.65rem;
 }
 
-.bx-stats {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.5rem;
-  margin: 0.75rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.bx-stats li {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-  padding: 0.55rem 0.65rem;
-  border: 1px solid rgb(224, 227, 235);
-  border-radius: 0.75rem;
-  background: var(--body-color);
-}
-
-.bx-stats strong {
-  font-size: 1.25rem;
-  line-height: 1.1;
-  color: var(--title-color);
-  font-variant-numeric: tabular-nums;
-}
-
-.bx-stats span {
-  font-size: 0.72rem;
-  color: var(--text-color);
-  line-height: 1.3;
-}
-
 .bx-rows {
   display: grid;
   gap: 0.65rem;
@@ -388,8 +356,8 @@ p.bx-subhead {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: stretch;
   overflow: visible;
 }
 
@@ -398,9 +366,9 @@ p.bx-subhead {
   width: 100%;
   max-width: 100%;
   height: auto;
-  max-height: min(100%, 22rem);
+  max-height: min(100%, 18rem);
   object-fit: contain;
-  object-position: center;
+  object-position: top center;
   display: block;
 }
 
@@ -441,12 +409,60 @@ p.bx-subhead {
   flex: none;
 }
 
-.bx-media img {
+.bx-media img,
+.bx-media__video {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center top;
   display: block;
+}
+
+/* Show the whole tool (e.g. PALMS) — no crop/cutoff. */
+.bx-media--fit {
+  background: #0b1d36;
+  display: grid;
+  place-items: center;
+}
+
+.bx-media--fit img,
+.bx-media--fit .bx-media__video {
+  object-fit: contain;
+  object-position: center;
+  max-height: 100%;
+}
+
+.bx-row .bx-media--fit {
+  width: 132px;
+  height: 88px;
+  flex: none;
+}
+
+.bx-feat .bx-media--fit,
+.bx-big.bx-media--fit {
+  aspect-ratio: 16 / 10;
+  max-height: min(50vh, 28rem);
+}
+
+.bx-fold-extra {
+  margin-top: 0.75rem;
+  min-width: 0;
+}
+
+.bx-fold-industries .bx-industries {
+  padding: 0;
+  margin: 0 0 0.65rem;
+}
+
+.bx-card--myorglab,
+.bx-card--palms {
+  overflow: hidden;
+}
+
+.bx-card--myorglab .bx-cardtext,
+.bx-card--palms .bx-cardtext {
+  min-width: 0;
+  overflow: hidden;
 }
 
 .bx-svgprev {
@@ -490,9 +506,15 @@ p.bx-subhead {
   height: 70px;
 }
 
-.bx-row .bx-media img {
+.bx-row .bx-media img,
+.bx-row .bx-media__video {
   object-fit: cover;
   object-position: center;
+}
+
+.bx-row .bx-media--fit img,
+.bx-row .bx-media--fit .bx-media__video {
+  object-fit: contain;
 }
 
 .bx-row .bx-open {
@@ -504,13 +526,21 @@ p.bx-subhead {
 .bx-row .bx-cardtext {
   flex: 1;
   min-width: 0;
+  overflow: hidden;
 }
 
 .bx-row .project-tile__outcome {
   margin-top: 0;
   font-size: 0.84rem;
   line-height: 1.45;
-  overflow: visible;
+}
+
+.bx-row .project-tile__outcome.is-clamped,
+.bx-feat .project-tile__outcome.is-clamped,
+.bx-card--myorglab .project-tile__outcome.is-clamped {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .bx-panel-body .bx-h1 {
@@ -525,7 +555,8 @@ p.bx-subhead {
   margin-top: 1rem;
 }
 
-.bx-big img {
+.bx-big img,
+.bx-big .bx-media__video {
   object-fit: contain;
   max-height: 50vh;
   background: transparent;
@@ -706,14 +737,18 @@ p.bx-subhead {
     -webkit-line-clamp: unset;
   }
 
-  .bx-tile--hero .bx-fig svg,
+  /* Lead stays more prominent; other tiles denser so ERDs fit without empty gaps. */
+  .bx-tile--hero .bx-fig svg {
+    max-height: min(22rem, 44vh);
+  }
+
   .bx-lead .bx-leadfig svg {
-    max-height: min(28rem, 56vh);
+    max-height: min(24rem, 48vh);
   }
 
   .bx-tile .bx-fig {
     justify-content: flex-start;
-    align-items: center;
+    align-items: stretch;
     flex: 0 0 auto;
     min-height: 0;
   }
@@ -723,9 +758,13 @@ p.bx-subhead {
     width: 100%;
     max-width: 100%;
     height: auto;
-    max-height: min(22rem, 48vh);
+    max-height: min(16rem, 36vh);
     object-fit: contain;
-    object-position: center;
+    object-position: top center;
+  }
+
+  .bx-lead .bx-leadfig svg {
+    max-height: min(24rem, 48vh);
   }
 
   .bx-more {
@@ -976,7 +1015,7 @@ body:has(dialog.project-dialog[open]) .scrollup {
 
 .bx-industries {
   margin: 0;
-  padding: 0 1.25rem 1.25rem;
+  padding: 0;
   font-size: 0.88rem;
   line-height: 1.5;
   color: var(--text-color);

@@ -28,14 +28,6 @@ export const COPY = {
       'Monarch',
       'Gmail',
     ],
-    stats: [
-      { n: '4', label: 'prod databases' },
-      { n: '3', label: 'MCP servers' },
-      { n: '20', label: 'Airflow DAG files' },
-      { n: '4', label: 'source feeds (by target DB)' },
-      { n: '15', label: 'SV_* Analyst views' },
-      { n: '6', label: 'CS_* search services' },
-    ],
     intro:
       'This is the household data platform I build and run. Snowflake holds HOUSEHOLD_LEDGER (finance), MOONSHOTS (YouTube), AGENTIC_WORKFORCE (agent roster, conversations, graph, and chat-history capture across desks), and CONTROL (procs, queues, MCP, tests) — layers as schemas, not one database per layer. HOUSEHOLD_HEALTH is the planned Epic MyChart database, not a separate product card. Airflow on the office PC is the production scheduler; Snowflake tasks are retired. Monarch, Gmail, and Drive feed the ledger; YouTube feeds Moonshots; workforce capture and nightly chat backup land AI history. Grok bots and Cursor attach to MCP servers bound to SV_*, CS_*, and approved procedures.',
   },

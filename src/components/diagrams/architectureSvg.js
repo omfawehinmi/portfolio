@@ -3,17 +3,39 @@
 // Diagram language: Stripe Docs → How Issuing works → Issuing architecture →
 // Issuing balance funding source. Soft white rounded nodes, circular actor
 // discs, thin gray connectors, blended transparent canvas. Light-mode only.
-const C={ink:'#0a2540',sub:'#697386',line:'#e3e8ee',conn:'#a3acb9',acc:'#29b5e8',tint:'#eaf7fd',accInk:'#0a6688',dark:'#0a2540',dot:'transparent',panel:'transparent',soft:'#eef2f6',node:'#ffffff',disc:'#f6f9fc'};
-const Z={data:{f:'#ffffff',s:'#c9d4de',k:'#0a6688',n:'Snowflake data and catalogs',tint:'#eaf7fd'},agent:{f:'#ffffff',s:'#c9d4de',k:'#3f3d8f',n:'MCP and agents',tint:'#f0eef8'},
- sec:{f:'#ffffff',s:'#c9d4de',k:'#7a4a00',n:'Roles and access',tint:'#f7f1e6'},src:{f:'#ffffff',s:'#c9d4de',k:'#1a5f45',n:'Sources and scheduling',tint:'#e8f4ee'}};
+/* Diagram-only palette (ERDs + process flows). Page chrome / cards / nav stay on site tokens. */
+const C={
+  ink:'#0b1d36',          /* node titles — matches site navy */
+  sub:'#5b6b7c',          /* secondary labels */
+  line:'#c5d0dc',         /* node borders */
+  conn:'#7b8fa3',         /* default edges */
+  acc:'#0f8ecf',          /* read-path accent (vivid cyan-blue) */
+  tint:'#dff3fb',         /* soft accent wash */
+  accInk:'#0a6fa3',       /* accent ink / markers */
+  dark:'#0b1d36',
+  dot:'transparent',
+  panel:'transparent',
+  soft:'#e8eef4',         /* lane rules */
+  node:'#ffffff',
+  disc:'#eef6fb'          /* actor discs */
+};
+const Z={
+  data:{f:'#ffffff',s:'#7eb8d4',k:'#0a6fa3',n:'Snowflake data and catalogs',tint:'#d7f0fb'},
+  agent:{f:'#ffffff',s:'#a78bda',k:'#5b3fa6',n:'MCP and agents',tint:'#ebe4fb'},
+  sec:{f:'#ffffff',s:'#d4a15c',k:'#8a4b12',n:'Roles and access',tint:'#fcebd8'},
+  src:{f:'#ffffff',s:'#5fbf9a',k:'#0f6b4c',n:'Sources and scheduling',tint:'#d9f5ea'}
+};
 let COMPACT=false;
+/** Tile density: shrink fonts/icons/spacing so diagrams fill the block without empty gaps. Lead tiles stay slightly larger. */
+let DENSITY=1;
 const setCompact=(on)=>{COMPACT=!!on};
+const setDensity=(d)=>{DENSITY=d==null?1:d};
 const F="Poppins, sans-serif",MONO="ui-monospace, SFMono-Regular, Menlo, monospace";
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
 let mt;const meas=(t,sz,w,it,mono)=>{if(!mt){const m=document.createElementNS('http://www.w3.org/2000/svg','svg');m.setAttribute('style','position:absolute;left:-9999px;top:0;width:10px;height:10px');m.setAttribute('text-rendering','geometricPrecision');mt=document.createElementNS('http://www.w3.org/2000/svg','text');m.appendChild(mt);document.body.appendChild(m)}
  mt.setAttribute('font-family',mono?MONO:F);mt.setAttribute('font-size',sz);mt.setAttribute('font-weight',w);mt.setAttribute('font-style',it?'italic':'normal');mt.textContent=t;return mt.getBBox().width};
 const wrapW=(t,maxW0,sz,w,it,mono)=>{const maxW=maxW0*0.9;const ws=String(t).split(' '),o=[];let l='';for(const x of ws){const c=(l?l+' ':'')+x;if(meas(c,sz,w,it,mono)>maxW&&l){o.push(l);l=x}else l=c}if(l)o.push(l);return o};
-const fs=(n)=>COMPACT?Math.max(7.8,n-1):n;
+const fs=(n)=>Math.max(6.8,(COMPACT?Math.max(7.2,n-1.15):n)*DENSITY);
 const T=(x,y,t,o={})=>`<text x="${x}" y="${y}" text-anchor="${o.a||'middle'}" dominant-baseline="middle" font-family="${o.mono?MONO:F}" font-size="${o.sz||fs(10)}" font-weight="${o.w||400}"${o.it?' font-style="italic"':''}${o.ls?` letter-spacing="${o.ls}"`:''} fill="${o.c||C.ink}">${esc(t)}</text>`;
 const lab=(x,y,t,c=C.accInk,a='start')=>T(x,y,t.toUpperCase(),{sz:fs(8.2),w:500,ls:.55,c,a,mono:1});
 let ID='a';
@@ -36,34 +58,43 @@ const outline={
  dia:(x,y,w,h)=>`<path d="M${x+w/2},${y} L${x+w},${y+h/2} L${x+w/2},${y+h} L${x},${y+h/2} Z"/>`,
  cyl:(x,y,w,h)=>{const ry=COMPACT?5:6;return `<path d="M${x},${y+ry} a${w/2},${ry} 0 0 1 ${w},0 v${h-2*ry} a${w/2},${ry} 0 0 1 -${w},0 z"/><path d="M${x},${y+ry} a${w/2},${ry} 0 0 0 ${w},0" fill="none"/>`},
  disc:(x,y,w,h)=>{const r=Math.min(w,h)/2;return `<circle cx="${x+w/2}" cy="${y+h/2}" r="${r}"/>`}};
-const insetFor=(shape)=>{const base={box:[12,8],pill:[12,5],doc:[10,6],dia:[0,0],cyl:[10,8],disc:[6,6]};const c={box:[10,5],pill:[10,3.5],doc:[8,4],dia:[0,0],cyl:[8,6],disc:[5,5]};return COMPACT?c[shape]:base[shape]};
-const block=(shape,x,y,w,h,o={})=>{const z=o.z?Z[o.z]:o.e?Z.data:null;const fill=shape==='disc'?(C.disc):(z?(z.tint||C.node):C.node);const stroke=z?z.s:C.line;const hero=o.hero||o.lift||shape==='disc'||!z;return `<g class="nd-face" fill="${fill}" stroke="${stroke}" stroke-width="1.15"${o.dash?' stroke-dasharray="3.5 3.5"':''}${hero?` filter="url(#${ID}sh)"`:''}>${outline[shape](x,y,w,h)}</g>`};
+const insetFor=(shape)=>{const base={box:[12,8],pill:[12,5],doc:[10,6],dia:[0,0],cyl:[10,8],disc:[6,6]};const c={box:[8,4],pill:[8,3],doc:[7,3.5],dia:[0,0],cyl:[7,5],disc:[4,4]};const pick=COMPACT||DENSITY<0.95?c:base;return pick[shape]};
+const block=(shape,x,y,w,h,o={})=>{const z=o.z?Z[o.z]:o.e?Z.data:null;const fill=shape==='disc'?(C.disc):(z?(z.tint||C.node):C.node);const stroke=z?z.s:C.line;const hero=o.hero||o.lift||shape==='disc'||!z;return `<g class="nd-face" fill="${fill}" stroke="${stroke}" stroke-width="${DENSITY<0.95?1:1.15}"${o.dash?' stroke-dasharray="3.5 3.5"':''}${hero?` filter="url(#${ID}sh)"`:''}>${outline[shape](x,y,w,h)}</g>`};
 // node: soft Issuing-style block; interactive .nd group for hover/click enlarge.
 const node=(shape,x,y,w,lines,o={})=>{const [px,py]=insetFor(shape);const maxW=w-2*px;const L=[];
- lines.forEach(l=>{const sz=fs(l.sz||10),ww=l.w||500;wrapW(l.t,maxW,sz,ww,l.it,l.mono).forEach(s=>L.push({...l,t:s,sz,lh:sz*(COMPACT?1.1:1.25)}))});
- const th=L.reduce((a,l)=>a+l.lh,0);const h=Math.max(o.h||0,th+2*py+(shape==='cyl'?(COMPACT?2:4):0));let ty=y+(h-th)/2+(shape==='cyl'?2:0),g='';
+ const lhMul=DENSITY<0.95?1.05:(COMPACT?1.1:1.25);
+ lines.forEach(l=>{const sz=fs(l.sz||10),ww=l.w||500;wrapW(l.t,maxW,sz,ww,l.it,l.mono).forEach(s=>L.push({...l,t:s,sz,lh:sz*lhMul}))});
+ const th=L.reduce((a,l)=>a+l.lh,0);const minH=o.h?Math.round(o.h*Math.min(1,DENSITY+0.08)):0;const h=Math.max(minH,th+2*py+(shape==='cyl'?(COMPACT?2:4):0));let ty=y+(h-th)/2+(shape==='cyl'?2:0),g='';
  L.forEach(l=>{g+=T(x+w/2,ty+l.lh/2,l.t,{sz:l.sz,w:l.w||500,c:l.c||(l.sub?C.sub:C.ink),it:l.it,mono:l.mono});ty+=l.lh});
  const nid=o.id||`${shape}-${Math.round(x)}-${Math.round(y)}`;
  return {g:`<g class="nd" tabindex="0" role="button" data-node="${esc(nid)}" data-b="${x},${y},${w},${h},${px},${py}" data-shape="${shape}">${block(shape,x,y,w,h,o)}${g}</g>`,h,x,y,w}};
 const n2=(t,s,sz=10,code,z)=>[{t,w:600,sz:fs(sz)}].concat(s?[{t:s,sz:fs(8.2),sub:1}]:[]).concat(code?[{t:code,sz:fs(8),mono:1,c:z?Z[z].k:C.accInk}]:[]);
 /** Circular actor/system disc with monoline glyph (Issuing-style). */
 const discNode=(cx,cy,r,label,glyph='●',o={})=>{
-  const x=cx-r,y=cy-r,w=r*2,h=r*2;
-  const face=`<g class="nd-face" fill="${C.disc}" stroke="${C.line}" stroke-width="1.15" filter="url(#${ID}sh)"><circle cx="${cx}" cy="${cy}" r="${r}"/></g>`;
+  const rr=Math.round(r*Math.min(1,DENSITY+0.05));
+  const x=cx-rr,y=cy-rr,w=rr*2,h=rr*2;
+  const face=`<g class="nd-face" fill="${C.disc}" stroke="${C.line}" stroke-width="1.1" filter="url(#${ID}sh)"><circle cx="${cx}" cy="${cy}" r="${rr}"/></g>`;
   const icon=T(cx,cy+0.5,glyph,{sz:fs(o.glyphSz||12),w:600,c:C.accInk});
-  const labY=cy+r+12;
+  const labY=cy+rr+Math.round(11*DENSITY);
   const lbl=label?T(cx,labY,label,{sz:fs(8.4),w:500,c:C.ink}):'';
   const nid=o.id||`disc-${Math.round(cx)}-${Math.round(cy)}`;
   return {g:`<g class="nd nd-disc" tabindex="0" role="button" data-node="${esc(nid)}" data-b="${x},${y},${w},${h+ (label?16:0)},0,0" data-shape="disc">${face}${icon}${lbl}</g>`,h:h+(label?16:0),x,y,w}};
-const badge=(cx,cy,n)=>{const r=COMPACT?6.5:8;return `<g class="nd" tabindex="0" role="button" data-node="badge-${n}" data-b="${cx-r},${cy-r},${r*2},${r*2},0,0" data-shape="badge"><circle cx="${cx}" cy="${cy}" r="${r}" fill="${C.ink}" filter="url(#${ID}sh)"/>`+T(cx,cy+0.4,String(n),{sz:fs(8),w:600,c:'#fff'})+`</g>`};
-const tag=(cx,cy,t,o={})=>{const tw=meas(t,fs(8),500,0,1)/0.9+14;const h=COMPACT?14:16;return `<g class="nd nd-tag" data-b="${cx-tw/2},${cy-h/2},${tw},${h},4,0" data-shape="pill"><rect x="${cx-tw/2}" y="${cy-h/2}" width="${tw}" height="${h}" rx="${h/2}" fill="${C.node}" stroke="${C.line}" filter="url(#${ID}sh)"/>`+T(cx,cy+0.4,t,{sz:fs(8),w:500,mono:1,c:C.sub})+`</g>`};
-const svg=(W,H,title,body)=>`<svg class="bx-arch" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" text-rendering="geometricPrecision" role="img" aria-label="${esc(title)}" xmlns="http://www.w3.org/2000/svg">${defs()}<title>${esc(title)}</title>${panel(W,H)}${body}</svg>`;
+const badge=(cx,cy,n)=>{const r=(COMPACT?6.5:8)*Math.min(1,DENSITY+0.05);return `<g class="nd" tabindex="0" role="button" data-node="badge-${n}" data-b="${cx-r},${cy-r},${r*2},${r*2},0,0" data-shape="badge"><circle cx="${cx}" cy="${cy}" r="${r}" fill="${C.ink}" filter="url(#${ID}sh)"/>`+T(cx,cy+0.4,String(n),{sz:fs(8),w:600,c:'#fff'})+`</g>`};
+const tag=(cx,cy,t,o={})=>{const tw=meas(t,fs(8),500,0,1)/0.9+14;const h=(COMPACT?14:16)*Math.min(1,DENSITY+0.05);return `<g class="nd nd-tag" data-b="${cx-tw/2},${cy-h/2},${tw},${h},4,0" data-shape="pill"><rect x="${cx-tw/2}" y="${cy-h/2}" width="${tw}" height="${h}" rx="${h/2}" fill="${C.node}" stroke="${C.line}" filter="url(#${ID}sh)"/>`+T(cx,cy+0.4,t,{sz:fs(8),w:500,mono:1,c:C.sub})+`</g>`};
+const svg=(W,H,title,body)=>`<svg class="bx-arch" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMin meet" text-rendering="geometricPrecision" role="img" aria-label="${esc(title)}" xmlns="http://www.w3.org/2000/svg">${defs()}<title>${esc(title)}</title>${panel(W,H)}${body}</svg>`;
 const ns=(n,L)=>L.find(x=>x.label===n);
-const begin=(compact)=>{setCompact(compact)};
+/** compact: denser lanes; density from inst — tile denser than open; lead tile milder. */
+const begin=(compact,inst="",opts={})=>{
+  setCompact(compact);
+  const s=String(inst||'');
+  const isTile=s==='tile'||s==='t'||s.includes('tile');
+  if(!isTile){setDensity(1);return}
+  setDensity(opts.lead?0.9:0.78);
+};
 
 // 1. Lead: zone overview, left to right. Data and read path in accent; the write path is ink and dashed.
 export function dLead(D,tall, inst=""){
-  begin(false);ID=(tall?'lT':'lW')+inst;const N=D.lead,K=D.code;let o='',a='';
+  begin(false,inst,{lead:1});ID=(tall?'lT':'lW')+inst;const N=D.lead,K=D.code;let o='',a='';
  if(!tall){const W=740,H=316;
   [[12,'Sources'],[104,'Scheduler'],[244,'Snowflake'],[412,'Catalogs'],[550,'MCP servers'],[666,'Clients']].forEach(([x,t])=>o+=lab(x,20,t,C.sub));
   ['Files','APIs','Documents'].forEach((t,i)=>o+=node('doc',12,52+i*70,74,n2(t),{h:40,z:'src'}).g);
@@ -100,7 +131,7 @@ export function dLead(D,tall, inst=""){
 
 // 2. MCP: three servers with agents + summarized tool families (not only the R/W split).
 export function dMcp(D, inst=""){
-  begin(false);ID='m'+inst;const K=D.code;const M=D.mcpTools||{};const W=560;let o='',a='';
+  begin(false,inst);ID='m'+inst;const K=D.code;const M=D.mcpTools||{};const W=560;let o='',a='';
   const servers=M.servers||[
     {t:K.readSrv||'MCP_HOUSEHOLD_LEDGER_GROK',s:'Read · Grok desks',families:'agents · analyst_* · search_* · docs',z:'agent'},
     {t:K.writeSrv||'MCP_HOUSEHOLD_LEDGER',s:'Write · Cursor / Eta',families:'read families + mutate / pipeline procs',z:'agent'},
@@ -121,7 +152,7 @@ export function dMcp(D, inst=""){
 
 // 2b. Grokbot: which agent attaches to which MCP, and what that access is for.
 export function dGrokbot(D, inst=""){
-  begin(false);ID='gb'+inst;const G=D.grokbot||{};const W=560;let o='',a='';
+  begin(false,inst);ID='gb'+inst;const G=D.grokbot||{};const W=560;let o='',a='';
   const rows=G.rows||[
     {agent:'Grok finance desks',mcp:'MCP_HOUSEHOLD_LEDGER_GROK',use:'spend · cashflow · docs · ops freshness',z:'agent'},
     {agent:'Cursor / Eta',mcp:'MCP_HOUSEHOLD_LEDGER',use:'mutate · ingest · rebuild analytics',z:'agent'},
@@ -141,7 +172,7 @@ export function dGrokbot(D, inst=""){
 
 // 3. Data domains: Issuing-style system map (no crow's-foot). Soft cards + thin arrows.
 export function dErd(D, inst=""){
-  begin(false);ID='e'+inst;const E=D.erd.entities;const W=620;let o='',a='';
+  begin(false,inst);ID='e'+inst;const E=D.erd.entities;const W=620;let o='',a='';
  D.erd.areas.forEach((t,i)=>{const cols=3;const x=16+(i%cols)*198,y=16+Math.floor(i/cols)*40;
   o+=node('pill',x,y,186,[{t,sz:9.4,w:500,c:i===4?Z.sec.k:(i===0?Z.data.k:C.sub)}],{h:32,z:i===4?'sec':(i===0?'data':null),lift:1,id:`area-${i}`}).g});
  const ent=(x,y,w,e,cat)=>{
@@ -180,7 +211,7 @@ export function dErd(D, inst=""){
 
 // 4. Pipelines: BPMN-style lanes with hairline separators and mono lane labels, events, gateway, tasks.
 export function dPipes(D, inst=""){
-  begin(true);ID='p'+inst;const Pp=D.pipes,K=D.code;const W=400,H=300;let o='',a='';
+  begin(true,inst);ID='p'+inst;const Pp=D.pipes,K=D.code;const W=400,H=300;let o='',a='';
  const lanes=[['Sources',0,60],['Airflow on office PC',60,120],['Snowflake',180,96]];
  lanes.forEach(([t,y],i)=>{if(i)o+=`<line x1="8" y1="${y}" x2="${W-8}" y2="${y}" stroke="${C.soft}"/>`;o+=lab(12,y+10,t,i<2?Z.src.k:Z.data.k)});
   o+=discNode(22,32,11,'', '▶',{id:'start',glyphSz:9}).g;
@@ -201,7 +232,7 @@ export function dPipes(D, inst=""){
 
 // 5. Security: nested access zones as dashed outlines, accent only on the MCP split.
 export function dSec(D, inst=""){
-  begin(true);ID='s'+inst;const S=D.security,K=D.code;const W=380,H=300;let o='';
+  begin(true,inst);ID='s'+inst;const S=D.security,K=D.code;const W=380,H=300;let o='';
  o+=group(8,6,364,274,'Roles',{z:'sec'})+group(18,58,344,214,'MCP split',{z:'agent'})+group(28,128,324,136,'Cortex gate',{z:'sec'})+group(38,182,304,72,'Catalogs',{z:'data'});
  S.roles.forEach((t,i)=>o+=node('pill',16+i*116,24,108,[{t,sz:8.6,w:500}],{h:22,z:'sec'}).g);
  o+=node('box',34,74,148,n2(S.write,'',8.6,K.writeSrv,'agent'),{h:30,z:'agent'}).g+node('box',194,74,148,n2(S.read.t,S.read.s,8.6,K.readSrv,'agent'),{h:30,z:'agent'}).g;
@@ -213,7 +244,7 @@ export function dSec(D, inst=""){
 
 // 6. Stack: flat layer bands, the agent interface in accent.
 export function dStack(D, inst=""){
-  begin(true);ID='k'+inst;const L=D.stack.layers;const W=360;let o='';const x=10,w=340,h=24;
+  begin(true,inst);ID='k'+inst;const L=D.stack.layers;const W=360;let o='';const x=10,w=340,h=24;
  const zs=['agent','src','data','src',null];L.forEach((l,i)=>{const y=8+i*(h+4);const z=zs[i]?Z[zs[i]]:null;const one=l.nodes.length==1&&l.nodes[0].s;
   const labW=meas(l.label.toUpperCase(),fs(7.4),500,0,1)+16;
   const leftMax=w-labW-20;
@@ -232,7 +263,7 @@ export function dStack(D, inst=""){
 
 // 7. Snowflake features: capability matrix, hairline cells, accent icons.
 export function dFeat(D, inst=""){
-  begin(true);ID='f'+inst;const R=D.features.rows;const W=448;let o='';const rh=28,hx=78,cw=178,pad=6;const FH=pad*2+R.length*(rh+4)-4;
+  begin(true,inst);ID='f'+inst;const R=D.features.rows;const W=448;let o='';const rh=28,hx=78,cw=178,pad=6;const FH=pad*2+R.length*(rh+4)-4;
  const icon=(k,x,y,s)=>{switch(k){
   case 'hex':return `<rect x="${x}" y="${y+1}" width="11" height="10" rx="2" fill="none" stroke="${s}" stroke-width="1.1"/><path d="M${x+2.5},${y+6} h6" stroke="${s}" stroke-width="1.1"/>`;
   case 'grid':return `<rect x="${x-1}" y="${y}" width="13" height="12" rx="2" fill="none" stroke="${s}" stroke-width="1.1"/><path d="M${x-1},${y+4} h13 M${x+4},${y} v12" stroke="${s}" stroke-width="1"/>`;
@@ -248,7 +279,7 @@ export function dFeat(D, inst=""){
  return svg(W,FH+18,D.features.title,o)};
 
 export function dWorkflow(D, inst=""){
-  begin(true);ID='wf'+inst;const Wf=D.workflow;const W=420;let o='',a='';
+  begin(true,inst);ID='wf'+inst;const Wf=D.workflow;const W=420;let o='',a='';
   const step=28,nh=22;
   o+=T(12,14,'Merge ≠ apply ≠ deploy',{sz:fs(10),w:600,a:'start'})+T(12,27,"Michael's go gates apply, unpause, grants",{sz:fs(7.8),c:C.sub,a:'start'});
   Wf.steps.forEach((s,i)=>{const y=38+i*step;const z=i<2?'src':i===2?null:i===3?'data':'src';
@@ -259,7 +290,7 @@ export function dWorkflow(D, inst=""){
 
 export function dDatabase(D, dbId, inst=""){
   // Stripe-light object cards: taller rows so layer/name + note never clip.
-  begin(false);ID='dbx'+inst+(dbId||'');const db=D.databases?.[dbId]||D.databases?.ledger;if(!db)return '';
+  begin(false,inst);ID='dbx'+inst+(dbId||'');const db=D.databases?.[dbId]||D.databases?.ledger;if(!db)return '';
   const W=460;let o='';
   o+=T(14,16,db.name,{sz:12,w:600,a:'start'})+T(14,32,db.status+' · '+db.oneLine,{sz:8.6,c:C.sub,a:'start'});
   const cols=Math.min(4,Math.max(2,db.schemas.length));
@@ -274,7 +305,7 @@ export function dDatabase(D, dbId, inst=""){
   return svg(W,y+(db.objects||[]).length*rowH+28,db.name+' schemas',o)};
 
 export function dAirflow(D, inst=""){
-  begin(true);ID='af'+inst;const A=D.airflow;const W=420;let o='';
+  begin(true,inst);ID='af'+inst;const A=D.airflow;const W=420;let o='';
   o+=T(12,14,A.headline,{sz:fs(11),w:600,a:'start'})+T(12,27,'Office-PC Airflow pin · git ≠ unpaused',{sz:fs(7.8),c:C.sub,a:'start'});
   A.counts.forEach((c,i)=>{const x=12+i*134;o+=node('box',x,38,126,[{t:c.n,sz:fs(12),w:600,c:Z.src.k},{t:c.label,sz:fs(7.6),sub:1}],{h:30,z:'src'}).g});
   const rows=[
@@ -293,7 +324,7 @@ export function dAirflow(D, inst=""){
   return svg(W,84+rows.length*17+20,A.title,o)};
 
 export function dDbt(D, inst=""){
-  begin(true);
+  begin(true,inst);
   ID='db'+inst;const L=D.dbt.layers;const W=380;let o='',a='';
   const step=34,nh=24;
   L.forEach((l,i)=>{const y=12+i*step;const z=i<4?'data':'src';
@@ -303,12 +334,12 @@ export function dDbt(D, inst=""){
   return svg(W,12+L.length*step+18,D.dbt.title,a+o)};
 
 export function dRearch(inst=""){
-  begin(true);ID='r'+inst;let o='',a='';['Terraform','dbt','Airflow','Snowflake'].forEach((t,i)=>{const xx=12+i*88;o+=node(i==3?'cyl':'box',xx,16,72,n2(t,'',9),{h:32,e:i==3}).g;if(i<3)a+=arrow(`M${xx+72},32 H${xx+86}`,'c')});
+  begin(true,inst);ID='r'+inst;let o='',a='';['Terraform','dbt','Airflow','Snowflake'].forEach((t,i)=>{const xx=12+i*88;o+=node(i==3?'cyl':'box',xx,16,72,n2(t,'',9),{h:32,e:i==3}).g;if(i<3)a+=arrow(`M${xx+72},32 H${xx+86}`,'c')});
  return svg(370,64,'Re-architecture preview: Terraform, dbt and Airflow managing a Snowflake platform',a+o)};
 
 
 export function dMychart(D,tall, inst=""){
-  begin(true);
+  begin(true,inst);
   ID=(tall?'hT':'hW')+inst;
   const M=D.mychart;
   const compact=inst==='tile';
