@@ -1,7 +1,14 @@
 import { useEffect, useState } from 'react'
 
+function initialDark() {
+  const stored = localStorage.getItem('selected-theme')
+  // Dark is the site default; only force light when the visitor chose it.
+  if (stored === 'light') return false
+  return true
+}
+
 export default function useTheme() {
-  const [dark, setDark] = useState(() => localStorage.getItem('selected-theme') === 'dark')
+  const [dark, setDark] = useState(initialDark)
 
   useEffect(() => {
     document.body.classList.toggle('dark-theme', dark)

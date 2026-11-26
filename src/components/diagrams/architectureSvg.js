@@ -4,13 +4,14 @@
 // Inline SVG builders. Flat style after Cloudflare's reference architecture diagrams: hairline 1px strokes, a dot-grid panel,
 // numbered step badges, dashed groups, small uppercase labels. Restrained color: one soft tint per zone (data, agents and MCP,
 // access, sources and scheduling) plus neutral. Object names are real structural names from the platform repos (see README SOURCES).
-// Restrained architectural palette (slate / steel). Avoid candy pastels in light or dark.
-const lightC={ink:'#0b1d36',sub:'#5c6570',line:'#c9d0d8',conn:'#6a7380',acc:'#3d6f8c',tint:'#e8eef3',accInk:'#1f4f66',dark:'#1c2430',dot:'#d5dbe3',panel:'#f7f8fa',soft:'#eef1f4',node:'#ffffff'};
-const darkC={ink:'#e8eef4',sub:'#9aa3ad',line:'#2c3644',conn:'#8b95a1',acc:'#6a9bb3',tint:'#15202c',accInk:'#9ec4d6',dark:'#0a1018',dot:'#1a2430',panel:'#0f1620',soft:'#15202c',node:'#151e2a'};
-const lightZ={data:{f:'#e8eef3',s:'#3d6f8c',k:'#1f4f66',n:'Snowflake data and catalogs'},agent:{f:'#eceff3',s:'#5a6675',k:'#2c3848',n:'MCP and agents'},
- sec:{f:'#f1eee9',s:'#8a7a62',k:'#5a4c38',n:'Roles and access'},src:{f:'#e9f0ed',s:'#4d7a68',k:'#2a5344',n:'Sources and scheduling'}};
-const darkZ={data:{f:'#152433',s:'#6a9bb3',k:'#9ec4d6',n:'Snowflake data and catalogs'},agent:{f:'#171e28',s:'#7a8796',k:'#c0c8d2',n:'MCP and agents'},
- sec:{f:'#221e18',s:'#a09078',k:'#d2c4ae',n:'Roles and access'},src:{f:'#15241f',s:'#6a9a86',k:'#a8cfc0',n:'Sources and scheduling'}};
+// Original light palette; dark mirrors the site dark-theme tokens so diagrams
+// follow the header toggle (default dark).
+const lightC={ink:'#0b1d36',sub:'#57606a',line:'#d0d7de',conn:'#6e7781',acc:'#29b5e8',tint:'#eaf7fd',accInk:'#0a6688',dark:'#24292f',dot:'#dfe4e9',panel:'#fbfcfd',soft:'#f3f5f7',node:'#ffffff'};
+const darkC={ink:'#f4fbfe',sub:'#9bb4c4',line:'#2a4558',conn:'#7a96a8',acc:'#5cc8ef',tint:'#10263f',accInk:'#8ad8f4',dark:'#071422',dot:'#1a3a55',panel:'#0d1b2a',soft:'#10263f',node:'#10263f'};
+const lightZ={data:{f:'#eaf7fd',s:'#29b5e8',k:'#0a6688',n:'Snowflake data and catalogs'},agent:{f:'#f2f0fb',s:'#9b8fd6',k:'#5b4bb5',n:'MCP and agents'},
+ sec:{f:'#fdf4e7',s:'#d6a24e',k:'#8a5300',n:'Roles and access'},src:{f:'#eaf6f0',s:'#5aae8a',k:'#1d6e4f',n:'Sources and scheduling'}};
+const darkZ={data:{f:'#123149',s:'#5cc8ef',k:'#8ad8f4',n:'Snowflake data and catalogs'},agent:{f:'#1c2438',s:'#9b8fd6',k:'#c4b8f0',n:'MCP and agents'},
+ sec:{f:'#2a2418',s:'#d6a24e',k:'#e8c57a',n:'Roles and access'},src:{f:'#143028',s:'#5aae8a',k:'#8fd0b0',n:'Sources and scheduling'}};
 const isDark=()=>typeof document!=='undefined'&&document.body.classList.contains('dark-theme');
 let C=lightC,Z=lightZ;
 const syncTheme=()=>{if(isDark()){C=darkC;Z=darkZ}else{C=lightC;Z=lightZ}};

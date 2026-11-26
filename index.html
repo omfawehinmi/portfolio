@@ -14,6 +14,14 @@
     <meta name="twitter:card" content="summary" />
   </head>
   <body>
+    <script>
+      // Dark is the site default; only skip when the visitor chose light.
+      try {
+        if (localStorage.getItem('selected-theme') !== 'light') {
+          document.body.classList.add('dark-theme')
+        }
+      } catch (_) {}
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
