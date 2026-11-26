@@ -442,8 +442,9 @@ p.bx-subhead {
 
   .bx-lead {
     grid-column: span 12;
-    grid-row: span 8;
+    grid-row: span 11;
     padding: 1.5rem 1.75rem;
+    min-height: 0;
   }
 
   .bx-h1 {
@@ -455,19 +456,26 @@ p.bx-subhead {
     grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
     gap: 1.75rem;
     margin-top: 0.5rem;
-    flex: 1;
+    flex: 1 1 auto;
     min-height: 0;
+    align-items: stretch;
   }
 
   .bx-leadfig {
     margin: 0;
     justify-content: center;
+    min-height: 0;
+    overflow: hidden;
   }
 
-  .bx-t-mcp,
-  .bx-t-workflow {
+  .bx-t-mcp {
     grid-column: span 6;
     grid-row: span 11;
+  }
+
+  .bx-t-workflow {
+    grid-column: span 6;
+    grid-row: span 9;
   }
 
   .bx-t-domains {
@@ -482,7 +490,7 @@ p.bx-subhead {
 
   .bx-t-dbt {
     grid-column: span 6;
-    grid-row: span 11;
+    grid-row: span 9;
   }
 
   .bx-t-pipes,
@@ -494,7 +502,7 @@ p.bx-subhead {
   .bx-t-stack,
   .bx-t-features {
     grid-column: span 6;
-    grid-row: span 5;
+    grid-row: span 7;
   }
 
   .bx-t-stack .project-tile__outcome,
@@ -527,20 +535,26 @@ p.bx-subhead {
   .bx-tile .bx-fig {
     justify-content: center;
     align-items: center;
+    flex: 1 1 auto;
+    min-height: 0;
   }
 
-  .bx-tile .bx-fig svg,
-  .bx-leadfig svg {
+  .bx-tile .bx-fig svg {
     width: 100%;
     max-width: 100%;
     height: auto;
-    max-height: min(100%, 22rem);
+    max-height: 100%;
     object-fit: contain;
     object-position: center;
   }
 
   .bx-lead .bx-leadfig svg {
-    max-height: min(100%, 28rem);
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: 100%;
+    object-fit: contain;
+    object-position: center;
   }
 
   .bx-more {
