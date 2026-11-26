@@ -292,17 +292,13 @@ p.bx-subhead {
   max-height: min(26rem, 52vh);
 }
 
-/* Domains tile: pin Liam green ERD chrome in the thumbnail (top-left crop) */
-.bx-t-domains .bx-fig {
-  overflow: hidden;
-}
-
+/* Domains tile thumbnail — original compact card size (not an enlarged clip) */
 .bx-t-domains .bx-fig .bx-svg,
 .bx-t-domains .bx-fig svg.bx-arch--liam {
   width: 100%;
-  height: 100%;
-  max-height: min(26rem, 52vh);
-  object-fit: cover;
+  height: auto;
+  max-height: min(16rem, 36vh);
+  object-fit: contain;
   object-position: left top;
 }
 

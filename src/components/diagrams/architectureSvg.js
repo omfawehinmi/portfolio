@@ -348,54 +348,70 @@ export function dWorkflow(D, inst=""){
   o+=legend(12,38+Wf.steps.length*step+2,['src','data']);
   return svg(W,38+Wf.steps.length*step+18,Wf.title,a+o)};
 
+/** Preferred schema column order for popup ERDs (scroll/fit by schema). */
+const SCHEMA_COL_ORDER=['RAW','STAGING','INTERMEDIATE','CORE','AGENTS','CONVERSATIONS','GRAPH','CAPTURE','ANALYTICS','AI','CTRL','PROC','QUEUE','STAGE','FLAGS','TASKS','MCP','SECURITY','TESTS','TRANSFORM','PUBLIC'];
+
 /** Liam ERD Style A (green) — full per-DB table inventory; matches Style A sample chrome. */
 export function dDatabase(D, dbId, inst=""){
   begin(false,inst);ID='liam'+inst+(dbId||'ledger');
   const model=ERD_MODELS[dbId]||ERD_MODELS.ledger;
   if(!model) return '';
   const isTile=String(inst||'').includes('tile')||inst==='t'||inst==='tile';
-  // Tile: compact thumbnail crop (unchanged). Popup only: smaller denser nodes + wider grid.
-  const scale=isTile?0.55:1;
-  const headH=isTile?Math.round(36*scale):20;
-  const rowH=isTile?Math.round(26*scale):13;
-  const padX=isTile?Math.round(12*scale):6;
-  const nameSz=isTile?Math.max(8.5,11*scale):7.6;
-  const typeSz=isTile?Math.max(7.5,10*scale):6.6;
-  const schemaSz=isTile?Math.max(7,9*scale):6.2;
-  const cardW=isTile?Math.round(220*scale):148;
-  const gapX=isTile?0:10, gapY=isTile?0:8;
-  const cols=isTile?0:Math.max(5, Math.min(8, Math.ceil(Math.sqrt(model.tables.length*1.35))));
-  // Popup: re-pack into a denser grid so more of the inventory is on-screen
+  // Tile: compact thumbnail (original card size). Popup: schema-column layout, denser nodes.
+  const scale=isTile?0.72:1;
+  const headH=isTile?Math.round(34*scale):20;
+  const rowH=isTile?Math.round(24*scale):13;
+  const padX=isTile?Math.round(10*scale):6;
+  const nameSz=isTile?Math.max(9,10.5*scale):7.6;
+  const typeSz=isTile?Math.max(8,9.2*scale):6.6;
+  const schemaSz=isTile?Math.max(7.5,8.5*scale):6.2;
+  const cardW=isTile?Math.round(200*scale):152;
+  const gapX=12, gapY=isTile?10:8;
   let laid=model.tables;
-  if(!isTile){
+  let schemaLabels=[]; // [{schema,x,y}]
+  if(isTile){
+    // Compact Style-A style strip for the card thumbnail — first ~5 tables only
+    const preview=model.tables.slice(0,5);
     laid=[];
-    let y=48, i=0;
-    while(i<model.tables.length){
-      const row=model.tables.slice(i,i+cols);
-      let maxH=0;
-      row.forEach((t,j)=>{
+    let x=16;
+    preview.forEach((t,i)=>{
+      laid.push({...t, x, y:44, w:cardW});
+      x+=cardW+gapX;
+    });
+  } else {
+    // Popup: one column per schema (grouped), clear headers — scroll vertically within columns
+    const bySchema={};
+    model.tables.forEach((t)=>{
+      const s=t.schema||'OTHER';
+      (bySchema[s]||(bySchema[s]=[])).push(t);
+    });
+    const order=[...SCHEMA_COL_ORDER.filter((s)=>bySchema[s]), ...Object.keys(bySchema).filter((s)=>!SCHEMA_COL_ORDER.includes(s)).sort()];
+    laid=[]; schemaLabels=[];
+    const colTop=52;
+    order.forEach((schema, ci)=>{
+      const x=16+ci*(cardW+gapX);
+      schemaLabels.push({schema, x, y:36});
+      let y=colTop;
+      bySchema[schema].forEach((t)=>{
         const h=headH+t.cols.length*rowH+4;
-        maxH=Math.max(maxH,h);
-        laid.push({...t, x:16+j*(cardW+gapX), y, w:cardW});
+        laid.push({...t, x, y, w:cardW});
+        y+=h+gapY;
       });
-      y+=maxH+gapY;
-      i+=cols;
-    }
+    });
   }
   const tables={}; let maxX=0,maxY=0; let o='',a='';
-  o+=T(16,isTile?Math.round(18*scale):14,model.title,{sz:isTile?Math.max(11,14*scale):12,w:600,a:'start',c:LIAM.ink});
-  o+=T(16,isTile?Math.round(34*scale):28,model.subtitle,{sz:isTile?Math.max(8,10*scale):9,c:LIAM.schema,a:'start'});
+  o+=T(16,isTile?18:14,model.title,{sz:isTile?12:12,w:600,a:'start',c:LIAM.ink});
+  o+=T(16,isTile?32:28,isTile?model.subtitle: `${model.subtitle} · columns = schemas`,{sz:isTile?9:9,c:LIAM.schema,a:'start'});
+  if(!isTile){
+    schemaLabels.forEach((lab)=>{
+      o+=`<rect x="${lab.x}" y="${lab.y-11}" width="${cardW}" height="16" rx="4" fill="${LIAM.header}" stroke="${LIAM.border}"/>`;
+      o+=T(lab.x+cardW/2,lab.y-3,lab.schema,{sz:8,w:600,mono:1,c:LIAM.schema});
+    });
+  }
 
   const tableGeom=(t)=>{
-    if(isTile){
-      const w=Math.round((t.w||220)*scale);
-      const x=Math.round(t.x*scale)+4;
-      const y=Math.round(t.y*scale)+Math.round(8*scale);
-      const h=headH+t.cols.length*rowH+Math.round(4*scale);
-      return {x,y,w,h};
-    }
     const w=t.w||cardW;
-    const h=headH+t.cols.length*rowH+4;
+    const h=headH+t.cols.length*rowH+(isTile?Math.round(4*scale):4);
     return {x:t.x, y:t.y, w, h};
   };
 
@@ -458,20 +474,15 @@ export function dDatabase(D, dbId, inst=""){
     o+=g+'</g>';
   });
 
-  const legendY=maxY+(isTile?Math.round(24*scale):18);
-  o+=`<circle cx="28" cy="${legendY}" r="4.5" fill="none" stroke="${LIAM.green}" stroke-width="1.25"/><circle cx="28" cy="${legendY}" r="1.6" fill="${LIAM.green}"/>`;
-  o+=T(40,legendY,'PK',{sz:isTile?Math.max(9,11*scale):9,c:LIAM.schema,a:'start'});
-  o+=`<path d="M70,${legendY-3} h6 a3.2,3.2 0 0 1 0,6 h-3" fill="none" stroke="${LIAM.green}" stroke-width="1.25"/>`;
-  o+=T(92,legendY,'FK',{sz:isTile?Math.max(9,11*scale):9,c:LIAM.schema,a:'start'});
-  o+=T(130,legendY,'Liam light · metadata only · no row values',{sz:isTile?Math.max(9,10*scale):9,c:LIAM.schema,a:'start'});
-  const fullW=Math.max(isTile?980:cols*cardW+(cols-1)*gapX+40, maxX+20);
-  const fullH=legendY+(isTile?Math.round(24*scale):16);
-  // Domains tile thumbnail: crop to top-left Liam green chrome (not a tiny full-map / Issuing overview)
-  if(isTile){
-    const cropW=Math.min(fullW, 1020);
-    const cropH=Math.min(fullH, 380);
-    return svg(cropW,cropH,`${model.title} ERD`,a+o,'bx-arch--liam');
-  }
+  const legendY=maxY+(isTile?16:18);
+  o+=`<circle cx="20" cy="${legendY}" r="4.5" fill="none" stroke="${LIAM.green}" stroke-width="1.25"/><circle cx="20" cy="${legendY}" r="1.6" fill="${LIAM.green}"/>`;
+  o+=T(32,legendY,'PK',{sz:9,c:LIAM.schema,a:'start'});
+  o+=`<path d="M58,${legendY-3} h6 a3.2,3.2 0 0 1 0,6 h-3" fill="none" stroke="${LIAM.green}" stroke-width="1.25"/>`;
+  o+=T(80,legendY,'FK',{sz:9,c:LIAM.schema,a:'start'});
+  o+=T(112,legendY,'Liam light · metadata only · no row values',{sz:9,c:LIAM.schema,a:'start'});
+  const fullW=Math.max(isTile?720:maxX+24, maxX+20);
+  const fullH=legendY+16;
+  // Tile returns compact viewBox matching card thumbnail (original size — not an enlarged clip)
   return svg(fullW,fullH,`${model.title} ERD`,a+o,'bx-arch--liam')};
 
 export function dAirflow(D, inst=""){
