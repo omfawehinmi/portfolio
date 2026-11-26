@@ -93,20 +93,46 @@ export function dLead(D,tall, inst=""){
  o+=legend(12,y+2,['src','data','agent'],W-12);
  return svg(W,y+26,N.title,a+o)};
 
-// 2. MCP: numbered request paths, read path in accent, write path dashed ink.
+// 2. MCP: three servers with agents + summarized tool families (not only the R/W split).
 export function dMcp(D, inst=""){
-  begin(false);ID='m'+inst;const L=D.lead.layers,K=D.code;const W=420;let o='',a='';const cx=[106,316],w=184;
- o+=lab(cx[0]-w/2,20,'Read path')+lab(cx[1]-w/2,20,'Write path',C.ink);
- const c0=ns('Clients',L).nodes,m=ns('MCP servers',L).nodes,cx2=ns('Cortex',L).nodes,cat=ns('Catalogs',L).nodes,sn=ns('Snowflake',L).nodes;
- const st=(n,x,y,shape,t,s,z,k,hero)=>{const r=node(shape,x-w/2,y,w,n2(t,s,10,k,z),{h:46,z,hero});return {g:r.g+badge(x-w/2,y,n),h:r.h}};
- const ys=[36,116,196,276,356];
- const R=[st(1,cx[0],ys[0],'box',c0[0].t,c0[0].s),st(2,cx[0],ys[1],'box',m[0].t,m[0].s,'agent',K.readSrv,1),st(3,cx[0],ys[2],'box',cx2.map(n=>n.t).join(', '),'Analyst: '+cx2[1].s,'agent','',1),st(4,cx[0],ys[3],'box',cat[0].t,'and '+cat[1].t,'data',K.svDoc+', '+K.cs),st(5,cx[0],ys[4],'cyl',sn[0].t,sn[0].s,'data',K.analytics)];
- const Wr=[st(1,cx[1],ys[0],'box',c0[1].t,c0[1].s),st(2,cx[1],ys[1],'box',m[1].t,m[1].s,'agent',K.writeSrv,1),st(3,cx[1],ys[2],'cyl',sn[1].t,sn[1].s,'data',K.core)];
- R.forEach(r=>o+=r.g);Wr.forEach(r=>o+=r.g);
- [0,1,2,3].forEach(i=>a+=arrow(`M${cx[0]},${ys[i]+R[i].h} V${ys[i+1]-2}`,'c'));[0,1].forEach(i=>a+=arrow(`M${cx[1]},${ys[i]+Wr[i].h} V${ys[i+1]-2}`,'w'));
- o+=node('box',cx[1]-w/2,280,w,[{t:'No write tools on the read path: the read server serves catalogs only.',sz:8.8,c:C.sub}],{h:54,dash:1}).g;
- o+=legend(14,430,['data','agent']);
- return svg(W,444,D.lead.title,a+o)};
+  begin(false);ID='m'+inst;const K=D.code;const M=D.mcpTools||{};const W=560;let o='',a='';
+  const servers=M.servers||[
+    {t:K.readSrv||'MCP_HOUSEHOLD_LEDGER_GROK',s:'Read · Grok desks',families:'agents · analyst_* · search_* · docs',z:'agent'},
+    {t:K.writeSrv||'MCP_HOUSEHOLD_LEDGER',s:'Write · Cursor / Eta',families:'read families + mutate / pipeline procs',z:'agent'},
+    {t:'MCP_MOONSHOTS',s:'YouTube · Cynthia',families:'catalog · search · sync / embed',z:'src'},
+  ];
+  o+=lab(14,16,'MCP servers')+lab(200,16,'Agents')+lab(380,16,'Tool families');
+  servers.forEach((s,i)=>{
+    const y=36+i*118;
+    o+=node('box',14,y,170,n2(s.t,s.s,9.2),{h:52,z:s.z||'agent',hero:i<2,lift:1}).g;
+    const agents=(M.agents&&M.agents[i])||(i===0?['household_finance_agent','ledger_ops_agent']:i===1?['same agents + write procs','Cortex AGENT_* behind']:['Cynthia desk','catalog tools']);
+    o+=node('box',200,y,160,[{t:agents[0],sz:9,w:600},{t:agents[1]||'',sz:8.4,sub:1}],{h:52,z:'agent'}).g;
+    o+=node('box',380,y,166,[{t:s.families,sz:8.8,c:C.sub}],{h:52,dash:i===0,lift:1}).g;
+    a+=arrow(`M184,${y+26} H198`,'c')+arrow(`M360,${y+26} H378`,'c');
+  });
+  o+=node('box',14,392,532,[{t:M.note||'Read server never holds write tools. Families summarized — not a private catalog dump.',sz:9,c:C.sub}],{h:36,dash:1}).g;
+  o+=legend(14,444,['agent','src','data']);
+  return svg(W,468,M.title||'MCP servers, agents, and tool families',a+o)};
+
+// 2b. Grokbot: which agent attaches to which MCP, and what that access is for.
+export function dGrokbot(D, inst=""){
+  begin(false);ID='gb'+inst;const G=D.grokbot||{};const W=560;let o='',a='';
+  const rows=G.rows||[
+    {agent:'Grok finance desks',mcp:'MCP_HOUSEHOLD_LEDGER_GROK',use:'spend · cashflow · docs · ops freshness',z:'agent'},
+    {agent:'Cursor / Eta',mcp:'MCP_HOUSEHOLD_LEDGER',use:'mutate · ingest · rebuild analytics',z:'agent'},
+    {agent:'Cynthia',mcp:'MCP_MOONSHOTS',use:'YouTube catalog · transcripts · sync',z:'src'},
+  ];
+  o+=lab(14,16,'Agent / desk')+lab(200,16,'MCP server')+lab(390,16,'Uses that access');
+  rows.forEach((r,i)=>{
+    const y=36+i*78;
+    o+=node('box',14,y,170,n2(r.agent,'',9.4),{h:48,z:r.z||'agent',lift:1}).g;
+    o+=node('box',200,y,172,n2(r.mcp,'',9),{h:48,z:'agent',hero:1}).g;
+    o+=node('box',390,y,156,[{t:r.use,sz:8.8,c:C.sub}],{h:48}).g;
+    a+=arrow(`M184,${y+24} H198`,'c')+arrow(`M372,${y+24} H388`,'c');
+  });
+  o+=node('box',14,286,532,[{t:G.note||'Cortex AGENT_HOUSEHOLD_FINANCE / _RO / AGENT_LEDGER_OPS sit on SV_* and CS_* behind these MCP catalogs.',sz:9,c:C.sub}],{h:40,dash:1}).g;
+  o+=legend(14,342,['agent','src']);
+  return svg(W,366,G.title||'Grokbot architecture — agents per MCP',a+o)};
 
 // 3. Data domains: Stripe-docs crow's-foot ERD — larger boxes/notes so text fits.
 export function dErd(D, inst=""){

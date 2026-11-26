@@ -21,7 +21,7 @@
 
 @media (min-width: 1280px) {
   #projects.section {
-    --bx-rail-width: 9.5rem;
+    --bx-rail-width: 11rem;
     /* Reserve a full column so the fixed rail cannot paint over content. */
     padding-left: var(--bx-rail-width);
     box-sizing: border-box;
@@ -578,22 +578,21 @@ p.bx-subhead {
     overflow: visible;
   }
 
-  .bx-t-mcp,
   .bx-t-workflow,
-  .bx-t-dbt,
   .bx-t-pipes,
+  .bx-t-dbt,
+  .bx-t-airflow,
   .bx-t-security,
-  .bx-t-stack,
   .bx-t-features {
     grid-column: span 6;
   }
 
   .bx-t-domains,
-  .bx-t-airflow {
+  .bx-t-mcp,
+  .bx-t-grokbot {
     grid-column: span 12;
   }
 
-  .bx-t-stack .project-tile__outcome,
   .bx-t-features .project-tile__outcome,
   .bx-t-pipes .project-tile__outcome,
   .bx-t-security .project-tile__outcome,
@@ -602,7 +601,8 @@ p.bx-subhead {
   .bx-t-workflow .project-tile__outcome,
   .bx-t-domains .project-tile__outcome,
   .bx-lead .project-tile__outcome,
-  .bx-t-mcp .project-tile__outcome {
+  .bx-t-mcp .project-tile__outcome,
+  .bx-t-grokbot .project-tile__outcome {
     display: block;
     overflow: visible;
     height: auto;

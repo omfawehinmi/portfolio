@@ -6,12 +6,12 @@ import {
   dDbt,
   dErd,
   dFeat,
+  dGrokbot,
   dLead,
   dMcp,
   dPipes,
   dRearch,
   dSec,
-  dStack,
   dWorkflow,
 } from './architectureSvg.js'
 
@@ -24,8 +24,8 @@ const builders = {
   dbt: (_tall, inst) => dDbt(DIAG, inst),
   pipes: (_tall, inst) => dPipes(DIAG, inst),
   security: (_tall, inst) => dSec(DIAG, inst),
-  stack: (_tall, inst) => dStack(DIAG, inst),
   features: (_tall, inst) => dFeat(DIAG, inst),
+  grokbot: (_tall, inst) => dGrokbot(DIAG, inst),
   rearch: (_tall, inst) => dRearch(inst),
 }
 

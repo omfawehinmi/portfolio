@@ -7,32 +7,33 @@ import Icon from './ui/Icon.jsx'
 import Modal from './ui/Modal.jsx'
 import SectionHeader from './ui/SectionHeader.jsx'
 
-/** Left jump rail: labeled anchors for each project block (full-height sticky). */
+/** Left jump rail: labeled anchors — names mirror what each block captures. */
 const PROJECT_RAIL = [
-  { id: 'lead', label: 'Lead' },
-  { id: 'workflow', label: 'Ship path' },
-  { id: 'pipes', label: 'Source feeds' },
-  { id: 'dbt', label: 'dbt' },
-  { id: 'airflow', label: 'Airflow' },
-  { id: 'domains', label: 'Databases' },
-  { id: 'mcp', label: 'MCP / agents' },
-  { id: 'security', label: 'Roles & Cortex' },
-  { id: 'features', label: 'Catalogs' },
+  { id: 'lead', label: 'Lead platform' },
+  { id: 'workflow', label: 'CI / CD ship path' },
+  { id: 'pipes', label: 'Feeds → schemas' },
+  { id: 'airflow', label: 'Airflow DAGs' },
+  { id: 'dbt', label: 'dbt transforms' },
+  { id: 'domains', label: 'DBs · tables · models' },
+  { id: 'mcp', label: 'MCP · agents · tools' },
+  { id: 'security', label: 'Roles · Cortex gate' },
+  { id: 'features', label: 'SV_* · CS_* catalogs' },
+  { id: 'grokbot', label: 'Grokbot · per MCP' },
   { id: 'more', label: 'More work' },
 ]
 
 const RAIL_TOP = { id: 'home', label: 'Top', href: '#home' }
 
 const KICKERS = {
-  mcp: 'Request path',
+  mcp: 'Servers · agents · tools',
   workflow: 'CI / CD ship path',
-  domains: 'All databases',
+  domains: 'Columns · tables · modeling',
   airflow: 'Scheduler inventory',
   dbt: 'Transform layers',
-  pipes: 'Source feeds',
-  security: 'Access zones',
-  stack: 'Layer stack',
-  features: 'Capability matrix',
+  pipes: 'Source feeds → schemas',
+  security: 'Roles · Cortex gate',
+  features: 'SV_* · CS_* catalogs',
+  grokbot: 'Agents per MCP server',
 }
 
 const LEAD_CAPTION =
@@ -56,8 +57,9 @@ const OPEN_ALIASES = {
   dbt: 'dbt',
   pipes: 'pipes',
   security: 'security',
-  stack: 'stack',
   features: 'features',
+  grokbot: 'grokbot',
+  stack: 'mcp',
   mychart: 'domains',
   myorglab: 'more-myorglab',
   'semantic-hr': 'more-hr-intelligence',
@@ -276,6 +278,7 @@ function LeadTile({ onOpen, tall }) {
 }
 
 function ArchitectureTile({ tile, onOpen, tall }) {
+  const showRowsOnTile = tile.id === 'mcp' || tile.id === 'grokbot'
   return (
     <article
       id={`project-${tile.id}`}
@@ -295,6 +298,7 @@ function ArchitectureTile({ tile, onOpen, tall }) {
         <OpenIcon />
       </div>
       <FoldBody project={{ outcome: tile.body }} />
+      {showRowsOnTile ? <RowTable rows={tile.rows} /> : null}
       <figure className="bx-fig">
         <ArchitectureDiagram kind={tile.id} tall={tall} inst="tile" />
       </figure>
