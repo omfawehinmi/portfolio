@@ -506,16 +506,18 @@ function DomainsPanel({ tile, tall }) {
         <figcaption>{active ? `${active.name}: ${active.oneLine}` : tile.caption}</figcaption>
       </figure>
       {active ? (
-        <>
+        <div className="bx-erd-meta">
           <p className="bx-lede">{active.detail}</p>
           <ul className="bx-dbchips" aria-label={`${active.name} schemas`}>
             {active.schemas.map((schema) => (
               <li key={schema}>{schema}</li>
             ))}
           </ul>
-        </>
-      ) : null}
-      <p>{tile.body}</p>
+          <p>{tile.body}</p>
+        </div>
+      ) : (
+        <p>{tile.body}</p>
+      )}
     </div>
   )
 }

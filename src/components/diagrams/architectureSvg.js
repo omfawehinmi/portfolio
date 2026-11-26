@@ -83,54 +83,22 @@ const block=(shape,x,y,w,h,o={})=>{
   const filt=hero?` filter="url(#${ID}shH)"`:` filter="url(#${ID}sh)"`;
   return `<g class="nd-face" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"${o.dash?' stroke-dasharray="3.5 3.5"':''}${filt}>${outline[shape](x,y,w,h)}</g>`;
 };
-/** Small real-platform marks for bottom-right node badges (not letter chips). */
-const platMark=(kind,cx,cy,s)=>{
-  const r=s/2;
-  if(kind==='snowflake'){
-    // Filled Snowflake crystal (brand blue) — recognizable at badge size
-    const arms=[];
-    for(let i=0;i<6;i++){
-      const a=(i*60)*Math.PI/180;
-      const x2=cx+Math.cos(a)*r*0.78, y2=cy+Math.sin(a)*r*0.78;
-      const px=Math.cos(a+Math.PI/2)*r*0.14, py=Math.sin(a+Math.PI/2)*r*0.14;
-      const mx=cx+Math.cos(a)*r*0.28, my=cy+Math.sin(a)*r*0.28;
-      arms.push(`M${cx+px},${cy+py} L${x2+px*0.35},${y2+py*0.35} L${x2-px*0.35},${y2-py*0.35} L${cx-px},${cy-py}`);
-      arms.push(`M${mx+px*1.6},${my+py*1.6} L${mx},${my} L${mx-px*1.6},${my-py*1.6}`);
-    }
-    return `<g fill="#29B5E8"><circle cx="${cx}" cy="${cy}" r="${r*0.16}"/><path d="${arms.join(' ')}"/></g>`;
-  }
-  if(kind==='airflow'){
-    // Apache Airflow plane mark (brand blue) — clearer silhouette
-    return `<g fill="#017CEE"><path d="M${cx-r*0.05},${cy+r*0.55} L${cx-r*0.05},${cy-r*0.15} L${cx-r*0.55},${cy+r*0.05} L${cx-r*0.55},${cy-r*0.15} L${cx-r*0.05},${cy-r*0.45} L${cx-r*0.05},${cy-r*0.72} L${cx+r*0.12},${cy-r*0.45} L${cx+r*0.72},${cy-r*0.55} L${cx+r*0.72},${cy-r*0.28} L${cx+r*0.2},${cy-r*0.18} L${cx+r*0.55},${cy+r*0.42} L${cx+r*0.32},${cy+r*0.55} L${cx+r*0.02},${cy+r*0.05} L${cx-r*0.05},${cy+r*0.55} Z"/></g>`;
-  }
-  if(kind==='dbt'){
-    // dbt hex + dot
-    const hr=r*0.72;
-    return `<g fill="none" stroke="#FF694B" stroke-width="${Math.max(1.1,s*0.1)}"><path d="M${cx},${cy-hr} L${cx+hr*0.86},${cy-hr*0.5} L${cx+hr*0.86},${cy+hr*0.5} L${cx},${cy+hr} L${cx-hr*0.86},${cy+hr*0.5} L${cx-hr*0.86},${cy-hr*0.5} Z"/><circle cx="${cx}" cy="${cy}" r="${r*0.18}" fill="#FF694B" stroke="none"/></g>`;
-  }
-  if(kind==='mcp'){
-    // MCP plug / port mark
-    return `<g fill="none" stroke="#7C5CFF" stroke-width="${Math.max(1.15,s*0.1)}" stroke-linecap="round"><rect x="${cx-r*0.45}" y="${cy-r*0.35}" width="${r*0.9}" height="${r*0.7}" rx="${r*0.12}"/><path d="M${cx-r*0.2},${cy-r*0.35} V${cy-r*0.55} M${cx+r*0.2},${cy-r*0.35} V${cy-r*0.55}"/><circle cx="${cx-r*0.18}" cy="${cy+r*0.05}" r="${r*0.08}" fill="#7C5CFF" stroke="none"/><circle cx="${cx+r*0.18}" cy="${cy+r*0.05}" r="${r*0.08}" fill="#7C5CFF" stroke="none"/></g>`;
-  }
-  if(kind==='github'){
-    // GitHub Mark–inspired silhouette (simplified)
-    return `<g fill="#24292F"><circle cx="${cx}" cy="${cy}" r="${r*0.72}"/><path d="M${cx-r*0.28},${cy+r*0.15} q${r*0.28},${r*0.45} ${r*0.56},0" fill="#fff"/><circle cx="${cx-r*0.22}" cy="${cy-r*0.08}" r="${r*0.1}" fill="#fff"/><circle cx="${cx+r*0.22}" cy="${cy-r*0.08}" r="${r*0.1}" fill="#fff"/></g>`;
-  }
-  return '';
-};
+/** Official brand logos (Simple Icons / brand marks) — process-flow BR badges only. */
 const PLATFORM={
-  snowflake:{bg:'#E8F7FC', stroke:'#29B5E8'},
-  airflow:{bg:'#E6F4FB', stroke:'#017CEE'},
-  dbt:{bg:'#FFF0EB', stroke:'#FF694B'},
-  mcp:{bg:'#F3EEFF', stroke:'#7C5CFF'},
-  github:{bg:'#F3F4F6', stroke:'#24292F'},
+  snowflake:{bg:'#E8F7FC', stroke:'#29B5E8', src:'/portfolio/logos/snowflake.svg'},
+  airflow:{bg:'#E6F4FB', stroke:'#017CEE', src:'/portfolio/logos/airflow.svg'},
+  dbt:{bg:'#FFF0EB', stroke:'#FF694B', src:'/portfolio/logos/dbt.svg'},
+  mcp:{bg:'#F4F4F5', stroke:'#18181B', src:'/portfolio/logos/mcp.svg'},
+  github:{bg:'#F3F4F6', stroke:'#181717', src:'/portfolio/logos/github.svg'},
 };
 const platformBadge=(x,y,w,h,plat)=>{
   if(!plat||!PLATFORM[plat]) return '';
-  const s=Math.max(15, Math.round(17*Math.min(1,DENSITY+0.1)));
+  const s=Math.max(16, Math.round(18*Math.min(1,DENSITY+0.1)));
   const bx=x+w-s*0.22, by=y+h-s*0.22;
   const p=PLATFORM[plat];
-  return `<g class="nd-plat" pointer-events="none" aria-hidden="true"><circle cx="${bx}" cy="${by}" r="${s/2}" fill="${p.bg}" stroke="${p.stroke}" stroke-width="1.1" filter="url(#${ID}sh)"/>${platMark(plat,bx,by,s*0.9)}</g>`;
+  const icon=s*0.62;
+  // Real brand SVG via <image> — not a hand-drawn placeholder mark
+  return `<g class="nd-plat" pointer-events="none" aria-hidden="true"><circle cx="${bx}" cy="${by}" r="${s/2}" fill="${p.bg}" stroke="${p.stroke}" stroke-width="1.1" filter="url(#${ID}sh)"/><image href="${p.src}" xlink:href="${p.src}" x="${bx-icon/2}" y="${by-icon/2}" width="${icon}" height="${icon}" preserveAspectRatio="xMidYMid meet"/></g>`;
 };
 // node: soft Issuing-style block; interactive .nd group for hover/click enlarge.
 const node=(shape,x,y,w,lines,o={})=>{const [px,py]=insetFor(shape);const maxW=w-2*px;const L=[];
@@ -386,22 +354,49 @@ export function dDatabase(D, dbId, inst=""){
   const model=ERD_MODELS[dbId]||ERD_MODELS.ledger;
   if(!model) return '';
   const isTile=String(inst||'').includes('tile')||inst==='t'||inst==='tile';
-  // Tile: denser so the green Liam chrome fills the Domains thumbnail (not Issuing blue).
-  const scale=isTile?0.55:0.92;
-  // Single-line header (name LEFT + schema RIGHT) — matches Style A sample.
-  const headH=Math.round(36*scale), rowH=Math.round(26*scale);
-  const padX=Math.round(12*scale);
-  const nameSz=Math.max(8.5,11*scale), typeSz=Math.max(7.5,10*scale), schemaSz=Math.max(7,9*scale);
+  // Tile: compact thumbnail crop (unchanged). Popup only: smaller denser nodes + wider grid.
+  const scale=isTile?0.55:1;
+  const headH=isTile?Math.round(36*scale):20;
+  const rowH=isTile?Math.round(26*scale):13;
+  const padX=isTile?Math.round(12*scale):6;
+  const nameSz=isTile?Math.max(8.5,11*scale):7.6;
+  const typeSz=isTile?Math.max(7.5,10*scale):6.6;
+  const schemaSz=isTile?Math.max(7,9*scale):6.2;
+  const cardW=isTile?Math.round(220*scale):148;
+  const gapX=isTile?0:10, gapY=isTile?0:8;
+  const cols=isTile?0:Math.max(5, Math.min(8, Math.ceil(Math.sqrt(model.tables.length*1.35))));
+  // Popup: re-pack into a denser grid so more of the inventory is on-screen
+  let laid=model.tables;
+  if(!isTile){
+    laid=[];
+    let y=48, i=0;
+    while(i<model.tables.length){
+      const row=model.tables.slice(i,i+cols);
+      let maxH=0;
+      row.forEach((t,j)=>{
+        const h=headH+t.cols.length*rowH+4;
+        maxH=Math.max(maxH,h);
+        laid.push({...t, x:16+j*(cardW+gapX), y, w:cardW});
+      });
+      y+=maxH+gapY;
+      i+=cols;
+    }
+  }
   const tables={}; let maxX=0,maxY=0; let o='',a='';
-  o+=T(20,Math.round(18*scale),model.title,{sz:Math.max(11,14*scale),w:600,a:'start',c:LIAM.ink});
-  o+=T(20,Math.round(34*scale),model.subtitle,{sz:Math.max(8,10*scale),c:LIAM.schema,a:'start'});
+  o+=T(16,isTile?Math.round(18*scale):14,model.title,{sz:isTile?Math.max(11,14*scale):12,w:600,a:'start',c:LIAM.ink});
+  o+=T(16,isTile?Math.round(34*scale):28,model.subtitle,{sz:isTile?Math.max(8,10*scale):9,c:LIAM.schema,a:'start'});
 
   const tableGeom=(t)=>{
-    const w=Math.round((t.w||220)*scale);
-    const x=Math.round(t.x*scale)+4;
-    const y=Math.round(t.y*scale)+Math.round(8*scale);
-    const h=headH+t.cols.length*rowH+Math.round(4*scale);
-    return {x,y,w,h};
+    if(isTile){
+      const w=Math.round((t.w||220)*scale);
+      const x=Math.round(t.x*scale)+4;
+      const y=Math.round(t.y*scale)+Math.round(8*scale);
+      const h=headH+t.cols.length*rowH+Math.round(4*scale);
+      return {x,y,w,h};
+    }
+    const w=t.w||cardW;
+    const h=headH+t.cols.length*rowH+4;
+    return {x:t.x, y:t.y, w, h};
   };
 
   const colY=(t,colName)=>{
@@ -411,7 +406,7 @@ export function dDatabase(D, dbId, inst=""){
     return g.y+headH+rowH*i+rowH/2;
   };
 
-  model.tables.forEach((t)=>{tables[t.id]=t;});
+  laid.forEach((t)=>{tables[t.id]=t;});
   (model.edges||[]).forEach((e)=>{
     const aT=tables[e.from], bT=tables[e.to];
     if(!aT||!bT) return;
@@ -423,10 +418,10 @@ export function dDatabase(D, dbId, inst=""){
     else { x1=ag.x+ag.w/2; x2=bg.x+bg.w/2; }
     // Orthogonal-ish cubic like Style A (no Issuing arrowheads, Liam gray connectors)
     const mx=(x1+x2)/2;
-    a+=`<path class="edge" d="M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}" fill="none" stroke="${LIAM.conn}" stroke-width="${Math.max(1.1,1.25*scale)}"/>`;
+    a+=`<path class="edge" d="M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}" fill="none" stroke="${LIAM.conn}" stroke-width="${isTile?Math.max(1.1,1.25*scale):1.1}"/>`;
   });
 
-  model.tables.forEach((t,ti)=>{
+  laid.forEach((t,ti)=>{
     const {x,y,w,h}=tableGeom(t);
     maxX=Math.max(maxX,x+w); maxY=Math.max(maxY,y+h);
     const hi=ti===0;
@@ -463,14 +458,14 @@ export function dDatabase(D, dbId, inst=""){
     o+=g+'</g>';
   });
 
-  const legendY=maxY+Math.round(24*scale);
-  o+=`<circle cx="28" cy="${legendY}" r="5" fill="none" stroke="${LIAM.green}" stroke-width="1.3"/><circle cx="28" cy="${legendY}" r="1.8" fill="${LIAM.green}"/>`;
-  o+=T(40,legendY,'PK',{sz:Math.max(9,11*scale),c:LIAM.schema,a:'start'});
-  o+=`<path d="M70,${legendY-3} h6 a3.2,3.2 0 0 1 0,6 h-3" fill="none" stroke="${LIAM.green}" stroke-width="1.3"/>`;
-  o+=T(92,legendY,'FK',{sz:Math.max(9,11*scale),c:LIAM.schema,a:'start'});
-  o+=T(130,legendY,'Liam light · metadata only · no row values',{sz:Math.max(9,10*scale),c:LIAM.schema,a:'start'});
-  const fullW=Math.max(980, maxX+28);
-  const fullH=legendY+Math.round(24*scale);
+  const legendY=maxY+(isTile?Math.round(24*scale):18);
+  o+=`<circle cx="28" cy="${legendY}" r="4.5" fill="none" stroke="${LIAM.green}" stroke-width="1.25"/><circle cx="28" cy="${legendY}" r="1.6" fill="${LIAM.green}"/>`;
+  o+=T(40,legendY,'PK',{sz:isTile?Math.max(9,11*scale):9,c:LIAM.schema,a:'start'});
+  o+=`<path d="M70,${legendY-3} h6 a3.2,3.2 0 0 1 0,6 h-3" fill="none" stroke="${LIAM.green}" stroke-width="1.25"/>`;
+  o+=T(92,legendY,'FK',{sz:isTile?Math.max(9,11*scale):9,c:LIAM.schema,a:'start'});
+  o+=T(130,legendY,'Liam light · metadata only · no row values',{sz:isTile?Math.max(9,10*scale):9,c:LIAM.schema,a:'start'});
+  const fullW=Math.max(isTile?980:cols*cardW+(cols-1)*gapX+40, maxX+20);
+  const fullH=legendY+(isTile?Math.round(24*scale):16);
   // Domains tile thumbnail: crop to top-left Liam green chrome (not a tiny full-map / Issuing overview)
   if(isTile){
     const cropW=Math.min(fullW, 1020);

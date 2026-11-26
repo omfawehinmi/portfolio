@@ -1192,30 +1192,83 @@ body:has(dialog.project-dialog[open]) .scrollup {
   padding: 0.28rem 0.55rem;
 }
 
-/* Fullscreen Domains ERD dialog */
-dialog.project-dialog.bx-dialog.bx-dialog--erd-full {
-  width: calc(100vw - 1rem);
-  max-width: calc(100vw - 1rem);
-  height: calc(100vh - 1rem);
-  max-height: calc(100vh - 1rem);
-  padding: 1rem 1.15rem 1.15rem;
+/* Domains ERD popup only (not the project tile) — near-fullscreen so the dense full ERD fits */
+dialog.project-dialog.bx-dialog.bx-dialog--erd-full,
+.services__modal-content.bx-dialog.bx-dialog--erd-full {
+  width: calc(100vw - 0.75rem) !important;
+  max-width: calc(100vw - 0.75rem) !important;
+  height: calc(100vh - 0.75rem) !important;
+  max-height: calc(100vh - 0.75rem) !important;
+  padding: 0.75rem 0.9rem 0.9rem;
   border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-dialog.project-dialog.bx-dialog.bx-dialog--erd-full .bx-fig--erd {
+.bx-dialog.bx-dialog--erd-full .services__modal-title {
+  font-size: 1.25rem;
+  margin: 0.05rem 0 0.15rem;
+}
+
+.bx-dialog.bx-dialog--erd-full .services__modal-services {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.bx-dialog.bx-dialog--erd-full .bx-panel-body--erd {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.bx-dialog.bx-dialog--erd-full .bx-erd-meta {
+  flex: 0 0 auto;
+  max-height: 6.5rem;
   overflow: auto;
-  max-height: calc(100vh - 11rem);
-  margin: 0.25rem 0 0.55rem;
-  padding: 0.25rem 0;
+  margin-top: 0.15rem;
+}
+
+.bx-dialog.bx-dialog--erd-full .bx-erd-meta .bx-lede,
+.bx-dialog.bx-dialog--erd-full .bx-erd-meta > p {
+  font-size: 0.82rem;
+  margin: 0.25rem 0;
+}
+
+.bx-dialog.bx-dialog--erd-full .bx-dbtabs {
+  flex: 0 0 auto;
+  margin: 0.1rem 0 0.35rem;
+}
+
+.bx-dialog.bx-dialog--erd-full .bx-fig--erd {
+  overflow: auto;
+  flex: 1 1 auto;
+  min-height: 12rem;
+  max-height: none !important;
+  margin: 0.15rem 0 0.35rem;
+  padding: 0.15rem 0;
   background: transparent;
 }
 
-dialog.project-dialog.bx-dialog.bx-dialog--erd-full .bx-fig--erd .bx-svg,
-dialog.project-dialog.bx-dialog.bx-dialog--erd-full .bx-fig--erd svg.bx-arch--liam {
-  width: max(100%, 980px);
-  max-width: none;
+.bx-dialog.bx-dialog--erd-full .bx-fig--erd .bx-svg,
+.bx-dialog.bx-dialog--erd-full .bx-fig--erd svg.bx-arch--liam {
+  /* Dense full-size ERD — scroll inside fig; never force thumbnail max-height */
+  width: 100%;
+  max-width: none !important;
   height: auto;
-  max-height: none;
+  max-height: none !important;
+}
+
+/* Override the generic dialog SVG max-height for Domains ERD popup only */
+dialog.project-dialog.bx-dialog.bx-dialog--erd-full .bx-fig-big .bx-svg,
+dialog.project-dialog.bx-dialog.bx-dialog--erd-full .bx-fig-big svg,
+dialog.project-dialog.bx-dialog.bx-dialog--erd-full .bx-fig-big:has(.bx-arch--liam) {
+  max-height: none !important;
 }
 
 .bx-dialog.bx-dialog--erd-full .services__modal-close:focus-visible {
