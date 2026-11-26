@@ -6,6 +6,21 @@ import ArchitectureDiagram from './diagrams/ArchitectureDiagram.jsx'
 import Icon from './ui/Icon.jsx'
 import Modal from './ui/Modal.jsx'
 import SectionHeader from './ui/SectionHeader.jsx'
+
+/** Left jump rail: labeled anchors for each project block (full-height sticky). */
+const PROJECT_RAIL = [
+  { id: 'lead', label: 'Lead' },
+  { id: 'workflow', label: 'Ship path' },
+  { id: 'pipes', label: 'Source feeds' },
+  { id: 'dbt', label: 'dbt' },
+  { id: 'airflow', label: 'Airflow' },
+  { id: 'domains', label: 'Databases' },
+  { id: 'mcp', label: 'MCP / agents' },
+  { id: 'security', label: 'Roles & Cortex' },
+  { id: 'features', label: 'Catalogs' },
+  { id: 'more', label: 'More work' },
+]
+
 const KICKERS = {
   mcp: 'Request path',
   workflow: 'CI / CD ship path',
@@ -143,10 +158,68 @@ function onTileKey(event, id, onOpen) {
   }
 }
 
+function useProjectRailActive(ids) {
+  const [activeId, setActiveId] = useState(ids[0] || null)
+
+  useEffect(() => {
+    const nodes = ids
+      .map((id) => document.getElementById(`project-${id}`))
+      .filter(Boolean)
+    if (!nodes.length) return undefined
+
+    const visible = new Map()
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const key = entry.target.id.replace(/^project-/, '')
+          if (entry.isIntersecting) visible.set(key, entry.intersectionRatio)
+          else visible.delete(key)
+        })
+        let best = null
+        let bestRatio = -1
+        visible.forEach((ratio, key) => {
+          if (ratio > bestRatio) {
+            best = key
+            bestRatio = ratio
+          }
+        })
+        if (best) setActiveId(best)
+      },
+      { rootMargin: '-35% 0px -45% 0px', threshold: [0, 0.15, 0.35, 0.55, 0.75, 1] },
+    )
+    nodes.forEach((node) => observer.observe(node))
+    return () => observer.disconnect()
+  }, [ids])
+
+  return activeId
+}
+
+function ProjectsJumpRail({ items, activeId }) {
+  return (
+    <nav className="bx-rail" aria-label="Projects sections">
+      <ol className="bx-rail__list">
+        {items.map((item) => (
+          <li key={item.id}>
+            <a
+              href={`#project-${item.id}`}
+              className={`bx-rail__link${activeId === item.id ? ' is-active' : ''}`}
+              aria-current={activeId === item.id ? 'true' : undefined}
+            >
+              <span className="bx-rail__dot" aria-hidden="true" />
+              <span className="bx-rail__label">{item.label}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}
+
 function LeadTile({ onOpen, tall }) {
   const L = COPY.lead
   return (
     <article
+      id="project-lead"
       className="bx-tile bx-lead"
       data-testid="project-tile"
       tabIndex={0}
@@ -180,6 +253,7 @@ function LeadTile({ onOpen, tall }) {
 function ArchitectureTile({ tile, onOpen, tall }) {
   return (
     <article
+      id={`project-${tile.id}`}
       className={`bx-tile bx-t-${tile.id}`}
       data-testid="project-tile"
       tabIndex={0}
@@ -425,6 +499,8 @@ function LegacyBody({ project, onOpen }) {
 export default function Projects({ openId, onOpen }) {
   const tall = useNarrow()
   const open = resolveOpen(openId)
+  const railIds = PROJECT_RAIL.map((item) => item.id)
+  const activeRail = useProjectRailActive(railIds)
   const modalTitle =
     open.kind === 'lead'
       ? COPY.lead.title
@@ -447,6 +523,7 @@ export default function Projects({ openId, onOpen }) {
   return (
     <section className="projects section" id="projects">
       <SectionHeader title={COPY.section.title} subtitle={COPY.section.kicker} />
+      {!tall ? <ProjectsJumpRail items={PROJECT_RAIL} activeId={activeRail} /> : null}
 
       <div className="container bx">
         <p className="bx-intro">{COPY.section.intro}</p>
@@ -456,7 +533,9 @@ export default function Projects({ openId, onOpen }) {
             <ArchitectureTile key={tile.id} tile={tile} onOpen={onOpen} tall={tall} />
           ))}
         </div>
-        <h3 className="bx-morehead">More shipped work</h3>
+        <h3 id="project-more" className="bx-morehead">
+          More shipped work
+        </h3>
         <div className="bx-grid bx-more">
           {moreItems.map((item, index) => (
             <MoreCard key={item.id} item={item} featured={index === 0} onOpen={onOpen} />
