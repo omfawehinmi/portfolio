@@ -32,7 +32,7 @@ export const COPY = {
       { n: '4', label: 'prod databases' },
       { n: '3', label: 'MCP servers' },
       { n: '16', label: 'Airflow DAG files' },
-      { n: '4', label: 'live source feeds' },
+      { n: '4', label: 'source feeds (by target DB)' },
       { n: '15', label: 'SV_* Analyst views' },
       { n: '6', label: 'CS_* search services' },
     ],
