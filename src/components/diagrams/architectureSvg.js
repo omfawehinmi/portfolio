@@ -387,10 +387,12 @@ export function dDatabase(D, dbId, inst=""){
     });
     const order=[...SCHEMA_COL_ORDER.filter((s)=>bySchema[s]), ...Object.keys(bySchema).filter((s)=>!SCHEMA_COL_ORDER.includes(s)).sort()];
     laid=[]; schemaLabels=[];
-    const colTop=52;
+    // Leave room under title+subtitle so schema header chips don't cover the lede
+    const headerY=48;
+    const colTop=headerY+12;
     order.forEach((schema, ci)=>{
       const x=16+ci*(cardW+gapX);
-      schemaLabels.push({schema, x, y:36});
+      schemaLabels.push({schema, x, y:headerY});
       let y=colTop;
       bySchema[schema].forEach((t)=>{
         const h=headH+t.cols.length*rowH+4;
@@ -447,9 +449,10 @@ export function dDatabase(D, dbId, inst=""){
     g+=`<rect x="${x}" y="${y+headH-8}" width="${w}" height="8" fill="${LIAM.header}"/>`;
     g+=`<path d="M${x},${y+headH} H${x+w}" stroke="${LIAM.border}"/>`;
     const schemaW=meas(t.schema,schemaSz,500,0,1)/0.9+8;
-    const nameMax=Math.max(48,w-2*padX-schemaW-6);
-    const nameLines=wrapW(t.name,nameMax,nameSz,600,0,1).slice(0,1);
-    g+=T(x+padX,y+headH/2,nameLines[0]||t.name,{sz:nameSz,w:600,a:'start',c:LIAM.ink,mono:1});
+    const nameMax=Math.max(40,w-2*padX-schemaW-8);
+    let tableName=(wrapW(t.name,nameMax,nameSz,600,0,1)[0])||t.name;
+    if(tableName.length < t.name.length) tableName=tableName.replace(/[_\s]?$/,'')+'…';
+    g+=T(x+padX,y+headH/2,tableName,{sz:nameSz,w:600,a:'start',c:LIAM.ink,mono:1});
     g+=T(x+w-padX,y+headH/2,t.schema,{sz:schemaSz,c:LIAM.schema,a:'end',mono:1});
     t.cols.forEach((c,i)=>{
       const yy=y+headH+i*rowH;
@@ -465,8 +468,9 @@ export function dDatabase(D, dbId, inst=""){
       }
       const typeLabel=String(c.type||'');
       const typeW=meas(typeLabel,typeSz,400,0,1)/0.9+6;
-      const colNameMax=Math.max(40,w-padX-16-padX-typeW-4);
-      const colName=(wrapW(c.name,colNameMax,nameSz-0.5,400,0,1)[0])||c.name;
+      const colNameMax=Math.max(36,w-padX-16-padX-typeW-6);
+      let colName=(wrapW(c.name,colNameMax,nameSz-0.5,400,0,1)[0])||c.name;
+      if(colName.length < c.name.length) colName=colName.replace(/[_\s]?$/,'')+'…';
       g+=T(x+padX+16,iy,colName,{sz:nameSz-0.5,a:'start',c:LIAM.ink,mono:1});
       g+=T(x+w-padX,iy,typeLabel,{sz:typeSz,a:'end',c:LIAM.type,mono:1});
     });
