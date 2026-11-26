@@ -40,13 +40,30 @@ const LEAD_CAPTION =
   'As-built: MCP_HOUSEHOLD_LEDGER_GROK (read) and MCP_HOUSEHOLD_LEDGER (write) in front of SV_* / CS_* on HOUSEHOLD_LEDGER.'
 
 const MORE_PREVIEW = {
-  'hr-intelligence': { src: publicUrl('assets/img/bento/hr-intelligence.jpg'), sample: true },
-  myorglab: { src: publicUrl('assets/img/bento/myorglab.jpg'), sample: true },
+  'hr-intelligence': { src: publicUrl('assets/img/bento/hr-intelligence.jpg'), sample: false },
+  myorglab: { src: publicUrl('assets/img/bento/myorglab.jpg'), sample: false },
   'sof-portal': { src: publicUrl('assets/img/bento/sof-portal.jpg'), sample: true },
   palms: { src: publicUrl('assets/img/bento/palms.jpg'), sample: false },
   camera: { src: publicUrl('assets/img/bento/camera.jpg'), sample: false },
   inpainting: { src: publicUrl('assets/img/bento/inpainting.jpg'), sample: false },
 }
+
+/** Live MyOrgLab marketing + app shots (from Project media / Cloudflare preview). */
+const MYORGLAB_INDUSTRIES = [
+  { id: 'healthcare', label: 'Healthcare', src: publicUrl('assets/img/myorglab/industry-healthcare.png') },
+  { id: 'logistics', label: 'Logistics', src: publicUrl('assets/img/myorglab/industry-logistics.png') },
+  { id: 'legal', label: 'Legal', src: publicUrl('assets/img/myorglab/industry-legal.png') },
+  { id: 'finance', label: 'Finance', src: publicUrl('assets/img/myorglab/industry-finance.png') },
+  { id: 'public-sector', label: 'Public Sector', src: publicUrl('assets/img/myorglab/industry-public-sector.png') },
+]
+
+const MYORGLAB_APPS = [
+  { id: 'healthcare', label: 'Healthcare app', src: publicUrl('assets/img/myorglab/app-healthcare.png') },
+  { id: 'logistics', label: 'Logistics app', src: publicUrl('assets/img/myorglab/app-logistics.png') },
+  { id: 'legal', label: 'Legal app', src: publicUrl('assets/img/myorglab/app-legal.png') },
+  { id: 'finance', label: 'Finance app', src: publicUrl('assets/img/myorglab/app-finance.png') },
+  { id: 'public-sector', label: 'Public Sector app', src: publicUrl('assets/img/myorglab/app-public-sector.png') },
+]
 
 const OPEN_ALIASES = {
   lead: 'lead',
@@ -483,12 +500,45 @@ function TilePanel({ tile, tall }) {
   )
 }
 
+function ShotStrip({ title, shots }) {
+  if (!shots?.length) return null
+  return (
+    <div className="bx-shots">
+      <p className="bx-shots__label">{title}</p>
+      <ul className="bx-shots__list">
+        {shots.map((shot) => {
+          const size = intrinsicImageSize(shot.src)
+          return (
+            <li key={shot.id}>
+              <img
+                src={shot.src}
+                alt={shot.label}
+                width={size?.width}
+                height={size?.height}
+                loading="lazy"
+              />
+              <span>{shot.label}</span>
+            </li>
+          )
+        })}
+      </ul>
+    </div>
+  )
+}
+
 function MorePanel({ item }) {
+  const showMyOrgLabShots = item.prev === 'myorglab'
   return (
     <div className="bx-panel-body">
       <PreviewMedia item={item} big />
       <p>{item.line}</p>
       <Chips tags={item.tags} />
+      {showMyOrgLabShots ? (
+        <>
+          <ShotStrip title="Industry pages" shots={MYORGLAB_INDUSTRIES} />
+          <ShotStrip title="App surfaces" shots={MYORGLAB_APPS} />
+        </>
+      ) : null}
     </div>
   )
 }
