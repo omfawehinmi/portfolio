@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { COPY, DIAG } from '../data/architecture.js'
 import { intrinsicImageSize, publicUrl } from '../utils.js'
 import ArchitectureDiagram from './diagrams/ArchitectureDiagram.jsx'
+import McpMatrix from './McpMatrix.jsx'
 import { PLATFORM } from './diagrams/architectureSvg.js'
 import Icon from './ui/Icon.jsx'
 import SectionHeader from './ui/SectionHeader.jsx'
@@ -12,7 +13,8 @@ const PROJECT_RAIL = [
   { id: 'workflow', label: 'CI / CD ship path' },
   { id: 'pipes', label: 'Feeds → schemas' },
   { id: 'airflow', label: 'Airflow DAGs' },
-  { id: 'dbt', label: 'dbt transforms' },
+  { id: 'dbt', label: 'dbt layers' },
+  { id: 'terraform', label: 'Terraform · infra' },
   { id: 'domains', label: 'DBs · tables · models' },
   { id: 'mcp', label: 'MCP · agents · tools' },
   { id: 'security', label: 'Roles · WH · cost' },
@@ -26,7 +28,8 @@ const KICKERS = {
   workflow: 'CI / CD ship path',
   domains: 'Columns · tables · modeling',
   airflow: 'Scheduler inventory',
-  dbt: 'Transform layers',
+  dbt: 'Transform layers · triggers',
+  terraform: 'Infrastructure · apply · recovery',
   pipes: 'Source feeds → schemas',
   security: 'Roles · warehouses · cost',
   features: 'Semantic views · Cortex Search',
@@ -72,6 +75,7 @@ const OPEN_ALIASES = {
   domains: 'domains',
   airflow: 'airflow',
   dbt: 'dbt',
+  terraform: 'terraform',
   pipes: 'pipes',
   security: 'security',
   features: 'features',
@@ -426,7 +430,7 @@ function TileFigure({ tile, tall, inst, ship, onShip, dbId, big = false, caption
   return (
     <figure className={`bx-fig${big ? ' bx-fig-big' : ''}${tile.id === 'domains' ? ' bx-fig--lanes' : ''}`}>
       {tile.id === 'workflow' ? <ShipPathChips value={ship} onChange={onShip} /> : null}
-      <ArchitectureDiagram kind={tile.id} tall={tall} inst={inst} variant={variant} />
+      {tile.id === 'mcp' ? <McpMatrix /> : <ArchitectureDiagram kind={tile.id} tall={tall} inst={inst} variant={variant} />}
       {caption ? <figcaption>{caption}</figcaption> : null}
     </figure>
   )
@@ -435,7 +439,7 @@ function TileFigure({ tile, tall, inst, ship, onShip, dbId, big = false, caption
 function ArchitectureTile({ tile, onOpen, tall, expanded }) {
   const [ship, setShip] = useState(DIAG.workflow.platforms[0].id)
   const [dbId, setDbId] = useState(tile.databases?.[0]?.id || null)
-  const showRowsOnTile = tile.id === 'mcp' || tile.id === 'grokbot' || tile.id === 'security'
+  const showRowsOnTile = tile.id === 'grokbot' || tile.id === 'security'
   const isHero = tile.id === 'mcp' || tile.id === 'domains' || tile.id === 'grokbot'
   return (
     <article

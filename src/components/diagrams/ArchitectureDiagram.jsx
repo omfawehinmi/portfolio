@@ -3,6 +3,7 @@ import { DIAG } from '../../data/architecture.js'
 import { noteFor, tableNote } from '../../data/nodeNotes.js'
 import {
   dAirflow,
+  dTerraform,
   dDatabase,
   dDatabaseLanes,
   dDbt,
@@ -24,6 +25,7 @@ const builders = {
   domains: (_tall, inst, dbId) =>
     String(inst).includes('tile') ? dDatabaseLanes(DIAG, dbId || 'ledger', inst) : dDatabase(DIAG, dbId || 'ledger', inst),
   airflow: (_tall, inst) => dAirflow(DIAG, inst),
+  terraform: (_tall, inst) => dTerraform(DIAG, inst),
   dbt: (_tall, inst) => dDbt(DIAG, inst),
   pipes: (_tall, inst) => dPipes(DIAG, inst),
   security: (_tall, inst) => dSec(DIAG, inst),

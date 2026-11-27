@@ -167,12 +167,12 @@ export const COPY = {
         { t: 'Cosmos on one DAG only', d: 'Astronomer Cosmos turns dbt into one Airflow task per model, but only dbt_daily uses it. The daily ledger chain calls dbt directly.' },
       ],
       n: '5',
-      title: 'dbt layers and targets',
+      title: 'dbt: layers and what starts them',
       svg: 'dbt',
       body:
-        'RAW holds data exactly as it landed. CORE holds clean business objects and is often written in the same step as RAW. dbt builds staging models, marts and ANALYTICS on top of CORE. At 06:00 ET, ledger_dbt_daily runs dbt on LEDGER_WH or COMPUTE_WH, then triggers hr_dbt_daily and agentic_workforce_dbt_daily and waits for both, so everything fits in one LEDGER_WH window. A separate dbt_daily job has its own 06:00 Cosmos schedule targeting hl_prod and ANALYTICS_DBT, but it is created paused and is not part of that chain. Dev copies always target hl_dev and the *_DEV databases and never run on a schedule. How a pull request becomes a Terraform apply or an Airflow release is on the Ship path tile; this tile covers the transform layers.',
+        'RAW holds data exactly as it landed. CORE holds clean business objects and is often written in the same step as RAW. dbt builds staging models, marts and ANALYTICS on top of CORE, and the 15 semantic views sit on ANALYTICS. Three things start a dbt run. The schedule: at 06:00 ET, ledger_dbt_daily runs dbt on LEDGER_WH, then triggers hr_dbt_daily and agentic_workforce_dbt_daily and waits for both, so everything fits in one LEDGER_WH window. GitHub: every pull request builds the project on DuckDB and in a temporary per-PR schema, and a merge to main publishes the production manifest so later pull requests only build what changed. Manual runs: dev copies target hl_dev and the *_DEV databases and never run on a schedule. A separate dbt_daily job has its own 06:00 Cosmos schedule targeting hl_prod and ANALYTICS_DBT, but it is created paused and is not part of the chain. The databases, schemas and warehouse dbt builds into come from Terraform, which has its own block.',
       caption:
-        'RAW → CORE → dbt staging and marts → ANALYTICS and semantic views. Production targets hl_prod; dev targets hl_dev.',
+        'What starts dbt on the left: the schedule, GitHub, or a manual dev run. The layers it builds on the right, with production on hl_prod.',
       rows: [
         {
           name: 'RAW',
@@ -201,9 +201,30 @@ export const COPY = {
         },
         {
           name: 'HOUSEHOLD_LEDGER_CI.DBT_PR_<n>',
-          role: 'Per-PR dbt CI schema when secrets are set. The Ship path tile covers it',
+          role: 'Per-PR dbt CI schema when secrets are set, dropped when the pull request closes',
           status: 'CI only',
         },
+      ],
+    },
+    {
+      id: 'terraform',
+      choices: [
+        { t: 'One state for dev and prod', d: 'Dev and prod Snowflake resources share one Terraform state, so one plan shows both and the zero-destroy guard covers both.' },
+        { t: 'Containers in Terraform, logic with the loaders', d: 'Terraform owns databases, schemas, roles, grants, warehouses, monitors and policies. Procedures and tasks stay with the loaders that run them.' },
+        { t: 'Apply is a separate, manual step', d: 'Merging never applies. A manual run on main re-plans, re-runs the guard, and applies only after Michael’s go.' },
+      ],
+      n: '6',
+      title: 'Terraform: Snowflake infrastructure and recovery',
+      svg: 'terraform',
+      body:
+        'Terraform in infra/terraform/snowflake owns the shape of the Snowflake account: databases, schemas, roles and grants, warehouses, resource monitors and policies. Procedures and tasks stay with the loaders that run them. Dev and prod share one state, so a single plan shows both. Every pull request runs static checks and a read-only plan, and a guard fails the job if the plan would delete or replace anything. Merging lands code only; a manual run on main re-plans, re-runs the guard and applies after my explicit go. A nightly plan opens an issue when the account drifts from the code. Recovery has three layers: the state lives in an S3 backend with versioning and a lock table, Snowflake Time Travel and UNDROP bring back dropped or changed objects, and every apply re-plans first, so a bad change is reverted by applying the previous code.',
+      caption:
+        'What Terraform owns in Snowflake, the path from plan to apply, and how a change comes back.',
+      rows: [
+        { name: 'Owns', role: 'Databases, schemas, roles and grants, warehouses, resource monitors and policies', status: 'infra/terraform/snowflake' },
+        { name: 'Apply path', role: 'Static checks and a read-only plan on the pull request, a 0-destroy guard, then a manual apply after Michael’s go', status: 'Manual apply' },
+        { name: 'Drift', role: 'A nightly plan opens an issue when Snowflake and the code disagree', status: 'Nightly' },
+        { name: 'Recovery', role: 'Versioned S3 state with a lock table, Time Travel and UNDROP, and re-applying the previous code', status: 'Three layers' },
       ],
     },
     {
@@ -914,14 +935,63 @@ DIAG.airflow = {
     { id: 'drive_poll', lane: 'none', at: 'hourly', trigger: 'schedule', by: 'hourly', runs: 'Hourly', writes: 'document stages', logo: 'drive' },
   ],
 }
+DIAG.mcpMatrix = {
+  servers: [
+    { id: 'read', label: 'Read', name: 'MCP_HOUSEHOLD_LEDGER_GROK' },
+    { id: 'write', label: 'Write', name: 'MCP_HOUSEHOLD_LEDGER' },
+    { id: 'yt', label: 'YouTube', name: 'MCP_MOONSHOTS' },
+  ],
+  desks: [
+    { name: 'Eta (Household COO)', access: 'read and write' },
+    { name: 'Stephen (Household CFO)', access: 'read' },
+    { name: 'Cynthia (Moonshot and architecture advisory)', access: 'Moonshots' },
+  ],
+  otherClients: [{ name: 'Cursor', access: 'write server' }],
+  cortexAgents: ['AGENT_HOUSEHOLD_FINANCE', 'AGENT_HOUSEHOLD_FINANCE_RO', 'AGENT_LEDGER_OPS'],
+  cortexNote: 'Called as tools through household_finance_agent and ledger_ops_agent, on the 15 semantic views and Cortex Search.',
+  families: [
+    { id: 'agents', t: 'Cortex agent calls', kind: ['read'], n: { read: 2, write: 2 }, tools: ['household_finance_agent', 'ledger_ops_agent'] },
+    { id: 'analyst', t: 'Analyst on semantic views', kind: ['read'], n: { read: 15, write: 15 }, tools: ['analyst_spending', 'analyst_transactions', 'analyst_cashflow', 'analyst_balances_net_worth', 'analyst_liabilities_dues', 'analyst_early_activity', 'analyst_budget_variance', 'analyst_investments', 'analyst_obligations', 'analyst_document_standing', 'analyst_recurring_fixed', 'analyst_accounts_receivable', 'analyst_debt_payoff', 'analyst_savings_goals', 'analyst_ops_freshness'] },
+    { id: 'search', t: 'Cortex Search', kind: ['read'], n: { read: 4, write: 4 }, tools: ['search_documents', 'search_emails', 'search_gaps', 'search_parse_review'] },
+    { id: 'docs', t: 'Documents', kind: ['read', 'write'], n: { read: 2, write: 8 }, tools: ['proc_document_stage_list', 'proc_document_download', 'proc_document_pipeline_folders', 'proc_drive_docs_ingest', 'proc_document_extract', 'proc_document_ingest_and_extract', 'proc_enqueue_doc_job', 'proc_get_doc_job'], readTools: 2 },
+    { id: 'monarch', t: 'Monarch', kind: ['write'], n: { write: 4 }, tools: ['proc_monarch_extract', 'proc_monarch_holdings_extract', 'proc_monarch_mutate', 'proc_enqueue_monarch_extract_followup'] },
+    { id: 'ledger', t: 'Ledger and reconcile', kind: ['write'], n: { write: 2 }, tools: ['proc_ledger_mutate', 'proc_reconcile_pending'] },
+    { id: 'email', t: 'Email pipeline', kind: ['write'], n: { write: 2 }, tools: ['proc_gmail_ingest', 'proc_email_pipeline'] },
+    { id: 'ops', t: 'Freshness, QA and rebuild', kind: ['write'], n: { write: 3 }, tools: ['proc_get_freshness', 'proc_qa_ledger_health', 'proc_rebuild_analytics'] },
+    { id: 'market', t: 'Market prices', kind: ['write'], n: { write: 1 }, tools: ['proc_metal_spot'] },
+    { id: 'async', t: 'Async agent runs', kind: ['read'], n: { write: 3 }, tools: ['ASYNC_AGENT_RUN_STATUS', 'AGENT_RUN_RESULT', 'ASYNC_AGENT_RUN_CANCEL'] },
+    { id: 'ytcat', t: 'YouTube catalog', kind: ['read'], n: { yt: 6 }, tools: ['get_channel', 'list_videos', 'get_video', 'get_video_topics', 'list_transactions', 'get_catalog_counts'] },
+    { id: 'ytsearch', t: 'Transcript and video search', kind: ['read'], n: { yt: 6 }, tools: ['search_videos', 'search_transcripts', 'search_transcripts_semantic', 'search_videos_semantic', 'search_cs_transcripts', 'search_cs_videos'] },
+    { id: 'ytstatus', t: 'Sync status', kind: ['read'], n: { yt: 2 }, tools: ['get_youtube_sync_status', 'get_transcript_coverage'] },
+    { id: 'ytjobs', t: 'Sync and embedding jobs', kind: ['jobs'], n: { yt: 3 }, tools: ['proc_youtube_sync', 'proc_embed_transcripts', 'proc_refresh_cs_transcripts'] },
+  ],
+}
 DIAG.dbt = {
-  title: 'dbt path from RAW/CORE to ANALYTICS and prod apply',
+  title: 'What starts dbt and the layers it builds',
+  triggers: [
+    { t: 'Schedule', s: 'ledger_dbt_daily at 06:00 ET', target: 'hl_prod', logo: 'airflow', hero: true },
+    { t: 'GitHub', s: 'pull request on DuckDB and a per-PR schema · main publishes the manifest', target: 'DBT_PR_<n>', logo: 'github' },
+    { t: 'Manual', s: 'dev runs into the *_DEV databases, never scheduled', target: 'hl_dev', logo: 'person' },
+  ],
   layers: [
-    { t: 'RAW', s: 'landed payloads' },
-    { t: 'CORE', s: 'business objects' },
-    { t: 'dbt STAGING / marts', s: 'hl_prod · ledger_dbt_daily / dbt_daily' },
-    { t: 'ANALYTICS + semantic views', s: '15 Analyst views' },
-    { t: 'CI → merge → apply', s: 'PR schema · Terraform · Airflow pin pull' },
+    { t: 'RAW', s: 'data as it landed', cyl: true },
+    { t: 'CORE', s: 'business objects, often written with RAW', cyl: true },
+    { t: 'STAGING and marts', s: 'dbt models on CORE', dbt: true },
+    { t: 'ANALYTICS and semantic views', s: '15 Analyst views', dbt: true, hero: true },
+  ],
+}
+DIAG.terraform = {
+  title: 'Terraform for Snowflake: what it owns, how it applies, how it recovers',
+  owns: ['Databases', 'Schemas', 'Roles and grants', 'Warehouses', 'Resource monitors', 'Policies'],
+  apply: [
+    { t: 'plan', s: 'read-only OIDC role · dev and prod in one plan' },
+    { t: '0-destroy guard', s: 'any delete or replace fails the job', gate: 'override needs a go' },
+    { t: 'Manual apply', s: 'on main · re-plan and guard again', gate: 'Michael’s go', hero: true },
+  ],
+  recover: [
+    { t: 'Versioned state', s: 'S3 backend with versioning and a lock table' },
+    { t: 'Time Travel and UNDROP', s: 'dropped or changed objects come back' },
+    { t: 'Nightly drift check', s: 'opens an issue when Snowflake and code disagree' },
   ],
 }
 DIAG.erd.searchNote =

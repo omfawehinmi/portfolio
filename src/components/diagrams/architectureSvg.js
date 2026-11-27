@@ -596,15 +596,57 @@ export function dAirflow(D, inst=""){
     else{const sx=p.x+cw/2+(narrow?0:30);a+=arrow(`M${sx},${p.y+p.h} V${q.y+q.h/2} H${q.x-3}`,'c')}});
   return svg(W,y-8,A.title,a+o)};
 
+/** Left-aligned card (Ship path style) with optional pill and platform badge; returns {g,h}. */
+const PILLS={gate:{c:'#b54708',f:'#fffaeb',s:'#fedf89'},ok:{c:'#0f7a4c',f:'#ecfdf3',s:'#abefc6'},plain:{c:LIAM.schema,f:'#fff',s:LIAM.border}};
+const lcard=(x,y,w,c,o={})=>{const tsz=o.tsz||9.2,ssz=o.ssz||8,lh=1.25;const rsv=badgeReserve(c.logo);
+  const tl=wrapW(c.t,w-18-rsv,tsz,600),sl=c.s?wrapW(c.s,w-18-rsv,ssz,400):[];const pill=c.gate||c.target;
+  const h=Math.max(o.h||0,12+tl.length*tsz*lh+sl.length*ssz*lh+(pill?19:0));let g='',ty=y+6;
+  tl.forEach((l)=>{g+=T(x+9,ty+tsz*lh/2,l,{sz:tsz,w:600,a:'start',c:LIAM.ink});ty+=tsz*lh});
+  sl.forEach((l)=>{g+=T(x+9,ty+ssz*lh/2,l,{sz:ssz,a:'start',c:LIAM.schema});ty+=ssz*lh});
+  if(pill){const P=c.gate?PILLS.gate:PILLS.ok;const pw=meas(pill,7.4,600,0,!c.gate)/0.9+14;g+=`<rect x="${x+9}" y="${ty+3}" width="${pw}" height="14" rx="7" fill="${P.f}" stroke="${P.s}"/>`+T(x+9+pw/2,ty+10.4,pill,{sz:7.4,w:600,c:P.c,mono:!c.gate})}
+  const hero=!!c.hero;const dash=!!o.dash;
+  return {h,g:`<g class="nd" tabindex="0" role="button" data-node="${esc(c.t)}" data-b="${x},${y},${w},${h},9,6" data-shape="box"><g class="nd-face"${dash?'':` filter="url(#${ID}sh)"`}><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="${hero?'#f4fbf7':'#fff'}" stroke="${hero?LIAM.green:LIAM.border}" stroke-width="${hero?1.4:1}"${dash?' stroke-dasharray="3.5 3.5"':''}/></g>${g}${platformBadge(x,y,w,h,c.logo)}</g>`}};
+
 export function dDbt(D, inst=""){
-  begin(true,inst);
-  ID='db'+inst;const L=D.dbt.layers;const W=380;let o='',a='';
-  let y=12;
-  L.forEach((l,i)=>{const cyl=i<2;const z=i<4?'data':'src';
-   const n=node(cyl?'cyl':'box',36,y,308,n2(l.t,l.s,8.6),{h:cyl?40:30,z,platform:i<4?'dbt':'airflow'});o+=n.g;
-   if(i<L.length-1)a+=arrow(`M190,${y+n.h} V${y+n.h+12}`,'c');
-   y+=n.h+14});
-  return svg(W,y,D.dbt.title,a+o)};
+  begin(true,inst);setDensity(1);ID='db'+inst;const B=D.dbt;let o='',a='';
+  const narrow=typeof window!=='undefined'&&window.innerWidth<560;
+  const W=narrow?350:528,pad=10;
+  if(narrow){
+    o+=lab(pad,10,'What starts it');let y=20;const tops=[];
+    B.triggers.forEach((t)=>{const c=lcard(pad,y,W-2*pad,t);o+=c.g;tops.push(y);y+=c.h+8});
+    a+=arrow(`M${W/2},${y-6} V${y+12}`,'c');y+=16;o+=lab(pad,y+4,'What it builds');y+=14;
+    B.layers.forEach((l,i)=>{const n=node(l.cyl?'cyl':'box',pad,y,W-2*pad,n2(l.t,l.s,9),{h:l.cyl?40:30,hero:!!l.hero,platform:l.dbt?'dbt':undefined});o+=n.g;if(i<B.layers.length-1)a+=arrow(`M${W/2},${y+n.h} V${y+n.h+10}`,'c');y+=n.h+12});
+    return svg(W,y,B.title,a+o)}
+  const lw=196,rx=lw+pad+40,rw=W-rx-pad;
+  o+=lab(pad,10,'What starts it')+lab(rx,10,'What it builds');
+  let ry=22;const ln=[];
+  B.layers.forEach((l,i)=>{const n=node(l.cyl?'cyl':'box',rx,ry,rw,n2(l.t,l.s,9),{h:l.cyl?40:30,hero:!!l.hero,platform:l.dbt?'dbt':undefined});o+=n.g;ln.push(n);if(i<B.layers.length-1)a+=arrow(`M${rx+rw/2},${ry+n.h} V${ry+n.h+10}`,'c');ry+=n.h+12});
+  const g0=ln[2],g1=ln[3];const gy=g0.y-6,gh=g1.y+g1.h+6-gy;
+  o=group(rx-6,gy,rw+12,gh,'',{})+o;o+=T(rx+rw+2,gy-3,'dbt builds',{sz:7.4,a:'end',c:LIAM.schema,mono:1});
+  const cards=B.triggers.map((t)=>lcard(pad,0,lw,t));const tot=cards.reduce((s2,c)=>s2+c.h,0)+(cards.length-1)*10;
+  let ty=Math.max(22,Math.round(gy+gh/2-tot/2));const tgt=gy+gh/2;
+  B.triggers.forEach((t,k)=>{const c=lcard(pad,ty,lw,t);o+=c.g;const my=ty+c.h/2;a+=arrow(`M${pad+lw},${my} C${pad+lw+20},${my} ${rx-26},${tgt} ${rx-9},${tgt}`,'c');ty+=c.h+10});
+  const H=Math.max(ry,ty)+4;
+  return svg(W,H,B.title,a+o)};
+
+export function dTerraform(D, inst=""){
+  begin(true,inst);setDensity(1);ID='tf'+inst;const F=D.terraform;let o='',a='';
+  const narrow=typeof window!=='undefined'&&window.innerWidth<560;
+  const pad=10,gx=22,cw=narrow?330:156,half=cw*3+gx*2;const W=narrow?350:pad*2+half*2+36;
+  let y=6;o+=lab(pad,y+5,'Owns in Snowflake');y+=14;
+  let x=pad;const ch=20;
+  F.owns.forEach((t)=>{const w=Math.ceil(meas(t,8.4,600))/0.9+16;if(x>pad&&x+w>W-pad){x=pad;y+=ch+6}
+    o+=`<g class="nd" tabindex="0" role="button" data-node="${esc(t)}" data-b="${x},${y},${w},${ch},8,0" data-shape="pill"><g class="nd-face"><rect x="${x}" y="${y}" width="${w}" height="${ch}" rx="${ch/2}" fill="#f8f4fd" stroke="#d9c9f2"/></g>`+T(x+w/2,y+ch/2+0.4,t,{sz:8.4,w:600,c:'#5b2a9b'})+'</g>';x+=w+6});
+  y+=ch+16;
+  const row=(items,title,x0,y0,dash)=>{let yy=y0;o+=lab(x0,yy+5,title);yy+=14;const h=narrow?0:Math.max(...items.map((c)=>lcard(0,0,cw,c).h));
+    items.forEach((c,k)=>{const cx=narrow?x0:x0+k*(cw+gx);const r=lcard(cx,yy,cw,{...c,logo:k===0&&!dash?'terraform':c.logo},{h,dash});o+=r.g;
+      if(!narrow&&k>0&&!dash)a+=arrow(`M${cx-gx+3},${yy+h/2} H${cx-3}`,'c');
+      if(narrow){if(k<items.length-1&&!dash)a+=arrow(`M${W/2},${yy+r.h} V${yy+r.h+8}`,'c');yy+=r.h+10}});
+    return narrow?yy+6:yy+h+16};
+  if(narrow){y=row(F.apply,'Plan to apply',pad,y,false);y=row(F.recover,'How it comes back',pad,y,true)}
+  else{const xR=pad+half+36;const e1=row(F.apply,'Plan to apply',pad,y,false);const e2=row(F.recover,'How it comes back',xR,y,true);
+    o+=`<line x1="${pad+half+18}" y1="${y}" x2="${pad+half+18}" y2="${Math.max(e1,e2)-16}" stroke="${LIAM.border}" stroke-dasharray="3 3"/>`;y=Math.max(e1,e2)}
+  return svg(W,y-8,F.title,a+o)};
 
 export function dRearch(inst=""){
   begin(true,inst);ID='r'+inst;let o='',a='';
