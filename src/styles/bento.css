@@ -780,12 +780,11 @@ p.bx-subhead {
   }
 
   .bx-t-workflow,
-  .bx-t-pipes,
-  .bx-t-security,
-  .bx-t-features {
+  .bx-t-pipes {
     grid-column: span 6;
   }
 
+  .bx-t-security,
   .bx-t-airflow,
   .bx-t-dbt,
   .bx-t-domains,
@@ -795,7 +794,6 @@ p.bx-subhead {
     grid-column: span 12;
   }
 
-  .bx-t-features .project-tile__outcome:not(.is-clamped),
   .bx-t-pipes .project-tile__outcome:not(.is-clamped),
   .bx-t-security .project-tile__outcome:not(.is-clamped),
   .bx-t-airflow .project-tile__outcome:not(.is-clamped),

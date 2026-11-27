@@ -305,23 +305,13 @@ export const COPY = {
       ],
     },
     {
-      id: 'features',
-      n: '9',
-      title: 'Catalogs and Snowflake features',
-      svg: 'features',
-      body:
-        '15 semantic views define what agents may total: SV_SPENDING, SV_CASHFLOW, SV_BALANCES_NET_WORTH, SV_LIABILITIES_DUES, SV_EARLY_ACTIVITY, SV_BUDGET_VARIANCE, SV_INVESTMENTS, SV_OBLIGATIONS, SV_DOCUMENT_STANDING, SV_OPS_FRESHNESS, SV_TRANSACTIONS, SV_RECURRING_FIXED, SV_DEBT_PAYOFF, SV_ACCOUNTS_RECEIVABLE and SV_SAVINGS_GOALS. Six Cortex Search services handle text: CS_DOCUMENTS, CS_EMAIL_MESSAGES, CS_GAPS_IDEA and CS_PARSE_REVIEW on the ledger, and CS_TRANSCRIPTS and CS_VIDEOS on Moonshots. The Cortex agents are AGENT_HOUSEHOLD_FINANCE, AGENT_HOUSEHOLD_FINANCE_RO and AGENT_LEDGER_OPS. MCP servers expose these as read or write. Warehouse work is batched into one load window, and agent questions run on a separate warehouse.',
-      caption:
-        '15 semantic views and 6 Cortex Search services. MCP_HOUSEHOLD_LEDGER_GROK and MCP_HOUSEHOLD_LEDGER sit in front of them.',
-    },
-    {
       id: 'grokbot',
       choices: [
         { t: 'One voice for money', d: 'Stephen (Household CFO) is the only bot that answers money and spend questions. Other desks route those questions to him.' },
         { t: 'Approvals are relayed, not assumed', d: 'Eta (Household COO) speaks for Michael when she relays a go. Without that go, a plan stays a plan.' },
         { t: 'Cortex agents are not Grok bots', d: 'AGENT_HOUSEHOLD_FINANCE, AGENT_HOUSEHOLD_FINANCE_RO and AGENT_LEDGER_OPS are Cortex agents defined in SQL, separate from the Grok bot staff.' },
       ],
-      n: '10',
+      n: '9',
       title: 'Grokbot architecture — agents per MCP',
       svg: 'grokbot',
       body:
@@ -578,36 +568,7 @@ export const DIAG = {
       },
     ],
   },
-  features: {
-    title: 'Catalogs and MCP split',
-    layers: [
-      {
-        label: 'MCP servers in CTRL',
-        nodes: [
-          { t: 'MCP_HOUSEHOLD_LEDGER_GROK', e: 1 },
-          { t: 'MCP_HOUSEHOLD_LEDGER', e: 1 },
-        ],
-      },
-      {
-        label: 'Catalogs',
-        nodes: [
-          { t: 'Semantic views', s: 'Analyst catalogs' },
-          { t: 'Cortex Search', s: 'Search catalogs' },
-        ],
-      },
-      {
-        label: 'Schemas',
-        nodes: [{ t: 'RAW / CORE / CTRL / ANALYTICS', s: 'defined row meaning' }],
-      },
-      {
-        label: 'Warehouses',
-        nodes: [
-          { t: 'LEDGER_WH / INGEST_WH', s: 'batched load window' },
-          { t: 'Interactive / agents', s: 'separate warehouse' },
-        ],
-      },
-    ],
-  },
+
   mcpTools: {
     title: 'MCP servers, agents, and tool families',
     note: '',
@@ -920,38 +881,6 @@ Object.assign(DIAG.security, {
   gate: { t: 'R_CORTEX_GATE', s: 'sole SNOWFLAKE.CORTEX_USER' },
   cat: ['certified semantic views', 'Cortex Search services'],
 })
-
-DIAG.features.title = 'Snowflake capability matrix'
-DIAG.features.rows = [
-  {
-    label: 'Access',
-    z: 'agent',
-    cells: [
-      { i: 'hex', t: 'MCP_HOUSEHOLD_LEDGER_GROK', s: 'no write tools' },
-      { i: 'hex', t: 'MCP_HOUSEHOLD_LEDGER', s: 'mutate + pipeline procs' },
-    ],
-  },
-  {
-    label: 'Catalogs',
-    z: 'data',
-    cells: [
-      { i: 'grid', t: 'Semantic views', s: 'Analyst catalogs' },
-      { i: 'search', t: 'Cortex Search', s: 'Search catalogs' },
-    ],
-  },
-  {
-    label: 'Data',
-    z: 'data',
-    cells: [{ i: 'layers', t: 'RAW / CORE / CTRL / ANALYTICS', s: 'schemas in product DBs' }],
-  },
-  {
-    label: 'Warehouses',
-    cells: [
-      { i: 'clock', t: 'LEDGER_WH / INGEST_WH', s: 'batched load window' },
-      { i: 'split', t: 'Interactive / agents', s: 'separate warehouse' },
-    ],
-  },
-]
 
 COPY.industries = {
   line: 'The same pattern also covers Healthcare, Logistics, Legal, Finance and Operations, and Public Sector.',

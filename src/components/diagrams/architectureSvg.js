@@ -331,23 +331,6 @@ export function dStack(D, inst=""){
   o+=T(x+w-10,y+h/2,l.label.toUpperCase(),{sz:fs(7.4),w:500,ls:.35,mono:1,c:z?z.k:C.sub,a:'end'})+`</g>`});
  return svg(W,8+L.length*(h+4)+4,D.stack.title,o)};
 
-// 7. Snowflake features: capability matrix, hairline cells, accent icons.
-export function dFeat(D, inst=""){
-  begin(true,inst);ID='f'+inst;const R=D.features.rows;const W=448;let o='';const rh=28,hx=78,cw=178,pad=6;const FH=pad*2+R.length*(rh+4)-4;
- const icon=(k,x,y,s)=>{switch(k){
-  case 'hex':return `<rect x="${x}" y="${y+1}" width="11" height="10" rx="2" fill="none" stroke="${s}" stroke-width="1.1"/><path d="M${x+2.5},${y+6} h6" stroke="${s}" stroke-width="1.1"/>`;
-  case 'grid':return `<rect x="${x-1}" y="${y}" width="13" height="12" rx="2" fill="none" stroke="${s}" stroke-width="1.1"/><path d="M${x-1},${y+4} h13 M${x+4},${y} v12" stroke="${s}" stroke-width="1"/>`;
-  case 'search':return `<circle cx="${x+5}" cy="${y+5}" r="4.2" fill="none" stroke="${s}" stroke-width="1.1"/><path d="M${x+8.5},${y+8.5} l3.5,3.5" stroke="${s}" stroke-width="1.3"/>`;
-  case 'layers':return `<path d="M${x+6},${y} l7,3.5 l-7,3.5 l-7,-3.5 z M${x-1},${y+6} l7,3.5 l7,-3.5 M${x-1},${y+9} l7,3.5 l7,-3.5" fill="none" stroke="${s}" stroke-width="1"/>`;
-  case 'clock':return `<circle cx="${x+6}" cy="${y+6}" r="5.5" fill="none" stroke="${s}" stroke-width="1.1"/><path d="M${x+6},${y+2.5} v3.5 l2.5,1.5" stroke="${s}" stroke-width="1.1" fill="none"/>`;
-  default:return `<path d="M${x},${y+6} h5 l3.5,-5 h3.5 M${x+5},${y+6} l3.5,5 h3.5" fill="none" stroke="${s}" stroke-width="1.1"/>`}};
- R.forEach((r,i)=>{const y=pad+i*(rh+4);o+=`<g class="nd" data-b="${pad},${y},${hx-12},${rh},3,2" data-shape="box">`+T(pad+5,y+rh/2,r.label.toUpperCase(),{sz:fs(7.6),w:500,ls:.35,mono:1,c:C.sub,a:'start'})+'</g>';
-  const span=r.cells.length==1;r.cells.forEach((c,j)=>{const x=hx+j*(cw+5),w=span?cw*2+5:cw;
-   const z=r.z?Z[r.z]:null;o+=`<g class="nd" data-b="${x+20},${y},${w-20},${rh},3,2" data-shape="box"><rect x="${x}" y="${y}" width="${w}" height="${rh}" rx="${rxBox()}" fill="${z?z.f:C.node}" stroke="${z?z.s:C.line}"/>`+icon(c.i,x+8,y+8,z?z.k:C.sub);
-   o+=T(x+26,c.s?y+9:y+rh/2,c.t,{sz:fs(8.2),w:600,a:'start'})+(c.s?T(x+26,y+19,c.s,{sz:fs(7.4),c:c.m&&z?z.k:C.sub,a:'start',mono:c.m}):'')+'</g>'})});
- o+=legend(pad+6,FH+8,['agent','data']);
- return svg(W,FH+18,D.features.title,o)};
-
 export function dWorkflow(D, inst="", platformId){
   begin(true,inst);setDensity(1);ID='wf'+inst+(platformId||'');const Wf=D.workflow;let o='',a='';
   const P=Wf.platforms.find((p)=>p.id===platformId)||Wf.platforms[0];

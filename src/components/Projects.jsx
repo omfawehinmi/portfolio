@@ -18,7 +18,6 @@ const PROJECT_RAIL = [
   { id: 'domains', label: 'DBs · tables · models' },
   { id: 'mcp', label: 'MCP · agents · tools' },
   { id: 'security', label: 'Roles · WH · cost' },
-  { id: 'features', label: 'Semantic views · Cortex Search' },
   { id: 'grokbot', label: 'Grokbot · per MCP' },
   { id: 'more', label: 'More work' },
 ]
@@ -32,7 +31,6 @@ const KICKERS = {
   terraform: 'Infrastructure · apply · recovery',
   pipes: 'Source feeds → schemas',
   security: 'Roles · warehouses · cost',
-  features: 'Semantic views · Cortex Search',
   grokbot: 'Agents per MCP server',
 }
 
@@ -78,7 +76,6 @@ const OPEN_ALIASES = {
   terraform: 'terraform',
   pipes: 'pipes',
   security: 'security',
-  features: 'features',
   grokbot: 'grokbot',
   stack: 'mcp',
   mychart: 'domains',
