@@ -13,9 +13,8 @@
   box-sizing: border-box;
 }
 
-/* Left labeled jump rail. Hard rule: never overlap tiles/diagrams/chrome.
-   Lives in .bx-with-rail only (beside bento content) — never beside header/hero,
-   and never padding the section title away from the content below. */
+/* Left jump rail. Collapsed it is a slim dot track in a narrow reserved column;
+   hovering or focusing it opens a labeled panel that floats over the content. */
 .bx-rail {
   display: none;
 }
@@ -26,7 +25,7 @@
 
 @media (min-width: 1280px) {
   .bx-with-rail {
-    --bx-rail-width: 11rem;
+    --bx-rail-width: 2.25rem;
     /* Reserve the rail column for content only — section title stays full-width. */
     padding-left: var(--bx-rail-width);
     box-sizing: border-box;
@@ -36,12 +35,11 @@
   .bx-rail {
     display: block;
     position: absolute;
-    left: 0.5rem;
+    left: 0.75rem;
     top: 0;
     bottom: 0;
     z-index: 40;
-    width: calc(var(--bx-rail-width) - 0.85rem);
-    max-width: calc(var(--bx-rail-width) - 0.85rem);
+    width: 12rem;
     pointer-events: none;
   }
 
@@ -53,21 +51,30 @@
     overflow-y: auto;
     list-style: none;
     margin: 0;
+    width: 1.1rem;
     padding: 0.35rem 0.2rem;
     display: flex;
     flex-direction: column;
-    /* More vertical air between each timeline selection. */
-    gap: 0.55rem;
-    border-left: 1px solid color-mix(in srgb, var(--first-color) 35%, transparent);
+    gap: 0.3rem;
+    border-left: 1px solid color-mix(in srgb, var(--first-color) 30%, transparent);
     pointer-events: auto;
+    transition: width 0.18s, background 0.18s, box-shadow 0.18s;
+  }
+
+  .bx-rail__list:hover,
+  .bx-rail__list:focus-within {
+    width: 12rem;
+    background: var(--container-color);
+    border-radius: 0 10px 10px 0;
+    box-shadow: 0 8px 24px rgba(16, 24, 40, 0.12);
   }
 
   .bx-rail__link {
     display: flex;
     align-items: center;
     gap: 0.45rem;
-    min-height: 2.15rem;
-    padding: 0.35rem 0.2rem 0.35rem 0;
+    min-height: 1.6rem;
+    padding: 0.2rem 0.2rem 0.2rem 0;
     margin-left: -1px;
     color: var(--text-color);
     text-decoration: none;
@@ -113,6 +120,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  .bx-rail__list:hover .bx-rail__label,
+  .bx-rail__list:focus-within .bx-rail__label {
+    opacity: 1;
   }
 
   [id^='project-'] {
@@ -985,6 +999,23 @@ p.bx-subhead {
   stroke-width: 2px;
 }
 
+.bx-svg svg.bx-arch .nd-row:hover,
+.bx-svg svg.bx-arch .nd-row:focus-visible,
+.bx-svg svg.bx-arch .nd-row.is-selected {
+  transform: none;
+  filter: none;
+}
+
+.bx-svg svg.bx-arch .nd-row:hover > rect,
+.bx-svg svg.bx-arch .nd-row:focus-visible > rect {
+  fill: #f4fbf7;
+}
+
+.bx-svg svg.bx-arch .nd-row.is-selected > rect {
+  fill: #e7f8ef;
+  stroke: #12b76a;
+}
+
 .bx-svg svg.bx-arch:has(.nd:hover:not(.nd-tag)) .edge,
 .bx-svg svg.bx-arch:has(.nd.is-selected:not(.nd-tag)) .edge {
   opacity: 0.4;
@@ -1435,12 +1466,17 @@ dialog.project-dialog.bx-dialog.bx-dialog--erd-full .bx-fig-big:has(.bx-arch--li
 }
 
 .bx-choices__btn {
-  width: 34px;
   height: 34px;
+  padding: 0 0.8rem 0 0.6rem;
   border: 0;
   border-radius: 9px;
-  display: grid;
-  place-items: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
   background: var(--first-color-lighter);
   color: #1689b5;
   cursor: pointer;
@@ -1448,6 +1484,7 @@ dialog.project-dialog.bx-dialog.bx-dialog--erd-full .bx-fig-big:has(.bx-arch--li
 }
 
 .bx-choices__btn svg {
+  flex: none;
   width: 18px;
   height: 18px;
 }

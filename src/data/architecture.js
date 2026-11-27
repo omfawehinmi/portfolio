@@ -49,9 +49,9 @@ export const COPY = {
       title: 'Ship path: PR → prod',
       svg: 'workflow',
       body:
-        'Changes reach Snowflake and Airflow through separate gates, and merging a pull request never applies or deploys anything. Every branch opens a pull request. CI runs ruff and pytest, gitleaks secret scanning, static checks and a Terraform plan. dbt checks run in a temporary per-PR schema, HOUSEHOLD_LEDGER_CI.DBT_PR_<n>, when the CI secrets are set, and skip otherwise. Merging only lands code on main. Snowflake infrastructure such as databases, schemas, roles, warehouses and monitors changes only when I manually run the Terraform apply workflow against production. GitHub does not enforce a required reviewer for that yet, so my explicit go is the rule. Airflow reaches the office PC only after a tagged release and a manual pull on the PC. The last recorded PC apply is airflow-20261113-d64a1c8. Newer git tags go up to airflow-20261123-b6a02d7, but a tag is not what is running. Settings on the running release decide production or stub mode, and unpausing jobs, granting access or dropping objects each need an explicit go too.',
+        'Changes reach Snowflake and Airflow through separate gates, and merging a pull request never applies or deploys anything. Every branch opens a pull request. CI runs ruff and pytest, gitleaks secret scanning, static checks and a Terraform plan. dbt checks run in a temporary per-PR schema, HOUSEHOLD_LEDGER_CI.DBT_PR_<n>, when the CI secrets are set, and skip otherwise. Merging only lands code on main. Snowflake infrastructure such as databases, schemas, roles, warehouses and monitors changes only when I manually run the Terraform apply workflow against production. GitHub does not enforce a required reviewer for that yet, so my explicit go is the rule. Airflow reaches the office PC only after a tagged release and a manual pull on the PC, so a newer tag in git is not what is running. Settings on the running release decide production or stub mode, and unpausing jobs, granting access or dropping objects each need an explicit go too.',
       caption:
-        'PR CI → merge (code only) → Terraform apply (Snowflake) → Airflow tag + PC pull. Merge ≠ apply ≠ deploy.',
+        'Pull request CI, then a merge that only lands code, then a Terraform apply for Snowflake, then an Airflow tag and a pull on the PC.',
       rows: [
         {
           name: '1. Branch + PR',
@@ -60,32 +60,32 @@ export const COPY = {
         },
         {
           name: '2. PR CI',
-          role: 'ruff + pytest, gitleaks, static, Terraform plan; optional dbt in HOUSEHOLD_LEDGER_CI.DBT_PR_<n>',
+          role: 'ruff and pytest, gitleaks, static checks and a Terraform plan, plus dbt in HOUSEHOLD_LEDGER_CI.DBT_PR_<n> when secrets are set',
           status: 'GitHub Actions',
         },
         {
           name: '3. Merge to main',
-          role: 'Code only — merge does not apply Terraform and does not pull Airflow',
+          role: 'Lands code only. It does not apply Terraform or pull Airflow',
           status: 'Gate',
         },
         {
           name: '4. Terraform apply',
-          role: 'Manual workflow_dispatch apply=true → environment production (Michael’s go)',
+          role: 'Manual workflow_dispatch with apply=true against production, after Michael’s go',
           status: 'Snowflake infra',
         },
         {
           name: '5. Airflow release tag',
-          role: 'Annotated pin (e.g. airflow-20261113-d64a1c8); later tags through 20261123 exist in git',
+          role: 'An annotated release tag pins what the PC runs. Newer tags in git are not live',
           status: 'Scheduler artifact',
         },
         {
           name: '6. Office-PC pull',
-          role: 'Manual deploy_airflow.ps1 on the Docker worker — git tag ≠ live until pulled',
+          role: 'Manual deploy_airflow.ps1 on the Docker worker. A tag is not live until it is pulled',
           status: 'Prod scheduler',
         },
         {
           name: '7. Unpause / grants',
-          role: 'Separate go for unpause, grants, and drops (doc 17 approval gates)',
+          role: 'Unpausing, grants and drops each need their own go',
           status: 'Ops',
         },
       ],
@@ -93,7 +93,7 @@ export const COPY = {
     {
       id: 'pipes',
       choices: [
-        { t: 'Office-PC Airflow instead of S3 and Snowpipe', d: 'Snowpipe was planned after a Drive token failed on 2026-10-25, then dropped. Documents come in through drive_poll and doc_extract on the office PC. S3 stays a future option.' },
+        { t: 'Office-PC Airflow instead of S3 and Snowpipe', d: 'Snowpipe was planned after a Drive token failure, then dropped. Documents come in through drive_poll and doc_extract on the office PC. S3 stays a future option.' },
         { t: 'Local OCR instead of Cortex', d: 'doc_extract reads text with pypdf, then Tesseract, so reading a document never spends Cortex credits.' },
         { t: 'One morning load window', d: 'INGEST_WH wakes once at 07:15 ET for every feed and suspends when the window ends, instead of waking for each feed.' },
       ],
@@ -108,29 +108,29 @@ export const COPY = {
     {
       id: 'airflow',
       choices: [
-        { t: 'Airflow instead of Snowflake tasks', d: 'Scheduling moved off Snowflake tasks for cost and control. Five old CTRL tasks were dropped on 2026-11-05, and their work now runs as Airflow DAGs.' },
-        { t: 'Hourly Drive polling', d: 'drive_poll went from every 15 minutes to hourly on 2026-11-02 to cut schedule cost.' },
+        { t: 'Airflow instead of Snowflake tasks', d: 'Scheduling moved off Snowflake tasks for cost and control. Five old CTRL tasks were dropped, and their work now runs as Airflow DAGs.' },
+        { t: 'Hourly Drive polling', d: 'drive_poll went from every 15 minutes to hourly to cut schedule cost.' },
         { t: 'One deploy path', d: 'A pinned release tag plus a pull on the PC is the only way code reaches the running Airflow.' },
       ],
       n: '4',
       title: 'Airflow on the office PC — every DAG',
       svg: 'airflow',
       body:
-        'There are 20 DAG files in the household-platform Airflow project, each with its own docs page. Code on main is not what runs. The last recorded apply on the office PC is airflow-20261113-d64a1c8 from 2026-11-13, and newer git tags go up to airflow-20261123-b6a02d7. A DAG in git is not necessarily switched on either. At the 2026-11-07 check, only moonshots_yt_sync_daily and moonshots_eyl_sync were confirmed unpaused, and that has not been rechecked since. Open the tile for every DAG with its schedule, what it does and its production status.',
+        'There are 20 DAG files in the household-platform Airflow project, each with its own docs page. Code on main is not what runs; the PC runs the last release tag it pulled. A DAG in git is not necessarily switched on either. At the last check, only moonshots_yt_sync_daily and moonshots_eyl_sync were confirmed unpaused. Open the tile for every DAG with its schedule, what it does and its production status.',
       caption:
-        '20 DAG files: 17 production-shaped and 3 dev. 2 confirmed unpaused at the 2026-11-07 check. Last PC apply: airflow-20261113-d64a1c8. An unknown pause state does not mean it is running.',
+        '20 DAG files: 17 production-shaped and 3 dev. 2 confirmed unpaused at the last check. An unknown pause state does not mean a DAG is running.',
       rows: [
         {
           name: 'pipeline_load_window',
-          role: '07:15 ET INGEST_WH window — email + Monarch daily; YouTube Mondays; optional Epic',
+          role: '07:15 ET INGEST_WH window. Email and Monarch daily, YouTube on Mondays, Epic once enabled',
           schedule: '15 7 * * *',
           status: 'Prod-shaped ingest window. Created paused',
         },
         {
           name: 'ledger_dbt_daily',
-          role: 'Bash dbt for ledger (LEDGER_WH / COMPUTE_WH); triggers HR then agentic workforce',
+          role: 'Bash dbt for the ledger on LEDGER_WH or COMPUTE_WH. Triggers HR, then agentic workforce',
           schedule: '0 6 * * *',
-          status: 'Prod-shaped (fixed prod). Pause unknown',
+          status: 'Prod-shaped, fixed to prod. Pause unknown',
         },
         {
           name: 'hr_dbt_daily',
@@ -152,25 +152,25 @@ export const COPY = {
         },
         {
           name: 'drive_poll',
-          role: 'Google Drive poll → document stages (same minute as load window)',
+          role: 'Google Drive poll into document stages, at the same minute as the load window',
           schedule: '15 7 * * *',
           status: 'Created paused. No warehouse',
         },
         {
           name: 'doc_extract',
-          role: 'PC OCR (pypdf then Tesseract) → CORE document facts',
+          role: 'OCR on the PC with pypdf, then Tesseract, into CORE document facts',
           schedule: 'none, triggered',
           status: 'Do not mark unpaused — quota pause in change log',
         },
         {
           name: 'monarch_load',
-          role: 'Monarch GraphQL → HOUSEHOLD_LEDGER RAW/CORE via EAI_MONARCH (called by window)',
+          role: 'Monarch GraphQL into HOUSEHOLD_LEDGER RAW and CORE through EAI_MONARCH. Called by the window',
           schedule: 'none',
-          status: 'Prod-shaped (fixed prod / INGEST_WH). Created paused',
+          status: 'Prod-shaped on INGEST_WH. Created paused',
         },
         {
           name: 'ledger_email_alerts',
-          role: 'Gmail card/bank alerts → RAW/CORE via EAI_GMAIL (called by window)',
+          role: 'Gmail card and bank alerts into RAW and CORE through EAI_GMAIL. Called by the window',
           schedule: 'none',
           status: 'Called by window. Created paused',
         },
@@ -182,37 +182,37 @@ export const COPY = {
         },
         {
           name: 'moonshots_yt_sync_daily',
-          role: 'YouTube catalog sync into MOONSHOTS (triggered by Monday window)',
+          role: 'YouTube catalog sync into MOONSHOTS, triggered by the Monday window',
           schedule: 'none',
-          status: 'Triggered Mondays · unpaused on 2026-11-07 pin',
+          status: 'Triggered Mondays · unpaused at last check',
         },
         {
           name: 'moonshots_eyl_sync',
           role: 'EYL captions / companion — Monday work is the load window',
           schedule: 'none',
-          status: 'Unscheduled · unpaused on 2026-11-07 pin',
+          status: 'Unscheduled · unpaused at last check',
         },
         {
           name: 'moonshots_transcript_backfill',
-          role: 'Transcript backfill (Airflow port of Windows job)',
+          role: 'Transcript backfill, ported to Airflow from a Windows job',
           schedule: 'none',
-          status: 'Not running — stayed paused on 2026-11-07 check',
+          status: 'Not running. Paused at last check',
         },
         {
           name: 'nightly_app_backup',
-          role: 'Office-PC nightly bundle push (no Snowflake)',
+          role: 'Nightly bundle push from the office PC. No Snowflake',
           schedule: '33 19 * * *',
           status: 'Created paused. No Snowflake',
         },
         {
           name: 'pc_usage_check',
-          role: 'Weekday PC usage / My Machines snapshot thresholds (no Snowflake)',
+          role: 'Weekday PC usage and My Machines snapshot thresholds. No Snowflake',
           schedule: '17 9,13,17 * * 1-5',
           status: 'Created paused. No Snowflake',
         },
         {
           name: 'epic_fhir_load_manual',
-          role: 'Manual Epic FHIR → HOUSEHOLD_HEALTH (EPIC_FHIR_LOAD_ENABLED; awaits source data)',
+          role: 'Manual Epic FHIR load into HOUSEHOLD_HEALTH behind EPIC_FHIR_LOAD_ENABLED. Waiting on source data',
           schedule: 'none',
           status: 'Manual — DB model production; underlying MyChart data not loaded',
         },
@@ -258,7 +258,7 @@ export const COPY = {
       rows: [
         {
           name: 'RAW',
-          role: 'One landed page, file, or API payload (Monarch, Gmail MIME, staged docs)',
+          role: 'One landed page, file or API payload, such as Monarch, Gmail MIME or a staged document',
           status: 'Landing schema',
         },
         {
@@ -273,7 +273,7 @@ export const COPY = {
         },
         {
           name: 'ANALYTICS + semantic views',
-          role: 'Reporting grain and Cortex Analyst contracts (15 semantic views)',
+          role: 'Reporting grain and the 15 semantic views Cortex Analyst reads',
           status: 'Serve / MCP catalogs',
         },
         {
@@ -283,7 +283,7 @@ export const COPY = {
         },
         {
           name: 'HOUSEHOLD_LEDGER_CI.DBT_PR_<n>',
-          role: 'Per-PR dbt CI schema when secrets exist (see Ship path)',
+          role: 'Per-PR dbt CI schema when secrets are set. The Ship path tile covers it',
           status: 'CI only',
         },
       ],
@@ -324,10 +324,10 @@ export const COPY = {
           oneLine: 'YouTube catalog for Moonshots by Peter Diamandis and Market Mondays by Earn Your Leisure',
           schemas: ['RAW', 'CORE', 'CTRL', 'AI'],
           detail:
-            'YouTube domain for Moonshots by Peter Diamandis and Market Mondays by Earn Your Leisure, shortened to EYL. Monday pipeline_load_window triggers moonshots_yt_sync_daily after the INGEST_WH work; EYL captions write in that window. moonshots_yt_sync_daily and moonshots_eyl_sync were the two confirmed-unpaused DAGs on the 2026-11-07 pin (not re-read). CTRL hosts MCP_MOONSHOTS for Cynthia (Moonshot and architecture advisory). CS_TRANSCRIPTS and CS_VIDEOS are the Moonshots Cortex Search services. Phase 5 added ANALYTICS views over CORE for reporting reads.',
+            'YouTube domain for Moonshots by Peter Diamandis and Market Mondays by Earn Your Leisure, shortened to EYL. Monday pipeline_load_window triggers moonshots_yt_sync_daily after the INGEST_WH work; EYL captions write in that window. moonshots_yt_sync_daily and moonshots_eyl_sync were the two DAGs confirmed unpaused at the last check. CTRL hosts MCP_MOONSHOTS for Cynthia (Moonshot and architecture advisory). CS_TRANSCRIPTS and CS_VIDEOS are the Moonshots Cortex Search services. Phase 5 added ANALYTICS views over CORE for reporting reads.',
           objects: [
-            { layer: 'Scheduler', name: 'moonshots_yt_sync_daily', note: 'Monday window trigger · unpaused on pin' },
-            { layer: 'Scheduler', name: 'moonshots_eyl_sync', note: 'Unscheduled · unpaused on pin' },
+            { layer: 'Scheduler', name: 'moonshots_yt_sync_daily', note: 'Monday window trigger · unpaused' },
+            { layer: 'Scheduler', name: 'moonshots_eyl_sync', note: 'Unscheduled · unpaused' },
             { layer: 'CTRL', name: 'MCP_MOONSHOTS', note: 'YouTube MCP catalog' },
             { layer: 'Search', name: 'CS_TRANSCRIPTS / CS_VIDEOS', note: 'Cortex Search' },
           ],
@@ -350,11 +350,11 @@ export const COPY = {
             'SECURITY',
           ],
           detail:
-            'Where multi-platform AI history accumulates. A daily capture routine MERGEs agents, conversations, graph, and capture tables. A nightly chat backup MERGEs RAW.CHAT_MESSAGES (SVC_BOX_PIPELINE / R_PIPELINE). agentic_workforce_dbt_daily builds tag:agentic_workforce into AGENTIC_WORKFORCE.ANALYTICS (dev twin AGENTIC_WORKFORCE_DEV); no cron of its own — started after hr_dbt_daily in the 06:00 ledger_dbt_daily chain. Desk marts for the Desks app (AW-MART-INFRA) remain queued — not treated as shipped.',
+            'Where multi-platform AI history accumulates. A daily capture routine MERGEs agents, conversations, graph, and capture tables. A nightly chat backup MERGEs RAW.CHAT_MESSAGES as SVC_BOX_PIPELINE under R_PIPELINE. agentic_workforce_dbt_daily builds tag:agentic_workforce into AGENTIC_WORKFORCE.ANALYTICS, with AGENTIC_WORKFORCE_DEV as its dev twin. It has no cron of its own and starts after hr_dbt_daily in the 06:00 ledger_dbt_daily chain. Desk marts for the Desks app are still queued and not counted as shipped.',
           objects: [
             { layer: 'Capture', name: 'AGENTS / CONVERSATIONS / GRAPH', note: 'Daily MERGE' },
             { layer: 'Landing', name: 'RAW.CHAT_MESSAGES', note: 'Nightly chat backup' },
-            { layer: 'dbt', name: 'agentic_workforce_dbt_daily', note: '→ ANALYTICS (paused on create)' },
+            { layer: 'dbt', name: 'agentic_workforce_dbt_daily', note: '→ ANALYTICS · created paused' },
             { layer: 'Planned', name: 'AW desk marts', note: 'Queued, not prod' },
           ],
         },
@@ -380,10 +380,10 @@ export const COPY = {
           oneLine: 'Epic MyChart FHIR — architecture + model built; source data pending',
           schemas: ['RAW', 'STAGING', 'CORE', 'CTRL'],
           detail:
-            'Production healthcare database, same product-DB pattern as the ledger — not a separate “healthcare project” card. Architecture and Snowflake data model are built. SMART on FHIR R4 from Epic MyChart: OAuth patient auth, token vault on Lambda / DynamoDB / SSM, Airflow load onto an internal stage, then procedures into VARIANT RAW. Weekly Monday step inside pipeline_load_window is wired; underlying MyChart patient data is not loaded yet, so no patient rows are shown.',
+            'Production healthcare database on the same product-database pattern as the ledger. The architecture and Snowflake data model are built. SMART on FHIR R4 from Epic MyChart uses OAuth patient sign-in and a token vault on Lambda, DynamoDB and SSM. Airflow loads onto an internal stage, then procedures write VARIANT RAW. A weekly Monday step inside pipeline_load_window is wired, but no MyChart patient data is loaded yet, so no patient rows are shown.',
           objects: [
             { layer: 'Auth', name: 'OAuth + token vault', note: 'Built' },
-            { layer: 'Scheduler', name: 'pipeline_load_window (Mon)', note: 'Wired; awaits source data' },
+            { layer: 'Scheduler', name: 'pipeline_load_window, Mondays', note: 'Wired · waiting on source data' },
             { layer: 'Stage', name: 'Internal stage', note: 'FHIR resources' },
             { layer: 'RAW', name: 'VARIANT tables', note: 'Model ready; no patient data yet' },
           ],
@@ -407,7 +407,7 @@ export const COPY = {
       rows: [
         {
           name: 'MCP_HOUSEHOLD_LEDGER_GROK',
-          role: 'Read server — Grok desks. Agents: household_finance_agent, ledger_ops_agent. Tools: analyst_* (15 semantic views), search_* (4 Cortex Search services), document stage list / download.',
+          role: 'Read server for the Grok desks. Agents: household_finance_agent, ledger_ops_agent. Tools: analyst_* on the 15 semantic views, search_* on 4 Cortex Search services, document stage list and download.',
           status: 'Read only',
         },
         {
@@ -417,7 +417,7 @@ export const COPY = {
         },
         {
           name: 'MCP_MOONSHOTS',
-          role: 'YouTube server — Cynthia (Moonshot and architecture advisory). Catalog get/list, transcript/video search (ILIKE + semantic + Cortex Search), sync status, proc_youtube_sync / embed / CS refresh. Not household money.',
+          role: 'YouTube server for Cynthia (Moonshot and architecture advisory). Catalog get and list, transcript and video search by keyword, semantic match or Cortex Search, sync status, and sync, embed and search refresh jobs. No household money.',
           status: 'Domain MCP',
         },
         {
@@ -426,12 +426,12 @@ export const COPY = {
           status: 'Orchestration',
         },
         {
-          name: 'Tool families (ledger)',
+          name: 'Ledger tool families',
           role: 'analyst_* · search_* · document_* · monarch_* · ledger_mutate · gmail/email pipeline · reconcile · rebuild_analytics · freshness/QA · metal_spot',
           status: 'Summarized',
         },
         {
-          name: 'Tool families (Moonshots)',
+          name: 'Moonshots tool families',
           role: 'get/list catalog · search transcripts/videos · CS_TRANSCRIPTS / CS_VIDEOS · youtube_sync · embed_transcripts · refresh CS',
           status: 'Summarized',
         },
@@ -443,7 +443,7 @@ export const COPY = {
         { t: 'Batch warehouse work', d: 'Every desk follows one standard: wake a warehouse once for a batch of work, skip row-by-row inserts, and tag every query.' },
         { t: 'A separate warehouse for agent reads', d: 'Ad-hoc and agent work runs on ADHOC_WH under its own monitor, and Grok service users default to it, so a question never wakes the ledger warehouse.' },
         { t: 'CI results in one insert', d: 'CI test results are written in one INSERT per run instead of one per test.' },
-        { t: 'No extra ledger warehouse for now', d: 'On 2026-11-12 the team decided not to split LEDGER_WH into a separate warehouse yet.' },
+        { t: 'No extra ledger warehouse for now', d: 'The team decided not to split LEDGER_WH into a separate warehouse yet.' },
       ],
       n: '8',
       title: 'Roles, warehouses & cost',
@@ -460,12 +460,12 @@ export const COPY = {
         },
         {
           name: 'INGEST_WH',
-          role: 'auto_suspend 60s · INGEST_MONITOR · pipeline_load_window 07:15 ET (email + Monarch; YouTube Mondays)',
+          role: 'auto_suspend 60s · INGEST_MONITOR · pipeline_load_window at 07:15 ET for email and Monarch, plus YouTube on Mondays',
           status: 'Load window',
         },
         {
           name: 'ADHOC_WH',
-          role: 'RM_ADHOC · SVC_GROK_* default · agent/desk reads · QUERY_TAG then suspend (CD-003 / CD-005)',
+          role: 'RM_ADHOC · SVC_GROK_* default · agent and desk reads · QUERY_TAG, then suspend',
           status: 'Agents',
         },
         {
@@ -645,7 +645,7 @@ export const DIAG = {
     layers: [
       {
         label: 'Sources',
-        nodes: [{ t: 'Monarch GraphQL' }, { t: 'Gmail (EAI_GMAIL)' }, { t: 'Drive docs' }],
+        nodes: [{ t: 'Monarch GraphQL' }, { t: 'Gmail · EAI_GMAIL' }, { t: 'Drive docs' }],
       },
       {
         label: 'Extract and land',
@@ -786,7 +786,7 @@ export const DIAG = {
   },
   mcpTools: {
     title: 'MCP servers, agents, and tool families',
-    note: 'Read server never holds write tools. Families summarized — not a private catalog dump.',
+    note: '',
     servers: [
       {
         t: 'MCP_HOUSEHOLD_LEDGER_GROK',
@@ -892,7 +892,7 @@ export const DIAG = {
         layer: 'CORTEX SEARCH',
         name: 'CS_DOCUMENTS',
         rows: [['SEARCH_TEXT'], ['attributes']],
-        meaning: 'Search catalog (serving may be suspended; indexing active)',
+        meaning: 'Search catalog. Indexing stays on even when serving is suspended',
       },
     ],
   },
@@ -911,11 +911,11 @@ export const DIAG = {
 
 DIAG.lead.airflow = {
   t: 'Airflow',
-  s: '20 DAG files · 2 confirmed unpaused on 2026-11-07 pin',
+  s: '20 DAG files · 2 confirmed unpaused',
 }
 DIAG.airflow = {
   title: 'Airflow DAG inventory on the running pin',
-  headline: '20 files in git (fdff221)',
+  headline: '20 DAG files in git',
   counts: [
     { n: '17', label: 'prod-shaped' },
     { n: '3', label: '*_dev' },
@@ -944,9 +944,9 @@ DIAG.code = {
   svOps: 'CTRL.SV_OPS_FRESHNESS',
   svDoc: 'SV_DOCUMENT_STANDING',
   cs: 'CS_DOCUMENTS',
-  airflow: '20 DAGs · last PC apply airflow-20261113-d64a1c8',
+  airflow: '20 DAGs · runs the pulled release tag',
   land: 'pipeline_load_window → monarch + email',
-  ocr: 'doc_extract (paused for WH quota)',
+  ocr: 'doc_extract · paused for warehouse quota',
   dbt: 'ledger_dbt_daily → hr → agentic · dbt_daily paused',
 }
 

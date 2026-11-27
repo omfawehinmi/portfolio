@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import { DIAG } from '../../data/architecture.js'
-import { noteFor } from '../../data/nodeNotes.js'
+import { noteFor, tableNote } from '../../data/nodeNotes.js'
 import {
   dAirflow,
   dDatabase,
@@ -72,8 +72,13 @@ export default function ArchitectureDiagram({
         .map((el) => el.textContent)
         .join(' ')
 
+    const nodeNote = (node) =>
+      kind === 'domains'
+        ? tableNote(node.dataset.schema, node.dataset.node)
+        : noteFor(labelOf(node), kind)
+
     svg.querySelectorAll('.nd').forEach((node) => {
-      if (noteFor(labelOf(node))) node.classList.add('has-note')
+      if (nodeNote(node)) node.classList.add('has-note')
     })
 
     const clear = () => {
@@ -87,7 +92,7 @@ export default function ArchitectureDiagram({
       clear()
       if (already) return
       node.classList.add('is-selected')
-      const note = noteFor(labelOf(node))
+      const note = nodeNote(node)
       if (!note) return
       const hostBox = host.getBoundingClientRect()
       const box = node.getBoundingClientRect()
@@ -142,7 +147,7 @@ export default function ArchitectureDiagram({
       document.removeEventListener('click', onOutside, true)
       document.removeEventListener('keydown', onEsc)
     }
-  }, [markup])
+  }, [markup, kind])
 
   if (!markup) return null
   return (

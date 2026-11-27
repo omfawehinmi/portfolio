@@ -259,10 +259,10 @@ function DesignChoices({ title, choices }) {
         className={`bx-choices__btn${open ? ' is-open' : ''}`}
         aria-expanded={open}
         aria-label={`Design choices for ${title}`}
-        title="Design choices"
         onClick={() => setOpen((value) => !value)}
       >
         <BulbIcon />
+        <span>Design choices</span>
       </button>
     </div>
   )

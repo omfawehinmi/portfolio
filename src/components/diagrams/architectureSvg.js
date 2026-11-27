@@ -198,9 +198,8 @@ export function dMcp(D, inst=""){
     o+=node('box',380,y,166,[{t:s.families,sz:8.8,c:C.sub}],{h:52,dash:i===0,lift:1}).g;
     a+=arrow(`M184,${y+26} H198`,'c')+arrow(`M360,${y+26} H378`,'c');
   });
-  o+=node('box',14,392,532,[{t:M.note||'Read server never holds write tools. Families summarized — not a private catalog dump.',sz:9,c:C.sub}],{h:36,dash:1}).g;
-  o+=legend(14,444,['agent','src','data']);
-  return svg(W,468,M.title||'MCP servers, agents, and tool families',a+o)};
+  o+=legend(14,396,['agent','src','data']);
+  return svg(W,420,M.title||'MCP servers, agents, and tool families',a+o)};
 
 // 2b. Grokbot: which agent attaches to which MCP, and what that access is for.
 export function dGrokbot(D, inst=""){
@@ -263,13 +262,11 @@ export function dErd(D, inst=""){
 
 // 4. Pipelines: BPMN-style lanes with hairline separators and mono lane labels, events, gateway, tasks.
 export function dPipes(D, inst=""){
-  begin(true,inst);ID='p'+inst;const Pp=D.pipes,K=D.code;const W=400,H=300;let o='',a='';
+  begin(true,inst);ID='p'+inst;const Pp=D.pipes,K=D.code;const W=400,H=284;let o='',a='';
  const lanes=[['Sources',0,60],['Airflow',60,120],['Snowflake',180,96]];
  lanes.forEach(([t,y],i)=>{if(i)o+=`<line x1="8" y1="${y}" x2="${W-8}" y2="${y}" stroke="${C.soft}"/>`;o+=lab(12,y+10,t,i<2?Z.src.k:Z.data.k)});
   o+=discNode(22,32,11,'', '▶',{id:'start',glyphSz:9}).g;
   const t1=node('box',44,18,120,n2('Source feeds','',8.8),{h:26,z:'src'});o+=t1.g;o+=['monarch','gmail','drive','youtube'].map((p,i)=>platformBadge(80+i*21,16,0,6,p)).join('');
-  o+=T(176,24,'EAI_MONARCH · EAI_GMAIL',{sz:fs(7.8),mono:1,c:Z.src.k,a:'start'})+T(176,35,'pipeline_load_window · drive_poll',{sz:fs(7.8),c:C.sub,a:'start'})+T(176,46,'MyChart FHIR → HOUSEHOLD_HEALTH',{sz:fs(7.8),c:Z.data.k,a:'start'});
- o+=T(10,78,Pp.airflow.s,{sz:fs(7.8),it:1,c:C.sub,a:'start'});
  o+=discNode(100,122,14,'','◇',{id:'gateway',glyphSz:11}).g;
  const ex=node('box',210,92,168,n2('Extract and land','',8.8,K.land,'src'),{h:28,z:'src'});o+=ex.g;
  const oc=node('box',210,132,168,n2(Pp.ocr.t,Pp.ocr.s,8.6,K.ocr,'src'),{h:28,z:'src'});o+=oc.g;
@@ -277,14 +274,14 @@ export function dPipes(D, inst=""){
  const ld=node('box',232,210,144,n2('RAW and CORE','',8.8,K.raw+', '+K.core,'data'),{h:34,z:'data',platform:'snowflake'});o+=ld.g;
  const db=node('box',140,216,78,n2(Pp.dbt.t,'',8.6),{h:26,z:'data',platform:'dbt'});o+=db.g;
  const ts=node('box',78,216,48,n2('Tests','',8.6),{h:26});o+=ts.g;
- o+=discNode(34,229,10,'', '●',{id:'end',glyphSz:8}).g+T(12,250,'ANALYTICS,',{sz:fs(7.8),c:C.sub,a:'start'})+T(12,261,'MCP servers',{sz:fs(7.8),c:C.sub,a:'start'})+T(140,268,K.dbt,{sz:fs(7.8),mono:1,c:Z.data.k,a:'start'})+legend(14,286,['src','data']);
+ o+=discNode(34,229,10,'', '●',{id:'end',glyphSz:8}).g+legend(14,270,['src','data']);
  a+=arrow('M29,32 H42','c')+arrow(`M104,${18+t1.h} V106`,'c')+arrow('M114,122 H120 Q124,122 124,118 V108 Q124,104 128,104 H208','c')+arrow('M100,136 V150 Q100,154 104,154 H208','c');
  a+=arrow('M378,106 H384 Q388,106 388,110 V225 Q388,229 384,229 H378','c')+arrow(`M294,${132+oc.h} V208`,'c')+arrow('M232,227 H220','c')+arrow('M140,229 H128','c')+arrow('M78,229 H44','c');
  return svg(W,H,Pp.title,a+o)};
 
 // 5. Security + warehouses/cost: roles/MCP/gate on top; warehouse + caps below (Issuing nodes).
 export function dSec(D, inst=""){
-  begin(true,inst);ID='s'+inst;const S=D.security,K=D.code;const W=520,H=360;let o='',a='';
+  begin(true,inst);ID='s'+inst;const S=D.security,K=D.code;const W=520,H=324;let o='',a='';
   o+=lab(14,14,'Access')+lab(14,168,'Warehouses & cost');
   // Roles row
   (S.roles||[]).forEach((t,i)=>o+=node('pill',14+i*168,28,156,[{t,sz:8.4,w:500}],{h:26,z:'sec',id:`role-${i}`}).g);
@@ -310,7 +307,6 @@ export function dSec(D, inst=""){
   });
   a+=arrow('M248,232 V250','d');
   o+=legend(14,308,['sec','agent','data']);
-  o+=T(14,338,'No dollar spend shown — monitors, budgets, and batching only',{sz:fs(8),c:C.sub,a:'start'});
   return svg(W,H,S.title||'Roles, warehouses, and cost controls',a+o)};
 
 // 6. Stack: flat layer bands, the agent interface in accent.
@@ -351,13 +347,12 @@ export function dFeat(D, inst=""){
 
 export function dWorkflow(D, inst=""){
   begin(true,inst);ID='wf'+inst;const Wf=D.workflow;const W=420;let o='',a='';
-  const step=28,nh=22;
-  o+=T(12,14,'Merge ≠ apply ≠ deploy',{sz:fs(10),w:600,a:'start'})+T(12,27,"Michael's go gates apply, unpause, grants",{sz:fs(7.8),c:C.sub,a:'start'});
-  Wf.steps.forEach((s,i)=>{const y=38+i*step;const z=i<2?'src':i===2?null:i===3?'data':'src';
+  const step=28,nh=22,top=10;
+  Wf.steps.forEach((s,i)=>{const y=top+i*step;const z=i<2?'src':i===2?null:i===3?'data':'src';
    o+=badge(20,y+nh/2,i+1)+node('box',36,y,368,n2(s.t,s.s,8.6),{h:nh,z:z||undefined}).g;
    if(i<Wf.steps.length-1)a+=arrow(`M20,${y+nh} V${y+step-2}`,'c')});
-  o+=legend(12,38+Wf.steps.length*step+2,['src','data']);
-  return svg(W,38+Wf.steps.length*step+18,Wf.title,a+o)};
+  o+=legend(12,top+Wf.steps.length*step+2,['src','data']);
+  return svg(W,top+Wf.steps.length*step+18,Wf.title,a+o)};
 
 /** Preferred schema column order for popup ERDs (scroll/fit by schema). */
 const SCHEMA_COL_ORDER=['RAW','STAGING','INTERMEDIATE','CORE','AGENTS','CONVERSATIONS','GRAPH','CAPTURE','ANALYTICS','AI','CTRL','PROC','QUEUE','STAGE','FLAGS','TASKS','MCP','SECURITY','TESTS','TRANSFORM','PUBLIC'];
@@ -414,7 +409,6 @@ export function dDatabase(D, dbId, inst=""){
   }
   const tables={}; let maxX=0,maxY=0; let o='',a='';
   o+=T(16,isTile?18:14,model.title,{sz:isTile?12:12,w:600,a:'start',c:LIAM.ink});
-  o+=T(16,isTile?32:28,isTile?model.subtitle: `${model.subtitle} · columns = schemas`,{sz:isTile?9:9,c:LIAM.schema,a:'start'});
   if(!isTile){
     schemaLabels.forEach((lab)=>{
       o+=`<rect x="${lab.x}" y="${lab.y-11}" width="${cardW}" height="16" rx="4" fill="${LIAM.header}" stroke="${LIAM.border}"/>`;
@@ -454,7 +448,7 @@ export function dDatabase(D, dbId, inst=""){
     const {x,y,w,h}=tableGeom(t);
     maxX=Math.max(maxX,x+w); maxY=Math.max(maxY,y+h);
     const hi=ti===0;
-    let g=`<g class="nd" tabindex="0" role="button" data-node="${esc(t.name)}" data-b="${x},${y},${w},${h},10,6" data-shape="box">`;
+    let g=`<g class="nd" tabindex="0" role="button" data-node="${esc(t.name)}" data-schema="${esc(t.schema||'')}" data-b="${x},${y},${w},${h},10,6" data-shape="box">`;
     g+=`<g class="nd-face" filter="url(#${ID}sh)"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="#fff" stroke="${hi?LIAM.green:LIAM.border}" stroke-width="${hi?2:1}"/></g>`;
     g+=`<rect x="${x}" y="${y}" width="${w}" height="${headH}" rx="8" fill="${LIAM.header}"/>`;
     g+=`<rect x="${x}" y="${y+headH-8}" width="${w}" height="8" fill="${LIAM.header}"/>`;
@@ -494,7 +488,6 @@ export function dDatabase(D, dbId, inst=""){
   o+=T(32,legendY,'PK',{sz:9,c:LIAM.schema,a:'start'});
   o+=`<path d="M58,${legendY-3} h6 a3.2,3.2 0 0 1 0,6 h-3" fill="none" stroke="${LIAM.green}" stroke-width="1.25"/>`;
   o+=T(80,legendY,'FK',{sz:9,c:LIAM.schema,a:'start'});
-  o+=T(112,legendY,'Liam light · metadata only · no row values',{sz:9,c:LIAM.schema,a:'start'});
   const fullW=Math.max(isTile?720:maxX+24, maxX+20);
   const fullH=legendY+16;
   // Tile returns compact viewBox matching card thumbnail (original size — not an enlarged clip)
@@ -502,22 +495,23 @@ export function dDatabase(D, dbId, inst=""){
 
 export function dAirflow(D, inst=""){
   begin(true,inst);ID='af'+inst;const A=D.airflow;const W=420;let o='';
-  o+=T(12,14,A.headline,{sz:fs(11),w:600,a:'start'})+T(12,27,'Airflow release pin · git ≠ unpaused',{sz:fs(7.8),c:C.sub,a:'start'});
-  A.counts.forEach((c,i)=>{const x=12+i*134;o+=node('box',x,38,126,[{t:c.n,sz:fs(12),w:600,c:Z.src.k},{t:c.label,sz:fs(7.6),sub:1}],{h:30,z:'src',platform:'airflow'}).g});
+  A.counts.forEach((c,i)=>{const x=12+i*134;o+=node('box',x,10,126,[{t:c.n,sz:fs(12),w:600,c:Z.src.k},{t:c.label,sz:fs(7.6),sub:1}],{h:30,z:'src',platform:'airflow'}).g});
   const rows=[
     ['pipeline_load_window','07:15 ET INGEST_WH window'],
-    ['moonshots_yt / eyl','YT · unpaused on 11-07 pin'],
+    ['moonshots_yt / eyl','YouTube · unpaused'],
     ['monarch_load · ledger_email_*','called by window'],
     ['drive_poll / doc_extract','Drive → OCR → CORE'],
     ['ledger_dbt_daily → hr → aw','06:00 ET dbt chain'],
-    ['dbt_daily (Cosmos)','created paused'],
-    ['nightly_app_backup · pc_usage','PC routines · no SF'],
+    ['dbt_daily · Cosmos','created paused'],
+    ['nightly_app_backup · pc_usage','PC routines · no Snowflake'],
     ['epic_fhir_load_manual','manual · awaits source data'],
-    ['platform_smoke · *_dev (3)','manual / not production'],
+    ['platform_smoke · 3 *_dev','manual / not production'],
   ];
-  rows.forEach((r,i)=>{const y=84+i*17;o+=T(16,y,r[0],{sz:fs(8),mono:1,c:Z.src.k,a:'start'})+T(244,y,r[1],{sz:fs(7.8),c:C.sub,a:'start'})});
-  o+=legend(12,84+rows.length*17+6,['src'],W-20);
-  return svg(W,84+rows.length*17+20,A.title,o)};
+  const top=60,rh=18;
+  rows.forEach((r,i)=>{const y=top+i*rh;
+   o+=`<g class="nd nd-row" tabindex="0" role="button" data-node="${esc(r[0])}" data-b="8,${y-rh/2},${W-16},${rh},8,0" data-shape="box"><rect x="8" y="${y-rh/2}" width="${W-16}" height="${rh}" rx="4" fill="transparent"/>`+T(16,y,r[0],{sz:fs(8),mono:1,c:Z.src.k,a:'start'})+T(244,y,r[1],{sz:fs(7.8),c:C.sub,a:'start'})+'</g>'});
+  o+=legend(12,top+rows.length*rh+4,['src'],W-20);
+  return svg(W,top+rows.length*rh+18,A.title,o)};
 
 export function dDbt(D, inst=""){
   begin(true,inst);

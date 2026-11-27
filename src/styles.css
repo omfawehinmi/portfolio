@@ -1171,23 +1171,9 @@ img {
 }
 
 /*========== SCROLL UP ==========*/
-/* Hard no-overlap: scroll-up lives in a reserved right gutter, not over tiles. */
+/* Floats over page content; no gutter is reserved for it. */
 :root {
-  --scrollup-gutter: 3.25rem;
   --scrollup-size: 2.5rem;
-}
-
-.main,
-.footer {
-  padding-right: var(--scrollup-gutter);
-  box-sizing: border-box;
-}
-
-@media screen and (min-width: 1280px) {
-  /* Jump rail owns Top; release the right gutter on wide layouts. */
-  :root {
-    --scrollup-gutter: 0px;
-  }
 }
 
 .scrollup {
@@ -1205,8 +1191,6 @@ img {
   border-radius: .4rem;
   z-index: var(--z-tooltip);
   transition: .4s;
-  /* Stay inside the reserved gutter (main padding-right). */
-  max-width: calc(var(--scrollup-gutter) - 0.5rem);
 }
 
 .scrollup:hover {
@@ -1218,7 +1202,7 @@ img {
   color: #FFF;
 }
 
-/* Show scroll — clear mobile bottom nav; still inside the right gutter. */
+/* Show scroll — clear mobile bottom nav. */
 .show-scroll {
   bottom: 5.5rem;
 }
