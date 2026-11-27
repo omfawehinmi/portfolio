@@ -422,13 +422,12 @@ function ShipPathChips({ value, onChange }) {
   )
 }
 
-function TileFigure({ tile, tall, inst, ship, onShip, dbId, big = false, caption = null }) {
+function TileFigure({ tile, tall, inst, ship, onShip, dbId, big = false }) {
   const variant = tile.id === 'workflow' ? ship : tile.id === 'domains' ? dbId : null
   return (
     <figure className={`bx-fig${big ? ' bx-fig-big' : ''}${tile.id === 'domains' ? ' bx-fig--lanes' : ''}`}>
       {tile.id === 'workflow' ? <ShipPathChips value={ship} onChange={onShip} /> : null}
       {tile.id === 'mcp' ? <McpMatrix /> : <ArchitectureDiagram kind={tile.id} tall={tall} inst={inst} variant={variant} />}
-      {caption ? <figcaption>{caption}</figcaption> : null}
     </figure>
   )
 }
@@ -668,9 +667,7 @@ function DomainsPanel({ tile, tall, dbId, setDbId }) {
       </div>
       <figure className="bx-fig bx-fig-big bx-fig--erd">
         <ArchitectureDiagram kind="domains" tall={tall} inst="open" dbId={active?.id} />
-        <figcaption>{active ? `${active.name}: ${active.oneLine}` : tile.caption}</figcaption>
       </figure>
-      {/* ERD + short oneLine caption only - no long detail/body dump */}
     </div>
   )
 }
@@ -681,13 +678,13 @@ function TilePanel({ tile, tall, ship, onShip, dbId, onDb }) {
     return (
       <div className="bx-panel-body">
         <p>{tile.body}</p>
-        <TileFigure tile={tile} tall={tall} inst="open" ship={ship} onShip={onShip} big caption={tile.caption} />
+        <TileFigure tile={tile} tall={tall} inst="open" ship={ship} onShip={onShip} big />
         <RowTable rows={tile.rows} />
       </div>
     )
   return (
     <div className="bx-panel-body">
-      <TileFigure tile={tile} tall={tall} inst="open" ship={ship} onShip={onShip} big caption={tile.caption} />
+      <TileFigure tile={tile} tall={tall} inst="open" ship={ship} onShip={onShip} big />
       {tile.id === 'security' ? <RolesTable /> : null}
       <p>{tile.body}</p>
       <RowTable rows={tile.rows} />

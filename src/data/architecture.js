@@ -50,8 +50,6 @@ export const COPY = {
       svg: 'workflow',
       body:
         'Every change follows the same trunk: a branch, a pull request, the required checks, then a merge that only lands code. After that, each platform has its own way to production. Snowflake infrastructure changes through Terraform. The plan runs on the pull request with a guard that fails on any delete, and the apply is a manual run against production after my explicit go. dbt checks run on DuckDB and in a temporary per-PR schema, and the models run in production from Airflow’s 06:00 ET chain. Airflow cuts a release tag after its tests pass, and a person pulls that tag onto the office PC, which swaps back on its own if anything fails to import. The websites I manage ship through the same trunk, and the one shown here, the MyOrgLab public site, deploys only from a manual dispatch with a required reviewer. Pick a platform chip to see its full flow.',
-      caption:
-        'The shared trunk sits top right. The selected platform’s flow runs below it, and the dashed cards summarize the other three.',
     },
     {
       id: 'pipes',
@@ -65,8 +63,6 @@ export const COPY = {
       svg: 'pipes',
       body:
         'Each feed lands in its own product database, not a shared dump. Morning ingest runs once at 07:15 ET on INGEST_WH. Monarch and email load every day. YouTube loads on Mondays and then starts the sync for Moonshots by Peter Diamandis and Market Mondays by Earn Your Leisure. Epic MyChart loads on Mondays in the same window. Monarch comes in through EAI_MONARCH. Every bank account is set to send a Gmail alert for each transaction; those emails come in through EAI_GMAIL, get classified, and are matched to transactions by reconcile_pending. drive_poll picks up new Google Drive documents at the same minute without waking a warehouse, then doc_extract reads the text with pypdf and local Tesseract instead of Cortex OCR. AI chat history from every platform lands in AGENTIC_WORKFORCE through a daily capture and a nightly chat backup. Epic MyChart SMART on FHIR R4 records land in HOUSEHOLD_HEALTH, whose database, schemas, roles and grants are managed in Terraform. Every feed follows the same shape: extract and land, transform with dbt, then test. There is no S3 or Snowpipe path; that design was dropped.',
-      caption:
-        'The morning load window feeds the ledger, plus YouTube on Mondays. Google Drive Docs go through OCR. Chat capture lands in AGENTIC_WORKFORCE. Epic MyChart lands in HOUSEHOLD_HEALTH on Mondays.',
     },
     {
       id: 'airflow',
@@ -80,8 +76,6 @@ export const COPY = {
       svg: 'airflow',
       body:
         'Airflow on the office PC runs every production schedule, and Snowflake tasks are retired. Of 20 DAG files, 17 are production and 3 are dev twins with no schedule. Four schedules start the day. At 06:00 ET ledger_dbt_daily builds the ledger models on LEDGER_WH, then runs hr_dbt_daily and agentic_workforce_dbt_daily and waits for each, so all three share one warehouse window. At 07:15 ET pipeline_load_window wakes INGEST_WH once and runs the Gmail, Monarch and, on Mondays, Earn Your Leisure loads back to back before suspending it, then starts moonshots_yt_sync_daily on Mondays. monarch_load, ledger_email_alerts and moonshots_eyl_sync stay as DAGs for manual runs. Also at 07:15 ET, drive_poll checks Google Drive. drive_poll has no Snowflake connection. It asks the Drive Changes API for everything since a saved page token, keeps PDFs and images in the watched snowflake_docs folders, and skips Google-native files. If nothing changed, it moves the token and stops, so an empty poll costs no warehouse time. If files changed, it starts doc_extract with their IDs and checksums, and moves the token only after that trigger succeeds, so a failed or missed run picks up the same changes next time. doc_extract downloads the files, reads the PDF text layer or runs Tesseract on the PC, and loads the text through two owner\'s-rights procedures on INGEST_WH. Two office-PC checks run without a warehouse: nightly_app_backup at 19:33 ET and pc_usage_check three times on weekdays. dbt_daily, the Cosmos build, has its own 06:00 ET schedule but stays paused. platform_smoke, moonshots_transcript_backfill and ledger_email_pull_poll run only by hand. epic_fhir_load_manual is the on-demand copy of the Monday Epic MyChart step, on Terraform-managed HOUSEHOLD_HEALTH objects. Code reaches the scheduler only from a tagged release that a person pulls onto the PC.',
-      caption:
-        'All 17 production DAGs by warehouse. Click any DAG for what it does.',
     },
     {
       id: 'dbt',
@@ -94,8 +88,6 @@ export const COPY = {
       svg: 'dbt',
       body:
         'RAW holds data exactly as it landed. CORE holds clean business objects and is often written in the same step as RAW. dbt builds staging models, marts and ANALYTICS on top of CORE, and the 15 semantic views sit on ANALYTICS. Three things start a dbt run. The schedule: at 06:00 ET, ledger_dbt_daily runs dbt on LEDGER_WH, then triggers hr_dbt_daily and agentic_workforce_dbt_daily and waits for both, so everything fits in one LEDGER_WH window. GitHub: every pull request builds the project on DuckDB and in a temporary per-PR schema, and a merge to main publishes the production manifest so later pull requests only build what changed. Manual runs: dev copies target hl_dev and the *_DEV databases and never run on a schedule. A separate dbt_daily job has its own 06:00 Cosmos schedule targeting hl_prod and ANALYTICS_DBT, but it is created paused and is not part of the chain. The databases, schemas and warehouse dbt builds into come from Terraform, which has its own block.',
-      caption:
-        'What starts dbt on the left: the schedule, GitHub, or a manual dev run. The layers it builds on the right, with production on hl_prod.',
     },
     {
       id: 'terraform',
@@ -109,8 +101,6 @@ export const COPY = {
       svg: 'terraform',
       body:
         'Terraform in infra/terraform/snowflake owns the shape of the Snowflake account: databases, schemas, roles and grants, warehouses, resource monitors and policies. That includes HOUSEHOLD_HEALTH in household_health.tf: the database, its schemas, roles and grants, and the RAW and CTRL tables that the Monday Epic MyChart step and epic_fhir_load_manual write to. Procedures and tasks stay with the loaders that run them. Dev and prod share one state, so a single plan shows both. Every pull request runs static checks and a read-only plan, and a guard fails the job if the plan would delete or replace anything. Merging lands code only; a manual run on main re-plans, re-runs the guard and applies after my explicit go. A nightly plan opens an issue when the account drifts from the code. Recovery has three layers: the state lives in an S3 backend with versioning and a lock table, Snowflake Time Travel and UNDROP bring back dropped or changed objects, and every apply re-plans first, so a bad change is reverted by applying the previous code.',
-      caption:
-        'The path from plan to apply, and how a change comes back.',
     },
     {
       id: 'domains',
@@ -123,8 +113,6 @@ export const COPY = {
       svg: 'erd',
       body:
         'Five production databases, each with a *_DEV twin filled with synthetic test data. Open a database below to see its schemas, example tables and grain. HOUSEHOLD_LEDGER has PUBLIC, RAW, CORE, CTRL, ANALYTICS and AI, plus temporary STAGING and INTERMEDIATE schemas. MOONSHOTS has RAW, CORE, CTRL and AI. AGENTIC_WORKFORCE has AGENTS, CONVERSATIONS, GRAPH and CAPTURE, plus STAGING, INTERMEDIATE, ANALYTICS, AI, TRANSFORM and SECURITY. It is where AI chat history from every platform collects, through a daily capture and a nightly chat backup, before agentic_workforce_dbt_daily builds ANALYTICS. CONTROL has PROC, QUEUE, STAGE, FLAGS, TASKS, MCP, SECURITY and TESTS. HOUSEHOLD_HEALTH is the Epic MyChart database, with RAW, STAGING, CORE and CTRL, kept apart so no ledger, Moonshots or agent role reaches health data through inheritance. In every database, a RAW row is one landed payload, a CORE row is one business object, and ANALYTICS holds reporting tables and semantic views.',
-      caption:
-        'Select a database for schemas and modeling grain. Prod: HOUSEHOLD_LEDGER, MOONSHOTS, AGENTIC_WORKFORCE, CONTROL, HOUSEHOLD_HEALTH.',
       databases: [
         {
           id: 'ledger',
@@ -226,8 +214,6 @@ export const COPY = {
       svg: 'mcp',
       body:
         'Three MCP servers connect agents to tools. MCP_HOUSEHOLD_LEDGER_GROK is the read server that Grok desks use. It gives household_finance_agent and ledger_ops_agent analyst tools on the 15 semantic views, search over CS_DOCUMENTS, CS_EMAIL_MESSAGES, CS_GAPS_IDEA and CS_PARSE_REVIEW, and document listing and download. MCP_HOUSEHOLD_LEDGER is the write server that Cursor and Eta (Household COO) use. It has the same reads plus approved procedures for Monarch updates, ledger changes, the Gmail and document pipelines, reconciliation, analytics rebuilds, freshness checks and metal prices. MCP_MOONSHOTS is a separate YouTube server for Cynthia (Moonshot and architecture advisory), with video and channel lookups, transcript and video search over CS_TRANSCRIPTS and CS_VIDEOS, sync status, and sync and embedding jobs. The Cortex agents AGENT_HOUSEHOLD_FINANCE, AGENT_HOUSEHOLD_FINANCE_RO and AGENT_LEDGER_OPS sit behind these servers on the same certified data. Clients sign in with a Snowflake access token under the MCP_LEDGER_CLIENT role, and a read client never gets write tools.',
-      caption:
-        'Servers, then agents, then tool families. Grok uses the read server, Cursor and Eta (Household COO) use the write server, and YouTube work uses the Moonshots server.',
       rows: [
         {
           name: 'MCP_HOUSEHOLD_LEDGER_GROK',
@@ -274,7 +260,6 @@ export const COPY = {
       svg: 'security',
       body:
         'Each kind of work gets its own warehouse, so cost stays easy to see and easy to cap. LEDGER_WH runs the morning dbt builds for the R_PIPELINE pipelines. INGEST_WH wakes once at 07:15 ET for the office-PC loads under R_PC_PIPELINE, and YT_SYNC_WH runs the YouTube sync under the same role. GROK_WH is the default for the Grok bots, so a question from a bot never wakes the ledger warehouse. Every warehouse goes to sleep within a minute of going idle and has its own monitor. Account-wide caps sit on top: an account monitor, a Cortex AI budget that cuts off agent access at 100%, and one role, R_CORTEX_GATE, that is allowed to call Cortex. People and bots reach data through MCP servers, never an open warehouse login. Reading documents and audio happens on the office PC, so it stays off the Snowflake bill. The table lists every role and what it is for.',
-      caption: 'One lane per warehouse: who runs there, what runs, and how it stops spending. Account-wide caps sit underneath.',
     },
     {
       id: 'grokbot',
@@ -288,7 +273,6 @@ export const COPY = {
       svg: 'grokbot',
       body:
         'This shows who talks to the household data and through which door. Stephen (Household CFO) and the Grok finance desks use the read server, MCP_HOUSEHOLD_LEDGER_GROK, for spending, cash flow, balances and document search, and Stephen is the only one who answers money questions. Eta (Household COO) reads too, and she uses the write server, MCP_HOUSEHOLD_LEDGER, when she relays Michael’s go for a change. Cursor uses the write server for ledger and Monarch changes, pipeline runs and rebuilds. Cynthia (Moonshot advisory) uses MCP_MOONSHOTS for the YouTube catalog and transcript search. Behind the ledger servers, three Cortex agents answer from 15 semantic views and 6 Cortex Search services.',
-      caption: 'People and bots on top, the MCP server each one uses, what each server offers, and the Cortex agents behind them.',
     },
   ],
   more: [

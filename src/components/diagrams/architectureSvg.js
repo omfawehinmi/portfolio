@@ -50,7 +50,13 @@ const F="Poppins, sans-serif",MONO="ui-monospace, SFMono-Regular, Menlo, monospa
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
 let mt;const meas=(t,sz,w,it,mono)=>{if(!mt){const m=document.createElementNS('http://www.w3.org/2000/svg','svg');m.setAttribute('style','position:absolute;left:-9999px;top:0;width:10px;height:10px');m.setAttribute('text-rendering','geometricPrecision');mt=document.createElementNS('http://www.w3.org/2000/svg','text');m.appendChild(mt);document.body.appendChild(m)}
  mt.setAttribute('font-family',mono?MONO:F);mt.setAttribute('font-size',sz);mt.setAttribute('font-weight',w);mt.setAttribute('font-style',it?'italic':'normal');mt.textContent=t;return mt.getBBox().width};
-const wrapW=(t,maxW0,sz,w,it,mono)=>{const maxW=maxW0*0.9;const ws=String(t).split(' '),o=[];let l='';for(const x of ws){const c=(l?l+' ':'')+x;if(meas(c,sz,w,it,mono)>maxW&&l){o.push(l);l=x}else l=c}if(l)o.push(l);return o};
+/** Splits a word wider than maxW after . _ / - where possible, else between characters. */
+const splitLong=(x,maxW,sz,w,it,mono)=>{if(meas(x,sz,w,it,mono)<=maxW)return [x];
+  const parts=x.split(/(?<=[._/-])/);const out=[];let cur='';
+  for(const q of parts){if(cur&&meas(cur+q,sz,w,it,mono)>maxW){out.push(cur);cur=''}cur+=q}
+  if(cur)out.push(cur);
+  return out.flatMap((q)=>{if(meas(q,sz,w,it,mono)<=maxW)return [q];const r=[];let c='';for(const ch of q){if(c&&meas(c+ch,sz,w,it,mono)>maxW){r.push(c);c=''}c+=ch}if(c)r.push(c);return r})};
+const wrapW=(t,maxW0,sz,w,it,mono)=>{const maxW=maxW0*0.9;const ws=String(t).split(' ').flatMap((x)=>splitLong(x,maxW,sz,w,it,mono).map((q,k)=>(k?'\u0000':'')+q)),o=[];let l='';for(const x0 of ws){const glue=x0[0]==='\u0000',x=glue?x0.slice(1):x0;const c=l?l+(glue?'':' ')+x:x;if(meas(c,sz,w,it,mono)>maxW&&l){o.push(l);l=x}else l=c}if(l)o.push(l);return o};
 const fs=(n)=>Math.max(6.8,(COMPACT?Math.max(7.2,n-1.15):n)*DENSITY);
 const T=(x,y,t,o={})=>`<text x="${x}" y="${y}" text-anchor="${o.a||'middle'}" dominant-baseline="middle" font-family="${o.mono?MONO:F}" font-size="${o.sz||fs(10)}" font-weight="${o.w||400}"${o.it?' font-style="italic"':''}${o.ls?` letter-spacing="${o.ls}"`:''} fill="${o.c||C.ink}">${esc(t)}</text>`;
 const lab=(x,y,t,c=C.accInk,a='start')=>T(x,y,t.toUpperCase(),{sz:fs(8.2),w:500,ls:.55,c,a,mono:1});
