@@ -547,7 +547,7 @@ export function dAirflow(D, inst=""){
   const cw=narrow?158:156,gx=22,x0=10;
   const half=x0+cw*3+gx*2+10,sgap=24,wide=!narrow&&inst!=='open';
   const W=narrow?10*2+cw*2+gx-4:wide?half*2+sgap:half;
-  const PILL={schedule:{c:'#0f7a4c',f:'#ecfdf3',s:'#abefc6'},'parent DAG':{c:'#175cd3',f:'#eff8ff',s:'#b2ddff'},'window step':{c:'#175cd3',f:'#f5faff',s:'#d1e9ff'},Mondays:{c:'#b54708',f:'#fffaeb',s:'#fedf89'},Paused:{c:'#b54708',f:'#fffaeb',s:'#fedf89'},other:{c:LIAM.schema,f:'#fff',s:LIAM.border}};
+  const PILL={schedule:{c:'#0f7a4c',f:'#ecfdf3',s:'#abefc6'},'parent DAG':{c:'#175cd3',f:'#eff8ff',s:'#b2ddff'},'window step':{c:'#175cd3',f:'#f5faff',s:'#d1e9ff'},Mondays:{c:'#b54708',f:'#fffaeb',s:'#fedf89'},'also on demand':{c:'#0f7a4c',f:'#ecfdf3',s:'#abefc6'},other:{c:LIAM.schema,f:'#fff',s:LIAM.border}};
   const tsz=8.8,ssz=7.8,psz=7,lh=1.25;
   const by=Object.fromEntries(A.dags.map((d)=>[d.id,d]));
   const col=(d)=>narrow?(d.ncol??0):(d.col??0);
@@ -555,11 +555,14 @@ export function dAirflow(D, inst=""){
   const pillW=(t)=>meas(t,psz,600)/0.9+12;
   const lay=(d)=>{const tl=wrapW(d.id.replace(/_/g,'_\u200b'),cw-18,tsz,600).map((l)=>l.replace(/\u200b/g,''));
     const sub={schedule:`${d.at} ET · ${d.by}`,'parent DAG':`from ${d.by}`,'window step':`step in ${d.by}`}[d.trigger]??d.by;
-    const sl=[...wrapW(sub,cw-18,ssz,400),`→ ${d.writes}`];return {d,tl,sl,h:10+tl.length*tsz*lh+sl.length*ssz*lh+20}};
-  const card=(x,y,c)=>{const d=c.d;const hero=d.trigger==='schedule'&&!d.quiet;let g='',ty=y+7;
+    const wl=wrapW(`→ ${d.writes}`,cw-18,ssz,400),sl=[...wrapW(sub,cw-18,ssz,400),...wl];
+    const pills=[d.trigger,d.runs,...(d.also?[d.also]:[])],rows=[[]];let rw=0;
+    pills.forEach((t)=>{const w=pillW(t);if(rows.at(-1).length&&rw+w>cw-18-BADGE-4){rows.push([]);rw=0}rows.at(-1).push(t);rw+=w+4});
+    return {d,tl,sl,nw:wl.length,rows,h:10+tl.length*tsz*lh+sl.length*ssz*lh+20+(rows.length-1)*17}};
+  const card=(x,y,c)=>{const d=c.d;const hero=d.trigger==='schedule';let g='',ty=y+7;
     c.tl.forEach((l)=>{g+=T(x+9,ty+tsz*lh/2,l,{sz:tsz,w:600,a:'start',c:LIAM.ink});ty+=tsz*lh});
-    c.sl.forEach((l,k)=>{const last=k===c.sl.length-1;g+=T(x+9,ty+ssz*lh/2,l,{sz:ssz,a:'start',c:last?LIAM.schema:LIAM.ink,mono:!last});ty+=ssz*lh});
-    let px=x+9;[[d.trigger,PILL[d.trigger]||PILL.other],[d.runs,PILL[d.runs]||PILL.other]].forEach(([t,P])=>{const w=pillW(t);g+=`<rect x="${px}" y="${ty+4}" width="${w}" height="13" rx="6.5" fill="${P.f}" stroke="${P.s}"/>`+T(px+w/2,ty+10.9,t,{sz:psz,w:600,c:P.c});px+=w+4});
+    c.sl.forEach((l,k)=>{const last=k>=c.sl.length-c.nw;g+=T(x+9,ty+ssz*lh/2,l,{sz:ssz,a:'start',c:last?LIAM.schema:LIAM.ink,mono:!last});ty+=ssz*lh});
+    c.rows.forEach((row,ri)=>{let px=x+9;const py=ty+ri*17;row.forEach((t)=>{const P=PILL[t]||PILL.other,w=pillW(t);g+=`<rect x="${px}" y="${py+4}" width="${w}" height="13" rx="6.5" fill="${P.f}" stroke="${P.s}"/>`+T(px+w/2,py+10.9,t,{sz:psz,w:600,c:P.c});px+=w+4})});
     const h=c.h;
     return `<g class="nd" tabindex="0" role="button" data-node="${esc(d.id)}" data-b="${x},${y},${cw},${h},9,7" data-shape="box"><g class="nd-face" filter="url(#${ID}sh)"><rect x="${x}" y="${y}" width="${cw}" height="${h}" rx="8" fill="${hero?'#f4fbf7':'#fff'}" stroke="${hero?LIAM.green:LIAM.border}" stroke-width="${hero?1.4:1}"/></g>${g}${platformBadge(x,y,cw,h,d.logo)}</g>`};
   const C2=Object.fromEntries(A.dags.map((d)=>[d.id,lay(d)]));

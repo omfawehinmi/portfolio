@@ -69,7 +69,7 @@ export const COPY = {
       title: 'Airflow: the production DAGs',
       svg: 'airflow',
       body:
-        'Airflow on the office PC runs every production schedule, and Snowflake tasks are retired. Of 20 DAG files, 17 are production and 3 are dev twins with no schedule. Four schedules start the day. At 06:00 ET ledger_dbt_daily builds the ledger models on LEDGER_WH, then runs hr_dbt_daily and agentic_workforce_dbt_daily and waits for each, so all three share one warehouse window. At 07:15 ET pipeline_load_window wakes INGEST_WH once and runs the Gmail, Monarch and, on Mondays, Earn Your Leisure loads back to back before suspending it, then starts moonshots_yt_sync_daily on Mondays. monarch_load, ledger_email_alerts and moonshots_eyl_sync stay as DAGs for manual runs. Also at 07:15 ET, drive_poll checks Google Drive. drive_poll has no Snowflake connection. It asks the Drive Changes API for everything since a saved page token, keeps PDFs and images in the watched snowflake_docs folders, and skips Google-native files. If nothing changed, it moves the token and stops, so an empty poll costs no warehouse time. If files changed, it starts doc_extract with their IDs and checksums, and moves the token only after that trigger succeeds, so a failed or missed run picks up the same changes next time. doc_extract downloads the files, reads the PDF text layer or runs Tesseract on the PC, and loads the text through two owner\'s-rights procedures on INGEST_WH. Two office-PC checks run without a warehouse: nightly_app_backup at 19:33 ET and pc_usage_check three times on weekdays. dbt_daily, the Cosmos build, has its own 06:00 ET schedule but stays paused. platform_smoke, moonshots_transcript_backfill and ledger_email_pull_poll run only by hand. epic_fhir_load_manual is the on-demand copy of the Monday Epic MyChart step, on Terraform-managed HOUSEHOLD_HEALTH objects. Code reaches the scheduler only from a tagged release that a person pulls onto the PC.',
+        'Airflow on the office PC runs every production schedule, and Snowflake tasks are retired. Of 20 DAG files, 16 run in production and 3 are dev twins with no schedule. Four schedules start the day. At 06:00 ET ledger_dbt_daily builds the ledger models on LEDGER_WH, then runs hr_dbt_daily and agentic_workforce_dbt_daily and waits for each, so all three share one warehouse window. At 07:15 ET pipeline_load_window wakes INGEST_WH once and runs the Gmail, Monarch and, on Mondays, Epic MyChart and Earn Your Leisure loads back to back before suspending it, then starts moonshots_yt_sync_daily on Mondays. monarch_load, ledger_email_alerts, epic_fhir_load_manual and moonshots_eyl_sync also stay as DAGs for on-demand runs. Also at 07:15 ET, drive_poll checks Google Drive. drive_poll has no Snowflake connection. It asks the Drive Changes API for everything since a saved page token, keeps PDFs and images in the watched snowflake_docs folders, and skips Google-native files. If nothing changed, it moves the token and stops, so an empty poll costs no warehouse time. If files changed, it starts doc_extract with their IDs and checksums, and moves the token only after that trigger succeeds, so a failed or missed run picks up the same changes next time. doc_extract downloads the files, reads the PDF text layer or runs Tesseract on the PC, and loads the text through two owner\'s-rights procedures on INGEST_WH. Two office-PC checks run without a warehouse: nightly_app_backup at 19:33 ET and pc_usage_check three times on weekdays. platform_smoke, moonshots_transcript_backfill and ledger_email_pull_poll run only by hand. Code reaches the scheduler only from a tagged release that a person pulls onto the PC.',
     },
     {
       id: 'dbt',
@@ -77,7 +77,7 @@ export const COPY = {
       title: 'dbt: layers and what starts them',
       svg: 'dbt',
       body:
-        'RAW holds data exactly as it landed. CORE holds clean business objects and is often written in the same step as RAW. dbt builds staging models, marts and ANALYTICS on top of CORE, and the 15 semantic views sit on ANALYTICS. Three things start a dbt run. The schedule: at 06:00 ET, ledger_dbt_daily runs dbt on LEDGER_WH, then triggers hr_dbt_daily and agentic_workforce_dbt_daily and waits for both, so everything fits in one LEDGER_WH window. GitHub: every pull request builds the project on DuckDB and in a temporary per-PR schema, and a merge to main publishes the production manifest so later pull requests only build what changed. Manual runs: dev copies target hl_dev and the *_DEV databases and never run on a schedule. A separate dbt_daily job has its own 06:00 Cosmos schedule targeting hl_prod and ANALYTICS_DBT, but it is created paused and is not part of the chain. The databases, schemas and warehouse dbt builds into come from Terraform, which has its own block.',
+        'RAW holds data exactly as it landed. CORE holds clean business objects and is often written in the same step as RAW. dbt builds staging models, marts and ANALYTICS on top of CORE, and the 15 semantic views sit on ANALYTICS. Three things start a dbt run. The schedule: at 06:00 ET, ledger_dbt_daily runs dbt on LEDGER_WH, then triggers hr_dbt_daily and agentic_workforce_dbt_daily and waits for both, so everything fits in one LEDGER_WH window. GitHub: every pull request builds the project on DuckDB and in a temporary per-PR schema, and a merge to main publishes the production manifest so later pull requests only build what changed. Manual runs: dev copies target hl_dev and the *_DEV databases and never run on a schedule. The databases, schemas and warehouse dbt builds into come from Terraform, which has its own block.',
     },
     {
       id: 'terraform',
@@ -85,7 +85,7 @@ export const COPY = {
       title: 'Terraform: Snowflake infrastructure and recovery',
       svg: 'terraform',
       body:
-        'Terraform in infra/terraform/snowflake owns the shape of the Snowflake account: databases, schemas, roles and grants, warehouses, resource monitors and policies. That includes HOUSEHOLD_HEALTH in household_health.tf: the database, its schemas, roles and grants, and the RAW and CTRL tables that the Monday Epic MyChart step and epic_fhir_load_manual write to. Procedures and tasks stay with the loaders that run them. Dev and prod share one state, so a single plan shows both. Every pull request runs static checks and a read-only plan, and a guard fails the job if the plan would delete or replace anything. Merging lands code only; a manual run on main re-plans, re-runs the guard and applies after my explicit go. A nightly plan opens an issue when the account drifts from the code. Recovery has three layers: the state lives in an S3 backend with versioning and a lock table, Snowflake Time Travel and UNDROP bring back dropped or changed objects, and every apply re-plans first, so a bad change is reverted by applying the previous code.',
+        'Terraform in infra/terraform/snowflake owns the shape of the Snowflake account: databases, schemas, roles and grants, warehouses, resource monitors and policies. That includes HOUSEHOLD_HEALTH in household_health.tf: the database, its schemas, roles and grants, and the RAW and CTRL tables that the Monday Epic MyChart load writes to. Procedures and tasks stay with the loaders that run them. Dev and prod share one state, so a single plan shows both. Every pull request runs static checks and a read-only plan, and a guard fails the job if the plan would delete or replace anything. Merging lands code only; a manual run on main re-plans, re-runs the guard and applies after my explicit go. A nightly plan opens an issue when the account drifts from the code. Recovery has three layers: the state lives in an S3 backend with versioning and a lock table, Snowflake Time Travel and UNDROP bring back dropped or changed objects, and every apply re-plans first, so a bad change is reverted by applying the previous code.',
     },
     {
       id: 'domains',
@@ -176,7 +176,7 @@ export const COPY = {
             'Production healthcare database on the same product-database pattern as the ledger. Terraform in household_health.tf owns the database, its schemas, roles, grants, RAW.FHIR_RESOURCES and the CTRL run log. SMART on FHIR R4 from Epic MyChart uses a registered patient app, a hosted OAuth callback, and refresh tokens kept in SSM. Every Monday the epic_fhir step of pipeline_load_window pulls each connected org, lands the resources in one PUT and COPY, runs dbt for the health models, and runs watchers that email counts only. epic_fhir_load_manual runs the same path on demand. Patient values never appear on this site.',
           objects: [
             { layer: 'Auth', name: 'SMART app, hosted callback, SSM tokens', note: 'Epic app 64675' },
-            { layer: 'Scheduler', name: 'pipeline_load_window, Mondays', note: 'Plus epic_fhir_load_manual' },
+            { layer: 'Scheduler', name: 'pipeline_load_window, Mondays', note: 'Production step, plus an on-demand rerun' },
             { layer: 'Stage', name: 'RAW.FHIR_LAND_STAGE', note: 'One PUT and COPY per load' },
             { layer: 'RAW', name: 'RAW.FHIR_RESOURCES', note: 'Terraform-managed · dbt builds STAGING and CORE' },
           ],
@@ -678,10 +678,10 @@ export const DIAG = {
 
 DIAG.lead.airflow = {
   t: 'Airflow',
-  s: '17 production DAGs · 3 dev twins',
+  s: '16 production DAGs · 3 dev twins',
 }
 DIAG.airflow = {
-  title: 'All 17 production Airflow DAGs, one lane per warehouse',
+  title: 'All 16 production Airflow DAGs, one lane per warehouse',
   lanes: [
     { id: 'ledger', t: 'LEDGER_WH', s: '06:00 ET dbt window', logo: 'snowflake' },
     { id: 'ingest', t: 'INGEST_WH', s: '07:15 ET load window', logo: 'snowflake' },
@@ -694,19 +694,18 @@ DIAG.airflow = {
     { id: 'ledger_dbt_daily', lane: 'ledger', col: 0, at: '06:00', trigger: 'schedule', by: 'cron 0 6 * * *', runs: 'Daily', writes: 'ledger models, ANALYTICS', logo: 'dbt' },
     { id: 'hr_dbt_daily', lane: 'ledger', col: 1, ncol: 1, after: 'ledger_dbt_daily', trigger: 'parent DAG', by: 'ledger_dbt_daily', runs: 'Daily', writes: 'HR marts', logo: 'dbt' },
     { id: 'agentic_workforce_dbt_daily', lane: 'ledger', col: 2, ncol: 1, after: 'hr_dbt_daily', trigger: 'parent DAG', by: 'hr_dbt_daily', runs: 'Daily', writes: 'AGENTIC_WORKFORCE analytics', logo: 'dbt' },
-    { id: 'dbt_daily', lane: 'ledger', col: 0, at: '06:00', trigger: 'schedule', by: 'Cosmos build', runs: 'Paused', writes: 'ANALYTICS_DBT', logo: 'dbt', quiet: true },
     { id: 'pipeline_load_window', lane: 'ingest', col: 0, at: '07:15', trigger: 'schedule', by: 'cron 15 7 * * *', runs: 'Daily', writes: 'one wake, then suspend', logo: 'airflow' },
     { id: 'ledger_email_alerts', lane: 'ingest', col: 1, ncol: 1, after: 'pipeline_load_window', trigger: 'window step', by: 'pipeline_load_window', runs: 'Daily', writes: 'HOUSEHOLD_LEDGER RAW, CORE', logo: 'gmail' },
     { id: 'monarch_load', lane: 'ingest', col: 1, ncol: 1, after: 'pipeline_load_window', trigger: 'window step', by: 'pipeline_load_window', runs: 'Daily', writes: 'HOUSEHOLD_LEDGER RAW, CORE', logo: 'monarch' },
     { id: 'moonshots_eyl_sync', lane: 'ingest', col: 1, ncol: 1, after: 'pipeline_load_window', trigger: 'window step', by: 'pipeline_load_window', runs: 'Mondays', writes: 'MOONSHOTS captions', logo: 'youtube' },
+    { id: 'epic_fhir_load_manual', lane: 'ingest', col: 1, ncol: 1, after: 'pipeline_load_window', trigger: 'window step', by: 'pipeline_load_window', runs: 'Mondays', also: 'also on demand', writes: 'HOUSEHOLD_HEALTH RAW, then dbt' },
     { id: 'moonshots_yt_sync_daily', lane: 'yt', col: 2, ncol: 1, after: 'pipeline_load_window', trigger: 'parent DAG', by: 'pipeline_load_window', runs: 'Mondays', writes: 'MOONSHOTS, embeddings', logo: 'youtube' },
     { id: 'drive_poll', lane: 'docs', col: 0, at: '07:15', trigger: 'schedule', by: 'cron 15 7 * * *', runs: 'Daily', writes: 'starts doc_extract if new', logo: 'drive' },
     { id: 'doc_extract', lane: 'docs', col: 1, ncol: 1, after: 'drive_poll', trigger: 'parent DAG', by: 'drive_poll', runs: 'New files', writes: 'document text on INGEST_WH', logo: 'drive' },
     { id: 'nightly_app_backup', lane: 'pc', col: 0, at: '19:33', trigger: 'schedule', by: 'cron 33 19 * * *', runs: 'Daily', writes: 'pushes the PC bundles' },
     { id: 'pc_usage_check', lane: 'pc', col: 1, ncol: 1, at: '09:17', trigger: 'schedule', by: '13:17 · 17:17', runs: 'Weekdays', writes: 'emails on a threshold' },
     { id: 'platform_smoke', lane: 'manual', col: 0, trigger: 'manual', by: 'read-only connection check', runs: 'On demand', writes: 'counts only' },
-    { id: 'epic_fhir_load_manual', lane: 'manual', col: 1, ncol: 1, trigger: 'manual', by: 'Epic MyChart pull', runs: 'On demand', writes: 'HOUSEHOLD_HEALTH, via dbt' },
-    { id: 'moonshots_transcript_backfill', lane: 'manual', col: 2, ncol: 0, trigger: 'manual', by: 'one day per run, LEDGER_WH', runs: 'On demand', writes: 'MOONSHOTS transcripts', logo: 'youtube' },
+    { id: 'moonshots_transcript_backfill', lane: 'manual', col: 1, ncol: 1, trigger: 'manual', by: 'one day per run, LEDGER_WH', runs: 'On demand', writes: 'MOONSHOTS transcripts', logo: 'youtube' },
     { id: 'ledger_email_pull_poll', lane: 'manual', col: 0, ncol: 1, trigger: 'manual', by: 'metadata count', runs: 'On demand', writes: 'no warehouse' },
   ],
 }
@@ -780,7 +779,7 @@ DIAG.code = {
   svOps: 'CTRL.SV_OPS_FRESHNESS',
   svDoc: 'SV_DOCUMENT_STANDING',
   cs: 'CS_DOCUMENTS',
-  airflow: '17 production DAGs · runs the pulled release tag',
+  airflow: '16 production DAGs · runs the pulled release tag',
   land: 'pipeline_load_window → monarch + email',
   ocr: 'doc_extract · paused for warehouse quota',
   dbt: 'ledger_dbt_daily → hr → agentic · dbt_daily paused',
