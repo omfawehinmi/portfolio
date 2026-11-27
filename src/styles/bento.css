@@ -1433,7 +1433,7 @@ dialog.project-dialog.bx-dialog.bx-dialog--erd-full .bx-fig-big:has(.bx-arch--li
 }
 
 .bx-tile.bx-t-airflow.is-expanded .bx-fig svg {
-  max-width: 72rem;
+  max-width: 48rem;
   max-height: none;
   margin-inline: auto;
 }
