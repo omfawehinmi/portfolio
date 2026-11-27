@@ -189,7 +189,7 @@ export const COPY = {
       title: 'MCP servers, agents, and tools',
       svg: 'mcp',
       body:
-        'Three MCP servers connect agents to tools. MCP_HOUSEHOLD_LEDGER_GROK is the read server that Grok desks use. It gives household_finance_agent and ledger_ops_agent analyst tools on the 15 semantic views, search over CS_DOCUMENTS, CS_EMAIL_MESSAGES, CS_GAPS_IDEA and CS_PARSE_REVIEW, and document listing and download. MCP_HOUSEHOLD_LEDGER is the write server that Cursor and Eta (Household COO) use. It has the same reads plus approved procedures for Monarch updates, ledger changes, the Gmail and document pipelines, reconciliation, analytics rebuilds, freshness checks and metal prices. MCP_MOONSHOTS is a separate YouTube server for Cynthia (Moonshot and architecture advisory), with video and channel lookups, transcript and video search over CS_TRANSCRIPTS and CS_VIDEOS, sync status, and sync and embedding jobs. The Cortex agents AGENT_HOUSEHOLD_FINANCE, AGENT_HOUSEHOLD_FINANCE_RO and AGENT_LEDGER_OPS sit behind these servers on the same certified data. Clients sign in with a Snowflake access token under the MCP_LEDGER_CLIENT role, and a read client never gets write tools.',
+        'Three MCP servers connect agents to tools. MCP_HOUSEHOLD_LEDGER_GROK is the read server that Grok desks use. It gives household_finance_agent and ledger_ops_agent analyst tools on the 15 semantic views, search over CS_DOCUMENTS, CS_EMAIL_MESSAGES, CS_GAPS_IDEA and CS_PARSE_REVIEW, and document listing and download. MCP_HOUSEHOLD_LEDGER is the write server that Cursor and Eta (Household COO) use. It has the same reads plus approved procedures for Monarch updates, ledger changes, the Gmail and document pipelines, reconciliation, analytics rebuilds, freshness checks and metal prices. MCP_MOONSHOTS is a separate YouTube server for Cynthia (Moonshot and architecture advisory), with video and channel lookups, transcript and video search over CS_TRANSCRIPTS and CS_VIDEOS, sync status, and sync and embedding jobs. Two Cortex agents, AGENT_HOUSEHOLD_FINANCE and AGENT_LEDGER_OPS, sit behind the ledger servers on the same certified data. Clients sign in with a Snowflake access token under the MCP_LEDGER_CLIENT role, and a read client never gets write tools.',
       rows: [
         {
           name: 'MCP_HOUSEHOLD_LEDGER_GROK',
@@ -205,21 +205,6 @@ export const COPY = {
           name: 'MCP_MOONSHOTS',
           role: 'YouTube server for Cynthia (Moonshot and architecture advisory). Catalog get and list, transcript and video search by keyword, semantic match or Cortex Search, sync status, and sync, embed and search refresh jobs. No household money.',
           status: 'Domain MCP',
-        },
-        {
-          name: 'Agent layer',
-          role: 'MCP agents household_finance_agent + ledger_ops_agent; Cortex agents AGENT_HOUSEHOLD_FINANCE, AGENT_HOUSEHOLD_FINANCE_RO, AGENT_LEDGER_OPS on semantic views / Cortex Search services.',
-          status: 'Orchestration',
-        },
-        {
-          name: 'Ledger tool families',
-          role: 'analyst_* · search_* · document_* · monarch_* · ledger_mutate · gmail/email pipeline · reconcile · rebuild_analytics · freshness/QA · metal_spot',
-          status: 'Summarized',
-        },
-        {
-          name: 'Moonshots tool families',
-          role: 'get/list catalog · search transcripts/videos · CS_TRANSCRIPTS / CS_VIDEOS · youtube_sync · embed_transcripts · refresh CS',
-          status: 'Summarized',
         },
       ],
     },
@@ -243,7 +228,7 @@ export const COPY = {
       title: 'Grokbot architecture, agents per MCP',
       svg: 'grokbot',
       body:
-        'This shows who talks to the household data and through which door. Stephen (Household CFO) and the Grok finance desks use the read server, MCP_HOUSEHOLD_LEDGER_GROK, for spending, cash flow, balances and document search, and Stephen is the only one who answers money questions. Eta (Household COO) reads too, and she uses the write server, MCP_HOUSEHOLD_LEDGER, when she relays Michael’s go for a change. Cursor uses the write server for ledger and Monarch changes, pipeline runs and rebuilds. Cynthia (Moonshot advisory) uses MCP_MOONSHOTS for the YouTube catalog and transcript search. Behind the ledger servers, three Cortex agents answer from 15 semantic views and 6 Cortex Search services.',
+        'This shows who talks to the household data and through which door. Stephen (Household CFO) and the Grok finance desks use the read server, MCP_HOUSEHOLD_LEDGER_GROK, for spending, cash flow, balances and document search, and Stephen is the only one who answers money questions. Eta (Household COO) reads too, and she uses the write server, MCP_HOUSEHOLD_LEDGER, when she relays Michael’s go for a change. Cursor uses the write server for ledger and Monarch changes, pipeline runs and rebuilds. Cynthia (Moonshot advisory) uses MCP_MOONSHOTS for the YouTube catalog and transcript search. Behind the ledger servers, two Cortex agents answer from 15 semantic views and 6 Cortex Search services.',
     },
   ],
   more: [
@@ -538,7 +523,7 @@ export const DIAG = {
       { t: 'The same reads, plus changes', s: 'ledger and Monarch changes, pipeline runs, rebuilds' },
       { t: 'YouTube research', s: 'catalog, transcript search, sync and embed', logo: 'youtube' },
     ],
-    cortex: { t: 'Three Cortex agents', s: 'AGENT_HOUSEHOLD_FINANCE, its read-only twin and AGENT_LEDGER_OPS, on 15 semantic views and 6 Cortex Search services', logo: 'snowflake' },
+    cortex: { t: 'Two Cortex agents', s: 'AGENT_HOUSEHOLD_FINANCE and AGENT_LEDGER_OPS, on 15 semantic views and 6 Cortex Search services', logo: 'snowflake' },
   },
   erd: {
     title:
@@ -721,8 +706,8 @@ DIAG.mcpMatrix = {
     { name: 'Cynthia (Moonshot and architecture advisory)', access: 'Moonshots' },
   ],
   otherClients: [{ name: 'Cursor', access: 'write server' }],
-  cortexAgents: ['AGENT_HOUSEHOLD_FINANCE', 'AGENT_HOUSEHOLD_FINANCE_RO', 'AGENT_LEDGER_OPS'],
-  cortexNote: 'Called as tools through household_finance_agent and ledger_ops_agent, on the 15 semantic views and Cortex Search.',
+  cortexAgents: ['AGENT_HOUSEHOLD_FINANCE', 'AGENT_LEDGER_OPS'],
+  cortexNote: 'The household_finance_agent tool calls AGENT_HOUSEHOLD_FINANCE and the ledger_ops_agent tool calls AGENT_LEDGER_OPS. Everything else in the table is a plain tool, and MCP_MOONSHOTS has tools only.',
   families: [
     { id: 'agents', t: 'Cortex agent calls', kind: ['read'], n: { read: 2, write: 2 }, tools: ['household_finance_agent', 'ledger_ops_agent'] },
     { id: 'analyst', t: 'Analyst on semantic views', kind: ['read'], n: { read: 15, write: 15 }, tools: ['analyst_spending', 'analyst_transactions', 'analyst_cashflow', 'analyst_balances_net_worth', 'analyst_liabilities_dues', 'analyst_early_activity', 'analyst_budget_variance', 'analyst_investments', 'analyst_obligations', 'analyst_document_standing', 'analyst_recurring_fixed', 'analyst_accounts_receivable', 'analyst_debt_payoff', 'analyst_savings_goals', 'analyst_ops_freshness'] },

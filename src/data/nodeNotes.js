@@ -111,7 +111,7 @@ export const NODE_NOTES = {
     [/^MCP_HOUSEHOLD_LEDGER\b/, 'Write server', WRITE_SRV],
     [/^MCP_MOONSHOTS/, 'Moonshots server', MOON_SRV],
     [/^household_finance_agent/, 'Read agents', 'household_finance_agent covers spending, cash flow, balances, documents and ops search. ledger_ops_agent covers freshness and warehouse health.'],
-    [/^same agents/, 'Write-side agents', 'The same MCP agents, plus write procedures. The Cortex agents AGENT_HOUSEHOLD_FINANCE, AGENT_HOUSEHOLD_FINANCE_RO and AGENT_LEDGER_OPS sit behind them on certified data.'],
+    [/^same agents/, 'Write-side agents', 'The same MCP agents, plus write procedures. The Cortex agents AGENT_HOUSEHOLD_FINANCE and AGENT_LEDGER_OPS sit behind them on certified data.'],
     [/^Cynthia/, 'Cynthia (Moonshot and architecture advisory)', 'Uses MCP_MOONSHOTS for the YouTube catalog, transcript search, and sync and embedding jobs.'],
     [/^agents · analyst/, 'Read tool families', 'analyst_* totals on semantic views, search_* over Cortex Search services, and document stage list and download.'],
     [/^read families/, 'Write tool families', 'Every read family, plus procedures for Monarch and ledger changes, Gmail and document pipelines, reconciliation, analytics rebuilds, freshness checks and metal prices.'],
@@ -146,7 +146,7 @@ export const NODE_NOTES = {
     [/^Finance and ops answers/, 'Read tools', 'household_finance_agent for spending, cash flow, balances and documents, ledger_ops_agent for freshness, plus analyst and search tools.'],
     [/^The same reads, plus changes/, 'Write tools', 'Every read tool, plus approved procedures for ledger and Monarch changes, the Gmail and document pipelines, and analytics rebuilds.'],
     [/^YouTube research/, 'YouTube tools', 'Catalog lookups, transcript and video search, and sync and embedding jobs.'],
-    [/^Three Cortex agents/, 'Cortex agents', 'AGENT_HOUSEHOLD_FINANCE, AGENT_HOUSEHOLD_FINANCE_RO and AGENT_LEDGER_OPS are defined in SQL and are separate from the Grok bot staff.'],
+    [/^Two Cortex agents/, 'Cortex agents', 'AGENT_HOUSEHOLD_FINANCE and AGENT_LEDGER_OPS are defined in SQL and are separate from the Grok bot staff.'],
   ],
 
 }
