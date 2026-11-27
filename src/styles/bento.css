@@ -780,17 +780,17 @@ p.bx-subhead {
   }
 
   .bx-t-workflow,
-  .bx-t-pipes {
+  .bx-t-pipes,
+  .bx-t-grokbot,
+  .bx-t-security {
     grid-column: span 6;
   }
 
-  .bx-t-security,
   .bx-t-airflow,
   .bx-t-dbt,
   .bx-t-domains,
   .bx-t-mcp,
-  .bx-t-terraform,
-  .bx-t-grokbot {
+  .bx-t-terraform {
     grid-column: span 12;
   }
 
@@ -843,6 +843,11 @@ p.bx-subhead {
   }
 
   .bx-lead .bx-leadfig svg {
+    max-height: none;
+  }
+
+  .bx-t-security .bx-fig svg,
+  .bx-t-grokbot .bx-fig svg {
     max-height: none;
   }
 
@@ -1881,4 +1886,47 @@ dialog.project-dialog.bx-dialog.bx-dialog--erd-full .bx-fig-big:has(.bx-arch--li
   .bx-mcpm-fam {
     font-size: 0.66rem;
   }
+}
+
+.bx-roles {
+  margin: 0.25rem 0 0.75rem;
+}
+
+.bx-roles__label {
+  margin: 0 0 0.35rem;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #0f7a4c;
+}
+
+.bx-roles__table {
+  min-width: 0;
+  font-size: 0.7rem;
+  line-height: 1.35;
+  color: #344054;
+}
+
+.bx-roles__table code {
+  font-size: 0.66rem;
+  color: #1a1f2c;
+  white-space: nowrap;
+}
+
+.bx-roles__group td {
+  padding-top: 0.55rem;
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #667085;
+  border-bottom: 1px solid #e2e5eb;
+}
+
+.bx-roles__wh {
+  white-space: nowrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.62rem;
+  color: #0f7a4c;
 }

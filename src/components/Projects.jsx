@@ -436,7 +436,7 @@ function TileFigure({ tile, tall, inst, ship, onShip, dbId, big = false, caption
 function ArchitectureTile({ tile, onOpen, tall, expanded }) {
   const [ship, setShip] = useState(DIAG.workflow.platforms[0].id)
   const [dbId, setDbId] = useState(tile.databases?.[0]?.id || null)
-  const showRowsOnTile = tile.id === 'grokbot' || tile.id === 'security'
+  const diagramFirst = tile.id === 'grokbot' || tile.id === 'security'
   const isHero = tile.id === 'mcp' || tile.id === 'domains' || tile.id === 'grokbot'
   return (
     <article
@@ -461,8 +461,13 @@ function ArchitectureTile({ tile, onOpen, tall, expanded }) {
         <TilePanel tile={tile} tall={tall} ship={ship} onShip={setShip} dbId={dbId} onDb={setDbId} />
       ) : (
         <>
+          {diagramFirst ? (
+            <>
+              <TileFigure tile={tile} tall={tall} inst="tile" ship={ship} onShip={setShip} dbId={dbId} />
+              {tile.id === 'security' ? <RolesTable collapsed /> : null}
+            </>
+          ) : null}
           <FoldBody project={{ outcome: tile.body }} lines={isHero ? 4 : 3} />
-          {showRowsOnTile ? <RowTable rows={tile.rows} collapsed /> : null}
           {tile.id === 'domains' && tile.databases?.length ? (
             <div className="bx-dbtabs bx-dbtabs--tile" role="tablist" aria-label="Snowflake databases">
               {tile.databases.map((db) => (
@@ -483,7 +488,9 @@ function ArchitectureTile({ tile, onOpen, tall, expanded }) {
               ))}
             </div>
           ) : null}
-          <TileFigure tile={tile} tall={tall} inst="tile" ship={ship} onShip={setShip} dbId={dbId} />
+          {diagramFirst ? null : (
+            <TileFigure tile={tile} tall={tall} inst="tile" ship={ship} onShip={setShip} dbId={dbId} />
+          )}
         </>
       )}
       <DesignChoices title={tile.title} choices={tile.choices} />
@@ -550,6 +557,59 @@ function StatStrip({ stats }) {
         </li>
       ))}
     </ul>
+  )
+}
+
+function RolesTable({ collapsed = false, previewGroups = 1 }) {
+  const [open, setOpen] = useState(false)
+  const groups = DIAG.security.roles
+  const total = groups.reduce((sum, g) => sum + g.items.length, 0)
+  const visible = collapsed && !open ? groups.slice(0, previewGroups) : groups
+  return (
+    <div className="bx-roles">
+      <p className="bx-roles__label">All {total} Snowflake roles</p>
+      <div className="bx-mcpm-scroll">
+        <table className="bx-mcpm-table bx-roles__table">
+          <thead>
+            <tr>
+              <th>Role</th>
+              <th>Used for</th>
+              <th>Warehouse</th>
+            </tr>
+          </thead>
+          {visible.map((g) => (
+            <tbody key={g.group}>
+              <tr className="bx-roles__group">
+                <td colSpan={3}>{g.group}</td>
+              </tr>
+              {g.items.map(([role, use, wh]) => (
+                <tr key={role}>
+                  <td>
+                    <code>{role}</code>
+                  </td>
+                  <td>{use}</td>
+                  <td className="bx-roles__wh">{wh}</td>
+                </tr>
+              ))}
+            </tbody>
+          ))}
+        </table>
+      </div>
+      {collapsed ? (
+        <button
+          type="button"
+          className="bx-moretoggle"
+          aria-expanded={open}
+          onClick={(event) => {
+            event.preventDefault()
+            event.stopPropagation()
+            setOpen((value) => !value)
+          }}
+        >
+          {open ? 'Show fewer roles' : `Show all ${total} roles`}
+        </button>
+      ) : null}
+    </div>
   )
 }
 
@@ -628,6 +688,7 @@ function TilePanel({ tile, tall, ship, onShip, dbId, onDb }) {
   return (
     <div className="bx-panel-body">
       <TileFigure tile={tile} tall={tall} inst="open" ship={ship} onShip={onShip} big caption={tile.caption} />
+      {tile.id === 'security' ? <RolesTable /> : null}
       <p>{tile.body}</p>
       <RowTable rows={tile.rows} />
     </div>

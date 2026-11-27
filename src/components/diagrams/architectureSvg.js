@@ -204,25 +204,31 @@ export function dMcp(D, inst=""){
   o+=legend(14,396,['agent','src','data']);
   return svg(W,420,M.title||'MCP servers, agents, and tool families',a+o)};
 
-// 2b. Grokbot: which agent attaches to which MCP, and what that access is for.
+// 2b. Grokbot: people and bots, the MCP server each uses, what it offers, then the Cortex agents behind it.
 export function dGrokbot(D, inst=""){
-  begin(false,inst);ID='gb'+inst;const G=D.grokbot||{};const W=560;let o='',a='';
-  const rows=G.rows||[
-    {agent:'Grok finance desks',mcp:'MCP_HOUSEHOLD_LEDGER_GROK',use:'spend · cashflow · docs · ops freshness',z:'agent'},
-    {agent:'Cursor / Eta (Household COO)',mcp:'MCP_HOUSEHOLD_LEDGER',use:'mutate · ingest · rebuild analytics',z:'agent'},
-    {agent:'Cynthia (Moonshot advisory)',mcp:'MCP_MOONSHOTS',use:'YouTube catalog · transcripts · sync',z:'src'},
-  ];
-  o+=lab(14,16,'Agent / desk')+lab(200,16,'MCP server')+lab(390,16,'Uses that access');
-  rows.forEach((r,i)=>{
-    const y=36+i*78;
-    o+=node('box',14,y,170,n2(r.agent,'',9.4),{h:48,z:r.z||'agent',lift:1}).g;
-    o+=node('box',200,y,172,n2(r.mcp,'',9),{h:48,z:'agent',hero:1}).g;
-    o+=node('box',390,y,156,[{t:r.use,sz:8.8,c:C.sub}],{h:48}).g;
-    a+=arrow(`M184,${y+24} H198`,'c')+arrow(`M372,${y+24} H388`,'c');
-  });
-  o+=node('box',14,286,532,[{t:G.note||'Cortex AGENT_HOUSEHOLD_FINANCE / _RO / AGENT_LEDGER_OPS sit on semantic views and Cortex Search services behind these MCP catalogs.',sz:9,c:C.sub}],{h:40,dash:1}).g;
-  o+=legend(14,342,['agent','src']);
-  return svg(W,366,G.title||'Grokbot architecture — agents per MCP',a+o)};
+  begin(true,inst);setDensity(1);ID='gb'+inst;const G=D.grokbot;let o='',a='';
+  const narrow=typeof window!=='undefined'&&window.innerWidth<560;
+  const W=narrow?350:528,pad=10,gap=8;
+  const row=(y,label,cards,cols,ssz)=>{o+=lab(pad,y+5,label);y+=14;const n=cols||cards.length;const w=(W-2*pad-gap*(n-1))/n;
+    const out=[],top=y,rh=Math.max(...cards.map((c)=>lcard(0,0,w,c,{ssz}).h));
+    cards.forEach((c,k)=>{const col=k%n,line=Math.floor(k/n);const x=pad+col*(w+gap),yy=y+line*(rh+gap);o+=lcard(x,yy,w,c,{h:rh,dash:c.go,ssz}).g;out.push({x,y:yy,w,h:rh,mx:x+w/2})});
+    const lines=Math.ceil(cards.length/n);return {top,bottom:y+lines*rh+(lines-1)*gap,cards:out}};
+  if(narrow){
+    let y=4;const ppl=row(y,'People and bots',G.people,3);y=ppl.bottom+10;
+    G.servers.forEach((sv,k)=>{const sr=row(y,k?'':'MCP servers',[{...sv,s:sv.s+' · '+sv.users}]);a+=arrow(`M${W/2},${sr.bottom+3} V${sr.bottom+11}`,'c');
+      const fr=row(sr.bottom+0,'',[G.families[k]]);y=fr.bottom+10});
+    const cx=row(y,'Cortex in SQL',[G.cortex]);return svg(W,cx.bottom+4,G.title,a+o)}
+  const ppl=row(4,'People and bots',G.people);
+  const srv=row(ppl.bottom+30,'MCP servers',G.servers,0,7);
+  G.people.forEach((p,k)=>{const from=ppl.cards[k];(p.to||[]).forEach((t,m)=>{const to=srv.cards[t];const tx=to.mx+((p.to.length>1?(m?-14:14):0))+(t===0?(k-1)*12:0);
+    a+=arrow(`M${from.mx},${ppl.bottom+3} C${from.mx},${ppl.bottom+18} ${tx},${srv.top-16} ${tx},${srv.top-3}`,'c')})});
+  const mi=G.people.findIndex((p)=>p.go),ei=G.people.findIndex((p)=>p.t==='Eta');
+  if(mi>0&&ei>=0){const m=ppl.cards[mi],e=ppl.cards[ei];a+=arrow(`M${m.x-2},${m.y+m.h/2} H${e.x+e.w+3}`,'w')}
+  const fam=row(srv.bottom+18,'What each server offers',G.families);
+  srv.cards.forEach((c,k)=>a+=arrow(`M${c.mx},${srv.bottom+3} V${fam.top+11}`,'c'));
+  const cx=row(fam.bottom+18,'Cortex in SQL',[G.cortex]);
+  [0,1].forEach((k)=>a+=arrow(`M${fam.cards[k].mx},${fam.bottom+3} V${cx.top+11}`,'c'));
+  return svg(W,cx.bottom+4,G.title,a+o)};
 
 // 3. Data domains: Issuing-style system map (no crow's-foot). Soft cards + thin arrows.
 export function dErd(D, inst=""){
@@ -282,35 +288,24 @@ export function dPipes(D, inst=""){
  a+=arrow('M378,106 H384 Q388,106 388,110 V225 Q388,229 384,229 H378','c')+arrow(`M294,${132+oc.h} V208`,'c')+arrow('M232,227 H220','c')+arrow('M140,229 H128','c')+arrow('M78,229 H44','c');
  return svg(W,H,Pp.title,a+o)};
 
-// 5. Security + warehouses/cost: roles/MCP/gate on top; warehouse + caps below (Issuing nodes).
+// 5. Roles, warehouses and cost: one lane per warehouse, then account-wide caps.
 export function dSec(D, inst=""){
-  begin(true,inst);ID='s'+inst;const S=D.security,K=D.code;const W=520,H=324;let o='',a='';
-  o+=lab(14,14,'Access')+lab(14,168,'Warehouses & cost');
-  // Roles row
-  (S.roles||[]).forEach((t,i)=>o+=node('pill',14+i*168,28,156,[{t,sz:8.4,w:500}],{h:26,z:'sec',id:`role-${i}`}).g);
-  // MCP split
-  o+=node('box',14,68,200,n2(S.write||'MCP_HOUSEHOLD_LEDGER','write path',8.6,K.writeSrv,'agent'),{h:44,z:'agent',hero:1,platform:'mcp'}).g;
-  o+=node('box',230,68,200,n2(S.read?.t||'MCP_HOUSEHOLD_LEDGER_GROK',S.read?.s||'no write tools',8.6,K.readSrv,'agent'),{h:44,z:'agent',hero:1,platform:'mcp'}).g;
-  o+=node('box',14,124,200,n2(S.gate?.t||'R_CORTEX_GATE',S.gate?.s||'sole CORTEX_USER',8.6),{h:28,z:'sec'}).g;
-  o+=node('cyl',230,122,120,n2(S.cat?.[0]||'Semantic views','',8.2,K.svDoc,'data'),{h:32,z:'data'}).g;
-  o+=node('cyl',360,122,120,n2(S.cat?.[1]||'Cortex Search','',8.2,K.cs,'data'),{h:32,z:'data'}).g;
-  a+=arrow('M114,54 V68','c')+arrow('M330,54 V68','c')+arrow('M114,112 V124','c')+arrow('M330,112 V122','c');
-  // Warehouses
-  const wh=S.warehouses||[];
-  wh.forEach((w,i)=>{
-    const x=14+i*126;
-    o+=node('box',x,184,118,n2(w.t,w.s,8.4),{h:48,z:i===2?'agent':'data',hero:i<2,id:`wh-${i}`,platform:i===2?'mcp':'snowflake'}).g;
-    if(i)a+=arrow(`M${x-8},208 H${x}`,'');
-  });
-  // Cost controls
-  const cost=S.cost||[];
-  cost.forEach((c,i)=>{
-    const x=14+i*126;
-    o+=node('pill',x,250,118,[{t:c.t,sz:8,w:600},{t:c.s,sz:7.6,sub:1}],{h:36,z:'sec',id:`cost-${i}`}).g;
-  });
-  a+=arrow('M248,232 V250','d');
-  o+=legend(14,308,['sec','agent','data']);
-  return svg(W,H,S.title||'Roles, warehouses, and cost controls',a+o)};
+  begin(true,inst);setDensity(1);ID='s'+inst;const S=D.security;let o='',a='';
+  const narrow=typeof window!=='undefined'&&window.innerWidth<560;
+  const W=narrow?350:528,pad=10,g=20;
+  const cols=narrow?[[pad,'Warehouse and who runs it',196],[pad+196+g,'Stops spending',W-2*pad-196-g]]
+    :[[pad,'Warehouse',128],[pad+128+g,'Who runs it, what runs',196],[pad+128+196+2*g,'Stops spending',W-2*pad-128-196-2*g]];
+  cols.forEach(([x,t])=>o+=lab(x,10,t));
+  let y=22;
+  S.lanes.forEach((l)=>{const cards=narrow?[{...l.wh,s:`${l.who.t} · ${l.who.s}`},l.stop]:[l.wh,l.who,l.stop];
+    const h=Math.max(...cards.map((c,k)=>lcard(0,0,cols[k][2],c).h));
+    cards.forEach((c,k)=>{const [x,,w]=cols[k];o+=lcard(x,y,w,c,{h}).g;if(k){const px=cols[k-1][0]+cols[k-1][2];a+=arrow(`M${px+3},${y+h/2} H${x-3}`,'c')}});
+    y+=h+10});
+  o+=lab(pad,y+8,'Account-wide caps');y+=18;
+  const n=2,gap=10,w=(W-2*pad-gap*(n-1))/n;
+  for(let k=0;k<S.caps.length;k+=n){const pair=S.caps.slice(k,k+n);const h=Math.max(...pair.map((c)=>lcard(0,0,w,c).h));
+    pair.forEach((c,m)=>o+=lcard(pad+m*(w+gap),y,w,c,{h}).g);y+=h+gap}
+  return svg(W,y-gap+4,S.title,a+o)};
 
 // 6. Stack: flat layer bands, the agent interface in accent.
 export function dStack(D, inst=""){

@@ -265,7 +265,7 @@ export const COPY = {
       id: 'security',
       choices: [
         { t: 'Batch warehouse work', d: 'Every desk follows one standard: wake a warehouse once for a batch of work, skip row-by-row inserts, and tag every query.' },
-        { t: 'A separate warehouse for agent reads', d: 'Ad-hoc and agent work runs on ADHOC_WH under its own monitor, and Grok service users default to it, so a question never wakes the ledger warehouse.' },
+        { t: 'A separate warehouse for bot questions', d: 'Grok service users default to GROK_WH under its own RM_GROK monitor, so a question from a bot never wakes the ledger warehouse.' },
         { t: 'CI results in one insert', d: 'CI test results are written in one INSERT per run instead of one per test.' },
         { t: 'No extra ledger warehouse for now', d: 'The team decided not to split LEDGER_WH into a separate warehouse yet.' },
       ],
@@ -273,36 +273,8 @@ export const COPY = {
       title: 'Roles, warehouses & cost',
       svg: 'security',
       body:
-        'Access and cost are controlled in the same place. Pipelines run under R_PIPELINE and R_PC_PIPELINE. People and agents come in through MCP_LEDGER_CLIENT on the MCP path, never an open warehouse login. Only R_CORTEX_GATE holds SNOWFLAKE.CORTEX_USER, so answers come from certified semantic views and Cortex Search. Warehouses are split by job. LEDGER_WH runs dbt and ledger work and suspends after 30 seconds. INGEST_WH runs the 07:15 ET load window and suspends after 60 seconds. ADHOC_WH handles agent and desk reads, so questions from Grok never wake LEDGER_WH. YT_SYNC_WH runs the Moonshots sync and embeddings. Each warehouse has its own resource monitor. Cost rules live in git: batch work instead of row-by-row inserts, tag every query, account monitors at 40 and 50, and a Cortex AI budget that revokes agent access at 100%. OCR and transcription run locally with Tesseract and Whisper instead of Cortex, Airflow replaces Snowflake tasks, drive_poll runs hourly, and production jobs never use DEV_MIGRATION_WH.',
-      caption:
-        'Roles, the MCP read and write split, and the Cortex gate on top. The four warehouses, their monitors and cost rules below.',
-      rows: [
-        {
-          name: 'LEDGER_WH',
-          role: 'X-Small · auto_suspend 30s · LEDGER_WH_MONITOR · ledger_dbt_daily / COMPUTE_WH path · STD-WH-BATCH',
-          status: 'Prod batch',
-        },
-        {
-          name: 'INGEST_WH',
-          role: 'auto_suspend 60s · INGEST_MONITOR · pipeline_load_window at 07:15 ET for email and Monarch, plus YouTube on Mondays',
-          status: 'Load window',
-        },
-        {
-          name: 'ADHOC_WH',
-          role: 'RM_ADHOC · SVC_GROK_* default · agent and desk reads · QUERY_TAG, then suspend',
-          status: 'Agents',
-        },
-        {
-          name: 'YT_SYNC_WH',
-          role: 'moonshots_yt_sync_daily · PROC_EMBED_TRANSCRIPTS · QUERY_TAG embed vs sync',
-          status: 'Moonshots',
-        },
-        {
-          name: 'Caps & savings',
-          role: 'BUDGET_CORTEX_AI_20 → PROC_CORTEX_REVOKE_AGENTS · ACCOUNT_MONITOR_* · PC OCR · Airflow not tasks · no DEV_MIGRATION_WH on prod',
-          status: 'Controls',
-        },
-      ],
+        'Each kind of work gets its own warehouse, so cost stays easy to see and easy to cap. LEDGER_WH runs the morning dbt builds for the R_PIPELINE pipelines. INGEST_WH wakes once at 07:15 ET for the office-PC loads under R_PC_PIPELINE, and YT_SYNC_WH runs the YouTube sync under the same role. GROK_WH is the default for the Grok bots, so a question from a bot never wakes the ledger warehouse. Every warehouse goes to sleep within a minute of going idle and has its own monitor. Account-wide caps sit on top: an account monitor, a Cortex AI budget that cuts off agent access at 100%, and one role, R_CORTEX_GATE, that is allowed to call Cortex. People and bots reach data through MCP servers, never an open warehouse login. Reading documents and audio happens on the office PC, so it stays off the Snowflake bill. The table lists every role and what it is for.',
+      caption: 'One lane per warehouse: who runs there, what runs, and how it stops spending. Account-wide caps sit underneath.',
     },
     {
       id: 'grokbot',
@@ -315,31 +287,8 @@ export const COPY = {
       title: 'Grokbot architecture — agents per MCP',
       svg: 'grokbot',
       body:
-        'This shows which agents use each MCP server and what for. Stephen (Household CFO) and the Grok finance desks use the read server, MCP_HOUSEHOLD_LEDGER_GROK. household_finance_agent covers spending, cash flow, balances, documents and ops search. ledger_ops_agent covers freshness and warehouse health. Analyst and search tools return certified totals and find emails and documents. Cursor and Eta (Household COO) use the write server, MCP_HOUSEHOLD_LEDGER, for the same reads plus Monarch and ledger changes, the Gmail and document pipelines, and analytics rebuilds. Cynthia (Moonshot and architecture advisory) uses MCP_MOONSHOTS for the YouTube catalog, transcript search, and sync and embedding jobs. The Cortex agents sit behind these servers on semantic views and Cortex Search services. Even with analyst tools available, money answers on the read path still follow a staff rule.',
-      caption:
-        'Grok uses the read server, Cursor and Eta (Household COO) the write server, and Cynthia (Moonshot and architecture advisory) the Moonshots server. Each line shows the agent, its server and what that access is for.',
-      rows: [
-        {
-          name: 'Grok finance desks',
-          role: '→ MCP_HOUSEHOLD_LEDGER_GROK — household_finance_agent, ledger_ops_agent, analyst_*, search_*, document stage/download',
-          status: 'Read',
-        },
-        {
-          name: 'Cursor / Eta (Household COO)',
-          role: '→ MCP_HOUSEHOLD_LEDGER — same read families + monarch/ledger mutate, Gmail/docs pipelines, rebuild_analytics',
-          status: 'Write',
-        },
-        {
-          name: 'Cynthia (Moonshot and architecture advisory)',
-          role: '→ MCP_MOONSHOTS — catalog get/list, transcript/video search, youtube_sync / embed / CS refresh',
-          status: 'Domain',
-        },
-        {
-          name: 'Uses of that access',
-          role: 'Money Q&A and ops freshness on ledger semantic views / Cortex Search services; document standing; YouTube research on CS_TRANSCRIPTS / CS_VIDEOS',
-          status: 'Technical',
-        },
-      ],
+        'This shows who talks to the household data and through which door. Stephen (Household CFO) and the Grok finance desks use the read server, MCP_HOUSEHOLD_LEDGER_GROK, for spending, cash flow, balances and document search, and Stephen is the only one who answers money questions. Eta (Household COO) reads too, and she uses the write server, MCP_HOUSEHOLD_LEDGER, when she relays Michael’s go for a change. Cursor uses the write server for ledger and Monarch changes, pipeline runs and rebuilds. Cynthia (Moonshot advisory) uses MCP_MOONSHOTS for the YouTube catalog and transcript search. Behind the ledger servers, three Cortex agents answer from 15 semantic views and 6 Cortex Search services.',
+      caption: 'People and bots on top, the MCP server each one uses, what each server offers, and the Cortex agents behind them.',
     },
   ],
   more: [
@@ -507,43 +456,59 @@ export const DIAG = {
     ],
   },
   security: {
-    title: 'Roles, warehouses, and cost controls',
-    layers: [
-      {
-        label: 'Roles',
-        nodes: [
-          { t: 'R_PIPELINE / R_PC_PIPELINE' },
-          { t: 'Interactive roles' },
-          { t: 'MCP_LEDGER_CLIENT' },
-        ],
-      },
-      {
-        label: 'MCP split',
-        nodes: [
-          { t: 'MCP_HOUSEHOLD_LEDGER', e: 1 },
-          { t: 'MCP_HOUSEHOLD_LEDGER_GROK', s: 'no write tools', e: 1 },
-        ],
-      },
-      {
-        label: 'Cortex gate',
-        nodes: [{ t: 'R_CORTEX_GATE', s: 'sole SNOWFLAKE.CORTEX_USER' }],
-      },
-      {
-        label: 'Catalogs',
-        nodes: [{ t: 'certified semantic views' }, { t: 'Cortex Search services' }],
-      },
+    title: 'Warehouses by job, with the roles that use them and how each stops spending',
+    lanes: [
+      { wh: { t: 'LEDGER_WH', s: 'ledger and dbt work', logo: 'snowflake', hero: true }, who: { t: 'Pipelines · R_PIPELINE', s: 'ledger_dbt_daily at 06:00 ET builds the ledger models', logo: 'dbt' }, stop: { t: 'Sleeps after 30s', target: 'LEDGER_WH_MONITOR' } },
+      { wh: { t: 'INGEST_WH', s: 'morning loads', logo: 'snowflake', hero: true }, who: { t: 'Office PC · R_PC_PIPELINE', s: 'one 07:15 ET window for email, Monarch and documents', logo: 'airflow' }, stop: { t: 'Sleeps after 60s', target: 'INGEST_MONITOR' } },
+      { wh: { t: 'GROK_WH', s: 'bot questions', logo: 'snowflake' }, who: { t: 'Grok bots · SVC_GROK_*', s: 'the read, write and YouTube connectors default here', logo: 'grokbot' }, stop: { t: 'Own monitor', target: 'RM_GROK' } },
+      { wh: { t: 'YT_SYNC_WH', s: 'YouTube sync', logo: 'snowflake' }, who: { t: 'Office PC · R_PC_PIPELINE', s: 'moonshots_yt_sync_daily and transcript embeddings', logo: 'youtube' }, stop: { t: 'Sleeps after 60s', target: 'YT_SYNC_MONITOR' } },
     ],
-    warehouses: [
-      { t: 'LEDGER_WH', s: '30s · LEDGER_WH_MONITOR' },
-      { t: 'INGEST_WH', s: '60s · load window' },
-      { t: 'ADHOC_WH', s: 'RM_ADHOC · agents' },
-      { t: 'YT_SYNC_WH', s: 'embed QUERY_TAG' },
+    caps: [
+      { t: 'Account monitor', s: 'one credit cap over the whole account' },
+      { t: 'Cortex AI budget', s: 'cuts off agent access at 100%', gate: 'BUDGET_CORTEX_AI_20' },
+      { t: 'One Cortex role', s: 'only R_CORTEX_GATE can call Cortex' },
+      { t: 'Dev stays apart', s: 'R_DEV_PIPELINE runs on DEV_MIGRATION_WH' },
     ],
-    cost: [
-      { t: 'STD-WH-BATCH', s: 'batch wake-ups' },
-      { t: 'BUDGET_CORTEX_AI_20', s: 'revoke at 100%' },
-      { t: 'PC OCR / Whisper', s: 'off Cortex bill' },
-      { t: 'Airflow not tasks', s: 'scheduler cost' },
+    roles: [
+      { group: 'Pipelines', items: [
+        ['R_PIPELINE', 'Airflow pipelines on the box and office PC: loads and dbt', 'LEDGER_WH'],
+        ['R_PC_PIPELINE', 'Office-PC loads: the morning window and YouTube sync', 'INGEST_WH, YT_SYNC_WH'],
+      ] },
+      { group: 'Owners', items: [
+        ['LEDGER_OWNER', 'Owns the household ledger tables', 'LEDGER_WH'],
+        ['MOONSHOTS_OWNER', 'Owns the YouTube research tables', 'LEDGER_WH'],
+        ['R_CTRL_OWNER', 'Owns control procedures and tasks; no person holds it', '—'],
+      ] },
+      { group: 'Bots and MCP', items: [
+        ['R_GROK_LEDGER_RO', 'Grok read connector for Stephen and the finance desks', 'GROK_WH'],
+        ['R_GROK_LEDGER_RW', 'Grok write connector for Eta', 'GROK_WH'],
+        ['MCP_LEDGER_CLIENT', 'Signs in to the ledger MCP servers', 'LEDGER_WH'],
+        ['MCP_MOONSHOTS_CLIENT', 'YouTube MCP connector used by Cynthia', 'GROK_WH'],
+      ] },
+      { group: 'Cortex', items: [
+        ['R_CORTEX_GATE', 'The only role allowed to call Cortex AI', '—'],
+        ['R_AI_USER', 'Read-only analytics for MCP and agents, through the gate', '—'],
+        ['R_AI_ADMIN', 'Manages Cortex objects', '—'],
+        ['R_MOONSHOTS_AI_ADMIN', 'Manages the YouTube AI objects', '—'],
+      ] },
+      { group: 'Builds and admin', items: [
+        ['R_DBT_PROD', 'Production dbt builds into ANALYTICS', '—'],
+        ['R_DBT_CI', 'Pull-request dbt builds in temporary schemas', '—'],
+        ['R_TF_ADMIN', 'Applies Terraform changes', 'TF_WH'],
+        ['R_SEC_ADMIN', 'Manages security policies', '—'],
+      ] },
+      { group: 'Audit and readers', items: [
+        ['R_AUDIT_OWNER', 'Owns the audit trail; no person holds it', '—'],
+        ['R_AUDIT_READ', 'Reads the audit trail for reviews', '—'],
+        ['R_TEST_RESULTS_READ', 'Reads CI test results', 'GROK_WH'],
+        ['R_AW_DESKS_READ', 'Reads agent workforce analytics', '—'],
+        ['R_EYL_SVC', 'Read-only service access', '—'],
+      ] },
+      { group: 'Dev', items: [
+        ['R_DEV_PIPELINE', 'Dev pipelines into the _DEV databases', 'DEV_MIGRATION_WH'],
+        ['R_AW_DESKS_READ_DEV', 'Dev agent workforce analytics', 'DEV_MIGRATION_WH'],
+        ['R_TEST_RESULTS_READ_DEV', 'Dev test results', '—'],
+      ] },
     ],
   },
   stack: {
@@ -599,28 +564,26 @@ export const DIAG = {
     ],
   },
   grokbot: {
-    title: 'Grokbot architecture — agents per MCP',
-    note: 'Cortex AGENT_HOUSEHOLD_FINANCE / _RO / AGENT_LEDGER_OPS sit on semantic views and Cortex Search services behind these MCP catalogs.',
-    rows: [
-      {
-        agent: 'Grok finance desks',
-        mcp: 'MCP_HOUSEHOLD_LEDGER_GROK',
-        use: 'spend · cashflow · docs · ops freshness',
-        z: 'agent',
-      },
-      {
-        agent: 'Cursor / Eta (Household COO)',
-        mcp: 'MCP_HOUSEHOLD_LEDGER',
-        use: 'mutate · ingest · rebuild analytics',
-        z: 'agent',
-      },
-      {
-        agent: 'Cynthia (Moonshot advisory)',
-        mcp: 'MCP_MOONSHOTS',
-        use: 'YouTube catalog · transcripts · sync',
-        z: 'src',
-      },
+    title: 'Who uses each MCP server, what it offers, and the Cortex agents behind it',
+    people: [
+      { t: 'Stephen', s: 'Household CFO', logo: 'grokbot', to: [0] },
+      { t: 'Grok desks', s: 'finance', logo: 'grokbot', to: [0] },
+      { t: 'Eta', s: 'Household COO', logo: 'grokbot', to: [0, 1] },
+      { t: 'Michael', s: 'gives the go', logo: 'person', go: true },
+      { t: 'Cursor', s: 'coding agent', logo: 'person', to: [1] },
+      { t: 'Cynthia', s: 'Moonshot advisory', logo: 'grokbot', to: [2] },
     ],
+    servers: [
+      { t: 'Read server', s: 'MCP_HOUSEHOLD_LEDGER_GROK', logo: 'mcp', hero: true, users: 'Stephen, Grok desks, Eta' },
+      { t: 'Write server', s: 'MCP_HOUSEHOLD_LEDGER', logo: 'mcp', hero: true, users: 'Eta, Cursor' },
+      { t: 'YouTube server', s: 'MCP_MOONSHOTS', logo: 'mcp', users: 'Cynthia' },
+    ],
+    families: [
+      { t: 'Finance and ops answers', s: 'household_finance_agent, ledger_ops_agent, analyst and search tools' },
+      { t: 'The same reads, plus changes', s: 'ledger and Monarch changes, pipeline runs, rebuilds' },
+      { t: 'YouTube research', s: 'catalog, transcript search, sync and embed', logo: 'youtube' },
+    ],
+    cortex: { t: 'Three Cortex agents', s: 'AGENT_HOUSEHOLD_FINANCE, its read-only twin and AGENT_LEDGER_OPS, on 15 semantic views and 6 Cortex Search services', logo: 'snowflake' },
   },
   erd: {
     title:
@@ -872,14 +835,6 @@ Object.assign(DIAG.pipes, {
   airflow: DIAG.pipes.layers[1].nodes[0],
   ocr: DIAG.pipes.layers[1].nodes[1],
   dbt: DIAG.pipes.layers[3].nodes[0],
-})
-
-Object.assign(DIAG.security, {
-  roles: DIAG.security.layers[0].nodes.map((n) => n.t),
-  write: 'MCP_HOUSEHOLD_LEDGER',
-  read: { t: 'MCP_HOUSEHOLD_LEDGER_GROK', s: 'no write tools' },
-  gate: { t: 'R_CORTEX_GATE', s: 'sole SNOWFLAKE.CORTEX_USER' },
-  cat: ['certified semantic views', 'Cortex Search services'],
 })
 
 COPY.industries = {
