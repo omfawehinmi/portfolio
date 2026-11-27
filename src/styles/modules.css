@@ -106,8 +106,9 @@
 }
 
 .home__about {
-  font-size: var(--small-font-size);
-  line-height: 1.7;
+  color: var(--text-color);
+  line-height: 1.8;
+  max-width: 480px;
   margin: 0 0 0.55rem;
 }
 

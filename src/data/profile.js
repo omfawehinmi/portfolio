@@ -8,7 +8,7 @@ export const profile = {
   summary:
     'Snowflake platforms, Cortex agents, and semantic layers: from HRIS APIs to certified schemas, then Streamlit, Power BI, and in-account agents on top.',
   about:
-    'I treat Snowflake as the system of record for both analytics and agents. At Novanta I was the sole engineer on the Workday-to-Snowflake integration, then put Cortex on that certified Workday grain. At NetApp I land SuccessFactors, Fieldglass, Eightfold, and Visier into Snowflake and One Model. MyOrgLab is the practice I am building on that same pattern.',
+    'At NetApp I am integral to bringing SuccessFactors into Snowflake, and I lead the Cortex AI build-out on top of it: agents, MCP servers, and the governed semantic layer they read. At Novanta I was the sole engineer on the Workday-to-Snowflake integration and put Cortex on that certified grain. MyOrgLab is the practice I am building on the same pattern.',
   location: 'Revere, MA 02151',
   phone: '(781) 947-5700',
   phoneHref: 'tel:+17819475700',
