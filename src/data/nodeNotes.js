@@ -6,7 +6,7 @@ export const NODE_NOTES = [
   [/^Drive$/, 'Google Drive', 'Statements and documents. drive_poll picks up new files, and doc_extract reads them with pypdf and local Tesseract instead of Cortex OCR.'],
   [/^YouTube$/, 'YouTube', 'Videos and transcripts from Moonshots by Peter Diamandis and Market Mondays by Earn Your Leisure. Every Monday the load window starts the sync into MOONSHOTS.'],
   [/^Source feeds/, 'Source feeds', 'Monarch, Gmail, Drive and YouTube. Each lands in its own product database, not a shared dump.'],
-  [/^Airflow/, 'Airflow on the office PC', 'Runs every production schedule; Snowflake tasks are retired. Starts the 07:15 ET load window on INGEST_WH, then dbt and tests.'],
+  [/^Airflow/, 'Airflow', 'Runs every production schedule; Snowflake tasks are retired. Starts the 07:15 ET load window on INGEST_WH, then dbt and tests.'],
   [/^Landing schema/, 'RAW', 'Landing schema. One row per landed payload, kept as received.'],
   [/^Conformed schema/, 'CORE', 'Conformed schema. One row per business object, such as an account, transaction or document. Approved writes land here.'],
   [/^Analytics schema/, 'ANALYTICS', 'Reporting grain built by dbt. Feeds the semantic views.'],

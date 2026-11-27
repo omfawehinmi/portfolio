@@ -150,7 +150,7 @@ export function dLead(D,tall, inst=""){
  if(!tall){const W=740,H=316;
   [[12,'Sources'],[104,'Scheduler'],[244,'Snowflake'],[412,'Catalogs'],[550,'MCP servers'],[666,'Clients']].forEach(([x,t])=>o+=lab(x,20,t,C.sub));
   SOURCES.forEach(([t,p],i)=>o+=node('box',12,48+i*56,74,n2(t),{h:36,z:'src',platform:p}).g);
-  const af=n2('Airflow','office PC',10);const ah=node('box',104,0,112,af,{h:66}).h;o+=node('box',104,Math.round(141-ah/2),112,af,{h:66,z:'src',hero:1,platform:'airflow'}).g;
+  const af=n2('Airflow','',10);const ah=node('box',104,0,112,af,{h:66}).h;o+=node('box',104,Math.round(141-ah/2),112,af,{h:66,z:'src',hero:1,platform:'airflow'}).g;
   o+=group(236,32,152,250,'',{z:'data'});
   [['Landing schema',46,K.raw],['Conformed schema',120,K.core],['Analytics schema',194,K.analytics]].forEach(([t,y,k])=>o+=node('cyl',252,y,120,n2(t,'',10,k,'data'),{h:52,z:'data',hero:k===K.core,platform:'snowflake'}).g);
   o+=node('box',412,90,118,n2('Semantic views','',10,K.svOps,'data'),{h:44,z:'data',platform:'snowflake'}).g+node('box',412,166,118,n2('Cortex Search services','',10,K.cs,'data'),{h:48,z:'data',platform:'snowflake'}).g;
@@ -167,7 +167,7 @@ export function dLead(D,tall, inst=""){
  const W=330;let y=10;const row=(label,h,f)=>{o+=lab(12,y+8,label,C.sub);f(y+18);y+=h+18+18};
  row('Sources',40,yy=>SOURCES.forEach(([t,p],i)=>o+=node('box',12+i*78,yy,72,n2(t),{h:40,z:'src',platform:p}).g));
  a+=arrow(`M165,${y-16} V${y-2}`,'c');
- row('Scheduler',50,yy=>o+=node('box',50,yy,230,n2('Airflow','office PC',10),{h:50,z:'src',hero:1,platform:'airflow'}).g);
+ row('Scheduler',50,yy=>o+=node('box',50,yy,230,n2('Airflow','',10),{h:50,z:'src',hero:1,platform:'airflow'}).g);
  a+=arrow(`M165,${y-16} V${y-2}`,'c');const sy=y;
  o+=group(6,y+12,318,82,'',{z:'data'});
  row('Snowflake',58,yy=>[['Landing schema',K.raw],['Conformed schema',K.core],['Analytics schema',K.analytics]].forEach(([t,k],i)=>o+=node('cyl',14+i*102,yy+4,96,n2(t,'',9.6,k,'data'),{h:52,z:'data',hero:i==1,platform:'snowflake'}).g));
@@ -264,7 +264,7 @@ export function dErd(D, inst=""){
 // 4. Pipelines: BPMN-style lanes with hairline separators and mono lane labels, events, gateway, tasks.
 export function dPipes(D, inst=""){
   begin(true,inst);ID='p'+inst;const Pp=D.pipes,K=D.code;const W=400,H=300;let o='',a='';
- const lanes=[['Sources',0,60],['Airflow on office PC',60,120],['Snowflake',180,96]];
+ const lanes=[['Sources',0,60],['Airflow',60,120],['Snowflake',180,96]];
  lanes.forEach(([t,y],i)=>{if(i)o+=`<line x1="8" y1="${y}" x2="${W-8}" y2="${y}" stroke="${C.soft}"/>`;o+=lab(12,y+10,t,i<2?Z.src.k:Z.data.k)});
   o+=discNode(22,32,11,'', '▶',{id:'start',glyphSz:9}).g;
   const t1=node('box',44,18,120,n2('Source feeds','',8.8),{h:26,z:'src'});o+=t1.g;o+=['monarch','gmail','drive','youtube'].map((p,i)=>platformBadge(80+i*21,16,0,6,p)).join('');
@@ -502,7 +502,7 @@ export function dDatabase(D, dbId, inst=""){
 
 export function dAirflow(D, inst=""){
   begin(true,inst);ID='af'+inst;const A=D.airflow;const W=420;let o='';
-  o+=T(12,14,A.headline,{sz:fs(11),w:600,a:'start'})+T(12,27,'Office-PC Airflow pin · git ≠ unpaused',{sz:fs(7.8),c:C.sub,a:'start'});
+  o+=T(12,14,A.headline,{sz:fs(11),w:600,a:'start'})+T(12,27,'Airflow release pin · git ≠ unpaused',{sz:fs(7.8),c:C.sub,a:'start'});
   A.counts.forEach((c,i)=>{const x=12+i*134;o+=node('box',x,38,126,[{t:c.n,sz:fs(12),w:600,c:Z.src.k},{t:c.label,sz:fs(7.6),sub:1}],{h:30,z:'src',platform:'airflow'}).g});
   const rows=[
     ['pipeline_load_window','07:15 ET INGEST_WH window'],

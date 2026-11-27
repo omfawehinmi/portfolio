@@ -41,6 +41,10 @@ export const COPY = {
   tiles: [
     {
       id: 'workflow',
+      choices: [
+        { t: 'Merge, apply and deploy are separate gates', d: 'Merging only lands code. Snowflake changes apply from a manual Terraform run, and Airflow changes deploy only from a tagged release pulled onto the PC. A merge alone never reaches production.' },
+        { t: 'An explicit go for risky changes', d: 'Unpausing jobs, granting access and dropping objects each need Michael’s go. Eta (Household COO) relays it, and a plan is not production until then.' },
+      ],
       n: '2',
       title: 'Ship path: PR → prod',
       svg: 'workflow',
@@ -88,6 +92,11 @@ export const COPY = {
     },
     {
       id: 'pipes',
+      choices: [
+        { t: 'Office-PC Airflow instead of S3 and Snowpipe', d: 'Snowpipe was planned after a Drive token failed on 2026-10-25, then dropped. Documents come in through drive_poll and doc_extract on the office PC. S3 stays a future option.' },
+        { t: 'Local OCR instead of Cortex', d: 'doc_extract reads text with pypdf, then Tesseract, so reading a document never spends Cortex credits.' },
+        { t: 'One morning load window', d: 'INGEST_WH wakes once at 07:15 ET for every feed and suspends when the window ends, instead of waking for each feed.' },
+      ],
       n: '3',
       title: 'Source feeds into Snowflake',
       svg: 'pipes',
@@ -98,6 +107,11 @@ export const COPY = {
     },
     {
       id: 'airflow',
+      choices: [
+        { t: 'Airflow instead of Snowflake tasks', d: 'Scheduling moved off Snowflake tasks for cost and control. Five old CTRL tasks were dropped on 2026-11-05, and their work now runs as Airflow DAGs.' },
+        { t: 'Hourly Drive polling', d: 'drive_poll went from every 15 minutes to hourly on 2026-11-02 to cut schedule cost.' },
+        { t: 'One deploy path', d: 'A pinned release tag plus a pull on the PC is the only way code reaches the running Airflow.' },
+      ],
       n: '4',
       title: 'Airflow on the office PC — every DAG',
       svg: 'airflow',
@@ -230,6 +244,10 @@ export const COPY = {
     },
     {
       id: 'dbt',
+      choices: [
+        { t: 'RAW and CORE in one pass', d: 'Several procedures write RAW and CORE in the same call, so CORE is not only a later rebuild of RAW.' },
+        { t: 'Cosmos on one DAG only', d: 'Astronomer Cosmos turns dbt into one Airflow task per model, but only dbt_daily uses it. The daily ledger chain calls dbt directly.' },
+      ],
       n: '5',
       title: 'dbt layers and targets',
       svg: 'dbt',
@@ -272,6 +290,10 @@ export const COPY = {
     },
     {
       id: 'domains',
+      choices: [
+        { t: 'One database per product, not per layer', d: 'Each product area gets its own database, and RAW, CORE and ANALYTICS live as schemas inside it.' },
+        { t: 'CONTROL stands on its own', d: 'Shared procedures, queues, flags and tests sit in their own CONTROL database instead of inside any one product.' },
+      ],
       n: '6',
       title: 'Databases: columns, tables, modeling',
       svg: 'erd',
@@ -370,6 +392,11 @@ export const COPY = {
     },
     {
       id: 'mcp',
+      choices: [
+        { t: 'Separate read and write servers', d: 'Grok desks get a read-only server. Changes go through a different server that only exposes approved procedures.' },
+        { t: 'Writes go through one desk', d: 'Among staff, Eta (Household COO) calls the write tools on MCP_HOUSEHOLD_LEDGER. Other bots may see them, but their instructions forbid using them.' },
+        { t: 'YouTube kept apart from money', d: 'Cynthia (Moonshot and architecture advisory) uses MCP_MOONSHOTS, a separate catalog from the household ledger.' },
+      ],
       n: '7',
       title: 'MCP servers, agents, and tools',
       svg: 'mcp',
@@ -412,6 +439,12 @@ export const COPY = {
     },
     {
       id: 'security',
+      choices: [
+        { t: 'Batch warehouse work', d: 'Every desk follows one standard: wake a warehouse once for a batch of work, skip row-by-row inserts, and tag every query.' },
+        { t: 'A separate warehouse for agent reads', d: 'Ad-hoc and agent work runs on ADHOC_WH under its own monitor, and Grok service users default to it, so a question never wakes the ledger warehouse.' },
+        { t: 'CI results in one insert', d: 'CI test results are written in one INSERT per run instead of one per test.' },
+        { t: 'No extra ledger warehouse for now', d: 'On 2026-11-12 the team decided not to split LEDGER_WH into a separate warehouse yet.' },
+      ],
       n: '8',
       title: 'Roles, warehouses & cost',
       svg: 'security',
@@ -459,6 +492,11 @@ export const COPY = {
     },
     {
       id: 'grokbot',
+      choices: [
+        { t: 'One voice for money', d: 'Stephen (Household CFO) is the only bot that answers money and spend questions. Other desks route those questions to him.' },
+        { t: 'Approvals are relayed, not assumed', d: 'Eta (Household COO) speaks for Michael when she relays a go. Without that go, a plan stays a plan.' },
+        { t: 'Cortex agents are not Grok bots', d: 'AGENT_HOUSEHOLD_FINANCE, AGENT_HOUSEHOLD_FINANCE_RO and AGENT_LEDGER_OPS are Cortex agents defined in SQL, separate from the Grok bot staff.' },
+      ],
       n: '10',
       title: 'Grokbot architecture — agents per MCP',
       svg: 'grokbot',
@@ -613,8 +651,8 @@ export const DIAG = {
         label: 'Extract and land',
         nodes: [
           {
-            t: 'Airflow on office PC',
-            s: 'production scheduler (pinned releases)',
+            t: 'Airflow',
+            s: 'production scheduler on pinned releases',
             e: 1,
           },
           {
@@ -709,7 +747,7 @@ export const DIAG = {
           },
         ],
       },
-      { label: 'Scheduler', nodes: [{ t: 'Airflow', s: 'office PC Docker pin' }] },
+      { label: 'Scheduler', nodes: [{ t: 'Airflow', s: 'Docker release pin' }] },
       {
         label: 'Infrastructure and CI',
         nodes: [{ t: 'Terraform' }, { t: 'GitHub Actions' }],
@@ -872,11 +910,11 @@ export const DIAG = {
 }
 
 DIAG.lead.airflow = {
-  t: 'Airflow on office PC',
+  t: 'Airflow',
   s: '20 DAG files · 2 confirmed unpaused on 2026-11-07 pin',
 }
 DIAG.airflow = {
-  title: 'Airflow DAG inventory on the office-PC pin',
+  title: 'Airflow DAG inventory on the running pin',
   headline: '20 files in git (fdff221)',
   counts: [
     { n: '17', label: 'prod-shaped' },

@@ -181,7 +181,9 @@ body:has(dialog.project-dialog[open]) .bx-rail {
   color: #1689b5;
   font-size: 1.25rem;
   transition: background 0.2s, color 0.2s;
-  pointer-events: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
 }
 
 .bx-tile:hover .bx-open,
@@ -1369,4 +1371,175 @@ dialog.project-dialog.bx-dialog.bx-dialog--erd-full .bx-fig-big:has(.bx-arch--li
   .bx-feat-block {
     grid-column: span 12;
   }
+}
+
+/* Expanded block: takes its own full row in the grid instead of opening a dialog. */
+.bx-tile {
+  scroll-margin-top: 5.5rem;
+}
+
+.bx-grid > .bx-tile.is-expanded {
+  grid-column: 1 / -1;
+  cursor: default;
+}
+
+.bx-tile.is-expanded:hover,
+.bx-tile.is-expanded:focus-within {
+  transform: none;
+}
+
+.bx-tile.is-expanded .bx-fig .bx-svg,
+.bx-tile.is-expanded .bx-fig .bx-svg-wrap {
+  max-height: none;
+  height: auto;
+}
+
+.bx-tile.is-expanded .bx-fig svg,
+.bx-tile.is-expanded .bx-fig svg.bx-arch--liam {
+  width: 100%;
+  height: auto;
+  max-height: min(38rem, 72vh);
+}
+
+.bx-tile.is-expanded .bx-panel-body {
+  margin-top: 0.75rem;
+}
+
+.bx-more .bx-tile.is-expanded {
+  flex-direction: column;
+}
+
+.bx-more .bx-tile.is-expanded .bx-open {
+  position: absolute;
+  right: 1.25rem;
+  top: 1.25rem;
+}
+
+.bx-cardtext--open {
+  padding-right: 3.5rem;
+}
+
+.bx-cardtext--open .bx-media {
+  width: 100%;
+  max-height: none;
+  aspect-ratio: auto;
+  margin: 0.75rem 0;
+}
+
+/* Design choices: bottom-right lightbulb with a floating card above it. */
+.bx-choices {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
+}
+
+.bx-choices__btn {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  background: var(--first-color-lighter);
+  color: #1689b5;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.bx-choices__btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.bx-choices__btn:hover,
+.bx-choices__btn:focus-visible,
+.bx-choices__btn.is-open {
+  background: #1689b5;
+  color: #fff;
+}
+
+.bx-choices__card {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 10px);
+  z-index: 20;
+  width: min(22rem, calc(100vw - 3rem));
+  padding: 0.75rem 0.9rem;
+  background: #fff;
+  border: 1px solid #e2e5eb;
+  border-top: 2px solid #12b76a;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(16, 24, 40, 0.14);
+  cursor: auto;
+  text-align: left;
+}
+
+.bx-choices__card::after {
+  content: '';
+  position: absolute;
+  right: 11px;
+  bottom: -7px;
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  border-right: 1px solid #e2e5eb;
+  border-bottom: 1px solid #e2e5eb;
+  transform: rotate(45deg);
+}
+
+.bx-choices .bx-choices__title {
+  margin: 0 0 0.25rem;
+  line-height: 1.35;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #1a1f2c;
+}
+
+.bx-choices__card ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bx-choices__card li {
+  padding: 0.45rem 0;
+  border-top: 1px solid #eef0f4;
+}
+
+.bx-choices__card li:first-child {
+  border-top: 0;
+}
+
+.bx-choices__card strong {
+  display: block;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #1a1f2c;
+}
+
+.bx-choices__card span {
+  display: block;
+  font-size: 0.74rem;
+  line-height: 1.45;
+  color: #3c4454;
+}
+
+.bx-choices .bx-choices__src {
+  margin: 0.35rem 0 0;
+  line-height: 1.35;
+  font-size: 0.66rem;
+  color: #5b6475;
+}
+
+.bx-tile.is-expanded .bx-fig--erd {
+  max-height: min(48rem, 80vh);
+  overflow: auto;
+}
+
+.bx-tile.is-expanded .bx-fig--erd .bx-svg,
+.bx-tile.is-expanded .bx-fig--erd svg.bx-arch--liam {
+  width: 100%;
+  max-height: none;
+  height: auto;
 }

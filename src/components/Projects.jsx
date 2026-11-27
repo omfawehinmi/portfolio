@@ -1,10 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { COPY } from '../data/architecture.js'
-import { projects } from '../data/projects.js'
 import { intrinsicImageSize, publicUrl } from '../utils.js'
 import ArchitectureDiagram from './diagrams/ArchitectureDiagram.jsx'
 import Icon from './ui/Icon.jsx'
-import Modal from './ui/Modal.jsx'
 import SectionHeader from './ui/SectionHeader.jsx'
 
 /** Left jump rail: labeled anchors — names mirror what each block captures. */
@@ -33,9 +31,6 @@ const KICKERS = {
   features: 'Semantic views · Cortex Search',
   grokbot: 'Agents per MCP server',
 }
-
-const LEAD_CAPTION =
-  'As-built: MCP_HOUSEHOLD_LEDGER_GROK (read) and MCP_HOUSEHOLD_LEDGER (write) in front of semantic views / Cortex Search services on HOUSEHOLD_LEDGER.'
 
 const MORE_PREVIEW = {
   'hr-intelligence': { src: publicUrl('assets/img/bento/hr-intelligence.jpg'), sample: false },
@@ -105,8 +100,6 @@ function resolveOpen(openId) {
   if (tile) return { kind: 'tile', tile }
   const more = moreItems.find((item) => item.id === mapped)
   if (more) return { kind: 'more', more }
-  const legacy = projects.find((item) => item.id === openId)
-  if (legacy) return { kind: 'legacy', project: legacy }
   return { kind: null }
 }
 
@@ -192,11 +185,86 @@ function FoldBody({ project, className = '', lines = 3, expandedExtra = null }) 
   )
 }
 
-function OpenIcon() {
+function ExpandToggle({ expanded, onToggle, label }) {
   return (
-    <span className="bx-open" aria-hidden="true">
-      <Icon name="uil-expand-arrows-alt" />
-    </span>
+    <button
+      type="button"
+      className={`bx-open${expanded ? ' is-expanded' : ''}`}
+      aria-expanded={expanded}
+      aria-label={`${expanded ? 'Collapse' : 'Expand'} ${label}`}
+      onClick={(event) => {
+        event.stopPropagation()
+        onToggle()
+      }}
+    >
+      <Icon name={expanded ? 'uil-compress-arrows' : 'uil-expand-arrows-alt'} />
+    </button>
+  )
+}
+
+function BulbIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M9 18h6" />
+      <path d="M10 22h4" />
+      <path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V17h6v-.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z" />
+    </svg>
+  )
+}
+
+function DesignChoices({ title, choices }) {
+  const [open, setOpen] = useState(false)
+  const rootRef = useRef(null)
+
+  useEffect(() => {
+    if (!open) return undefined
+    const onDown = (event) => {
+      if (!rootRef.current?.contains(event.target)) setOpen(false)
+    }
+    const onKey = (event) => {
+      if (event.key === 'Escape') setOpen(false)
+    }
+    document.addEventListener('click', onDown, true)
+    document.addEventListener('keydown', onKey, true)
+    return () => {
+      document.removeEventListener('click', onDown, true)
+      document.removeEventListener('keydown', onKey, true)
+    }
+  }, [open])
+
+  if (!choices?.length) return null
+  return (
+    <div
+      className="bx-choices"
+      ref={rootRef}
+      onClick={(event) => event.stopPropagation()}
+      onKeyDown={(event) => event.stopPropagation()}
+    >
+      {open ? (
+        <div className="bx-choices__card" role="region" aria-label={`Design choices: ${title}`}>
+          <p className="bx-choices__title">Design choices · {title}</p>
+          <ul>
+            {choices.map((choice) => (
+              <li key={choice.t}>
+                <strong>{choice.t}</strong>
+                <span>{choice.d}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="bx-choices__src">From household-data-architecture design decisions</p>
+        </div>
+      ) : null}
+      <button
+        type="button"
+        className={`bx-choices__btn${open ? ' is-open' : ''}`}
+        aria-expanded={open}
+        aria-label={`Design choices for ${title}`}
+        title="Design choices"
+        onClick={() => setOpen((value) => !value)}
+      >
+        <BulbIcon />
+      </button>
+    </div>
   )
 }
 
@@ -230,14 +298,20 @@ function PreviewMedia({ item, big = false }) {
   )
 }
 
-function openTile(event, id, onOpen) {
-  onOpen(id)
-}
-
-function onTileKey(event, id, onOpen) {
-  if (event.key === 'Enter' || event.key === ' ') {
-    event.preventDefault()
-    onOpen(id)
+function tileHandlers(expanded, id, onOpen) {
+  if (expanded) return {}
+  return {
+    role: 'button',
+    tabIndex: 0,
+    'aria-expanded': false,
+    onClick: () => onOpen(id),
+    onKeyDown: (event) => {
+      if (event.target !== event.currentTarget) return
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault()
+        onOpen(id)
+      }
+    },
   }
 }
 
@@ -322,47 +396,50 @@ function LeadTile({ tall }) {
   )
 }
 
-function ArchitectureTile({ tile, onOpen, tall }) {
+function ArchitectureTile({ tile, onOpen, tall, expanded }) {
   const showRowsOnTile = tile.id === 'mcp' || tile.id === 'grokbot' || tile.id === 'security'
   const isHero = tile.id === 'mcp' || tile.id === 'domains' || tile.id === 'grokbot'
   return (
     <article
       id={`project-${tile.id}`}
-      className={`bx-tile bx-t-${tile.id}${isHero ? ' bx-tile--hero' : ''}`}
+      className={`bx-tile bx-t-${tile.id}${isHero ? ' bx-tile--hero' : ''}${expanded ? ' is-expanded' : ''}`}
       data-testid="project-tile"
-      tabIndex={0}
-      role="button"
-      aria-haspopup="dialog"
-      onClick={(event) => openTile(event, tile.id, onOpen)}
-      onKeyDown={(event) => onTileKey(event, tile.id, onOpen)}
+      {...tileHandlers(expanded, tile.id, onOpen)}
     >
       <div className="bx-head">
         <div>
           <p className="bx-kicker">{KICKERS[tile.id]}</p>
           <h4 className="bx-h2">{tile.title}</h4>
         </div>
-        <OpenIcon />
+        <ExpandToggle expanded={expanded} label={tile.title} onToggle={() => onOpen(expanded ? null : tile.id)} />
       </div>
-      <FoldBody project={{ outcome: tile.body }} lines={isHero ? 4 : 3} />
-      {showRowsOnTile ? <RowTable rows={tile.rows} collapsed /> : null}
-      {tile.id === 'domains' && tile.databases?.length ? (
-        <ul className="bx-dbtabs bx-dbtabs--tile" aria-hidden="true">
-          {tile.databases.map((db, i) => (
-            <li key={db.id} className={`bx-dbtab${i === 0 ? ' is-active' : ''}`}>
-              <strong>{db.name}</strong>
-              <span>{db.status}</span>
-            </li>
-          ))}
-        </ul>
-      ) : null}
-      <figure className="bx-fig">
-        <ArchitectureDiagram kind={tile.id} tall={tall} inst="tile" />
-      </figure>
+      {expanded ? (
+        <TilePanel tile={tile} tall={tall} />
+      ) : (
+        <>
+          <FoldBody project={{ outcome: tile.body }} lines={isHero ? 4 : 3} />
+          {showRowsOnTile ? <RowTable rows={tile.rows} collapsed /> : null}
+          {tile.id === 'domains' && tile.databases?.length ? (
+            <ul className="bx-dbtabs bx-dbtabs--tile" aria-hidden="true">
+              {tile.databases.map((db, i) => (
+                <li key={db.id} className={`bx-dbtab${i === 0 ? ' is-active' : ''}`}>
+                  <strong>{db.name}</strong>
+                  <span>{db.status}</span>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+          <figure className="bx-fig">
+            <ArchitectureDiagram kind={tile.id} tall={tall} inst="tile" />
+          </figure>
+        </>
+      )}
+      <DesignChoices title={tile.title} choices={tile.choices} />
     </article>
   )
 }
 
-function MoreCard({ item, featured, onOpen }) {
+function MoreCard({ item, featured, onOpen, expanded }) {
   const isMyOrgLab = item.prev === 'myorglab'
   const industries = isMyOrgLab ? COPY.industries : null
   const industryExtra = industries ? (
@@ -384,22 +461,28 @@ function MoreCard({ item, featured, onOpen }) {
   // Option 3: full-width featured strip + uniform media-top cards in an even grid.
   return (
     <article
+      id={`project-${item.id}`}
       className={`bx-tile bx-card ${featured ? 'bx-more-hero' : 'bx-more-card'}${isMyOrgLab ? ' bx-card--myorglab' : ''}${
         item.prev === 'palms' ? ' bx-card--palms' : ''
-      }`}
+      }${expanded ? ' is-expanded' : ''}`}
       data-testid="project-tile"
-      tabIndex={0}
-      role="button"
-      aria-haspopup="dialog"
-      onClick={(event) => openTile(event, item.id, onOpen)}
-      onKeyDown={(event) => onTileKey(event, item.id, onOpen)}
+      {...tileHandlers(expanded, item.id, onOpen)}
     >
-      <PreviewMedia item={item} big={featured} />
-      <div className="bx-cardtext">
-        <h4 className="bx-h3">{item.title}</h4>
-        <FoldBody project={item} expandedExtra={industryExtra} lines={isMyOrgLab ? 3 : 3} />
-      </div>
-      <OpenIcon />
+      {expanded ? (
+        <div className="bx-cardtext bx-cardtext--open">
+          <h4 className="bx-h3">{item.title}</h4>
+          <MorePanel item={item} />
+        </div>
+      ) : (
+        <>
+          <PreviewMedia item={item} big={featured} />
+          <div className="bx-cardtext">
+            <h4 className="bx-h3">{item.title}</h4>
+            <FoldBody project={item} expandedExtra={industryExtra} lines={isMyOrgLab ? 3 : 3} />
+          </div>
+        </>
+      )}
+      <ExpandToggle expanded={expanded} label={item.title} onToggle={() => onOpen(expanded ? null : item.id)} />
     </article>
   )
 }
@@ -447,21 +530,6 @@ function RowTable({ rows, collapsed = false, previewCount = 2 }) {
           {open ? 'Show less' : `Show ${rows.length - previewCount} more`}
         </button>
       ) : null}
-    </div>
-  )
-}
-
-function LeadPanel({ tall }) {
-  const L = COPY.lead
-  return (
-    <div className="bx-panel-body">
-      {L.subhead ? <p className="bx-subhead">{L.subhead}</p> : null}
-      <StatStrip stats={L.stats} />
-      <figure className="bx-fig bx-leadfig bx-fig-big">
-        <ArchitectureDiagram kind="lead" tall={tall} inst="open" />
-        <figcaption>{LEAD_CAPTION}</figcaption>
-      </figure>
-      <p>{L.intro}</p>
     </div>
   )
 }
@@ -553,106 +621,19 @@ function MorePanel({ item }) {
   )
 }
 
-function LegacyBody({ project, onOpen }) {
-  const parts = (project.parts || []).map((id) => projects.find((item) => item.id === id)).filter(Boolean)
-  const parentItem = project.parentId ? projects.find((item) => item.id === project.parentId) : null
-
-  return (
-    <>
-      {project.videoFile ? (
-        <video className="case-video" src={project.videoFile} controls playsInline muted loop />
-      ) : null}
-      {project.video ? (
-        <div className="media-well">
-          <iframe
-            src={project.video}
-            title={project.title}
-            allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
-          />
-        </div>
-      ) : null}
-      {project.thumb && !project.videoFile && !project.video ? (
-        <img
-          src={project.thumb}
-          alt=""
-          className="case-still"
-          width={intrinsicImageSize(project.thumb)?.width}
-          height={intrinsicImageSize(project.thumb)?.height}
-          style={{ objectPosition: project.thumbPos || 'center top' }}
-        />
-      ) : null}
-      {project.outcome ? <p className="case-outcome">{project.outcome}</p> : null}
-      {project.summary?.map((paragraph) => (
-        <p key={paragraph}>{paragraph}</p>
-      ))}
-      {project.points ? (
-        <ul className="case-points">
-          {project.points.map((point) => (
-            <li key={point}>{point}</li>
-          ))}
-        </ul>
-      ) : null}
-      {parts.length ? (
-        <div className="case-parts">
-          <p className="case-parts__label">Highlighted components</p>
-          {parts.map((part) => (
-            <button type="button" className="case-part" key={part.id} onClick={() => onOpen(part.id)}>
-              <Icon name={part.icon} />
-              <span>
-                <strong>{part.title}</strong>
-                <em>{part.outcome}</em>
-              </span>
-            </button>
-          ))}
-        </div>
-      ) : null}
-      <div className="case-links">
-        {parentItem ? (
-          <button type="button" className="button button--flex button--ghost" onClick={() => onOpen(parentItem.id)}>
-            Back to {parentItem.title}
-            <Icon name="uil-arrow-left" className="button__icon" />
-          </button>
-        ) : null}
-        {project.links?.map((link) => (
-          <a key={link.href} href={link.href} className="button button--flex" target="_blank" rel="noreferrer">
-            {link.label}
-            <Icon name="uil-external-link-alt" className="button__icon" />
-          </a>
-        ))}
-        {project.github ? (
-          <a href={project.github} className="button button--flex">
-            GitHub <Icon name="uil-github-alt" className="button__icon" />
-          </a>
-        ) : null}
-      </div>
-    </>
-  )
-}
-
 export default function Projects({ openId, onOpen }) {
   const tall = useNarrow()
   const railVisible = useRailVisible()
   const open = resolveOpen(openId)
   const railIds = PROJECT_RAIL.map((item) => item.id)
   const activeRail = useProjectRailActive(railVisible ? railIds : [])
-  const modalTitle =
-    open.kind === 'lead'
-      ? COPY.lead.title
-      : open.kind === 'tile'
-        ? open.tile.title
-        : open.kind === 'more'
-          ? open.more.title
-          : open.kind === 'legacy'
-            ? open.project.modalTitle
-            : undefined
-  const modalKicker =
-    open.kind === 'lead'
-      ? 'Lead project'
-      : open.kind === 'tile'
-        ? KICKERS[open.tile.id]
-        : open.kind === 'more'
-          ? 'More shipped work'
-          : undefined
+  const expandedId = open.kind === 'tile' ? open.tile.id : open.kind === 'more' ? open.more.id : null
+
+  useEffect(() => {
+    if (!expandedId) return
+    const el = document.getElementById(`project-${expandedId}`)
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [expandedId])
 
   return (
     <section className="projects section" id="projects">
@@ -667,7 +648,7 @@ export default function Projects({ openId, onOpen }) {
           <div className="bx-grid">
             <LeadTile tall={tall} />
             {COPY.tiles.map((tile) => (
-              <ArchitectureTile key={tile.id} tile={tile} onOpen={onOpen} tall={tall} />
+              <ArchitectureTile key={tile.id} tile={tile} onOpen={onOpen} tall={tall} expanded={expandedId === tile.id} />
             ))}
           </div>
           <h3 id="project-more" className="bx-morehead">
@@ -675,28 +656,11 @@ export default function Projects({ openId, onOpen }) {
           </h3>
           <div className="bx-grid bx-more">
             {moreItems.map((item, index) => (
-              <MoreCard key={item.id} item={item} featured={index === 0} onOpen={onOpen} />
+              <MoreCard key={item.id} item={item} featured={index === 0} onOpen={onOpen} expanded={expandedId === item.id} />
             ))}
           </div>
         </div>
       </div>
-
-      <Modal
-        open={Boolean(open.kind)}
-        title={modalTitle}
-        kicker={modalKicker}
-        onClose={() => onOpen(null)}
-        className={
-          open.kind && open.kind !== 'legacy'
-            ? `bx-dialog${open.kind === 'tile' && open.tile?.id === 'domains' ? ' bx-dialog--erd-full' : ''}`
-            : undefined
-        }
-      >
-        {open.kind === 'lead' ? <LeadPanel tall={tall} /> : null}
-        {open.kind === 'tile' ? <TilePanel tile={open.tile} tall={tall} /> : null}
-        {open.kind === 'more' ? <MorePanel item={open.more} /> : null}
-        {open.kind === 'legacy' ? <LegacyBody key={open.project.id} project={open.project} onOpen={onOpen} /> : null}
-      </Modal>
     </section>
   )
 }
