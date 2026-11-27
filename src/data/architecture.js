@@ -49,7 +49,7 @@ export const COPY = {
       title: 'Ship path: one trunk, a release path per platform',
       svg: 'workflow',
       body:
-        'Every change follows the same trunk: a branch, a pull request, the required checks, then a merge that only lands code. After that, each platform has its own way to production. Snowflake infrastructure changes through Terraform. The plan runs on the pull request with a guard that fails on any delete, and the apply is a manual run against production after my explicit go. dbt checks run on DuckDB and in a temporary per-PR schema, and the models run in production from Airflow’s 06:00 ET chain. Airflow cuts a release tag after its tests pass, and a person pulls that tag onto the office PC, which swaps back on its own if anything fails to import. The public website deploys only from a manual dispatch with a required reviewer. Pick a platform chip to see its full flow.',
+        'Every change follows the same trunk: a branch, a pull request, the required checks, then a merge that only lands code. After that, each platform has its own way to production. Snowflake infrastructure changes through Terraform. The plan runs on the pull request with a guard that fails on any delete, and the apply is a manual run against production after my explicit go. dbt checks run on DuckDB and in a temporary per-PR schema, and the models run in production from Airflow’s 06:00 ET chain. Airflow cuts a release tag after its tests pass, and a person pulls that tag onto the office PC, which swaps back on its own if anything fails to import. The websites I manage ship through the same trunk, and the one shown here, the MyOrgLab public site, deploys only from a manual dispatch with a required reviewer. Pick a platform chip to see its full flow.',
       caption:
         'The shared trunk sits top right. The selected platform’s flow runs below it, and the dashed cards summarize the other three.',
     },
@@ -647,7 +647,7 @@ export const DIAG = {
   workflow: {
     title: 'Ship path: a shared pull request trunk, then one release path per platform',
     trunk: [
-      { t: 'Branch + pull request', s: 'household-platform · website repo' },
+      { t: 'Branch + pull request', s: 'household-platform · website repos' },
       { t: 'Required checks', s: 'ruff + pytest · gitleaks · static · plan' },
       { t: 'Merge to main', s: 'lands code only' },
     ],
@@ -704,11 +704,11 @@ export const DIAG = {
       },
       {
         id: 'website',
-        label: 'Website',
+        label: 'Websites',
         logo: 'github',
-        path: 'myorglab-public-website',
+        path: 'website repos · MyOrgLab shown',
         merge: 'builds and tests, no deploy',
-        summary: 'lint, build and consent tests on PRs, deploy only by dispatch through a production environment with a required reviewer.',
+        summary: 'shown for MyOrgLab. Lint, build and consent tests on PRs, and deploys only by dispatch through a production environment with a required reviewer.',
         pr: [
           { t: 'Lint and build', s: 'lint · production build' },
           { t: 'Consent tests', s: 'Jest · Playwright end to end' },

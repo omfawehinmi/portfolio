@@ -23,7 +23,7 @@ export const NODE_NOTES = {
     [/^Write client$/, 'Write client', 'Grokbot and me working through Cursor and Eta (Household COO). Every change goes through an approved procedure on the write MCP server into CORE.'],
   ],
   workflow: [
-    [/^Branch \+ (pull request|PR)/, 'Branch and pull request', 'Every change starts on a branch and opens a pull request, whether it touches Snowflake, dbt, Airflow or the website. Nothing is pushed straight to main.'],
+    [/^Branch \+ (pull request|PR)/, 'Branch and pull request', 'Every change starts on a branch and opens a pull request, whether it touches Snowflake, dbt, Airflow or one of the websites I manage. Nothing is pushed straight to main.'],
     [/^Required checks/, 'Required checks', 'Branch protection on household-platform requires ruff and pytest, gitleaks secret scanning, static checks and a Terraform plan before a merge.'],
     [/^Merge to main/, 'Merge to main', 'Merging lands code and nothing else. Each platform then reaches production through its own release step.'],
     [/^Pull request/, 'Pull request', 'The platform’s files change on a branch, and its own checks run on the pull request alongside the shared required checks.'],
@@ -43,7 +43,7 @@ export const NODE_NOTES = {
     [/^Release tag/, 'Release tag', 'An annotated airflow-YYYYMMDD-sha tag is pushed on main once both test jobs pass.'],
     [/^PC pull/, 'Pull on the PC', 'Nothing in GitHub can reach the PC, so a person runs deploy_airflow.ps1. It is a dry run unless -Apply is passed.'],
     [/^Swap and check/, 'Swap and check', 'The release swaps in atomically and is checked for import errors. Any error swaps back on its own, and rollback is redeploying the previous tag.'],
-    [/^Lint and build/, 'Lint and build', 'Pull requests on the MyOrgLab public website run lint and a production build.'],
+    [/^Lint and build/, 'Lint and build', 'The flow shown is the MyOrgLab public site, one of the websites I manage. Its pull requests run lint and a production build.'],
     [/^Consent tests/, 'Consent tests', 'Jest and Playwright tests check the cookie consent flow end to end.'],
     [/^Build on main/, 'Build on main', 'A push to main builds and tests the site but does not deploy it.'],
     [/^Deploy dispatch/, 'Deploy dispatch', 'Deploys run only from a manual dispatch through a production environment with a required reviewer and no admin bypass. The cloud role comes from OIDC, with no stored keys.'],
