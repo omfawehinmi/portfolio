@@ -93,7 +93,7 @@ export const COPY = {
       body:
         'Each feed lands in its own product database, not a shared dump. Morning ingest runs once at 07:15 ET on INGEST_WH. Monarch and email load every day. YouTube loads on Mondays and then starts the sync for Moonshots by Peter Diamandis and Market Mondays by Earn Your Leisure. Epic MyChart loads once health data is switched on. Monarch comes in through EAI_MONARCH. Every bank account is set to send a Gmail alert for each transaction; those emails come in through EAI_GMAIL, get classified, and are matched to transactions by reconcile_pending. drive_poll picks up new Google Drive documents at the same minute without waking a warehouse, then doc_extract reads the text with pypdf and local Tesseract instead of Cortex OCR. AI chat history from every platform lands in AGENTIC_WORKFORCE through a daily capture and a nightly chat backup. Epic MyChart SMART on FHIR R4 data is meant for HOUSEHOLD_HEALTH; the model is ready, but no patient data is loaded yet. Every feed follows the same shape: extract and land, transform with dbt, then test. There is no S3 or Snowpipe path; that design was dropped.',
       caption:
-        'The morning load window feeds the ledger, plus YouTube on Mondays. Drive documents go through OCR. Chat capture lands in AGENTIC_WORKFORCE. MyChart is modeled in HOUSEHOLD_HEALTH and waiting on source data.',
+        'The morning load window feeds the ledger, plus YouTube on Mondays. Google Drive Docs go through OCR. Chat capture lands in AGENTIC_WORKFORCE. MyChart is modeled in HOUSEHOLD_HEALTH and waiting on source data.',
     },
     {
       id: 'airflow',
@@ -224,7 +224,7 @@ export const COPY = {
           id: 'ledger',
           name: 'HOUSEHOLD_LEDGER',
           status: 'Production',
-          oneLine: 'Finance ledger — Monarch, Gmail, Drive documents',
+          oneLine: 'Finance ledger — Monarch, Gmail, Google Drive Docs',
           schemas: ['PUBLIC', 'RAW', 'CORE', 'CTRL', 'ANALYTICS', 'AI', 'STAGING', 'INTERMEDIATE'],
           detail:
             'Landing and conformed finance data. CTRL hosts MCP_HOUSEHOLD_LEDGER_GROK and MCP_HOUSEHOLD_LEDGER. ANALYTICS holds reporting grain and the 15 semantic views; Cortex Search CS_DOCUMENTS, CS_EMAIL_MESSAGES, CS_GAPS_IDEA, CS_PARSE_REVIEW sit on ledger text. Example path: DOCUMENTS_RAW → DOCUMENTS → FACT_DOCUMENT_STANDING → SV_DOCUMENT_STANDING / CS_DOCUMENTS.',
@@ -563,7 +563,7 @@ export const DIAG = {
     layers: [
       {
         label: 'Sources',
-        nodes: [{ t: 'Monarch GraphQL' }, { t: 'Gmail · EAI_GMAIL' }, { t: 'Drive docs' }],
+        nodes: [{ t: 'Monarch GraphQL' }, { t: 'Gmail · EAI_GMAIL' }, { t: 'Google Drive Docs' }],
       },
       {
         label: 'Extract and land',

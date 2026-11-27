@@ -1651,3 +1651,19 @@ dialog.project-dialog.bx-dialog.bx-dialog--erd-full .bx-fig-big:has(.bx-arch--li
   height: auto;
   max-height: none;
 }
+
+.bx-open.bx-open--text {
+  width: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0 0.85rem 0 0.7rem;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.bx-open.bx-open--text .uil {
+  font-size: 1.1rem;
+}

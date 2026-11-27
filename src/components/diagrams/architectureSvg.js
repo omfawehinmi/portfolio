@@ -100,22 +100,24 @@ export const PLATFORM={
   terraform:{bg:'#F4EEFC', stroke:'#7B42BC', src:'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGcgZmlsbD0iIzdCNDJCQyI+PHBhdGggZD0iTTIyIDEwbDE4IDEwLjR2MjAuOEwyMiAzMC44eiIvPjxwYXRoIGQ9Ik00MiAyMC40bDE4LTEwLjR2MjAuOEw0MiA0MS4yeiIgb3BhY2l0eT0iLjc1Ii8+PHBhdGggZD0iTTIgMGwxOCAxMC40djIwLjhMMiAyMC44eiIvPjxwYXRoIGQ9Ik0yMiAzMy4ybDE4IDEwLjR2MjAuOEwyMiA1NHoiLz48L2c+PC9zdmc+'},
   monarch:{bg:'#FFF1E8', stroke:'#FF692D', src:'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTM0LjE3ODYgNDUuMDIwNkMzMi4yOTY1IDQ1LjAyMDYgMzAuNDI4OSA0NC4xNzM4IDI4Ljg3NjEgNDIuNjA1OEMyNi41NzEgNDAuMzQ1NSAyNS4yOTIzIDM3LjIzMTIgMjUuMjczIDMzLjgzOTVDMjUuMjYxIDMxLjU4NCAyNS44NDUxIDI5LjQyOTggMjYuODgxMSAyNy43Nzk4QzI2LjAzMjYgMjcuNjQ5NSAyNS4xMzM2IDI3LjU3NzIgMjQuMTg0MiAyNy41NzcySDI0LjAwMzlDMjMuMDU0NCAyNy41NzcyIDIyLjE1NTUgMjcuNjQ3MSAyMS4zMDk0IDI3Ljc3NzRDMjIuMzQwNiAyOS40MjI2IDIyLjkyNzEgMzEuNTc5MiAyMi45MTUgMzMuODM3MUMyMi44OTgyIDM3LjIyODggMjEuNjE3MSA0MC4zNDA3IDE5LjMxMiA0Mi42MDM0QzE3LjY0MzggNDQuMjg3MiAxNS42MTAzIDQ1LjE0MTIgMTMuNTg4OCA0NS4wMDM3QzExLjgxOTcgNDQuODg1NSAxMC4yMjEzIDQzLjk5MjkgOS4wODkxOSA0Mi40OTczQzcuMjI2MzYgNDAuMTEzOSA3LjA5NjU2IDM2LjY1OTUgOC43NDA2NiAzMy4yNTgyQzkuOTU2OTEgMzAuNzQ0NSAxMi4yNjY4IDI4LjEyOTYgMTUuNjgyNCAyNi40MzYyQzE0LjQ0NDUgMjUuNTc5OCAxMy4yNDUxIDI1LjAyNSAxMS45MzUxIDI0LjQyMTlDOS43NzY2NCAyMy40MjU2IDcuMzMyMTIgMjIuMjk2NiA0LjI4NDI4IDE5LjYwMjFDMC4zODU1NDMgMTYuMTM1NiAtMC40MDc2NjQgOS43MTQwNiAyLjYyMzM1IDYuMTM0MkM0LjI0ODIyIDQuMjA2NzcgNi44NDg5OCAzLjA3NTQgOS41NTMxIDMuMDk3MTFDMTIuMzQ4NiAzLjEyMzY0IDE0Ljk3MDkgNC4zODA0NSAxNi43NDk3IDYuNTUxNTNDMTcuMTI3IDYuOTgwOTIgMjAuOTI0OCAxMS40MjQ0IDIyLjU3MTMgMTcuOTc2MkMyMi43NDQ0IDE4LjY2ODUgMjIuMzE0MSAxOS4zNjU3IDIxLjYxNzEgMTkuNTA1NkwyMC45MjI0IDE5LjY0NTVDMjAuMzgxNiAxOS43NTQxIDE5Ljg1NzYgMTkuNDExNSAxOS43Mjc4IDE4Ljg3MzZDMTguMjM1MSAxMi43NzI5IDE0LjU0NTUgOC41NTg1NyAxNC41MDcgOC41MTUxNUwxNC40NjM4IDguNDY0NDlDMTMuMjI4MyA2Ljk0NzE1IDExLjQ3MzYgNi4xMDA0MyA5LjUyNjY2IDYuMDgzNTRDNy42OTc0NyA2LjA2OTA3IDUuOTU0ODIgNi44MDcyMyA0Ljg5MjQgOC4wNjQwNUMyLjkyMTQgMTAuMzk0MyAzLjYwMTY0IDE0Ljk5OTQgNi4yNjAwOCAxNy4zNjM1QzguOTc2MjIgMTkuNzY2MSAxMS4xMTU1IDIwLjc1MjggMTMuMTgyNiAyMS43MDhDMTUuMDE2NiAyMi41NTQ4IDE2LjkwMzUgMjMuNDI1NiAxOC45NjU4IDI1LjIxNTVDMjAuNDg5NyAyNC44MTc1IDIyLjE2OTkgMjQuNTkwNyAyNC4wMDM5IDI0LjU5MDdIMjQuMTg0MkMyNi4wMjA2IDI0LjU5MDcgMjcuNjk4MyAyNC44MTc1IDI5LjIyMjIgMjUuMjE1NUMzMS4yNzk4IDIzLjQyOCAzMy4xNjkgMjIuNTU3MiAzNS4wMDU0IDIxLjcwOEMzNy4wNzI2IDIwLjc1MjggMzkuMjExOCAxOS43NjYxIDQxLjkzMDQgMTcuMzYxMUM0NC41ODg4IDE0Ljk5OTQgNDUuMjY2NyAxMC4zOTQzIDQzLjI5NTcgOC4wNjQwNUM0Mi4yNDUzIDYuODE5MyA0MC41Mzg3IDYuMDgzNTQgMzguNzIxNSA2LjA4MzU0QzM4LjcwMjMgNi4wODM1NCAzOC42ODA2IDYuMDgzNTQgMzguNjYxNCA2LjA4MzU0QzM2LjcxMiA2LjEwMDQzIDM0Ljk1OTggNi45NDcxNSAzMy43MjQzIDguNDY0NDlMMzMuNjgxIDguNTE1MTVDMzMuNjQyNiA4LjU1ODU3IDI5Ljk1MjkgMTIuNzcyOSAyOC40NjI3IDE4Ljg3MTJDMjguMzMwNSAxOS40MDkxIDI3LjgwNjUgMTkuNzQ5MyAyNy4yNjgxIDE5LjY0MzFMMjYuNTczNCAxOS41MDMyQzI1Ljg3NjMgMTkuMzYzMyAyNS40NDM3IDE4LjY2NjEgMjUuNjE5MiAxNy45NzM4QzI3LjI2ODEgMTEuNDIyIDMxLjA2MzQgNi45Nzg1MSAzMS40NDA4IDYuNTQ5MTJDMzMuMjIxOSA0LjM4MDQ2IDM1Ljg0MTkgMy4xMjM2NCAzOC42Mzc0IDMuMDk3MTFDNDEuMzQxNSAzLjA3NzgxIDQzLjk0MjIgNC4yMDY3NyA0NS41Njk1IDYuMTM0MkM0OC41OTgxIDkuNzE2NDcgNDcuODA0OSAxNi4xMzU2IDQzLjkwMzggMTkuNjAyMUM0MC44NTM1IDIyLjI5OTEgMzguNDA5IDIzLjQyOCAzNi4yNTA1IDI0LjQyNDNDMzQuOTQwNSAyNS4wMjk4IDMzLjczODcgMjUuNTgyMiAzMi41MDMyIDI2LjQzODZDMzUuOTE4OCAyOC4xMjk2IDM4LjIzMTIgMzAuNzQ3IDM5LjQ0NSAzMy4yNjA2QzQxLjA4OTEgMzYuNjYxOSA0MC45NTkzIDQwLjExNjMgMzkuMDk2NSA0Mi40OTk3QzM3Ljk2NDMgNDMuOTk3NyAzNi4zNjU5IDQ0Ljg4NzkgMzQuNTk2OCA0NS4wMDYxQzM0LjQ1NzQgNDUuMDE1NyAzNC4zMTU2IDQ1LjAyMDYgMzQuMTc2MiA0NS4wMjA2SDM0LjE3ODZaTTI5Ljk5NjIgMjguNTk3NkMyOC44ODU3IDI5Ljc3MjQgMjguMjQxNSAzMS43MDk1IDI4LjI1MzYgMzMuODIyNkMyOC4yNjA4IDM1LjMyMzEgMjguNjIzNyAzOC4xODE3IDMwLjk2NzMgNDAuNDczNEwzMC45ODQxIDQwLjQ5MDJDMzIuMDM2OSA0MS41NTY1IDMzLjI1NTYgNDIuMTAxNyAzNC40MDIxIDQyLjAyMjFDMzUuMzE1NSA0MS45NjE4IDM2LjEyMzEgNDEuNDk4NiAzNi43MzYxIDQwLjY4MzJMMzYuNzU1MyA0MC42NTkxQzM3Ljg4NzQgMzkuMjE2NiAzNy44OTQ2IDM2Ljg3OSAzNi43NzIxIDM0LjU2MDhDMzUuNjcxMyAzMi4yODYgMzMuNDIzOCAyOS45MDUxIDI5Ljk5ODYgMjguNTk1MkwyOS45OTYyIDI4LjU5NzZaTTE4LjE5NjcgMjguNTk3NkMxNC43NzE0IDI5LjkwNzUgMTIuNTI0IDMyLjI4ODQgMTEuNDIzMSAzNC41NjMyQzEwLjMwMDYgMzYuODgxNCAxMC4zMDc4IDM5LjIxOSAxMS40NCA0MC42NjE1TDExLjQ1OTIgNDAuNjg1NkMxMi4wNzIxIDQxLjUwMSAxMi44Nzk4IDQxLjk2NDIgMTMuNzkzMiA0Mi4wMjQ1QzE0Ljk0MjEgNDIuMTAxNyAxNi4xNTg0IDQxLjU1ODkgMTcuMjExMiA0MC40OTI3TDE3LjIyOCA0MC40NzU4QzE5LjU2OTEgMzguMTg0MSAxOS45MzIxIDM1LjMyNTUgMTkuOTQxNyAzMy44MjUxQzE5Ljk1MzcgMzEuNzAyMiAxOS4zMDIzIDI5Ljc1NzkgMTguMTk5MSAyOC42TDE4LjE5NjcgMjguNTk3NloiIGZpbGw9IiNmZjY5MmQiLz4KPC9zdmc+Cg=='},
 };
+const BADGE=14;
 const platformBadge=(x,y,w,h,plat)=>{
-  if(Array.isArray(plat)) return plat.map((q,i)=>platformBadge(x-i*Math.max(18, Math.round(20*Math.min(1,DENSITY+0.1)))*1.1,y,w,h,q)).reverse().join('');
+  if(Array.isArray(plat)) return plat.map((q,i)=>platformBadge(x-i*(BADGE+3),y,w,h,q)).reverse().join('');
   if(!plat||!PLATFORM[plat]) return '';
-  const s=Math.max(18, Math.round(20*Math.min(1,DENSITY+0.1)));
-  const bx=x+w-s*0.18, by=y+h-s*0.18;
+  const s=BADGE;
+  const bx=x+w-s/2-4, by=y+h-s/2-4;
   const p=PLATFORM[plat];
-  const icon=s*0.68;
-  // Real brand SVG via <image> — not a hand-drawn placeholder mark
-  return `<g class="nd-plat" pointer-events="none" aria-hidden="true"><circle cx="${bx}" cy="${by}" r="${s/2}" fill="${p.bg}" stroke="${p.stroke}" stroke-width="1.1" filter="url(#${ID}sh)"/><image href="${p.src}" xlink:href="${p.src}" x="${bx-icon/2}" y="${by-icon/2}" width="${icon}" height="${icon}" preserveAspectRatio="xMidYMid meet"/></g>`;
+  const icon=s*0.66;
+  return `<g class="nd-plat" pointer-events="none" aria-hidden="true"><circle cx="${bx}" cy="${by}" r="${s/2}" fill="${p.bg}" stroke="${p.stroke}" stroke-width="0.9"/><image href="${p.src}" xlink:href="${p.src}" x="${bx-icon/2}" y="${by-icon/2}" width="${icon}" height="${icon}" preserveAspectRatio="xMidYMid meet"/></g>`;
 };
+/** Width a node reserves on its right edge so text never runs under its logo badges. */
+const badgeReserve=(plat)=>{const n=Array.isArray(plat)?plat.filter((q)=>PLATFORM[q]).length:(plat&&PLATFORM[plat]?1:0);return n?n*(BADGE+3)+4:0};
 // node: soft Issuing-style block; interactive .nd group for hover/click enlarge.
-const node=(shape,x,y,w,lines,o={})=>{const [px,py]=insetFor(shape);const maxW=w-2*px;const L=[];
+const node=(shape,x,y,w,lines,o={})=>{const [px,py]=insetFor(shape);const rsv=shape==='dia'?0:badgeReserve(o.platform);const maxW=w-2*px-rsv;const L=[];
  const lhMul=DENSITY<0.95?1.05:(COMPACT?1.1:1.25);
  lines.forEach(l=>{const sz=fs(l.sz||10),ww=l.w||500;wrapW(l.t,maxW,sz,ww,l.it,l.mono).forEach(s=>L.push({...l,t:s,sz,lh:sz*lhMul}))});
  const th=L.reduce((a,l)=>a+l.lh,0);const minH=o.h?Math.round(o.h*Math.min(1,DENSITY+0.08)):0;const h=Math.max(minH,th+2*py+(shape==='cyl'?(COMPACT?2:4):0));let ty=y+(h-th)/2+(shape==='cyl'?2:0),g='';
- L.forEach(l=>{g+=T(x+w/2,ty+l.lh/2,l.t,{sz:l.sz,w:l.w||500,c:l.c||(l.sub?C.sub:C.ink),it:l.it,mono:l.mono});ty+=l.lh});
+ L.forEach(l=>{g+=T(x+(w-rsv)/2,ty+l.lh/2,l.t,{sz:l.sz,w:l.w||500,c:l.c||(l.sub?C.sub:C.ink),it:l.it,mono:l.mono});ty+=l.lh});
  const nid=o.id||`${shape}-${Math.round(x)}-${Math.round(y)}`;
  const plat=platformBadge(x,y,w,h,o.platform);
  return {g:`<g class="nd" tabindex="0" role="button" data-node="${esc(nid)}" data-b="${x},${y},${w},${h},${px},${py}" data-shape="${shape}">${block(shape,x,y,w,h,o)}${g}${plat}</g>`,h,x,y,w}};
@@ -267,11 +269,11 @@ export function dPipes(D, inst=""){
  const lanes=[['Sources',0,60],['Airflow',60,120],['Snowflake',180,96]];
  lanes.forEach(([t,y],i)=>{if(i)o+=`<line x1="8" y1="${y}" x2="${W-8}" y2="${y}" stroke="${C.soft}"/>`;o+=lab(12,y+10,t,i<2?Z.src.k:Z.data.k)});
   o+=discNode(22,32,11,'', '▶',{id:'start',glyphSz:9}).g;
-  const t1=node('box',44,18,120,n2('Source feeds','',8.8),{h:26,z:'src'});o+=t1.g;o+=['monarch','gmail','drive','youtube'].map((p,i)=>platformBadge(80+i*21,16,0,6,p)).join('');
+  const t1=node('box',44,18,170,n2('Source feeds','',8.8),{h:26,z:'src',platform:['youtube','drive','gmail','monarch']});o+=t1.g;
  o+=discNode(100,122,14,'','◇',{id:'gateway',glyphSz:11}).g;
  const ex=node('box',210,92,168,n2('Extract and land','',8.8,K.land,'src'),{h:28,z:'src'});o+=ex.g;
  const oc=node('box',210,132,168,n2(Pp.ocr.t,Pp.ocr.s,8.6,K.ocr,'src'),{h:28,z:'src'});o+=oc.g;
- o+=tag(154,108,'Monarch / Gmail',{light:1})+tag(154,158,'Drive docs',{light:1});
+ o+=tag(154,108,'Monarch / Gmail',{light:1})+tag(154,158,'Google Drive Docs',{light:1});
  const ld=node('box',232,210,144,n2('RAW and CORE','',8.8,K.raw+', '+K.core,'data'),{h:34,z:'data',platform:'snowflake'});o+=ld.g;
  const db=node('box',140,216,78,n2(Pp.dbt.t,'',8.6),{h:26,z:'data',platform:'dbt'});o+=db.g;
  const ts=node('box',78,216,48,n2('Tests','',8.6),{h:26});o+=ts.g;

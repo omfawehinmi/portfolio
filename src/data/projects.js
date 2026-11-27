@@ -163,7 +163,7 @@ export const projects = [
       'household-tools',
     ],
     summary: [
-      'HOUSEHOLD_LEDGER is the warehouse I operate. Monarch is the system of record for posted accounts and transactions. Gmail card alerts land early through EAI_GMAIL. Drive documents land through drive_poll / doc_extract. Agents answer from semantic views and Cortex Search services catalogs instead of inventing missing figures.',
+      'HOUSEHOLD_LEDGER is the warehouse I operate. Monarch is the system of record for posted accounts and transactions. Gmail card alerts land early through EAI_GMAIL. Google Drive Docs land through drive_poll / doc_extract. Agents answer from semantic views and Cortex Search services catalogs instead of inventing missing figures.',
       'AGENT_HOUSEHOLD_FINANCE and AGENT_LEDGER_OPS sit on top. Cursor uses MCP_HOUSEHOLD_LEDGER (write). Grok finance bots use MCP_HOUSEHOLD_LEDGER_GROK (read-only). Same account, split catalogs.',
     ],
     points: [

@@ -50,10 +50,10 @@ export const NODE_NOTES = {
   ],
   pipes: [
     [/^▶$/, 'Morning start', 'The 07:15 ET load window on INGEST_WH starts the day’s ingest. Drive polling fires at the same minute without waking a warehouse.'],
-    [/^Source feeds/, 'Source feeds', 'Monarch through EAI_MONARCH, Gmail transaction alerts through EAI_GMAIL, Drive documents through drive_poll, and YouTube into MOONSHOTS. Epic MyChart is modeled for HOUSEHOLD_HEALTH and waiting on source data.'],
-    [/^◇$/, 'Route by source', 'Monarch and Gmail go to the load step. Drive documents go to OCR first.'],
+    [/^Source feeds/, 'Source feeds', 'Monarch through EAI_MONARCH, Gmail transaction alerts through EAI_GMAIL, Google Drive Docs through drive_poll, and YouTube into MOONSHOTS. Epic MyChart is modeled for HOUSEHOLD_HEALTH and waiting on source data.'],
+    [/^◇$/, 'Route by source', 'Monarch and Gmail go to the load step. Google Drive Docs go to OCR first.'],
     [/^Extract and land/, 'Extract and land', 'The load window pulls Monarch data and Gmail transaction alerts into RAW on INGEST_WH, then the warehouse suspends.'],
-    [/^doc_extract/, 'doc_extract', 'Reads Drive documents with pypdf, then local Tesseract, and lands the text for CORE. It is paused while the warehouse quota is tight.'],
+    [/^doc_extract/, 'doc_extract', 'Reads Google Drive Docs with pypdf, then local Tesseract, and lands the text for CORE. It is paused while the warehouse quota is tight.'],
     [/^RAW and CORE/, 'RAW and CORE', 'RAW keeps payloads as they landed. CORE turns them into clean business objects, often in the same procedure.'],
     [/^dbt/, 'dbt and procedures', 'ledger_dbt_daily builds CORE into ANALYTICS at 06:00 ET, then starts the HR and agentic workforce builds. The separate dbt_daily job stays paused.'],
     [/^Tests$/, 'Tests', 'dbt and Airflow test results land in one append-only test-results table.'],

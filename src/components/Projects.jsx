@@ -186,11 +186,11 @@ function FoldBody({ project, className = '', lines = 3, expandedExtra = null }) 
   )
 }
 
-function ExpandToggle({ expanded, onToggle, label }) {
+function ExpandToggle({ expanded, onToggle, label, text = null }) {
   return (
     <button
       type="button"
-      className={`bx-open${expanded ? ' is-expanded' : ''}`}
+      className={`bx-open${expanded ? ' is-expanded' : ''}${text ? ' bx-open--text' : ''}`}
       aria-expanded={expanded}
       aria-label={`${expanded ? 'Collapse' : 'Expand'} ${label}`}
       onClick={(event) => {
@@ -199,6 +199,7 @@ function ExpandToggle({ expanded, onToggle, label }) {
       }}
     >
       <Icon name={expanded ? 'uil-compress-arrows' : 'uil-expand-arrows-alt'} />
+      {text ? <span>{expanded ? 'Collapse' : text}</span> : null}
     </button>
   )
 }
@@ -448,7 +449,12 @@ function ArchitectureTile({ tile, onOpen, tall, expanded }) {
           <p className="bx-kicker">{KICKERS[tile.id]}</p>
           <h4 className="bx-h2">{tile.title}</h4>
         </div>
-        <ExpandToggle expanded={expanded} label={tile.title} onToggle={() => onOpen(expanded ? null : tile.id)} />
+        <ExpandToggle
+          expanded={expanded}
+          label={tile.title}
+          text={tile.id === 'domains' ? 'Expand for ERD' : null}
+          onToggle={() => onOpen(expanded ? null : tile.id)}
+        />
       </div>
       {expanded ? (
         <TilePanel tile={tile} tall={tall} ship={ship} onShip={setShip} dbId={dbId} onDb={setDbId} />
@@ -610,6 +616,14 @@ function DomainsPanel({ tile, tall, dbId, setDbId }) {
 
 function TilePanel({ tile, tall, ship, onShip, dbId, onDb }) {
   if (tile.id === 'domains') return <DomainsPanel tile={tile} tall={tall} dbId={dbId} setDbId={onDb} />
+  if (tile.id === 'workflow')
+    return (
+      <div className="bx-panel-body">
+        <p>{tile.body}</p>
+        <TileFigure tile={tile} tall={tall} inst="open" ship={ship} onShip={onShip} big caption={tile.caption} />
+        <RowTable rows={tile.rows} />
+      </div>
+    )
   return (
     <div className="bx-panel-body">
       <TileFigure tile={tile} tall={tall} inst="open" ship={ship} onShip={onShip} big caption={tile.caption} />
