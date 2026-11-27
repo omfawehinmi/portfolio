@@ -186,14 +186,14 @@ export function dMcp(D, inst=""){
   begin(false,inst);ID='m'+inst;const K=D.code;const M=D.mcpTools||{};const W=560;let o='',a='';
   const servers=M.servers||[
     {t:K.readSrv||'MCP_HOUSEHOLD_LEDGER_GROK',s:'Read · Grok desks',families:'agents · analyst_* · search_* · docs',z:'agent'},
-    {t:K.writeSrv||'MCP_HOUSEHOLD_LEDGER',s:'Write · Cursor / Eta',families:'read families + mutate / pipeline procs',z:'agent'},
-    {t:'MCP_MOONSHOTS',s:'YouTube · Cynthia',families:'catalog · search · sync / embed',z:'src'},
+    {t:K.writeSrv||'MCP_HOUSEHOLD_LEDGER',s:'Write · Cursor / Eta (Household COO)',families:'read families + mutate / pipeline procs',z:'agent'},
+    {t:'MCP_MOONSHOTS',s:'YouTube · Cynthia (Moonshot advisory)',families:'catalog · search · sync / embed',z:'src'},
   ];
   o+=lab(14,16,'MCP servers')+lab(200,16,'Agents')+lab(380,16,'Tool families');
   servers.forEach((s,i)=>{
     const y=36+i*118;
     o+=node('box',14,y,170,n2(s.t,s.s,9.2),{h:52,z:s.z||'agent',hero:i<2,lift:1}).g;
-    const agents=(M.agents&&M.agents[i])||(i===0?['household_finance_agent','ledger_ops_agent']:i===1?['same agents + write procs','Cortex AGENT_* behind']:['Cynthia desk','catalog tools']);
+    const agents=(M.agents&&M.agents[i])||(i===0?['household_finance_agent','ledger_ops_agent']:i===1?['same agents + write procs','Cortex AGENT_* behind']:['Cynthia (Moonshot advisory)','catalog tools']);
     o+=node('box',200,y,160,[{t:agents[0],sz:9,w:600},{t:agents[1]||'',sz:8.4,sub:1}],{h:52,z:'agent'}).g;
     o+=node('box',380,y,166,[{t:s.families,sz:8.8,c:C.sub}],{h:52,dash:i===0,lift:1}).g;
     a+=arrow(`M184,${y+26} H198`,'c')+arrow(`M360,${y+26} H378`,'c');
@@ -207,8 +207,8 @@ export function dGrokbot(D, inst=""){
   begin(false,inst);ID='gb'+inst;const G=D.grokbot||{};const W=560;let o='',a='';
   const rows=G.rows||[
     {agent:'Grok finance desks',mcp:'MCP_HOUSEHOLD_LEDGER_GROK',use:'spend · cashflow · docs · ops freshness',z:'agent'},
-    {agent:'Cursor / Eta',mcp:'MCP_HOUSEHOLD_LEDGER',use:'mutate · ingest · rebuild analytics',z:'agent'},
-    {agent:'Cynthia',mcp:'MCP_MOONSHOTS',use:'YouTube catalog · transcripts · sync',z:'src'},
+    {agent:'Cursor / Eta (Household COO)',mcp:'MCP_HOUSEHOLD_LEDGER',use:'mutate · ingest · rebuild analytics',z:'agent'},
+    {agent:'Cynthia (Moonshot advisory)',mcp:'MCP_MOONSHOTS',use:'YouTube catalog · transcripts · sync',z:'src'},
   ];
   o+=lab(14,16,'Agent / desk')+lab(200,16,'MCP server')+lab(390,16,'Uses that access');
   rows.forEach((r,i)=>{

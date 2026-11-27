@@ -302,7 +302,7 @@ export const COPY = {
           oneLine: 'YouTube catalog for Moonshots by Peter Diamandis and Market Mondays by Earn Your Leisure',
           schemas: ['RAW', 'CORE', 'CTRL', 'AI'],
           detail:
-            'YouTube domain for Moonshots by Peter Diamandis and Market Mondays by Earn Your Leisure, shortened to EYL. Monday pipeline_load_window triggers moonshots_yt_sync_daily after the INGEST_WH work; EYL captions write in that window. moonshots_yt_sync_daily and moonshots_eyl_sync were the two confirmed-unpaused DAGs on the 2026-11-07 pin (not re-read). CTRL hosts MCP_MOONSHOTS for Cynthia. CS_TRANSCRIPTS and CS_VIDEOS are the Moonshots Cortex Search services. Phase 5 added ANALYTICS views over CORE for reporting reads.',
+            'YouTube domain for Moonshots by Peter Diamandis and Market Mondays by Earn Your Leisure, shortened to EYL. Monday pipeline_load_window triggers moonshots_yt_sync_daily after the INGEST_WH work; EYL captions write in that window. moonshots_yt_sync_daily and moonshots_eyl_sync were the two confirmed-unpaused DAGs on the 2026-11-07 pin (not re-read). CTRL hosts MCP_MOONSHOTS for Cynthia (Moonshot and architecture advisory). CS_TRANSCRIPTS and CS_VIDEOS are the Moonshots Cortex Search services. Phase 5 added ANALYTICS views over CORE for reporting reads.',
           objects: [
             { layer: 'Scheduler', name: 'moonshots_yt_sync_daily', note: 'Monday window trigger · unpaused on pin' },
             { layer: 'Scheduler', name: 'moonshots_eyl_sync', note: 'Unscheduled · unpaused on pin' },
@@ -374,9 +374,9 @@ export const COPY = {
       title: 'MCP servers, agents, and tools',
       svg: 'mcp',
       body:
-        'Three MCP servers connect agents to tools. MCP_HOUSEHOLD_LEDGER_GROK is the read server that Grok desks use. It gives household_finance_agent and ledger_ops_agent analyst tools on the 15 semantic views, search over CS_DOCUMENTS, CS_EMAIL_MESSAGES, CS_GAPS_IDEA and CS_PARSE_REVIEW, and document listing and download. MCP_HOUSEHOLD_LEDGER is the write server that Cursor and Eta use. It has the same reads plus approved procedures for Monarch updates, ledger changes, the Gmail and document pipelines, reconciliation, analytics rebuilds, freshness checks and metal prices. MCP_MOONSHOTS is a separate YouTube server for Cynthia, with video and channel lookups, transcript and video search over CS_TRANSCRIPTS and CS_VIDEOS, sync status, and sync and embedding jobs. The Cortex agents AGENT_HOUSEHOLD_FINANCE, AGENT_HOUSEHOLD_FINANCE_RO and AGENT_LEDGER_OPS sit behind these servers on the same certified data. Clients sign in with a Snowflake access token under the MCP_LEDGER_CLIENT role, and a read client never gets write tools.',
+        'Three MCP servers connect agents to tools. MCP_HOUSEHOLD_LEDGER_GROK is the read server that Grok desks use. It gives household_finance_agent and ledger_ops_agent analyst tools on the 15 semantic views, search over CS_DOCUMENTS, CS_EMAIL_MESSAGES, CS_GAPS_IDEA and CS_PARSE_REVIEW, and document listing and download. MCP_HOUSEHOLD_LEDGER is the write server that Cursor and Eta (Household COO) use. It has the same reads plus approved procedures for Monarch updates, ledger changes, the Gmail and document pipelines, reconciliation, analytics rebuilds, freshness checks and metal prices. MCP_MOONSHOTS is a separate YouTube server for Cynthia (Moonshot and architecture advisory), with video and channel lookups, transcript and video search over CS_TRANSCRIPTS and CS_VIDEOS, sync status, and sync and embedding jobs. The Cortex agents AGENT_HOUSEHOLD_FINANCE, AGENT_HOUSEHOLD_FINANCE_RO and AGENT_LEDGER_OPS sit behind these servers on the same certified data. Clients sign in with a Snowflake access token under the MCP_LEDGER_CLIENT role, and a read client never gets write tools.',
       caption:
-        'Servers, then agents, then tool families. Grok uses the read server, Cursor and Eta use the write server, and YouTube work uses the Moonshots server.',
+        'Servers, then agents, then tool families. Grok uses the read server, Cursor and Eta (Household COO) use the write server, and YouTube work uses the Moonshots server.',
       rows: [
         {
           name: 'MCP_HOUSEHOLD_LEDGER_GROK',
@@ -385,12 +385,12 @@ export const COPY = {
         },
         {
           name: 'MCP_HOUSEHOLD_LEDGER',
-          role: 'Write server — Cursor / Eta. Same read families plus proc_monarch_*, proc_ledger_mutate, proc_gmail_ingest, proc_email_pipeline, proc_reconcile_pending, document land/extract/jobs, proc_rebuild_analytics, freshness / QA, proc_metal_spot.',
+          role: 'Write server — Cursor / Eta (Household COO). Same read families plus proc_monarch_*, proc_ledger_mutate, proc_gmail_ingest, proc_email_pipeline, proc_reconcile_pending, document land/extract/jobs, proc_rebuild_analytics, freshness / QA, proc_metal_spot.',
           status: 'Read + write',
         },
         {
           name: 'MCP_MOONSHOTS',
-          role: 'YouTube server — Cynthia. Catalog get/list, transcript/video search (ILIKE + semantic + Cortex Search), sync status, proc_youtube_sync / embed / CS refresh. Not household money.',
+          role: 'YouTube server — Cynthia (Moonshot and architecture advisory). Catalog get/list, transcript/video search (ILIKE + semantic + Cortex Search), sync status, proc_youtube_sync / embed / CS refresh. Not household money.',
           status: 'Domain MCP',
         },
         {
@@ -463,9 +463,9 @@ export const COPY = {
       title: 'Grokbot architecture — agents per MCP',
       svg: 'grokbot',
       body:
-        'This shows which agents use each MCP server and what for. Stephen and the Grok finance desks use the read server, MCP_HOUSEHOLD_LEDGER_GROK. household_finance_agent covers spending, cash flow, balances, documents and ops search. ledger_ops_agent covers freshness and warehouse health. Analyst and search tools return certified totals and find emails and documents. Cursor and Eta use the write server, MCP_HOUSEHOLD_LEDGER, for the same reads plus Monarch and ledger changes, the Gmail and document pipelines, and analytics rebuilds. Cynthia uses MCP_MOONSHOTS for the YouTube catalog, transcript search, and sync and embedding jobs. The Cortex agents sit behind these servers on semantic views and Cortex Search services. Even with analyst tools available, money answers on the read path still follow a staff rule.',
+        'This shows which agents use each MCP server and what for. Stephen (Household CFO) and the Grok finance desks use the read server, MCP_HOUSEHOLD_LEDGER_GROK. household_finance_agent covers spending, cash flow, balances, documents and ops search. ledger_ops_agent covers freshness and warehouse health. Analyst and search tools return certified totals and find emails and documents. Cursor and Eta (Household COO) use the write server, MCP_HOUSEHOLD_LEDGER, for the same reads plus Monarch and ledger changes, the Gmail and document pipelines, and analytics rebuilds. Cynthia (Moonshot and architecture advisory) uses MCP_MOONSHOTS for the YouTube catalog, transcript search, and sync and embedding jobs. The Cortex agents sit behind these servers on semantic views and Cortex Search services. Even with analyst tools available, money answers on the read path still follow a staff rule.',
       caption:
-        'Grok uses the read server, Cursor and Eta the write server, and Cynthia the Moonshots server. Each line shows the agent, its server and what that access is for.',
+        'Grok uses the read server, Cursor and Eta (Household COO) the write server, and Cynthia (Moonshot and architecture advisory) the Moonshots server. Each line shows the agent, its server and what that access is for.',
       rows: [
         {
           name: 'Grok finance desks',
@@ -473,12 +473,12 @@ export const COPY = {
           status: 'Read',
         },
         {
-          name: 'Cursor / Eta',
+          name: 'Cursor / Eta (Household COO)',
           role: '→ MCP_HOUSEHOLD_LEDGER — same read families + monarch/ledger mutate, Gmail/docs pipelines, rebuild_analytics',
           status: 'Write',
         },
         {
-          name: 'Cynthia (YouTube)',
+          name: 'Cynthia (Moonshot and architecture advisory)',
           role: '→ MCP_MOONSHOTS — catalog get/list, transcript/video search, youtube_sync / embed / CS refresh',
           status: 'Domain',
         },
@@ -758,13 +758,13 @@ export const DIAG = {
       },
       {
         t: 'MCP_HOUSEHOLD_LEDGER',
-        s: 'Write · Cursor / Eta',
+        s: 'Write · Cursor / Eta (Household COO)',
         families: 'read families + mutate / pipeline procs',
         z: 'agent',
       },
       {
         t: 'MCP_MOONSHOTS',
-        s: 'YouTube · Cynthia',
+        s: 'YouTube · Cynthia (Moonshot advisory)',
         families: 'catalog · search · sync / embed',
         z: 'src',
       },
@@ -772,7 +772,7 @@ export const DIAG = {
     agents: [
       ['household_finance_agent', 'ledger_ops_agent'],
       ['same agents + write procs', 'Cortex AGENT_* behind'],
-      ['Cynthia desk', 'YouTube catalog tools'],
+      ['Cynthia (Moonshot advisory)', 'YouTube catalog tools'],
     ],
   },
   grokbot: {
@@ -786,13 +786,13 @@ export const DIAG = {
         z: 'agent',
       },
       {
-        agent: 'Cursor / Eta',
+        agent: 'Cursor / Eta (Household COO)',
         mcp: 'MCP_HOUSEHOLD_LEDGER',
         use: 'mutate · ingest · rebuild analytics',
         z: 'agent',
       },
       {
-        agent: 'Cynthia',
+        agent: 'Cynthia (Moonshot advisory)',
         mcp: 'MCP_MOONSHOTS',
         use: 'YouTube catalog · transcripts · sync',
         z: 'src',
