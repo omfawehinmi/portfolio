@@ -63,6 +63,19 @@ export default function McpMatrix() {
               ))}
               <th className="is-kind">Kind</th>
             </tr>
+            <tr className="bx-mcpm-users">
+              <th>Used by</th>
+              {M.servers.map((s) => (
+                <th key={s.id} className="is-num">
+                  {s.users.map((u) => (
+                    <span key={u} className="bx-mcpm-pill">
+                      {u}
+                    </span>
+                  ))}
+                </th>
+              ))}
+              <th className="is-kind" />
+            </tr>
           </thead>
           <tbody>
             {M.families.map((f) => {

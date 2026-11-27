@@ -561,17 +561,18 @@ export function dAirflow(D, inst=""){
   const narrow=typeof window!=='undefined'&&window.innerWidth<560;
   const cw=narrow?158:156,gx=22,x0=10;
   const W=narrow?10*2+cw*2+gx-4:x0+cw*3+gx*2+10;
-  const PILL={schedule:{c:'#0f7a4c',f:'#ecfdf3',s:'#abefc6'},'parent DAG':{c:'#175cd3',f:'#eff8ff',s:'#b2ddff'},Mondays:{c:'#b54708',f:'#fffaeb',s:'#fedf89'},other:{c:LIAM.schema,f:'#fff',s:LIAM.border}};
+  const PILL={schedule:{c:'#0f7a4c',f:'#ecfdf3',s:'#abefc6'},'parent DAG':{c:'#175cd3',f:'#eff8ff',s:'#b2ddff'},'window step':{c:'#175cd3',f:'#f5faff',s:'#d1e9ff'},Mondays:{c:'#b54708',f:'#fffaeb',s:'#fedf89'},Paused:{c:'#b54708',f:'#fffaeb',s:'#fedf89'},other:{c:LIAM.schema,f:'#fff',s:LIAM.border}};
   const tsz=8.8,ssz=7.8,psz=7,lh=1.25;
   const by=Object.fromEntries(A.dags.map((d)=>[d.id,d]));
-  const col=(d)=>{if(narrow)return d.after?1:0;if(d.lane==='ledger')return d.after?1:0;return d.after?2:d.at==='07:15'?1:0};
+  const col=(d)=>narrow?(d.ncol??0):(d.col??0);
   const cx=(c)=>narrow?10+c*(cw+gx-4):x0+c*(cw+gx);
   const pillW=(t)=>meas(t,psz,600)/0.9+12;
   const lay=(d)=>{const tl=wrapW(d.id.replace(/_/g,'_\u200b'),cw-18,tsz,600).map((l)=>l.replace(/\u200b/g,''));
-    const sl=[d.trigger==='schedule'?(d.at==='hourly'?'every hour':`${d.at} ET · ${d.by}`):`from ${d.by}`,`→ ${d.writes}`];return {d,tl,sl,h:10+tl.length*tsz*lh+sl.length*ssz*lh+20}};
-  const card=(x,y,c)=>{const d=c.d;const hero=!d.after;let g='',ty=y+7;
+    const sub={schedule:`${d.at} ET · ${d.by}`,'parent DAG':`from ${d.by}`,'window step':`step in ${d.by}`}[d.trigger]??d.by;
+    const sl=[...wrapW(sub,cw-18,ssz,400),`→ ${d.writes}`];return {d,tl,sl,h:10+tl.length*tsz*lh+sl.length*ssz*lh+20}};
+  const card=(x,y,c)=>{const d=c.d;const hero=d.trigger==='schedule'&&!d.quiet;let g='',ty=y+7;
     c.tl.forEach((l)=>{g+=T(x+9,ty+tsz*lh/2,l,{sz:tsz,w:600,a:'start',c:LIAM.ink});ty+=tsz*lh});
-    c.sl.forEach((l,k)=>{g+=T(x+9,ty+ssz*lh/2,l,{sz:ssz,a:'start',c:k?LIAM.schema:LIAM.ink,mono:k===0});ty+=ssz*lh});
+    c.sl.forEach((l,k)=>{const last=k===c.sl.length-1;g+=T(x+9,ty+ssz*lh/2,l,{sz:ssz,a:'start',c:last?LIAM.schema:LIAM.ink,mono:!last});ty+=ssz*lh});
     let px=x+9;[[d.trigger,PILL[d.trigger]||PILL.other],[d.runs,PILL[d.runs]||PILL.other]].forEach(([t,P])=>{const w=pillW(t);g+=`<rect x="${px}" y="${ty+4}" width="${w}" height="13" rx="6.5" fill="${P.f}" stroke="${P.s}"/>`+T(px+w/2,ty+10.9,t,{sz:psz,w:600,c:P.c});px+=w+4});
     const h=c.h;
     return `<g class="nd" tabindex="0" role="button" data-node="${esc(d.id)}" data-b="${x},${y},${cw},${h},9,7" data-shape="box"><g class="nd-face" filter="url(#${ID}sh)"><rect x="${x}" y="${y}" width="${cw}" height="${h}" rx="8" fill="${hero?'#f4fbf7':'#fff'}" stroke="${hero?LIAM.green:LIAM.border}" stroke-width="${hero?1.4:1}"/></g>${g}${platformBadge(x,y,cw,h,d.logo)}</g>`};
@@ -587,11 +588,10 @@ export function dAirflow(D, inst=""){
     o+=lab;
     const stack={};let bottom=top;
     dags.forEach((d)=>{const c=col(d);const yy=stack[c]??top;pos[d.id]={x:cx(c),y:yy,h:C2[d.id].h};o+=card(cx(c),yy,C2[d.id]);stack[c]=yy+C2[d.id].h+8;bottom=Math.max(bottom,yy+C2[d.id].h)});
-    if(L.id==='none'&&!narrow){const p0=pos.drive_poll;const ty=p0.y+p0.h/2;for(let k=0;k<6;k++){const tx=cx(1)+k*((W-10-cx(1))/5);o+=`<circle cx="${tx}" cy="${ty}" r="3.4" fill="#fff" stroke="${LIAM.green}" stroke-width="1.3"/>`}
-      o+=T(cx(1),ty-10,'every hour',{sz:7.4,a:'start',c:LIAM.schema})}
     y=bottom+18});
   A.dags.filter((d)=>d.after).forEach((d)=>{const p=pos[by[d.after].id],q=pos[d.id];
-    if(Math.abs((p.y)-(q.y))<2&&q.x>p.x)a+=arrow(`M${p.x+cw},${p.y+p.h/2} H${q.x-3}`,'c');
+    if(q.x===p.x)a+=arrow(`M${p.x+cw/2},${p.y+p.h} V${q.y-3}`,'c');
+    else if(Math.abs((p.y)-(q.y))<2&&q.x>p.x)a+=arrow(`M${p.x+cw},${p.y+p.h/2} H${q.x-3}`,'c');
     else if(q.y<p.y+p.h&&q.x>p.x){const mx=p.x+cw+gx/2;a+=arrow(`M${p.x+cw},${p.y+p.h/2} H${mx} V${q.y+q.h/2} H${q.x-3}`,'c')}
     else{const sx=p.x+cw/2+(narrow?0:30);a+=arrow(`M${sx},${p.y+p.h} V${q.y+q.h/2} H${q.x-3}`,'c')}});
   return svg(W,y-8,A.title,a+o)};

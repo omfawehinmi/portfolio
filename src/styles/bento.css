@@ -1432,6 +1432,12 @@ dialog.project-dialog.bx-dialog.bx-dialog--erd-full .bx-fig-big:has(.bx-arch--li
   max-height: min(38rem, 72vh);
 }
 
+.bx-tile.bx-t-airflow.is-expanded .bx-fig svg {
+  max-width: 54rem;
+  max-height: none;
+  margin-inline: auto;
+}
+
 .bx-tile.is-expanded .bx-panel-body {
   margin-top: 0.75rem;
 }
@@ -1763,6 +1769,13 @@ dialog.project-dialog.bx-dialog.bx-dialog--erd-full .bx-fig-big:has(.bx-arch--li
   padding: 0.4rem 0.5rem;
   border-bottom: 1px solid #e2e5eb;
   background: #f9fafb;
+}
+
+.bx-mcpm-users th .bx-mcpm-pill {
+  display: inline-block;
+  margin: 0.1rem 0.15rem;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 .bx-mcpm-table th small {
