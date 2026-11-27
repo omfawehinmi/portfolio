@@ -134,6 +134,28 @@
   }
 }
 
+/* Wide screens: rail stays expanded in the left gutter; tiles only shift when the gutter is too narrow for it. */
+@media (min-width: 1440px) {
+  .bx-with-rail {
+    --bx-rail-open: 10.5rem;
+    /* 11.75rem clears the open rail plus a 1.5rem gap, net of the container's own 1rem padding. */
+    padding-left: max(var(--bx-rail-width), min(11.75rem, calc(23.5rem + 1200px - 100%)));
+  }
+
+  .bx-rail__list,
+  .bx-rail__list:hover,
+  .bx-rail__list:focus-within {
+    width: var(--bx-rail-open);
+    background: none;
+    box-shadow: none;
+  }
+
+  .bx-rail__label {
+    opacity: 1;
+    white-space: normal;
+  }
+}
+
 body:has(dialog.project-dialog[open]) .bx-rail {
   display: none !important;
 }
