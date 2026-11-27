@@ -41,10 +41,6 @@ export const COPY = {
   tiles: [
     {
       id: 'workflow',
-      choices: [
-        { t: 'Merge, apply and deploy are separate gates', d: 'Merging only lands code. Snowflake changes apply from a manual Terraform run, and Airflow changes deploy only from a tagged release pulled onto the PC. A merge alone never reaches production.' },
-        { t: 'An explicit go for risky changes', d: 'Unpausing jobs, granting access and dropping objects each need Michael’s go. Eta (Household COO) relays it, and a plan is not production until then.' },
-      ],
       n: '2',
       title: 'Ship path: one trunk, a release path per platform',
       svg: 'workflow',
@@ -54,7 +50,6 @@ export const COPY = {
     {
       id: 'pipes',
       choices: [
-        { t: 'Office-PC Airflow instead of S3 and Snowpipe', d: 'Snowpipe was planned after a Drive token failure, then dropped. Documents come in through drive_poll and doc_extract on the office PC. S3 stays a future option.' },
         { t: 'Local OCR instead of Cortex', d: 'doc_extract reads text with pypdf, then Tesseract, so reading a document never spends Cortex credits.' },
         { t: 'One morning load window', d: 'INGEST_WH wakes once at 07:15 ET for every feed and suspends when the window ends, instead of waking for each feed.' },
       ],
@@ -67,9 +62,8 @@ export const COPY = {
     {
       id: 'airflow',
       choices: [
-        { t: 'Airflow instead of Snowflake tasks', d: 'Scheduling moved off Snowflake tasks for cost and control. Five old CTRL tasks were dropped, and their work now runs as Airflow DAGs.' },
-        { t: 'Drive polling on the load window', d: 'drive_poll went from every 15 minutes to hourly, then onto the 07:15 ET window, so new documents share the one INGEST_WH wake instead of starting their own.' },
-        { t: 'One deploy path', d: 'A pinned release tag plus a pull on the PC is the only way code reaches the running Airflow.' },
+        { t: 'Airflow instead of Snowflake tasks', d: 'Scheduling runs as Airflow DAGs instead of Snowflake tasks, which keeps warehouse time down.' },
+        { t: 'Drive polling on the load window', d: 'drive_poll runs on the 07:15 ET window, so new documents share the one INGEST_WH wake instead of starting their own.' },
       ],
       n: '4',
       title: 'Airflow: the production DAGs',
@@ -79,10 +73,6 @@ export const COPY = {
     },
     {
       id: 'dbt',
-      choices: [
-        { t: 'RAW and CORE in one pass', d: 'Several procedures write RAW and CORE in the same call, so CORE is not only a later rebuild of RAW.' },
-        { t: 'Cosmos on one DAG only', d: 'Astronomer Cosmos turns dbt into one Airflow task per model, but only dbt_daily uses it. The daily ledger chain calls dbt directly.' },
-      ],
       n: '5',
       title: 'dbt: layers and what starts them',
       svg: 'dbt',
@@ -91,11 +81,6 @@ export const COPY = {
     },
     {
       id: 'terraform',
-      choices: [
-        { t: 'One state for dev and prod', d: 'Dev and prod Snowflake resources share one Terraform state, so one plan shows both and the zero-destroy guard covers both.' },
-        { t: 'Containers in Terraform, logic with the loaders', d: 'Terraform owns databases, schemas, roles, grants, warehouses, monitors and policies. Procedures and tasks stay with the loaders that run them.' },
-        { t: 'Apply is a separate, manual step', d: 'Merging never applies. A manual run on main re-plans, re-runs the guard, and applies only after Michael’s go.' },
-      ],
       n: '6',
       title: 'Terraform: Snowflake infrastructure and recovery',
       svg: 'terraform',
@@ -104,10 +89,6 @@ export const COPY = {
     },
     {
       id: 'domains',
-      choices: [
-        { t: 'One database per product, not per layer', d: 'Each product area gets its own database, and RAW, CORE and ANALYTICS live as schemas inside it.' },
-        { t: 'CONTROL stands on its own', d: 'Shared procedures, queues, flags and tests sit in their own CONTROL database instead of inside any one product.' },
-      ],
       n: '6',
       title: 'Databases: columns, tables, modeling',
       svg: 'erd',
@@ -204,11 +185,6 @@ export const COPY = {
     },
     {
       id: 'mcp',
-      choices: [
-        { t: 'Separate read and write servers', d: 'Grok desks get a read-only server. Changes go through a different server that only exposes approved procedures.' },
-        { t: 'Writes go through one desk', d: 'Among staff, Eta (Household COO) calls the write tools on MCP_HOUSEHOLD_LEDGER. Other bots may see them, but their instructions forbid using them.' },
-        { t: 'YouTube kept apart from money', d: 'Cynthia (Moonshot and architecture advisory) uses MCP_MOONSHOTS, a separate catalog from the household ledger.' },
-      ],
       n: '7',
       title: 'MCP servers, agents, and tools',
       svg: 'mcp',
@@ -253,7 +229,7 @@ export const COPY = {
         { t: 'Batch warehouse work', d: 'Every desk follows one standard: wake a warehouse once for a batch of work, skip row-by-row inserts, and tag every query.' },
         { t: 'A separate warehouse for bot questions', d: 'Grok service users default to GROK_WH under its own RM_GROK monitor, so a question from a bot never wakes the ledger warehouse.' },
         { t: 'CI results in one insert', d: 'CI test results are written in one INSERT per run instead of one per test.' },
-        { t: 'No extra ledger warehouse for now', d: 'The team decided not to split LEDGER_WH into a separate warehouse yet.' },
+        { t: 'One ledger warehouse', d: 'LEDGER_WH is not split into a second warehouse yet, so ledger work still wakes and bills a single warehouse.' },
       ],
       n: '8',
       title: 'Roles, warehouses & cost',
@@ -263,11 +239,6 @@ export const COPY = {
     },
     {
       id: 'grokbot',
-      choices: [
-        { t: 'One voice for money', d: 'Stephen (Household CFO) is the only bot that answers money and spend questions. Other desks route those questions to him.' },
-        { t: 'Approvals are relayed, not assumed', d: 'Eta (Household COO) speaks for Michael when she relays a go. Without that go, a plan stays a plan.' },
-        { t: 'Cortex agents are not Grok bots', d: 'AGENT_HOUSEHOLD_FINANCE, AGENT_HOUSEHOLD_FINANCE_RO and AGENT_LEDGER_OPS are Cortex agents defined in SQL, separate from the Grok bot staff.' },
-      ],
       n: '9',
       title: 'Grokbot architecture, agents per MCP',
       svg: 'grokbot',
