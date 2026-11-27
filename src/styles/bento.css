@@ -1608,6 +1608,7 @@ dialog.project-dialog.bx-dialog.bx-dialog--erd-full .bx-fig-big:has(.bx-arch--li
 .bx-tile.is-expanded .bx-fig--erd .bx-svg,
 .bx-tile.is-expanded .bx-fig--erd svg.bx-arch--liam {
   width: 100%;
+  min-width: 1060px;
   max-height: none;
   height: auto;
 }

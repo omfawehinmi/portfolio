@@ -379,6 +379,7 @@ export function dWorkflow(D, inst="", platformId){
   return svg(W,y,`${Wf.title}: ${P.label}`,a+o)};
 
 /** Preferred schema column order for popup ERDs (scroll/fit by schema). */
+const ERD_COLS=5;
 const SCHEMA_COL_ORDER=['RAW','STAGING','INTERMEDIATE','CORE','AGENTS','CONVERSATIONS','GRAPH','CAPTURE','ANALYTICS','AI','CTRL','PROC','QUEUE','STAGE','FLAGS','TASKS','MCP','SECURITY','TESTS','TRANSFORM','PUBLIC'];
 
 /** Collapsed Databases tile: every table of the selected database as name chips in one lane per schema. */
@@ -442,18 +443,23 @@ export function dDatabase(D, dbId, inst=""){
     const order=[...SCHEMA_COL_ORDER.filter((s)=>bySchema[s]), ...Object.keys(bySchema).filter((s)=>!SCHEMA_COL_ORDER.includes(s)).sort()];
     laid=[]; schemaLabels=[];
     // Leave room under title+subtitle so schema header chips don't cover the lede
-    const headerY=48;
-    const colTop=headerY+12;
-    order.forEach((schema, ci)=>{
-      const x=16+ci*(cardW+gapX);
-      schemaLabels.push({schema, x, y:headerY});
-      let y=colTop;
-      bySchema[schema].forEach((t)=>{
-        const h=headH+t.cols.length*rowH+4;
-        laid.push({...t, x, y, w:cardW});
-        y+=h+gapY;
+    // Five schema columns per band keeps every database at the same viewBox width, so table cards render at one size.
+    let headerY=48;
+    for(let b=0;b<order.length;b+=ERD_COLS){
+      let bandBottom=headerY+12;
+      order.slice(b,b+ERD_COLS).forEach((schema, ci)=>{
+        const x=16+ci*(cardW+gapX);
+        schemaLabels.push({schema, x, y:headerY});
+        let y=headerY+12;
+        bySchema[schema].forEach((t)=>{
+          const h=headH+t.cols.length*rowH+4;
+          laid.push({...t, x, y, w:cardW});
+          y+=h+gapY;
+        });
+        bandBottom=Math.max(bandBottom,y);
       });
-    });
+      headerY=bandBottom+24;
+    }
   }
   const tables={}; let maxX=0,maxY=0; let o='',a='';
   o+=T(16,isTile?18:14,model.title,{sz:isTile?12:12,w:600,a:'start',c:LIAM.ink});
@@ -536,7 +542,7 @@ export function dDatabase(D, dbId, inst=""){
   o+=T(32,legendY,'PK',{sz:9,c:LIAM.schema,a:'start'});
   o+=`<path d="M58,${legendY-3} h6 a3.2,3.2 0 0 1 0,6 h-3" fill="none" stroke="${LIAM.green}" stroke-width="1.25"/>`;
   o+=T(80,legendY,'FK',{sz:9,c:LIAM.schema,a:'start'});
-  const fullW=Math.max(isTile?720:maxX+24, maxX+20);
+  const fullW=isTile?Math.max(720,maxX+20):16+ERD_COLS*(cardW+gapX)-gapX+24;
   const fullH=legendY+16;
   // Tile returns compact viewBox matching card thumbnail (original size - not an enlarged clip)
   return svg(fullW,fullH,`${model.title} ERD`,a+o,'bx-arch--liam')};
