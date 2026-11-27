@@ -804,8 +804,13 @@ p.bx-subhead {
   .bx-t-workflow,
   .bx-t-pipes,
   .bx-t-grokbot,
+  .bx-t-infra,
   .bx-t-security {
     grid-column: span 6;
+  }
+
+  .bx-grid > .bx-t-security:not(.is-expanded) {
+    grid-row: span 2;
   }
 
   .bx-t-airflow,
@@ -818,6 +823,7 @@ p.bx-subhead {
 
   .bx-t-pipes .project-tile__outcome:not(.is-clamped),
   .bx-t-security .project-tile__outcome:not(.is-clamped),
+  .bx-t-infra .project-tile__outcome:not(.is-clamped),
   .bx-t-airflow .project-tile__outcome:not(.is-clamped),
   .bx-t-dbt .project-tile__outcome:not(.is-clamped),
   .bx-t-workflow .project-tile__outcome:not(.is-clamped),
@@ -869,6 +875,7 @@ p.bx-subhead {
   }
 
   .bx-t-security .bx-fig svg,
+  .bx-t-infra .bx-fig svg,
   .bx-t-grokbot .bx-fig svg {
     max-height: none;
   }
@@ -1463,7 +1470,8 @@ dialog.project-dialog.bx-dialog.bx-dialog--erd-full .bx-fig-big:has(.bx-arch--li
   margin-inline: auto;
 }
 
-.bx-tile.bx-t-security.is-expanded .bx-fig svg {
+.bx-tile.bx-t-security.is-expanded .bx-fig svg,
+.bx-tile.bx-t-infra.is-expanded .bx-fig svg {
   max-width: 60rem;
   max-height: none;
   margin-inline: auto;

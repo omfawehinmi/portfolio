@@ -8,6 +8,7 @@ import {
   dDatabaseLanes,
   dDbt,
   dGrokbot,
+  dInfra,
   dLead,
   dMcp,
   dPipes,
@@ -28,6 +29,7 @@ const builders = {
   dbt: (_tall, inst) => dDbt(DIAG, inst),
   pipes: (_tall, inst) => dPipes(DIAG, inst),
   security: (_tall, inst) => dSec(DIAG, inst),
+  infra: (_tall, inst) => dInfra(DIAG, inst),
   grokbot: (_tall, inst) => dGrokbot(DIAG, inst),
   rearch: (_tall, inst) => dRearch(inst),
 }

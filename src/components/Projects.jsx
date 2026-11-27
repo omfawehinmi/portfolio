@@ -18,6 +18,7 @@ const PROJECT_RAIL = [
   { id: 'domains', label: 'DBs · tables · models' },
   { id: 'mcp', label: 'MCP · agents · tools' },
   { id: 'security', label: 'Roles · WH · cost' },
+  { id: 'infra', label: 'Security · access' },
   { id: 'grokbot', label: 'Grokbot · per MCP' },
   { id: 'more', label: 'More work' },
 ]
@@ -31,6 +32,7 @@ const KICKERS = {
   terraform: 'Infrastructure · apply · recovery',
   pipes: 'Source feeds → schemas',
   security: 'Roles · warehouses · cost',
+  infra: 'Network · identity · secrets',
   grokbot: 'Agents per MCP server',
 }
 
@@ -76,6 +78,7 @@ const OPEN_ALIASES = {
   terraform: 'terraform',
   pipes: 'pipes',
   security: 'security',
+  infra: 'infra',
   grokbot: 'grokbot',
   stack: 'mcp',
   mychart: 'domains',
@@ -435,7 +438,7 @@ function TileFigure({ tile, tall, inst, ship, onShip, dbId, big = false }) {
 function ArchitectureTile({ tile, onOpen, tall, expanded }) {
   const [ship, setShip] = useState(DIAG.workflow.platforms[0].id)
   const [dbId, setDbId] = useState(tile.databases?.[0]?.id || null)
-  const diagramFirst = tile.id === 'grokbot' || tile.id === 'security'
+  const diagramFirst = tile.id === 'grokbot' || tile.id === 'security' || tile.id === 'infra'
   const isHero = tile.id === 'mcp' || tile.id === 'domains' || tile.id === 'grokbot'
   return (
     <article

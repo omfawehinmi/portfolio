@@ -295,6 +295,20 @@ export function dPipes(D, inst=""){
  a+=arrow('M378,106 H384 Q388,106 388,110 V225 Q388,229 384,229 H378','c')+arrow(`M294,${132+oc.h} V208`,'c')+arrow('M232,227 H220','c')+arrow('M140,229 H128','c')+arrow('M78,229 H44','c');
  return svg(W,H,Pp.title,a+o)};
 
+// 6. Security and infrastructure: one row per layer, four cards across.
+export function dInfra(D, inst=""){
+  begin(true,inst);setDensity(1);ID='si'+inst;const S=D.infra;let o='';
+  const narrow=typeof window!=='undefined'&&window.innerWidth<560;
+  const W=narrow?350:560,pad=10,gap=8,n=narrow?2:4,w=(W-2*pad-gap*(n-1))/n,op={tsz:8.6,ssz:7.5};
+  let y=4;
+  S.layers.forEach((L,i)=>{
+    if(i)o+=`<line x1="${pad}" y1="${y-6}" x2="${W-pad}" y2="${y-6}" stroke="${LIAM.border}" stroke-dasharray="3 3"/>`;
+    o+=lab(pad,y+5,L.label);y+=14;
+    for(let k=0;k<L.cards.length;k+=n){const set=L.cards.slice(k,k+n);const h=4+Math.max(...set.map((c)=>lcard(0,0,w,c,op).h));
+      set.forEach((c,m)=>o+=lcard(pad+m*(w+gap),y,w,c,{...op,h}).g);y+=h+gap}
+    y+=12});
+  return svg(W,y-16,S.title,o)};
+
 // 5. Roles, warehouses and cost: account-wide caps, then one lane per warehouse grouped by kind of work.
 export function dSec(D, inst=""){
   begin(true,inst);setDensity(1);ID='s'+inst;const S=D.security;let o='',a='';
@@ -599,7 +613,7 @@ export function dAirflow(D, inst=""){
   return svg(W,y-8,A.title,a+o)};
 
 /** Left-aligned card (Ship path style) with optional pill and platform badge; returns {g,h}. */
-const PILLS={gate:{c:'#b54708',f:'#fffaeb',s:'#fedf89'},ok:{c:'#0f7a4c',f:'#ecfdf3',s:'#abefc6'},plain:{c:LIAM.schema,f:'#fff',s:LIAM.border},red:{c:'#b42318',f:'#fef3f2',s:'#fecdca'}};
+const PILLS={gate:{c:'#b54708',f:'#fffaeb',s:'#fedf89'},ok:{c:'#0f7a4c',f:'#ecfdf3',s:'#abefc6'},plain:{c:LIAM.schema,f:'#fff',s:LIAM.border},red:{c:'#b42318',f:'#fef3f2',s:'#fecdca'},blue:{c:'#175cd3',f:'#eff8ff',s:'#b2ddff'}};
 const lcard=(x,y,w,c,o={})=>{const tsz=o.tsz||9.2,ssz=o.ssz||8,lh=1.25;const rsv=badgeReserve(c.logo);
   const tl=wrapW(c.t,w-18-rsv,tsz,600),sl=c.s?wrapW(c.s,w-18-rsv,ssz,400):[];
   const pills=c.pills||(c.gate?[{t:c.gate,k:'gate'}]:c.target?[{t:c.target,k:'ok'}]:[]);

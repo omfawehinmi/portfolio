@@ -223,8 +223,16 @@ export const COPY = {
         'Each kind of work gets its own warehouse, so cost stays easy to see and easy to cap. Eight warehouses run today. LEDGER_WH runs the morning dbt builds for R_PIPELINE. INGEST_WH wakes once at 07:15 ET for the Airflow loads under R_PC_PIPELINE, and YT_SYNC_WH runs the YouTube sync under the same role. GROK_WH is the default for the Grok bots, so a question from a bot never wakes the ledger warehouse, and ADHOC_WH holds my own ad-hoc queries. CI_WH takes test results from GitHub Actions, TF_WH runs Terraform, and DEV_MIGRATION_WH serves the dev twins only. Each one sleeps within a minute of going idle and has its own resource monitor with a monthly quota. Account-wide caps sit on top: an account monitor over every warehouse, a root budget, a Cortex AI budget that cuts off agent access at 100%, and a budget on the ingest search services. Monitors only cap warehouse compute, so the budgets are what hold serverless Cortex. People and bots reach data through MCP servers, never an open warehouse login. The table lists every role and what it is for.',
     },
     {
-      id: 'grokbot',
+      id: 'infra',
       n: '9',
+      title: 'Security & infrastructure',
+      svg: 'infra',
+      body:
+        'Every connection into Snowflake leaves through one WireGuard tunnel on a small Lightsail server, so the account only has to trust a single static address. I am the only person with a password login, and it requires MFA. Airflow signs in with a key pair, the Grok bots use access tokens locked to one role, and a key-only break-glass user covers the day the tunnel is down. Going out, four external access integrations each pair a host allow list with the secrets that call needs, so a procedure can reach Monarch, Gmail, YouTube or a price feed and nothing else. Secrets live in Snowflake, AWS Secrets Manager and encrypted Airflow connections, never in code. A daily check watches for a changed address, blocked logins and any break-glass use.',
+    },
+    {
+      id: 'grokbot',
+      n: '10',
       title: 'Grokbot architecture, agents per MCP',
       svg: 'grokbot',
       body:
@@ -454,6 +462,41 @@ export const DIAG = {
         ['R_DEV_PIPELINE', 'Dev pipelines into the _DEV databases', 'DEV_MIGRATION_WH'],
         ['R_AW_DESKS_READ_DEV', 'Dev agent workforce analytics', 'DEV_MIGRATION_WH'],
         ['R_TEST_RESULTS_READ_DEV', 'Dev test results', 'Not set'],
+      ] },
+    ],
+  },
+  infra: {
+    title: 'Security and infrastructure by layer: network, identity and MFA, secrets, outbound access and detection',
+    layers: [
+      { label: 'Network', cards: [
+        { t: 'WireGuard tunnel', s: 'every connection leaves through it', hero: true },
+        { t: 'Lightsail egress', s: 'one static address, in its own AWS account' },
+        { t: 'Network policy', s: 'trusts the one tunnel address', pills: [{ t: 'NP_LEDGER_OPEN', k: 'ok' }] },
+        { t: 'Break-glass policy', s: 'user-level, so it can never be locked out', pills: [{ t: 'NP_BREAKGLASS', k: 'ok' }] },
+      ] },
+      { label: 'Identity and MFA', cards: [
+        { t: 'Michael', s: 'the only password login', pills: [{ t: 'password + MFA', k: 'gate' }] },
+        { t: 'Airflow', s: 'refuses admin roles', pills: [{ t: 'key pair', k: 'ok' }] },
+        { t: 'Grok bots', s: 'one token per service user', pills: [{ t: 'role-locked token', k: 'ok' }, { t: '90 days', k: 'plain' }] },
+        { t: 'Break-glass admin', s: 'no password, no default warehouse', pills: [{ t: 'key only', k: 'ok' }] },
+      ] },
+      { label: 'Secrets', cards: [
+        { t: 'Snowflake secrets', s: 'SECRET objects in CTRL' },
+        { t: 'AWS Secrets Manager', s: 'sign-in, break-glass and tunnel keys' },
+        { t: 'Airflow connections', s: 'Fernet-encrypted' },
+        { t: 'Terraform', s: 'no secrets in code' },
+      ] },
+      { label: 'Outbound access', cards: [
+        { t: 'EAI_MONARCH', pills: [{ t: 'NR_MONARCH_API', k: 'blue' }, { t: 'SEC_MONARCH_TOKEN', k: 'plain' }] },
+        { t: 'EAI_GMAIL', pills: [{ t: 'NR_GMAIL_API', k: 'blue' }, { t: '4 secrets', k: 'plain' }] },
+        { t: 'EAI_MOONSHOTS_YOUTUBE', pills: [{ t: 'NR_YOUTUBE_API', k: 'blue' }, { t: '2 secrets', k: 'plain' }] },
+        { t: 'EAI_MARKET_DATA', pills: [{ t: 'NR_MARKET_DATA', k: 'blue' }, { t: 'no secret', k: 'plain' }] },
+      ] },
+      { label: 'Detection', cards: [
+        { t: 'np_public_ip_check', s: 'flags a changed public address', pills: [{ t: '07:15 ET', k: 'plain' }] },
+        { t: 'np_login_watch', s: 'blocked logins and any break-glass login', pills: [{ t: 'alerts', k: 'red' }] },
+        { t: 'Dev twin', s: 'EAI_GMAIL_DEV, outbound procedures off' },
+        { t: 'Rejected', s: 'a PC job editing the allow list, since it needs an admin key on the desktop' },
       ] },
     ],
   },
