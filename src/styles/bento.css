@@ -222,6 +222,13 @@ body:has(dialog.project-dialog[open]) .bx-rail {
   cursor: pointer;
 }
 
+/* Keep the expand glyph even if Unicons attribute selectors miss the class order. */
+.bx-open .uil:before {
+  font-family: 'unicons-line';
+  speak: none;
+  display: inline-block;
+}
+
 .bx-tile:hover .bx-open,
 .bx-tile:focus-visible .bx-open {
   background: #29b5e8;
