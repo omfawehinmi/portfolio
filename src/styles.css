@@ -1202,7 +1202,7 @@ img {
   color: #FFF;
 }
 
-/* Show scroll — clear mobile bottom nav. */
+/* Show scroll - clear mobile bottom nav. */
 .show-scroll {
   bottom: 5.5rem;
 }
@@ -1882,7 +1882,7 @@ h1, h2, h3, h4 {
   color: #fff;
 }
 
-/* 14. Scroll-to-top button — keep fixed size so it stays in the reserved gutter */
+/* 14. Scroll-to-top button - keep fixed size so it stays in the reserved gutter */
 .scrollup {
   border-radius: 0.45rem;
   padding: 0;

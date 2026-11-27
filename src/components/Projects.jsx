@@ -7,7 +7,7 @@ import { PLATFORM } from './diagrams/architectureSvg.js'
 import Icon from './ui/Icon.jsx'
 import SectionHeader from './ui/SectionHeader.jsx'
 
-/** Left jump rail: labeled anchors — names mirror what each block captures. */
+/** Left jump rail: labeled anchors - names mirror what each block captures. */
 const PROJECT_RAIL = [
   { id: 'lead', label: 'Household Snowflake + MCP' },
   { id: 'workflow', label: 'CI / CD ship path' },
@@ -38,7 +38,7 @@ const MORE_PREVIEW = {
   'hr-intelligence': { src: publicUrl('assets/img/bento/hr-intelligence.jpg'), sample: false },
   myorglab: { src: publicUrl('assets/img/bento/myorglab.jpg'), sample: false },
   'sof-portal': { src: publicUrl('assets/img/bento/sof-portal.jpg'), sample: true },
-  /* Full assembly still + Blender punch clip (repo assets — not the cropped bento crop alone). */
+  /* Full assembly still + Blender punch clip (repo assets - not the cropped bento crop alone). */
   palms: {
     src: publicUrl('assets/img/palms-punch.png'),
     sample: false,
@@ -670,7 +670,7 @@ function DomainsPanel({ tile, tall, dbId, setDbId }) {
         <ArchitectureDiagram kind="domains" tall={tall} inst="open" dbId={active?.id} />
         <figcaption>{active ? `${active.name}: ${active.oneLine}` : tile.caption}</figcaption>
       </figure>
-      {/* ERD + short oneLine caption only — no long detail/body dump */}
+      {/* ERD + short oneLine caption only - no long detail/body dump */}
     </div>
   )
 }
@@ -756,7 +756,7 @@ export default function Projects({ openId, onOpen }) {
     <section className="projects section" id="projects">
       <SectionHeader title={COPY.section.title} subtitle={COPY.section.kicker} />
 
-      {/* Rail padding applies only to this shell — title stays flush above content. */}
+      {/* Rail padding applies only to this shell - title stays flush above content. */}
       <div className="bx-with-rail">
         {railVisible ? <ProjectsJumpRail items={PROJECT_RAIL} activeId={activeRail} /> : null}
 

@@ -2,11 +2,11 @@ import { ERD_MODELS } from '../../data/erdModels.js'
 
 // Flat architecture diagrams. Object names are real structural names from the
 // platform repos (see README SOURCES). Do not invent names.
-// Visual language: Liam ERD Style A (green accent) for ALL diagrams — process
+// Visual language: Liam ERD Style A (green accent) for ALL diagrams - process
 // flows and ERDs share chrome (white cards, soft shadows, gray borders, green
 // accent). Process flows keep flow structure (not table/column ERD layout).
 // Light-mode only. Page chrome / cards / nav stay on site tokens.
-/* Liam Style A — shared by process flows + ERDs */
+/* Liam Style A - shared by process flows + ERDs */
 const LIAM={
   green:'#12b76a',
   soft:'rgba(18,183,106,0.12)',
@@ -62,7 +62,7 @@ const defs=()=>`<defs><filter id="${ID}sh" x="-50%" y="-50%" width="200%" height
  <marker id="${ID}w" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1.5,1.5 L8.5,5 L1.5,8.5 Z" fill="${LIAM.ink}"/></marker></defs>`;
 // kinds: default Liam gray, 'c' green accent path, 'w' write path (ink, dashed), 'd' dashed grey
 const arrow=(d,k)=>{const col=k==='c'?LIAM.green:k==='w'?LIAM.ink:LIAM.conn;return `<path class="edge" d="${d}" fill="none" stroke="${col}" stroke-width="${COMPACT?1.15:1.35}"${k==='w'||k==='d'?' stroke-dasharray="4 3.5"':''} stroke-linecap="round" stroke-linejoin="round" marker-end="url(#${ID}${k==='c'?'c':k==='w'?'w':'a'})"/>`};
-// Transparent canvas — card color shows through; no bordered diagram panel.
+// Transparent canvas - card color shows through; no bordered diagram panel.
 const panel=(W,H)=>`<rect x="0" y="0" width="${W}" height="${H}" fill="${C.panel}" stroke="none"/>`;
 const group=(x,y,w,h,t,o={})=>{const z=o.z?Z[o.z]:null;return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${COMPACT?6:8}" fill="${o.fill||'none'}" stroke="${z?z.s:o.grey?C.line:C.line}" stroke-width="1.15" stroke-dasharray="${o.solid?'0':'3.5 3.5'}"/>`+(t?lab(x+10,y+12,t,z?z.k:o.grey?C.sub:C.accInk):'')};
 const legend=(x,y,keys,maxX=1e9)=>{if(!SHOW_LEGEND)return '';let g='',xx=x;keys.forEach(k=>{const z=Z[k];const iw=15+meas(z.n,fs(8.2),400)/0.9;if(xx>x&&xx+iw>maxX){xx=x;y+=13}g+=`<rect x="${xx}" y="${y-4}" width="9" height="9" rx="2.5" fill="${z.tint||C.tint}" stroke="${z.s}"/>`+T(xx+13,y,z.n,{sz:fs(8.2),c:C.sub,a:'start'});xx+=13+meas(z.n,fs(8.2),400)+14});return g};
@@ -85,7 +85,7 @@ const block=(shape,x,y,w,h,o={})=>{
   const filt=hero?` filter="url(#${ID}shH)"`:` filter="url(#${ID}sh)"`;
   return `<g class="nd-face" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"${o.dash?' stroke-dasharray="3.5 3.5"':''}${filt}>${outline[shape](x,y,w,h)}</g>`;
 };
-/** Official brand logos (company / Simple Icons / press marks) — process-flow BR badges ONLY. Embedded data URIs so SVG <image> always paints. */
+/** Official brand logos (company / Simple Icons / press marks) - process-flow BR badges ONLY. Embedded data URIs so SVG <image> always paints. */
 export const PLATFORM={
   snowflake:{bg:'#E8F7FC', stroke:'#29B5E8', src:'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNjQgNjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjMjliNWU4Ij48cGF0aCBkPSJNOS44NiAxNS4yOThsMTMuMDA4IDcuOGEzLjcyIDMuNzIgMCAwIDAgNC41ODktLjYwMSA0LjAxIDQuMDEgMCAwIDAgMS4yMjctMi45MDhWMy45NTZhMy44MSAzLjgxIDAgMCAwLTEuODYxLTMuNDIgMy44MSAzLjgxIDAgMCAwLTMuODkzIDAgMy44MSAzLjgxIDAgMCAwLTEuODYxIDMuNDJ2OC44OTZsLTcuMzg3LTQuNDNhMy43OSAzLjc5IDAgMCAwLTIuOTIyLS40Yy0uOTg2LjI2NS0xLjgxOC45NC0yLjMgMS44NDQtMS4wNTcgMS45LS40NCA0LjI4IDEuNCA1LjQyMm0zMS4yNyA3LjhsMTMuMDA4LTcuOGMxLjg0LTEuMTQzIDIuNDU4LTMuNTMzIDEuNC01LjQyNGEzLjc1IDMuNzUgMCAwIDAtNS4yMi0xLjQ1MmwtNy4zIDQuMzd2LTguODRhMy44MSAzLjgxIDAgMSAwLTcuNjE1IDB2MTUuMzIzYTQuMDggNC4wOCAwIDAgMCAuNDk0IDIuMzY3Yy40ODIuOTAzIDEuMzE0IDEuNTcgMi4zIDEuODQ0YTMuNzEgMy43MSAwIDAgMCAyLjkyMi0uNE0yOS41NTIgMzEuOTdjLjAxMy0uMjUuMTA4LS41LjI3Mi0uNjhsMS41Mi0xLjU4YTEuMDYgMS4wNiAwIDAgMSAuNjU4LS4yODJoLjA1N2ExLjA1IDEuMDUgMCAwIDEgLjY1Ni4yODJsMS41MiAxLjU4YTEuMTIgMS4xMiAwIDAgMSAuMjcyLjY4MXYuMDZhMS4xMyAxLjEzIDAgMCAxLS4yNzIuNjgzbC0xLjUyIDEuNThhMS4wNCAxLjA0IDAgMCAxLS42NTYuMjg0aC0uMDU3Yy0uMjQ2LS4wMTQtLjQ4LS4xMTUtLjY1OC0uMjg0bC0xLjUyLTEuNThhMS4xMyAxLjEzIDAgMCAxLS4yNzItLjY4M3ptLTQuNjA0LS42NXYxLjM2NGExLjU0IDEuNTQgMCAwIDAgLjM3Mi45M2w1LjE2IDUuMzU3YTEuNDIgMS40MiAwIDAgMCAuODk1LjM4NmgxLjMxMmExLjQyIDEuNDIgMCAwIDAgLjg5NS0uMzg2bDUuMTYtNS4zNTdhMS41NCAxLjU0IDAgMCAwIC4zNzItLjkzVjMxLjMyYTEuNTQgMS41NCAwIDAgMC0uMzcyLS45M2wtNS4xNi01LjM1N2ExLjQyIDEuNDIgMCAwIDAtLjg5NS0uMzg2aC0xLjMxMmExLjQyIDEuNDIgMCAwIDAtLjg5NS4zODZMMjUuMzIgMzAuNGExLjU1IDEuNTUgMCAwIDAtLjM3Mi45M00zLjEzIDI3LjYybDcuMzY1IDQuNDE3TDMuMTMgMzYuNDVhNC4wNiA0LjA2IDAgMCAwLTEuMzk5IDUuNDI0IDMuNzUgMy43NSAwIDAgMCAyLjMgMS44NDRjLjk4Ni4yNzQgMi4wNDIuMTMzIDIuOTIyLS4zOTJsMTMuMDA4LTcuOGMxLjItLjc2MiAxLjktMi4wNzggMS45LTMuNDkyYTQuMTYgNC4xNiAwIDAgMC0xLjktMy40OTJsLTEzLjAwOC03LjhhMy43OSAzLjc5IDAgMCAwLTIuOTIyLS40Yy0uOTg2LjI2NS0xLjgxOC45NC0yLjMgMS44NDQtMS4wNTcgMS45LS40NCA0LjI3OCAxLjQgNS40MjJtMzguOTk1IDQuNDQyYTQgNCAwIDAgMCAxLjkxIDMuNDc3bDEzIDcuOGMuODguNTI0IDEuOTM0LjY2NiAyLjkyLjM5MnMxLjgxNy0uOTQgMi4zLTEuODQzYTQuMDUgNC4wNSAwIDAgMC0xLjQtNS40MjRMNTMuNSAzMi4wMzhsNy4zNjUtNC40MTdjMS44NC0xLjE0MyAyLjQ1Ny0zLjUzIDEuNC01LjQyMmEzLjc0IDMuNzQgMCAwIDAtMi4zLTEuODQ0Yy0uOTg3LS4yNzQtMi4wNDItLjEzNC0yLjkyLjRsLTEzIDcuOGE0IDQgMCAwIDAtMS45MSAzLjUwN00yNS40OCA0MC41MDhhMy43IDMuNyAwIDAgMC0yLjYxMS40NjRsLTEzLjAwOCA3LjhjLTEuODQgMS4xNDMtMi40NTYgMy41My0xLjQgNS40MjIuNDgzLjkwMyAxLjMxNCAxLjU3IDIuMyAxLjg0M2EzLjc1IDMuNzUgMCAwIDAgMi45MjItLjM5Mmw3LjM4Ny00LjQzdjguODNhMy44MSAzLjgxIDAgMSAwIDcuNjE0IDBWNDQuNGEzLjkxIDMuOTEgMCAwIDAtMy4yMDUtMy45MDNtMjguNjYgOC4yNzZsLTEzLjAwOC03LjhhMy43NSAzLjc1IDAgMCAwLTIuOTIyLS4zOTIgMy43NCAzLjc0IDAgMCAwLTIuMyAxLjg0MyA0LjA5IDQuMDkgMCAwIDAtLjQ5NCAyLjM3djE1LjI1YTMuODEgMy44MSAwIDEgMCA3LjYxNCAwVjUxLjI4bDcuMjg3IDQuMzdhMy43OSAzLjc5IDAgMCAwIDIuOTIyLjRjLjk4Ni0uMjY1IDEuODE4LS45NCAyLjMtMS44NDQgMS4wNTctMS45LjQ0LTQuMjgtMS40LTUuNDIyIi8+PC9zdmc+'},
   airflow:{bg:'#E6F4FB', stroke:'#017CEE', src:'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjU2cHgiIGhlaWdodD0iMjU2cHgiIHZpZXdCb3g9IjAgMCAyNTYgMjU2IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgcHJlc2VydmVBc3BlY3RSYXRpbz0ieE1pZFlNaWQiPgogICAgPHRpdGxlPkFpcmZsb3c8L3RpdGxlPgogICAgPGc+CiAgICAgICAgPHBhdGggZD0iTTQuMTI2NjcxNTEsMjU0Ljk3Mzc5NCBMMTI2LjY5NTQ4NSwxMjkuMzM0OTk5IEMxMjcuNDc2MzQ4LDEyOC41NjM0OTggMTI3LjU5MTc4MywxMjcuMzQzMTkgMTI2Ljk2OTQzNSwxMjYuNDM4OTUzIEMxMTkuNTE2MjUsMTE2LjAzMzE5MyAxMDUuNzYyMjA4LDExNC4yMjg2IDEwMC42NjU4NjQsMTA3LjIzNjM0NiBDODUuNTY4MTYyNiw4Ni41MjQ4MzkxIDgxLjczNzIwNzgsNzQuODAxNTA4NCA3NS4yNDkzNzA1LDc1LjUyNzY5MzkgQzc0Ljc5NjU5NzQsNzUuNTkyODM3IDc0LjM4MDI3MjUsNzUuODEyNTIxNCA3NC4wNzA5NDk2LDc2LjE0OTUxNzUgTDI5Ljc5NTM3MzYsMTIxLjUzODI4OCBDNC4zMjIzNTAyNCwxNDcuNjI4Nzg3IDAuNjYwOTgzNjIsMjA1LjEzNjU5NCAwLDI1My4yOTUzMDYgQy0wLjAwNDM3MzIxNzIzLDI1NC4yNzU2NDkgMC41ODc4NDc0MzUsMjU1LjE2MDE0NCAxLjQ5NTk1NTg5LDI1NS41Mjk1MTEgQzIuNDA0MDY0MzQsMjU1Ljg5ODg3OSAzLjQ0NTUzMTg1LDI1NS42Nzg4NzcgNC4xMjY2NzE1MSwyNTQuOTczNzk0IEw0LjEyNjY3MTUxLDI1NC45NzM3OTQgWiIgZmlsbD0iIzAxN0NFRSI+PC9wYXRoPgogICAgICAgIDxwYXRoIGQ9Ik0yNTQuOTczNzY5LDI1MS44NzMzNzMgTDEyOS4zMzQ5NzQsMTI5LjI5NTg2MyBDMTI4LjU2Mjg0MSwxMjguNTEyNjI4IDEyNy4zMzk3MDcsMTI4LjM5NzEgMTI2LjQzNDU4LDEyOS4wMjE5MTMgQzExNi4wMjg4MiwxMzYuNDc5NDQ3IDExNC4yMjQyMjcsMTUwLjIyOTE0IDEwNy4yMzE5NzMsMTU1LjMyNTQ4NCBDODYuNTIwNDY1OCwxNzAuNDIzMTg1IDc0Ljc5NzEzNTIsMTc0LjI1NDE0IDc1LjUyMzMyMDcsMTgwLjc0MTk3OCBDNzUuNTg5NDE4MSwxODEuMTkzMTk3IDc1LjgwOTAyNjUsMTgxLjYwNzg0MiA3Ni4xNDUxNDQyLDE4MS45MTYwNSBMMTIxLjUzMzkxNSwyMjYuMTkxNjI2IEMxNDcuNjI0NDEzLDI1MS42NjQ2NDkgMjA1LjEzMjIyLDI1NS4zMjYwMTYgMjUzLjI5MDkzMiwyNTUuOTg2OTc2IEMyNTQuMjY2MjE4LDI1NS45ODY5NzYgMjU1LjE0NDk2NCwyNTUuMzk4MTY2IDI1NS41MTQyMzksMjU0LjQ5NTQ5MiBDMjU1Ljg4MzUxNSwyNTMuNTkyODE5IDI1NS42Njk4OTgsMjUyLjU1NjQ0NiAyNTQuOTczNzY5LDI1MS44NzMzNzMgTDI1NC45NzM3NjksMjUxLjg3MzM3MyBaIiBmaWxsPSIjMDBBRDQ2Ij48L3BhdGg+CiAgICAgICAgPHBhdGggZD0iTTEyMS41MzM5MTUsMjI2LjIwNDY3MSBDMTA3LjI3MTEwOSwyMTIuMjg5NzM5IDEwMC42NjE1MTYsMTg0Ljc2NDI2MyAxMjcuOTk1NjYyLDEyOC4wMDQzODMgQzgzLjU1OTE5NDIsMTQ3Ljg2MzYwMSA2Ny45ODc1MTUsMTczLjk2NzE0NSA3NS42NDUwNzY0LDE4MS40NDIwNzMgTDEyMS41MzM5MTUsMjI2LjIwNDY3MSBaIiBmaWxsPSIjMDRENjU5Ij48L3BhdGg+CiAgICAgICAgPHBhdGggZD0iTTI1MS44NjksMS4wMzA2MjM4NCBMMTI5LjMwNDUzNSwxMjYuNjY5NDE5IEMxMjguNTIxOTcxLDEyNy40NDAxMTIgMTI4LjQwNjQxNSwxMjguNjYxNzAyIDEyOS4wMzA1ODUsMTI5LjU2NTQ2NSBDMTM2LjQ4ODExOSwxMzkuOTcxMjI1IDE1MC4yMzM0NjMsMTQxLjc3NTgxOCAxNTUuMzM0MTU2LDE0OC43NjgwNzIgQzE3MC40MzE4NTcsMTY5LjQ3OTU3OSAxNzQuMjY3MTYxLDE4MS4yMDI5MSAxODAuNzUwNjUsMTgwLjQ3NjcyNCBDMTgxLjIwMzY0OCwxODAuNDEyMjc1IDE4MS42MjAxOTMsMTgwLjE5MjQ3NSAxODEuOTI5MDcsMTc5Ljg1NDkwMSBMMjI2LjIwNDY0NiwxMzQuNDY2MTMgQzI1MS42Nzc2NywxMDguMzc1NjMyIDI1NS4zMzkwMzYsNTAuODY3ODI0NCAyNTYsMi43MDkxMTI1OCBDMjU2LjAwMTgyOCwxLjcyODk1NjQ2IDI1NS40MDg1NzgsMC44NDU3Nzk1OTYgMjU0LjUwMDUxNiwwLjQ3NjgxOTQwOSBDMjUzLjU5MjQ1MywwLjEwNzg1OTIyMiAyNTIuNTUxMzI5LDAuMzI2OTY0NTIzIDI1MS44NjksMS4wMzA2MjM4NCBMMjUxLjg2OSwxLjAzMDYyMzg0IFoiIGZpbGw9IiMwMEM3RDQiPjwvcGF0aD4KICAgICAgICA8cGF0aCBkPSJNMjI2LjIyNjM4OSwxMzQuNDY2MTMgQzIxMi4zMTE0NTYsMTQ4LjcyODkzNiAxODQuNzg1OTgsMTU1LjMzODUyOSAxMjguMDIxNzUyLDEyOC4wMDQzODMgQzE0Ny44ODA5NywxNzIuNDQwODUxIDE3My45ODQ1MTQsMTg4LjAxMjUzIDE4MS40NTk0NDIsMTgwLjM1NDk2OSBMMjI2LjIyNjM4OSwxMzQuNDY2MTMgWiIgZmlsbD0iIzExRTFFRSI+PC9wYXRoPgogICAgICAgIDxwYXRoIGQ9Ik0xLjAxNzU1Mzc3LDQuMTMxMDQ0NzUgTDEyNi42NTYzNDksMTI2LjY5NTUxIEMxMjcuNDI3ODUsMTI3LjQ3NjM3MyAxMjguNjQ4MTU4LDEyNy41OTE4MDggMTI5LjU1MjM5NSwxMjYuOTY5NDYgQzEzOS45NTgxNTUsMTE5LjUxMTkyNiAxNDEuNzYyNzQ4LDEwNS43NjIyMzMgMTQ4Ljc1NTAwMiwxMDAuNjY1ODg5IEMxNjkuNDY2NTA5LDg1LjU2ODE4NzUgMTgxLjE4OTg0LDgxLjczNzIzMjYgMTgwLjQ2MzY1NCw3NS4yNDkzOTUzIEMxODAuMzk3NDgzLDc0Ljc5Njk1NzEgMTgwLjE3Nzk3LDc0LjM4MDk1NzMgMTc5Ljg0MTgzMSw3NC4wNzA5NzQ0IEwxMzQuNDUzMDYsMjkuNzk1Mzk4NSBDMTA4LjM2MjU2MSw0LjMyMjM3NTA3IDUwLjg1NDc1NDMsMC42NjEwMDg0NDkgMi42OTYwNDI1LDAgQzEuNzEzNzMxOTcsLTAuMDA2MjE0NzEyNzEgMC44MjY3NDQxMTcsMC41ODY2OTc1ODUgMC40NTY5NjYwNzIsMS40OTY3NzMwOCBDMC4wODcxODgwMjgzLDIuNDA2ODQ4NTggMC4zMDkyNTkyNjcsMy40NTAzODkxIDEuMDE3NTUzNzcsNC4xMzEwNDQ3NSBMMS4wMTc1NTM3Nyw0LjEzMTA0NDc1IFoiIGZpbGw9IiNFNDM5MjEiPjwvcGF0aD4KICAgICAgICA8cGF0aCBkPSJNMTM0LjQ3NDgwMiwyOS43OTk3NDY5IEMxNDguNzM3NjA4LDQzLjcxNDY3OTQgMTU1LjM0NzIwMSw3MS4yNDAxNTU0IDEyOC4wMTMwNTUsMTI4LjAwNDM4MyBDMTcyLjQ0OTUyMywxMDguMTQ1MTY2IDE4OC4wMjEyMDIsODIuMDM3MjczMyAxODAuMzYzNjQxLDc0LjU2NjY5MzkgTDEzNC40NzQ4MDIsMjkuNzk5NzQ2OSBaIiBmaWxsPSIjRkY3NTU3Ij48L3BhdGg+CiAgICAgICAgPHBhdGggZD0iTTI5Ljc5NTM3MzYsMTIxLjU0MjYzNiBDNDMuNzEwMzA2MiwxMDcuMjc5ODMxIDcxLjIzNTc4MjEsMTAwLjY3MDIzOCAxMjguMDAwMDEsMTI4LjAwNDM4MyBDMTA4LjE0MDc5Miw4My41Njc5MTU5IDgyLjAzNzI0ODUsNjcuOTk2MjM2NyA3NC41NjIzMjA3LDc1LjY1Mzc5OCBMMjkuNzk1MzczNiwxMjEuNTQyNjM2IFoiIGZpbGw9IiMwQ0I2RkYiPjwvcGF0aD4KICAgICAgICA8Y2lyY2xlIGZpbGw9IiM0QTQ4NDgiIGN4PSIxMjguMDE3NDA0IiBjeT0iMTI3Ljk4MjY0MSIgcj0iNS40NzkwMDQ2OSI+PC9jaXJjbGU+CiAgICA8L2c+Cjwvc3ZnPgo='},
@@ -136,7 +136,7 @@ const badge=(cx,cy,n)=>{const r=(COMPACT?6.5:8)*Math.min(1,DENSITY+0.05);return 
 const tag=(cx,cy,t,o={})=>{const tw=meas(t,fs(8),500,0,1)/0.9+14;const h=(COMPACT?14:16)*Math.min(1,DENSITY+0.05);return `<g class="nd nd-tag" data-b="${cx-tw/2},${cy-h/2},${tw},${h},4,0" data-shape="pill"><rect x="${cx-tw/2}" y="${cy-h/2}" width="${tw}" height="${h}" rx="${h/2}" fill="${C.node}" stroke="${C.line}" filter="url(#${ID}sh)"/>`+T(cx,cy+0.4,t,{sz:fs(8),w:500,mono:1,c:C.sub})+`</g>`};
 const svg=(W,H,title,body,cls='')=>`<svg class="bx-arch bx-arch--liam${cls&&!String(cls).includes('liam')?` ${cls}`:cls?` ${cls}`:''}" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMin meet" text-rendering="geometricPrecision" role="img" aria-label="${esc(title)}" xmlns="http://www.w3.org/2000/svg">${defs()}<title>${esc(title)}</title>${panel(W,H)}${body}</svg>`;
 const ns=(n,L)=>L.find(x=>x.label===n);
-/** compact: denser lanes; density from inst — tile denser than open; lead tile milder. */
+/** compact: denser lanes; density from inst - tile denser than open; lead tile milder. */
 const begin=(compact,inst="",opts={})=>{
   setCompact(compact);
   const s=String(inst||'');
@@ -253,7 +253,7 @@ export function dErd(D, inst=""){
   ml.forEach((l,i)=>g+=T(x+padX,y+h-14-(ml.length-1-i)*noteLh,l,{sz:9.4,it:1,c:C.sub,a:'start'}));
   return {g:g+'</g>',h}};
  const w=186,xs=[16,218,420],y=116;const hs=[];[0,1,2].forEach(i=>{const r=ent(xs[i],y,w,E[i],0);o+=r.g;hs.push(r.h)});
- // Simple directional links — no crow's-foot UML ends.
+ // Simple directional links - no crow's-foot UML ends.
  a+=arrow(`M${xs[0]+w},${y+56} H${xs[1]}`,'c')+arrow(`M${xs[1]+w},${y+72} H${xs[2]}`,'c');
  const y2=y+Math.max(...hs)+56;const s1=ent(xs[1],y2,w,E[4],1),s2=ent(xs[2],y2,w,E[3],1);o+=s1.g+s2.g;
  a+=arrow(`M${xs[1]+w/2},${y+hs[1]} V${y2-2}`,'d')+arrow(`M${xs[2]+w/2},${y+hs[2]} V${y2-2}`,'d');
@@ -399,7 +399,7 @@ export function dDatabaseLanes(D, dbId, inst=""){
   });
   return svg(W,y-8,`${model.title} tables by schema`,o,'bx-arch--liam')};
 
-/** Liam ERD Style A (green) — full per-DB table inventory; matches Style A sample chrome. */
+/** Liam ERD Style A (green) - full per-DB table inventory; matches Style A sample chrome. */
 export function dDatabase(D, dbId, inst=""){
   begin(false,inst);ID='liam'+inst+(dbId||'ledger');
   const model=ERD_MODELS[dbId]||ERD_MODELS.ledger;
@@ -418,7 +418,7 @@ export function dDatabase(D, dbId, inst=""){
   let laid=model.tables;
   let schemaLabels=[]; // [{schema,x,y}]
   if(isTile){
-    // Compact Style-A style strip for the card thumbnail — first ~5 tables only
+    // Compact Style-A style strip for the card thumbnail - first ~5 tables only
     const preview=model.tables.slice(0,5);
     laid=[];
     let x=16;
@@ -427,7 +427,7 @@ export function dDatabase(D, dbId, inst=""){
       x+=cardW+gapX;
     });
   } else {
-    // Popup: one column per schema (grouped), clear headers — scroll vertically within columns
+    // Popup: one column per schema (grouped), clear headers - scroll vertically within columns
     const bySchema={};
     model.tables.forEach((t)=>{
       const s=t.schema||'OTHER';
@@ -521,7 +521,7 @@ export function dDatabase(D, dbId, inst=""){
       g+=T(x+padX+16,iy,colName,{sz:nameSz-0.5,a:'start',c:LIAM.ink,mono:1});
       g+=T(x+w-padX,iy,typeLabel,{sz:typeSz,a:'end',c:LIAM.type,mono:1});
     });
-    // No platform logos on ERD table cards — logos BR are process-flow only
+    // No platform logos on ERD table cards - logos BR are process-flow only
     o+=g+'</g>';
   });
 
@@ -532,7 +532,7 @@ export function dDatabase(D, dbId, inst=""){
   o+=T(80,legendY,'FK',{sz:9,c:LIAM.schema,a:'start'});
   const fullW=Math.max(isTile?720:maxX+24, maxX+20);
   const fullH=legendY+16;
-  // Tile returns compact viewBox matching card thumbnail (original size — not an enlarged clip)
+  // Tile returns compact viewBox matching card thumbnail (original size - not an enlarged clip)
   return svg(fullW,fullH,`${model.title} ERD`,a+o,'bx-arch--liam')};
 
 export function dAirflow(D, inst=""){
@@ -765,7 +765,7 @@ export function dMychart(D,tall, inst=""){
   return svg(W,y+48,M.caption,a+o);
 }
 
-/** High-level map of drill areas — clickable labels are rendered in React; this is the visual map. */
+/** High-level map of drill areas - clickable labels are rendered in React; this is the visual map. */
 export function dDrillMap(inst=""){
   begin(true,inst);ID='map'+inst;const W=520;let o='',a='';
   const areas=[
@@ -776,7 +776,7 @@ export function dDrillMap(inst=""){
     {t:'Workflows',s:'Ship · ingest window · dbt chain',x:14,y:224,z:'src'},
     {t:'E2E processing',s:'Land → transform → test → serve',x:270,y:224,z:'data'},
   ];
-  o+=T(14,16,'Platform map — pick an area to drill in',{sz:fs(11),w:600,a:'start'});
+  o+=T(14,16,'Platform map. Pick an area to drill in',{sz:fs(11),w:600,a:'start'});
   areas.forEach((ar,i)=>{
     o+=node('box',ar.x,ar.y,236,[{t:ar.t,sz:10,w:600},{t:ar.s,sz:8.2,sub:1}],{h:72,z:ar.z,hero:1,id:`map-${i}`}).g;
   });

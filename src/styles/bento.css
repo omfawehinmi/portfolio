@@ -26,7 +26,7 @@
 @media (min-width: 1280px) {
   .bx-with-rail {
     --bx-rail-width: 2.25rem;
-    /* Reserve the rail column for content only — section title stays full-width. */
+    /* Reserve the rail column for content only - section title stays full-width. */
     padding-left: var(--bx-rail-width);
     box-sizing: border-box;
   }
@@ -308,7 +308,7 @@ p.bx-subhead {
   max-height: min(26rem, 52vh);
 }
 
-/* Domains tile thumbnail — original compact card size (not an enlarged clip) */
+/* Domains tile thumbnail - original compact card size (not an enlarged clip) */
 .bx-t-domains .bx-fig .bx-svg,
 .bx-t-domains .bx-fig svg.bx-arch--liam {
   width: 100%;
@@ -476,7 +476,7 @@ p.bx-subhead {
   display: block;
 }
 
-/* Show the whole tool (e.g. PALMS) — no crop/cutoff. */
+/* Show the whole tool (e.g. PALMS) - no crop/cutoff. */
 .bx-media--fit {
   background: #0b1d36;
   display: grid;
@@ -526,7 +526,7 @@ p.bx-subhead {
 .bx-svgprev {
   display: grid;
   place-items: center;
-  /* Blend with the card — no contrasted diagram well. */
+  /* Blend with the card - no contrasted diagram well. */
   background: transparent;
 }
 
@@ -721,7 +721,7 @@ p.bx-subhead {
 }
 
 @media (min-width: 1024px) {
-  /* Content-sized rows: column spans only — never lock height that clips copy. */
+  /* Content-sized rows: column spans only - never lock height that clips copy. */
   .bx-grid {
     grid-template-columns: repeat(12, minmax(0, 1fr));
     grid-auto-rows: auto;
@@ -741,7 +741,7 @@ p.bx-subhead {
 
   .bx-t-workflow,
   .bx-t-pipes {
-    /* CI/CD + feeds row — slightly more presence than secondary tiles. */
+    /* CI/CD + feeds row - slightly more presence than secondary tiles. */
     padding: 1.4rem 1.45rem;
   }
 
@@ -992,7 +992,7 @@ p.bx-subhead {
   filter: drop-shadow(0 2px 4px rgba(16, 24, 40, 0.14));
 }
 
-/* Liam Style A — green selection/hover on all diagrams (never Issuing blue) */
+/* Liam Style A - green selection/hover on all diagrams (never Issuing blue) */
 .bx-svg svg.bx-arch .nd:hover:not(.nd-tag) .nd-face,
 .bx-svg svg.bx-arch .nd:focus-visible:not(.nd-tag) .nd-face {
   stroke: #86d4ad;
@@ -1030,7 +1030,7 @@ p.bx-subhead {
   transition: opacity 0.16s ease;
 }
 
-/* Node purpose popover — Liam card: white, 1px gray border, 8px corners */
+/* Node purpose popover - Liam card: white, 1px gray border, 8px corners */
 .bx-svg-wrap {
   position: relative;
 }
@@ -1146,7 +1146,7 @@ dialog.project-dialog.bx-dialog .bx-fig-big svg {
   max-height: min(46vh, 30rem);
 }
 
-/* Full-inventory Liam ERDs need room + scroll — not a clipped Issuing strip */
+/* Full-inventory Liam ERDs need room + scroll - not a clipped Issuing strip */
 dialog.project-dialog.bx-dialog .bx-fig-big:has(.bx-arch--liam) {
   overflow: auto;
   max-height: min(72vh, 44rem);
@@ -1178,7 +1178,7 @@ body:has(dialog.project-dialog[open]) .scrollup {
   }
 }
 
-/* Domains DB switcher — Liam Style A chrome (not childish pills / cyan wash) */
+/* Domains DB switcher - Liam Style A chrome (not childish pills / cyan wash) */
 .bx-dbtabs {
   display: flex;
   flex-wrap: wrap;
@@ -1239,7 +1239,7 @@ body:has(dialog.project-dialog[open]) .scrollup {
   box-shadow: 0 2px 4px rgba(16, 24, 40, 0.1);
 }
 
-/* Tile thumbnail strip — same Liam language, compact */
+/* Tile thumbnail strip - same Liam language, compact */
 .bx-dbtabs--tile {
   margin: 0.55rem 0 0.65rem;
   gap: 0.35rem;
@@ -1260,7 +1260,7 @@ body:has(dialog.project-dialog[open]) .scrollup {
   margin-top: 0.1rem;
 }
 
-/* Schema chips inside Domains panel — Liam header-bar chips, not oval pills */
+/* Schema chips inside Domains panel - Liam header-bar chips, not oval pills */
 .bx-dbchips {
   display: flex;
   flex-wrap: wrap;
@@ -1283,7 +1283,7 @@ body:has(dialog.project-dialog[open]) .scrollup {
   padding: 0.28rem 0.55rem;
 }
 
-/* Domains ERD popup only (not the project tile) — near-fullscreen so the dense full ERD fits */
+/* Domains ERD popup only (not the project tile) - near-fullscreen so the dense full ERD fits */
 dialog.project-dialog.bx-dialog.bx-dialog--erd-full,
 .services__modal-content.bx-dialog.bx-dialog--erd-full {
   width: calc(100vw - 0.75rem) !important;
@@ -1342,7 +1342,7 @@ dialog.project-dialog.bx-dialog.bx-dialog--erd-full,
 
 .bx-dialog.bx-dialog--erd-full .bx-fig--erd .bx-svg,
 .bx-dialog.bx-dialog--erd-full .bx-fig--erd svg.bx-arch--liam {
-  /* Dense full-size ERD — scroll inside fig; never force thumbnail max-height */
+  /* Dense full-size ERD - scroll inside fig; never force thumbnail max-height */
   width: 100%;
   max-width: none !important;
   height: auto;

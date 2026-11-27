@@ -1,6 +1,6 @@
 // Portfolio Snowflake section rewritten from the as-built in
 // myorglab-repos/household-data-architecture (synced to household-platform
-// fdff221 via HDA PR #12 — 20 DAG pages). Real databases, MCP servers, catalogs,
+// fdff221 via HDA PR #12 - 20 DAG pages). Real databases, MCP servers, catalogs,
 // EAIs, and DAG names. No secrets, PATs, or account locators. Status language
 // matches the as-built: production vs paused; source-data gaps called out honestly.
 
@@ -130,7 +130,7 @@ export const COPY = {
           id: 'ledger',
           name: 'HOUSEHOLD_LEDGER',
           status: 'Production',
-          oneLine: 'Finance ledger — Monarch, Gmail, Google Drive Docs',
+          oneLine: 'Finance ledger from Monarch, Gmail and Google Drive Docs',
           schemas: ['PUBLIC', 'RAW', 'CORE', 'CTRL', 'ANALYTICS', 'AI', 'STAGING', 'INTERMEDIATE'],
           detail:
             'Landing and conformed finance data. CTRL hosts MCP_HOUSEHOLD_LEDGER_GROK and MCP_HOUSEHOLD_LEDGER. ANALYTICS holds reporting grain and the 15 semantic views; Cortex Search CS_DOCUMENTS, CS_EMAIL_MESSAGES, CS_GAPS_IDEA, CS_PARSE_REVIEW sit on ledger text. Example path: DOCUMENTS_RAW → DOCUMENTS → FACT_DOCUMENT_STANDING → SV_DOCUMENT_STANDING / CS_DOCUMENTS.',
@@ -160,7 +160,7 @@ export const COPY = {
           id: 'workforce',
           name: 'AGENTIC_WORKFORCE',
           status: 'Production',
-          oneLine: 'Cross-platform AI chat history — agents, conversations, graph, capture',
+          oneLine: 'Cross-platform AI chat history, with agents, conversations, graph and capture',
           schemas: [
             'AGENTS',
             'CONVERSATIONS',
@@ -186,10 +186,10 @@ export const COPY = {
           id: 'control',
           name: 'CONTROL',
           status: 'Production',
-          oneLine: 'Shared control plane — procs, queues, MCP, tests',
+          oneLine: 'Shared control plane for procs, queues, MCP and tests',
           schemas: ['PROC', 'QUEUE', 'STAGE', 'FLAGS', 'TASKS', 'MCP', 'SECURITY', 'TESTS'],
           detail:
-            'Cross-product control database. Procedures, queues, stages, feature flags, retired Snowflake tasks inventory, MCP registration, security objects, and test-result tables used by the test-results dashboard. Not a customer domain database — the ops and governance plane for the account.',
+            'Cross-product control database. Procedures, queues, stages, feature flags, retired Snowflake tasks inventory, MCP registration, security objects, and test-result tables used by the test-results dashboard. It is not a customer domain database. It is the ops and governance plane for the account.',
           objects: [
             { layer: 'PROC', name: 'Pipeline procedures', note: 'Loader-owned' },
             { layer: 'QUEUE / STAGE', name: 'Work queues + stages', note: 'Ingest support' },
@@ -236,7 +236,7 @@ export const COPY = {
         },
         {
           name: 'MCP_HOUSEHOLD_LEDGER',
-          role: 'Write server — Cursor / Eta (Household COO). Same read families plus proc_monarch_*, proc_ledger_mutate, proc_gmail_ingest, proc_email_pipeline, proc_reconcile_pending, document land/extract/jobs, proc_rebuild_analytics, freshness / QA, proc_metal_spot.',
+          role: 'Write server for Cursor and Eta (Household COO). Same read families plus proc_monarch_*, proc_ledger_mutate, proc_gmail_ingest, proc_email_pipeline, proc_reconcile_pending, document land/extract/jobs, proc_rebuild_analytics, freshness / QA, proc_metal_spot.',
           status: 'Read + write',
         },
         {
@@ -284,7 +284,7 @@ export const COPY = {
         { t: 'Cortex agents are not Grok bots', d: 'AGENT_HOUSEHOLD_FINANCE, AGENT_HOUSEHOLD_FINANCE_RO and AGENT_LEDGER_OPS are Cortex agents defined in SQL, separate from the Grok bot staff.' },
       ],
       n: '9',
-      title: 'Grokbot architecture — agents per MCP',
+      title: 'Grokbot architecture, agents per MCP',
       svg: 'grokbot',
       body:
         'This shows who talks to the household data and through which door. Stephen (Household CFO) and the Grok finance desks use the read server, MCP_HOUSEHOLD_LEDGER_GROK, for spending, cash flow, balances and document search, and Stephen is the only one who answers money questions. Eta (Household COO) reads too, and she uses the write server, MCP_HOUSEHOLD_LEDGER, when she relays Michael’s go for a change. Cursor uses the write server for ledger and Monarch changes, pipeline runs and rebuilds. Cynthia (Moonshot advisory) uses MCP_MOONSHOTS for the YouTube catalog and transcript search. Behind the ledger servers, three Cortex agents answer from 15 semantic views and 6 Cortex Search services.',
@@ -312,7 +312,7 @@ export const COPY = {
       prev: 'myorglab',
       title: 'MyOrgLab',
       line:
-        'Customer-facing practice built from the same pattern as HOUSEHOLD_LEDGER: in-account Cortex agents, semantic views, and MCP bridges — not a multi-tenant copy of customer data.',
+        'Customer-facing practice built from the same pattern as HOUSEHOLD_LEDGER: in-account Cortex agents, semantic views, and MCP bridges. It is not a multi-tenant copy of customer data.',
       tags: ['Snowflake', 'Cortex', 'semantic views', 'MCP', 'Streamlit', 'Power BI'],
     },
     {
@@ -345,7 +345,7 @@ export const COPY = {
   ],
 }
 
-// Diagram labels use the same real object names. Layer label strings are consumed by architectureSvg.js — keep Clients / MCP servers / Cortex / Catalogs / Snowflake.
+// Diagram labels use the same real object names. Layer label strings are consumed by architectureSvg.js - keep Clients / MCP servers / Cortex / Catalogs / Snowflake.
 export const DIAG = {
   lead: {
     title:
@@ -477,7 +477,7 @@ export const DIAG = {
       { group: 'Owners', items: [
         ['LEDGER_OWNER', 'Owns the household ledger tables', 'LEDGER_WH'],
         ['MOONSHOTS_OWNER', 'Owns the YouTube research tables', 'LEDGER_WH'],
-        ['R_CTRL_OWNER', 'Owns control procedures and tasks; no person holds it', '—'],
+        ['R_CTRL_OWNER', 'Owns control procedures and tasks; no person holds it', 'Not set'],
       ] },
       { group: 'Bots and MCP', items: [
         ['R_GROK_LEDGER_RO', 'Grok read connector for Stephen and the finance desks', 'GROK_WH'],
@@ -486,28 +486,28 @@ export const DIAG = {
         ['MCP_MOONSHOTS_CLIENT', 'YouTube MCP connector used by Cynthia', 'GROK_WH'],
       ] },
       { group: 'Cortex', items: [
-        ['R_CORTEX_GATE', 'The only role allowed to call Cortex AI', '—'],
-        ['R_AI_USER', 'Read-only analytics for MCP and agents, through the gate', '—'],
-        ['R_AI_ADMIN', 'Manages Cortex objects', '—'],
-        ['R_MOONSHOTS_AI_ADMIN', 'Manages the YouTube AI objects', '—'],
+        ['R_CORTEX_GATE', 'The only role allowed to call Cortex AI', 'Not set'],
+        ['R_AI_USER', 'Read-only analytics for MCP and agents, through the gate', 'Not set'],
+        ['R_AI_ADMIN', 'Manages Cortex objects', 'Not set'],
+        ['R_MOONSHOTS_AI_ADMIN', 'Manages the YouTube AI objects', 'Not set'],
       ] },
       { group: 'Builds and admin', items: [
-        ['R_DBT_PROD', 'Production dbt builds into ANALYTICS', '—'],
-        ['R_DBT_CI', 'Pull-request dbt builds in temporary schemas', '—'],
+        ['R_DBT_PROD', 'Production dbt builds into ANALYTICS', 'Not set'],
+        ['R_DBT_CI', 'Pull-request dbt builds in temporary schemas', 'Not set'],
         ['R_TF_ADMIN', 'Applies Terraform changes', 'TF_WH'],
-        ['R_SEC_ADMIN', 'Manages security policies', '—'],
+        ['R_SEC_ADMIN', 'Manages security policies', 'Not set'],
       ] },
       { group: 'Audit and readers', items: [
-        ['R_AUDIT_OWNER', 'Owns the audit trail; no person holds it', '—'],
-        ['R_AUDIT_READ', 'Reads the audit trail for reviews', '—'],
+        ['R_AUDIT_OWNER', 'Owns the audit trail; no person holds it', 'Not set'],
+        ['R_AUDIT_READ', 'Reads the audit trail for reviews', 'Not set'],
         ['R_TEST_RESULTS_READ', 'Reads CI test results', 'GROK_WH'],
-        ['R_AW_DESKS_READ', 'Reads agent workforce analytics', '—'],
-        ['R_EYL_SVC', 'Read-only service access', '—'],
+        ['R_AW_DESKS_READ', 'Reads agent workforce analytics', 'Not set'],
+        ['R_EYL_SVC', 'Read-only service access', 'Not set'],
       ] },
       { group: 'Dev', items: [
         ['R_DEV_PIPELINE', 'Dev pipelines into the _DEV databases', 'DEV_MIGRATION_WH'],
         ['R_AW_DESKS_READ_DEV', 'Dev agent workforce analytics', 'DEV_MIGRATION_WH'],
-        ['R_TEST_RESULTS_READ_DEV', 'Dev test results', '—'],
+        ['R_TEST_RESULTS_READ_DEV', 'Dev test results', 'Not set'],
       ] },
     ],
   },
@@ -587,7 +587,7 @@ export const DIAG = {
   },
   erd: {
     title:
-      'Five prod databases including HOUSEHOLD_HEALTH — select a database in the open panel for its schemas',
+      'Five prod databases including HOUSEHOLD_HEALTH. Select a database in the open panel for its schemas',
     areas: [
       'HOUSEHOLD_LEDGER',
       'MOONSHOTS',

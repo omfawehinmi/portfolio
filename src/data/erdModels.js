@@ -1,8 +1,8 @@
 // Per-database Liam-style ERD models for the Domains tile.
-// Column names + types + PK/FK only — no row values.
+// Column names + types + PK/FK only - no row values.
 // HOUSEHOLD_LEDGER + MOONSHOTS inventories from omfawehinmi/household-platform SQL.
 // AGENTIC_WORKFORCE / CONTROL / HOUSEHOLD_HEALTH expanded from architecture schemas
-// (full table set per DB — not a 3-table landing/core/analytics slice).
+// (full table set per DB - not a 3-table landing/core/analytics slice).
 
 /** @typedef {{ name: string, type: string, key?: 'pk'|'fk' }} ErdCol */
 /** @typedef {{ id: string, schema: string, name: string, cols: ErdCol[], x: number, y: number, w?: number }} ErdTable */

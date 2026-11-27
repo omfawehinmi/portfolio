@@ -10,6 +10,6 @@ while true; do
   echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] starting vite :5173" | tee -a "$LOG"
   npm run dev -- --host 0.0.0.0 --port 5173 --strictPort >>"$LOG" 2>&1
   code=$?
-  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] vite exited $code — restarting in 2s" | tee -a "$LOG"
+  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] vite exited $code - restarting in 2s" | tee -a "$LOG"
   sleep 2
 done

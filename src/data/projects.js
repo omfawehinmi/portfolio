@@ -12,7 +12,7 @@ export const projects = [
     icon: 'uil-snowflake',
     title: 'MyOrgLab',
     outcome:
-      'Customer practice built like HOUSEHOLD_LEDGER: in-account Cortex agents, semantic views, and MCP bridges — not a multi-tenant copy of their data.',
+      'Customer practice built like HOUSEHOLD_LEDGER: in-account Cortex agents, semantic views, and MCP bridges. It is not a multi-tenant copy of their data.',
     modalTitle: 'MyOrgLab: governed agents in the customer account',
     thumb: publicUrl('assets/img/myorglab.png'),
     summary: [
@@ -186,7 +186,7 @@ export const projects = [
     ],
     points: [
       'EAI_GMAIL → proc_gmail_ingest → EMAIL_MESSAGES_RAW → pending bridge.',
-      'SV_EARLY_ACTIVITY is email pending plus Monarch pending — not posted spend.',
+      'SV_EARLY_ACTIVITY is email pending plus Monarch pending, not posted spend.',
       'Search is RAG on CORE email text, not the agent inventing a charge.',
     ],
   },
@@ -201,12 +201,12 @@ export const projects = [
     modalTitle: 'Documents: DOCUMENTS_STAGE → CORE → CS_DOCUMENTS',
     summary: [
       'Loan contracts, statements, and rate letters do not live cleanly in Monarch. drive_poll spots new files; doc_extract downloads them and runs pypdf then local Tesseract (no Cortex OCR); proc_document_extract writes dues and rates into CORE.',
-      'CS_DOCUMENTS and SV_DOCUMENT_STANDING let the agent cite a standing document instead of inventing a rate. doc_extract has been paused for warehouse quota on some pins — status is called out in the as-built.',
+      'CS_DOCUMENTS and SV_DOCUMENT_STANDING let the agent cite a standing document instead of inventing a rate. doc_extract has been paused for warehouse quota on some pins, and the as-built calls out that status.',
     ],
     points: [
       'DOCUMENTS_STAGE / DOCUMENTS_DOWNLOAD_STAGE are the file system of record inside the account.',
       'Extracted fields feed SV_DOCUMENT_STANDING and SV_LIABILITIES_DUES.',
-      'Intake is Airflow drive_poll → doc_extract → Snowflake stages — not object storage pipes.',
+      'Intake is Airflow drive_poll → doc_extract → Snowflake stages, not object storage pipes.',
     ],
   },
   {
@@ -220,7 +220,7 @@ export const projects = [
     modalTitle: 'Monarch GraphQL extract (EAI_MONARCH)',
     summary: [
       'Monarch stays the place activity is posted. Snowflake copies accounts and transactions through EAI_MONARCH → proc_monarch_extract (and proc_monarch_holdings_extract for brokerage positions into CORE.HOLDINGS), MERGE into RAW and CORE.',
-      'proc_monarch_mutate and proc_ledger_mutate are write-MCP tools for approved changes. If the warehouse path is down, Cursor can still talk to Monarch through a community MCP client — that does not replace the Snowflake extract as truth.',
+      'proc_monarch_mutate and proc_ledger_mutate are write-MCP tools for approved changes. If the warehouse path is down, Cursor can still talk to Monarch through a community MCP client, but that does not replace the Snowflake extract as truth.',
     ],
     points: [
       'Account dedupe on mask + institution + type; proc_rebuild_analytics after MERGE.',
@@ -239,7 +239,7 @@ export const projects = [
     modalTitle: 'Read MCP: MCP_HOUSEHOLD_LEDGER_GROK',
     summary: [
       'Cursor and Cowork attach to MCP_HOUSEHOLD_LEDGER (agents, analyst, search, mutate/pipeline procs). Grok finance bots attach to MCP_HOUSEHOLD_LEDGER_GROK with no write tools.',
-      'MCP_MOONSHOTS on MOONSHOTS.CTRL is a separate YouTube catalog server — not household money. Auth is a Snowflake PAT under role MCP_LEDGER_CLIENT; the PAT is not in git.',
+      'MCP_MOONSHOTS on MOONSHOTS.CTRL is a separate YouTube catalog server, not household money. Auth is a Snowflake PAT under role MCP_LEDGER_CLIENT; the PAT is not in git.',
     ],
     points: [
       'MCP is the API catalog the bots are allowed to see, not the agent itself.',
@@ -261,7 +261,7 @@ export const projects = [
     ],
     points: [
       'Certified semantic views are the grain agents are allowed to total from.',
-      'SV_EARLY_ACTIVITY is pending email plus Monarch pending — not posted spend.',
+      'SV_EARLY_ACTIVITY is pending email plus Monarch pending, not posted spend.',
       'CTRL.SV_OPS_FRESHNESS is what ledger_ops_agent reads before anyone trusts a figure.',
     ],
   },
