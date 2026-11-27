@@ -50,7 +50,7 @@ export const NODE_NOTES = {
   ],
   pipes: [
     [/^▶$/, 'Morning start', 'The 07:15 ET load window on INGEST_WH starts the day’s ingest. Drive polling fires at the same minute without waking a warehouse.'],
-    [/^Source feeds/, 'Source feeds', 'Monarch through EAI_MONARCH, Gmail transaction alerts through EAI_GMAIL, Google Drive Docs through drive_poll, and YouTube into MOONSHOTS. Epic MyChart is modeled for HOUSEHOLD_HEALTH and waiting on source data.'],
+    [/^Source feeds/, 'Source feeds', 'Monarch through EAI_MONARCH, Gmail transaction alerts through EAI_GMAIL, Google Drive Docs through drive_poll, and YouTube into MOONSHOTS. Epic MyChart lands in HOUSEHOLD_HEALTH every Monday.'],
     [/^◇$/, 'Route by source', 'Monarch and Gmail go to the load step. Google Drive Docs go to OCR first.'],
     [/^Extract and land/, 'Extract and land', 'The load window pulls Monarch data and Gmail transaction alerts into RAW on INGEST_WH, then the warehouse suspends.'],
     [/^doc_extract/, 'doc_extract', 'Reads Google Drive Docs with pypdf, then local Tesseract, and lands the text for CORE. It is paused while the warehouse quota is tight.'],
@@ -80,7 +80,7 @@ export const NODE_NOTES = {
     [/^nightly_app_backup/, 'nightly_app_backup', 'At 19:33 ET it checks the PC\'s nightly status file and pushes the three PC bundles to GitHub, fast-forward only. It emails only on failure.'],
     [/^pc_usage_check/, 'pc_usage_check', 'Weekdays at 09:17, 13:17 and 17:17 ET it reads the PC usage snapshot and emails only when a threshold trips.'],
     [/^platform_smoke/, 'platform_smoke', 'A read-only check that the office PC can reach Snowflake with the right role. It reports counts and never writes.'],
-    [/^epic_fhir_load_manual/, 'epic_fhir_load_manual', 'Pulls Epic MyChart records into HOUSEHOLD_HEALTH RAW on INGEST_WH. It refuses to run until a flag turns it on.'],
+    [/^epic_fhir_load_manual/, 'epic_fhir_load_manual', 'The on-demand copy of the Monday Epic MyChart step. It refreshes each org\'s token, pulls the FHIR resources, lands them in HOUSEHOLD_HEALTH RAW on INGEST_WH, runs dbt for the health models and the watchers. The tables and grants come from Terraform, and a kill-switch variable stops it without a deploy.'],
     [/^moonshots_transcript_backfill/, 'moonshots_transcript_backfill', 'Backfills older Moonshots transcripts at a capped rate, at most one calendar day per run on LEDGER_WH.'],
     [/^ledger_email_pull_poll/, 'ledger_email_pull_poll', 'Counts waiting email pull requests without a warehouse. Its 5-minute schedule was retired; the load window now picks up the requests.'],
   ],

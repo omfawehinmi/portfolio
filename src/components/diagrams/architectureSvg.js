@@ -560,12 +560,13 @@ export function dAirflow(D, inst=""){
   begin(true,inst);setDensity(1);ID='af'+inst;const A=D.airflow;let o='',a='';
   const narrow=typeof window!=='undefined'&&window.innerWidth<560;
   const cw=narrow?158:156,gx=22,x0=10;
-  const W=narrow?10*2+cw*2+gx-4:x0+cw*3+gx*2+10;
+  const half=x0+cw*3+gx*2+10,sgap=24;
+  const W=narrow?10*2+cw*2+gx-4:half*2+sgap;
   const PILL={schedule:{c:'#0f7a4c',f:'#ecfdf3',s:'#abefc6'},'parent DAG':{c:'#175cd3',f:'#eff8ff',s:'#b2ddff'},'window step':{c:'#175cd3',f:'#f5faff',s:'#d1e9ff'},Mondays:{c:'#b54708',f:'#fffaeb',s:'#fedf89'},Paused:{c:'#b54708',f:'#fffaeb',s:'#fedf89'},other:{c:LIAM.schema,f:'#fff',s:LIAM.border}};
   const tsz=8.8,ssz=7.8,psz=7,lh=1.25;
   const by=Object.fromEntries(A.dags.map((d)=>[d.id,d]));
   const col=(d)=>narrow?(d.ncol??0):(d.col??0);
-  const cx=(c)=>narrow?10+c*(cw+gx-4):x0+c*(cw+gx);
+  const cx=(c,ox=0)=>narrow?10+c*(cw+gx-4):ox+x0+c*(cw+gx);
   const pillW=(t)=>meas(t,psz,600)/0.9+12;
   const lay=(d)=>{const tl=wrapW(d.id.replace(/_/g,'_\u200b'),cw-18,tsz,600).map((l)=>l.replace(/\u200b/g,''));
     const sub={schedule:`${d.at} ET · ${d.by}`,'parent DAG':`from ${d.by}`,'window step':`step in ${d.by}`}[d.trigger]??d.by;
@@ -577,18 +578,21 @@ export function dAirflow(D, inst=""){
     const h=c.h;
     return `<g class="nd" tabindex="0" role="button" data-node="${esc(d.id)}" data-b="${x},${y},${cw},${h},9,7" data-shape="box"><g class="nd-face" filter="url(#${ID}sh)"><rect x="${x}" y="${y}" width="${cw}" height="${h}" rx="8" fill="${hero?'#f4fbf7':'#fff'}" stroke="${hero?LIAM.green:LIAM.border}" stroke-width="${hero?1.4:1}"/></g>${g}${platformBadge(x,y,cw,h,d.logo)}</g>`};
   const C2=Object.fromEntries(A.dags.map((d)=>[d.id,lay(d)]));
-  let y=6;const pos={};
+  const ys=[6,6],seen=[0,0];const pos={};
   const guides=[];
-  A.lanes.forEach((L,li)=>{const dags=A.dags.filter((d)=>d.lane===L.id);
-    if(li)o+=`<line x1="6" y1="${y-6}" x2="${W-6}" y2="${y-6}" stroke="${LIAM.border}" stroke-dasharray="3 3"/>`;
+  A.lanes.forEach((L)=>{const dags=A.dags.filter((d)=>d.lane===L.id);
+    const sd=narrow?0:(L.side||0),ox=sd*(half+sgap),lx=ox+6,lw=(narrow?W:half)-12;let y=ys[sd];
+    if(seen[sd]++)o+=`<line x1="${lx}" y1="${y-6}" x2="${lx+lw}" y2="${y-6}" stroke="${LIAM.border}" stroke-dasharray="3 3"/>`;
     const top=y+16;
-    const lab=`<g class="nd" tabindex="0" role="button" data-node="lane-${L.id}" data-b="6,${y},${W-12},14,0,0" data-shape="box"><rect x="6" y="${y}" width="${W-12}" height="14" fill="transparent"/>`+
-      (L.logo&&PLATFORM[L.logo]?`<image href="${PLATFORM[L.logo].src}" x="8" y="${y+1}" width="10" height="10"/>`:'')+
-      T(L.logo?21:8,y+6,L.t,{sz:8.2,w:600,a:'start',c:LIAM.ink,mono:1})+T(W-8,y+6,L.s,{sz:7.4,a:'end',c:LIAM.schema})+'</g>';
+    const lab=`<g class="nd" tabindex="0" role="button" data-node="lane-${L.id}" data-b="${lx},${y},${lw},14,0,0" data-shape="box"><rect x="${lx}" y="${y}" width="${lw}" height="14" fill="transparent"/>`+
+      (L.logo&&PLATFORM[L.logo]?`<image href="${PLATFORM[L.logo].src}" x="${lx+2}" y="${y+1}" width="10" height="10"/>`:'')+
+      T(lx+(L.logo?15:2),y+6,L.t,{sz:8.2,w:600,a:'start',c:LIAM.ink,mono:1})+T(lx+lw-2,y+6,L.s,{sz:7.4,a:'end',c:LIAM.schema})+'</g>';
     o+=lab;
     const stack={};let bottom=top;
-    dags.forEach((d)=>{const c=col(d);const yy=stack[c]??top;pos[d.id]={x:cx(c),y:yy,h:C2[d.id].h};o+=card(cx(c),yy,C2[d.id]);stack[c]=yy+C2[d.id].h+8;bottom=Math.max(bottom,yy+C2[d.id].h)});
-    y=bottom+18});
+    dags.forEach((d)=>{const c=col(d);const yy=stack[c]??top;pos[d.id]={x:cx(c,ox),y:yy,h:C2[d.id].h};o+=card(cx(c,ox),yy,C2[d.id]);stack[c]=yy+C2[d.id].h+8;bottom=Math.max(bottom,yy+C2[d.id].h)});
+    ys[sd]=bottom+18});
+  const y=Math.max(...ys);
+  if(!narrow)o+=`<line x1="${half+sgap/2}" y1="4" x2="${half+sgap/2}" y2="${y-14}" stroke="${LIAM.border}"/>`;
   A.dags.filter((d)=>d.after).forEach((d)=>{const p=pos[by[d.after].id],q=pos[d.id];
     if(q.x===p.x)a+=arrow(`M${p.x+cw/2},${p.y+p.h} V${q.y-3}`,'c');
     else if(Math.abs((p.y)-(q.y))<2&&q.x>p.x)a+=arrow(`M${p.x+cw},${p.y+p.h/2} H${q.x-3}`,'c');
@@ -617,27 +621,23 @@ export function dDbt(D, inst=""){
     a+=arrow(`M${W/2},${y-6} V${y+12}`,'c');y+=16;o+=lab(pad,y+4,'What it builds');y+=14;
     B.layers.forEach((l,i)=>{const n=node(l.cyl?'cyl':'box',pad,y,W-2*pad,n2(l.t,l.s,9),{h:l.cyl?40:30,hero:!!l.hero,platform:l.dbt?'dbt':undefined});o+=n.g;if(i<B.layers.length-1)a+=arrow(`M${W/2},${y+n.h} V${y+n.h+10}`,'c');y+=n.h+12});
     return svg(W,y,B.title,a+o)}
-  const lw=196,rx=lw+pad+40,rw=W-rx-pad;
-  o+=lab(pad,10,'What starts it')+lab(rx,10,'What it builds');
-  let ry=22;const ln=[];
-  B.layers.forEach((l,i)=>{const n=node(l.cyl?'cyl':'box',rx,ry,rw,n2(l.t,l.s,9),{h:l.cyl?40:30,hero:!!l.hero,platform:l.dbt?'dbt':undefined});o+=n.g;ln.push(n);if(i<B.layers.length-1)a+=arrow(`M${rx+rw/2},${ry+n.h} V${ry+n.h+10}`,'c');ry+=n.h+12});
-  const g0=ln[2],g1=ln[3];const gy=g0.y-6,gh=g1.y+g1.h+6-gy;
-  o=group(rx-6,gy,rw+12,gh,'',{})+o;o+=T(rx+rw+2,gy-3,'dbt builds',{sz:7.4,a:'end',c:LIAM.schema,mono:1});
-  const cards=B.triggers.map((t)=>lcard(pad,0,lw,t));const tot=cards.reduce((s2,c)=>s2+c.h,0)+(cards.length-1)*10;
-  let ty=Math.max(22,Math.round(gy+gh/2-tot/2));const tgt=gy+gh/2;
-  B.triggers.forEach((t,k)=>{const c=lcard(pad,ty,lw,t);o+=c.g;const my=ty+c.h/2;a+=arrow(`M${pad+lw},${my} C${pad+lw+20},${my} ${rx-26},${tgt} ${rx-9},${tgt}`,'c');ty+=c.h+10});
-  const H=Math.max(ry,ty)+4;
-  return svg(W,H,B.title,a+o)};
+  const WW=1060,tg=16,tw=(WW-2*pad-2*tg)/3,lg=28,lw=(WW-2*pad-3*lg)/4;
+  o+=lab(pad,10,'What starts it');
+  const th=Math.max(...B.triggers.map((t)=>lcard(0,0,tw,t).h));
+  const ly=22+th+44;const lyn=ly+14;const ln=[];
+  B.layers.forEach((l,i)=>{const x=pad+i*(lw+lg);const n=node(l.cyl?'cyl':'box',x,lyn,lw,n2(l.t,l.s,9),{h:40,hero:!!l.hero,platform:l.dbt?'dbt':undefined});o+=n.g;ln.push(n);if(i)a+=arrow(`M${x-lg+3},${lyn+20} H${x-3}`,'c')});
+  const g0=ln[2],g1=ln[3];const gx=g0.x-6,gw=g1.x+g1.w+6-gx,gy=lyn-8,gh=56;
+  o=group(gx,gy,gw,gh,'',{})+o;o+=T(gx+gw,gy-4,'dbt builds',{sz:7.4,a:'end',c:LIAM.schema,mono:1});
+  o+=lab(pad,ly+4,'What it builds');
+  const tx=gx+gw/2;
+  B.triggers.forEach((t,k)=>{const x=pad+k*(tw+tg);const c=lcard(x,22,tw,t,{h:th});o+=c.g;const sx=x+tw/2,sy=22+th;a+=arrow(`M${sx},${sy} C${sx},${sy+24} ${tx},${gy-24} ${tx},${gy-3}`,'c')});
+  return svg(WW,gy+gh+6,B.title,a+o)};
 
 export function dTerraform(D, inst=""){
   begin(true,inst);setDensity(1);ID='tf'+inst;const F=D.terraform;let o='',a='';
   const narrow=typeof window!=='undefined'&&window.innerWidth<560;
   const pad=10,gx=22,cw=narrow?330:156,half=cw*3+gx*2;const W=narrow?350:pad*2+half*2+36;
-  let y=6;o+=lab(pad,y+5,'Owns in Snowflake');y+=14;
-  let x=pad;const ch=20;
-  F.owns.forEach((t)=>{const w=Math.ceil(meas(t,8.4,600))/0.9+16;if(x>pad&&x+w>W-pad){x=pad;y+=ch+6}
-    o+=`<g class="nd" tabindex="0" role="button" data-node="${esc(t)}" data-b="${x},${y},${w},${ch},8,0" data-shape="pill"><g class="nd-face"><rect x="${x}" y="${y}" width="${w}" height="${ch}" rx="${ch/2}" fill="#f8f4fd" stroke="#d9c9f2"/></g>`+T(x+w/2,y+ch/2+0.4,t,{sz:8.4,w:600,c:'#5b2a9b'})+'</g>';x+=w+6});
-  y+=ch+16;
+  let y=6;
   const row=(items,title,x0,y0,dash)=>{let yy=y0;o+=lab(x0,yy+5,title);yy+=14;const h=narrow?0:Math.max(...items.map((c)=>lcard(0,0,cw,c).h));
     items.forEach((c,k)=>{const cx=narrow?x0:x0+k*(cw+gx);const r=lcard(cx,yy,cw,{...c,logo:k===0&&!dash?'terraform':c.logo},{h,dash});o+=r.g;
       if(!narrow&&k>0&&!dash)a+=arrow(`M${cx-gx+3},${yy+h/2} H${cx-3}`,'c');

@@ -2039,7 +2039,7 @@ export const ERD_MODELS = {
 
   health: {
     title: "HOUSEHOLD_HEALTH",
-    subtitle: "Epic MyChart FHIR model · 18 tables · metadata only — no patient values",
+    subtitle: "Epic MyChart FHIR R4 · 18 CORE tables · columns shown, never patient values",
     tables: [
       {
         id: "fhir_bundle_raw",

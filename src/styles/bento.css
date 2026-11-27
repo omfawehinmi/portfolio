@@ -781,13 +781,13 @@ p.bx-subhead {
 
   .bx-t-workflow,
   .bx-t-pipes,
-  .bx-t-dbt,
-  .bx-t-airflow,
   .bx-t-security,
   .bx-t-features {
     grid-column: span 6;
   }
 
+  .bx-t-airflow,
+  .bx-t-dbt,
   .bx-t-domains,
   .bx-t-mcp,
   .bx-t-terraform,
@@ -1433,7 +1433,7 @@ dialog.project-dialog.bx-dialog.bx-dialog--erd-full .bx-fig-big:has(.bx-arch--li
 }
 
 .bx-tile.bx-t-airflow.is-expanded .bx-fig svg {
-  max-width: 54rem;
+  max-width: 72rem;
   max-height: none;
   margin-inline: auto;
 }
