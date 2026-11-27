@@ -168,7 +168,7 @@ export const projects = [
     ],
     points: [
       'Schemas: RAW land, CORE truth, ANALYTICS marts + semantic views, CTRL jobs / agents / MCP.',
-      'Sibling prod DBs: MOONSHOTS, AGENTIC_WORKFORCE, CONTROL. Airflow on the office PC is the scheduler.',
+      'Sibling prod DBs: MOONSHOTS, AGENTIC_WORKFORCE, CONTROL. Airflow is the scheduler.',
     ],
   },
   {

@@ -36,7 +36,7 @@ export const COPY = {
       { n: '6', label: 'Cortex Search services' },
     ],
     intro:
-      'This is the household data platform I build and run on Snowflake. It has five production databases. HOUSEHOLD_LEDGER holds finance. MOONSHOTS holds the YouTube catalog for Moonshots by Peter Diamandis and Market Mondays by Earn Your Leisure. AGENTIC_WORKFORCE holds my AI agents and their chat history from Grokbot, Cursor and OpenAI. CONTROL holds shared procedures, queues and tests. HOUSEHOLD_HEALTH holds Epic MyChart records, loaded every Monday through SMART on FHIR R4. Each database keeps its layers as schemas instead of splitting them into separate databases. Airflow on my office PC runs every schedule, and Snowflake tasks are retired. Monarch, Gmail and Google Drive feed the ledger. Every bank account is set to send a Gmail alert for each transaction, so new charges show up early. YouTube feeds Moonshots. Grok bots and Cursor never get an open warehouse login: they connect through MCP servers that only expose semantic views, Cortex Search services and approved procedures.',
+      'This is the household data platform I build and run on Snowflake. It has five production databases. HOUSEHOLD_LEDGER holds finance. MOONSHOTS holds the YouTube catalog for Moonshots by Peter Diamandis and Market Mondays by Earn Your Leisure. AGENTIC_WORKFORCE holds my AI agents and their chat history from Grokbot, Cursor and OpenAI. CONTROL holds shared procedures, queues and tests. HOUSEHOLD_HEALTH holds Epic MyChart records, loaded every Monday through SMART on FHIR R4. Each database keeps its layers as schemas instead of splitting them into separate databases. Airflow runs every schedule, and Snowflake tasks are retired. Monarch, Gmail and Google Drive feed the ledger. Every bank account is set to send a Gmail alert for each transaction, so new charges show up early. YouTube feeds Moonshots. Grok bots and Cursor never get an open warehouse login: they connect through MCP servers that only expose semantic views, Cortex Search services and approved procedures.',
   },
   tiles: [
     {
@@ -45,7 +45,7 @@ export const COPY = {
       title: 'Ship path: one trunk, a release path per platform',
       svg: 'workflow',
       body:
-        'Every change follows the same trunk: a branch, a pull request, the required checks, then a merge that only lands code. After that, each platform has its own way to production. Snowflake infrastructure changes through Terraform. The plan runs on the pull request with a guard that fails on any delete, and the apply is a manual run against production after my explicit go. dbt checks run on DuckDB and in a temporary per-PR schema, and the models run in production from Airflow’s 06:00 ET chain. Airflow cuts a release tag after its tests pass, and a person pulls that tag onto the office PC, which swaps back on its own if anything fails to import. The websites I manage ship through the same trunk, and the one shown here, the MyOrgLab public site, deploys only from a manual dispatch with a required reviewer. Pick a platform chip to see its full flow.',
+        'Every change follows the same trunk: a branch, a pull request, the required checks, then a merge that only lands code. After that, each platform has its own way to production. Snowflake infrastructure changes through Terraform. The plan runs on the pull request with a guard that fails on any delete, and the apply is a manual run against production after my explicit go. dbt checks run on DuckDB and in a temporary per-PR schema, and the models run in production from Airflow’s 06:00 ET chain. Airflow cuts a release tag after its tests pass, and a person pulls that tag onto the Airflow host, which swaps back on its own if anything fails to import. The websites I manage ship through the same trunk, and the one shown here, the MyOrgLab public site, deploys only from a manual dispatch with a required reviewer. Pick a platform chip to see its full flow.',
     },
     {
       id: 'pipes',
@@ -69,7 +69,7 @@ export const COPY = {
       title: 'Airflow: the production DAGs',
       svg: 'airflow',
       body:
-        'Airflow on the office PC runs every production schedule, and Snowflake tasks are retired. Of 20 DAG files, 16 run in production and 3 are dev twins with no schedule. Four schedules start the day. At 06:00 ET ledger_dbt_daily builds the ledger models on LEDGER_WH, then runs hr_dbt_daily and agentic_workforce_dbt_daily and waits for each, so all three share one warehouse window. At 07:15 ET pipeline_load_window wakes INGEST_WH once and runs the Gmail, Monarch and, on Mondays, Epic MyChart and Earn Your Leisure loads back to back before suspending it, then starts moonshots_yt_sync_daily on Mondays. monarch_load, ledger_email_alerts, epic_fhir_load_manual and moonshots_eyl_sync also stay as DAGs for on-demand runs. Also at 07:15 ET, drive_poll checks Google Drive. drive_poll has no Snowflake connection. It asks the Drive Changes API for everything since a saved page token, keeps PDFs and images in the watched snowflake_docs folders, and skips Google-native files. If nothing changed, it moves the token and stops, so an empty poll costs no warehouse time. If files changed, it starts doc_extract with their IDs and checksums, and moves the token only after that trigger succeeds, so a failed or missed run picks up the same changes next time. doc_extract downloads the files, reads the PDF text layer or runs Tesseract on the PC, and loads the text through two owner\'s-rights procedures on INGEST_WH. Two office-PC checks run without a warehouse: nightly_app_backup at 19:33 ET and pc_usage_check three times on weekdays. platform_smoke, moonshots_transcript_backfill and ledger_email_pull_poll run only by hand. Code reaches the scheduler only from a tagged release that a person pulls onto the PC.',
+        'Airflow runs every production schedule, and Snowflake tasks are retired. Of 20 DAG files, 16 run in production and 3 are dev twins with no schedule. Four schedules start the day. At 06:00 ET ledger_dbt_daily builds the ledger models on LEDGER_WH, then runs hr_dbt_daily and agentic_workforce_dbt_daily and waits for each, so all three share one warehouse window. At 07:15 ET pipeline_load_window wakes INGEST_WH once and runs the Gmail, Monarch and, on Mondays, Epic MyChart and Earn Your Leisure loads back to back before suspending it, then starts moonshots_yt_sync_daily on Mondays. monarch_load, ledger_email_alerts, epic_fhir_load_manual and moonshots_eyl_sync also stay as DAGs for on-demand runs. Also at 07:15 ET, drive_poll checks Google Drive. drive_poll has no Snowflake connection. It asks the Drive Changes API for everything since a saved page token, keeps PDFs and images in the watched snowflake_docs folders, and skips Google-native files. If nothing changed, it moves the token and stops, so an empty poll costs no warehouse time. If files changed, it starts doc_extract with their IDs and checksums, and moves the token only after that trigger succeeds, so a failed or missed run picks up the same changes next time. doc_extract downloads the files, reads the PDF text layer or runs Tesseract inside Airflow, and loads the text through two owner\'s-rights procedures on INGEST_WH. Two Airflow checks run without a warehouse: nightly_app_backup at 19:33 ET and pc_usage_check three times on weekdays. platform_smoke, moonshots_transcript_backfill and ledger_email_pull_poll run only by hand. Code reaches the scheduler only from a tagged release that a person pulls onto the Airflow host.',
     },
     {
       id: 'dbt',
@@ -496,7 +496,7 @@ export const DIAG = {
         { t: 'np_public_ip_check', s: 'flags a changed public address', pills: [{ t: '07:15 ET', k: 'plain' }] },
         { t: 'np_login_watch', s: 'blocked logins and any break-glass login', pills: [{ t: 'alerts', k: 'red' }] },
         { t: 'Dev twin', s: 'EAI_GMAIL_DEV, outbound procedures off' },
-        { t: 'Rejected', s: 'a PC job editing the allow list, since it needs an admin key on the desktop' },
+        { t: 'Rejected', s: 'an Airflow job editing the allow list, since it needs an admin key on the host' },
       ] },
     ],
   },
@@ -663,7 +663,7 @@ export const DIAG = {
         logo: 'dbt',
         path: 'dbt/ models, tests, seeds',
         merge: 'publishes the prod manifest',
-        summary: 'PR CI on DuckDB and a per-PR schema, merge publishes the prod manifest, models run in the 06:00 ET chain from the release the PC pulled.',
+        summary: 'PR CI on DuckDB and a per-PR schema, merge publishes the prod manifest, models run in the 06:00 ET chain from the release Airflow pulled.',
         pr: [
           { t: 'DuckDB build', s: 'synthetic seeds · no Snowflake access' },
           { t: 'Per-PR schema', s: 'HOUSEHOLD_LEDGER_CI.DBT_PR_<n> · unit tests' },
@@ -678,16 +678,16 @@ export const DIAG = {
         id: 'airflow',
         label: 'Airflow',
         logo: 'airflow',
-        path: 'airflow/dags and the PC image',
+        path: 'airflow/dags and the Airflow image',
         merge: 'tags a release when tests pass',
-        summary: 'DAG and image tests, release tag on main, a person pulls the tag onto the office PC, auto swap back on import errors.',
+        summary: 'DAG and image tests, release tag on main, a person pulls the tag onto the Airflow host, auto swap back on import errors.',
         pr: [
           { t: 'DAG import tests', s: 'every DAG must import cleanly' },
-          { t: 'PC image check', s: 'PC Dockerfile built · no import errors' },
+          { t: 'Airflow image check', s: 'Dockerfile built · no import errors' },
         ],
         post: [
           { t: 'Release tag', s: 'airflow-YYYYMMDD-sha after both tests pass' },
-          { t: 'PC pull', s: 'deploy_airflow.ps1 · dry run unless -Apply', gate: 'run by a person' },
+          { t: 'Airflow pull', s: 'deploy_airflow.ps1 · dry run unless -Apply', gate: 'run by a person' },
           { t: 'Swap and check', s: 'import errors swap back · rollback is the last tag' },
         ],
       },
@@ -721,7 +721,7 @@ DIAG.airflow = {
     { id: 'ingest', t: 'INGEST_WH', s: '07:15 ET load window', logo: 'snowflake' },
     { id: 'yt', t: 'YT_SYNC_WH', s: 'Mondays', logo: 'snowflake' },
     { id: 'docs', side: 1, t: 'Google Drive documents', s: 'poll needs no warehouse' },
-    { id: 'pc', side: 1, t: 'Office PC, no warehouse', s: 'checks and backups' },
+    { id: 'pc', side: 1, t: 'Airflow only, no warehouse', s: 'checks and backups' },
     { id: 'manual', side: 1, t: 'Manual only', s: 'no schedule' },
   ],
   dags: [
@@ -736,7 +736,7 @@ DIAG.airflow = {
     { id: 'moonshots_yt_sync_daily', lane: 'yt', col: 2, ncol: 1, after: 'pipeline_load_window', trigger: 'parent DAG', by: 'pipeline_load_window', runs: 'Mondays', writes: 'MOONSHOTS, embeddings', logo: 'youtube' },
     { id: 'drive_poll', lane: 'docs', col: 0, at: '07:15', trigger: 'schedule', by: 'cron 15 7 * * *', runs: 'Daily', writes: 'starts doc_extract if new', logo: 'drive' },
     { id: 'doc_extract', lane: 'docs', col: 1, ncol: 1, after: 'drive_poll', trigger: 'parent DAG', by: 'drive_poll', runs: 'New files', writes: 'document text on INGEST_WH', logo: 'drive' },
-    { id: 'nightly_app_backup', lane: 'pc', col: 0, at: '19:33', trigger: 'schedule', by: 'cron 33 19 * * *', runs: 'Daily', writes: 'pushes the PC bundles' },
+    { id: 'nightly_app_backup', lane: 'pc', col: 0, at: '19:33', trigger: 'schedule', by: 'cron 33 19 * * *', runs: 'Daily', writes: 'pushes the app backups' },
     { id: 'pc_usage_check', lane: 'pc', col: 1, ncol: 1, at: '09:17', trigger: 'schedule', by: '13:17 · 17:17', runs: 'Weekdays', writes: 'emails on a threshold' },
     { id: 'platform_smoke', lane: 'manual', col: 0, trigger: 'manual', by: 'read-only connection check', runs: 'On demand', writes: 'counts only' },
     { id: 'moonshots_transcript_backfill', lane: 'manual', col: 1, ncol: 1, trigger: 'manual', by: 'one day per run, LEDGER_WH', runs: 'On demand', writes: 'MOONSHOTS transcripts', logo: 'youtube' },
@@ -815,7 +815,7 @@ DIAG.code = {
   cs: 'CS_DOCUMENTS',
   airflow: '16 production DAGs · runs the pulled release tag',
   land: 'pipeline_load_window → monarch + email',
-  ocr: 'doc_extract · local OCR on the office PC',
+  ocr: 'doc_extract · local OCR in Airflow',
   dbt: 'ledger_dbt_daily → hr → agentic',
 }
 
