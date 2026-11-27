@@ -52,33 +52,6 @@ export const COPY = {
         'Every change follows the same trunk: a branch, a pull request, the required checks, then a merge that only lands code. After that, each platform has its own way to production. Snowflake infrastructure changes through Terraform. The plan runs on the pull request with a guard that fails on any delete, and the apply is a manual run against production after my explicit go. dbt checks run on DuckDB and in a temporary per-PR schema, and the models run in production from Airflow’s 06:00 ET chain. Airflow cuts a release tag after its tests pass, and a person pulls that tag onto the office PC, which swaps back on its own if anything fails to import. The public website deploys only from a manual dispatch with a required reviewer. Pick a platform chip to see its full flow.',
       caption:
         'The shared trunk sits top right. The selected platform’s flow runs below it, and the dashed cards summarize the other three.',
-      rows: [
-        {
-          name: 'Shared trunk',
-          role: 'Branch and pull request, required checks, then a merge that lands code only',
-          status: 'Every platform',
-        },
-        {
-          name: 'Terraform · Snowflake',
-          role: 'static and plan on the pull request with a 0-destroy guard, nightly drift check, manual apply after Michael’s go',
-          status: 'Manual apply',
-        },
-        {
-          name: 'dbt',
-          role: 'DuckDB build and a per-PR schema on the pull request, prod manifest on merge, production runs in Airflow',
-          status: 'Runs in Airflow',
-        },
-        {
-          name: 'Airflow',
-          role: 'DAG and image tests, a release tag on main, then a person pulls the tag onto the office PC',
-          status: 'Pulled release',
-        },
-        {
-          name: 'Website',
-          role: 'Lint, build and consent tests on the pull request, deploy by dispatch with a required reviewer',
-          status: 'Reviewed deploy',
-        },
-      ],
     },
     {
       id: 'pipes',
@@ -123,38 +96,6 @@ export const COPY = {
         'RAW holds data exactly as it landed. CORE holds clean business objects and is often written in the same step as RAW. dbt builds staging models, marts and ANALYTICS on top of CORE, and the 15 semantic views sit on ANALYTICS. Three things start a dbt run. The schedule: at 06:00 ET, ledger_dbt_daily runs dbt on LEDGER_WH, then triggers hr_dbt_daily and agentic_workforce_dbt_daily and waits for both, so everything fits in one LEDGER_WH window. GitHub: every pull request builds the project on DuckDB and in a temporary per-PR schema, and a merge to main publishes the production manifest so later pull requests only build what changed. Manual runs: dev copies target hl_dev and the *_DEV databases and never run on a schedule. A separate dbt_daily job has its own 06:00 Cosmos schedule targeting hl_prod and ANALYTICS_DBT, but it is created paused and is not part of the chain. The databases, schemas and warehouse dbt builds into come from Terraform, which has its own block.',
       caption:
         'What starts dbt on the left: the schedule, GitHub, or a manual dev run. The layers it builds on the right, with production on hl_prod.',
-      rows: [
-        {
-          name: 'RAW',
-          role: 'One landed page, file or API payload, such as Monarch, Gmail MIME or a staged document',
-          status: 'Landing schema',
-        },
-        {
-          name: 'CORE',
-          role: 'One business object — often written with RAW in the same procedure',
-          status: 'Conformed schema',
-        },
-        {
-          name: 'STAGING / marts',
-          role: 'dbt factory schemas on the ledger path',
-          status: 'Transform',
-        },
-        {
-          name: 'ANALYTICS + semantic views',
-          role: 'Reporting grain and the 15 semantic views Cortex Analyst reads',
-          status: 'Serve / MCP catalogs',
-        },
-        {
-          name: 'hl_prod / hl_dev',
-          role: 'dbt targets — fixed-prod DAGs refuse DEV_MIGRATION_WH',
-          status: 'Environment split',
-        },
-        {
-          name: 'HOUSEHOLD_LEDGER_CI.DBT_PR_<n>',
-          role: 'Per-PR dbt CI schema when secrets are set, dropped when the pull request closes',
-          status: 'CI only',
-        },
-      ],
     },
     {
       id: 'terraform',
