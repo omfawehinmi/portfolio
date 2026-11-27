@@ -896,18 +896,22 @@ DIAG.lead.airflow = {
   s: '20 DAG files · 2 confirmed unpaused',
 }
 DIAG.airflow = {
-  title: 'Production Airflow DAGs by trigger',
-  counts: [
-    { n: '8', label: 'production DAGs' },
-    { n: '06:00', label: 'ET dbt chain' },
-    { n: '07:15', label: 'ET load window' },
+  title: 'Production Airflow DAGs on a morning timeline, one lane per warehouse',
+  lanes: [
+    { id: 'ledger', t: 'LEDGER_WH', s: 'dbt chain', logo: 'snowflake' },
+    { id: 'ingest', t: 'INGEST_WH', s: 'one load window', logo: 'snowflake' },
+    { id: 'yt', t: 'YT_SYNC_WH', s: 'Mondays', logo: 'snowflake' },
+    { id: 'none', t: 'No warehouse', s: 'hourly poll' },
   ],
-  rows: [
-    ['ledger_dbt_daily → agentic_workforce', '06:00 ET dbt chain'],
-    ['pipeline_load_window', '07:15 ET · one INGEST_WH window'],
-    ['monarch_load · ledger_email_alerts', 'called by the window'],
-    ['moonshots_yt_sync_daily · eyl_sync', 'Mondays, from the window'],
-    ['drive_poll', 'hourly · no warehouse'],
+  dags: [
+    { id: 'ledger_dbt_daily', lane: 'ledger', at: '06:00', trigger: 'schedule', by: 'cron 0 6 * * *', runs: 'Daily', writes: 'ledger models, ANALYTICS', logo: 'dbt' },
+    { id: 'agentic_workforce_dbt_daily', lane: 'ledger', after: 'ledger_dbt_daily', trigger: 'parent DAG', by: 'ledger_dbt_daily', runs: 'Daily', writes: 'AGENTIC_WORKFORCE analytics', logo: 'dbt' },
+    { id: 'pipeline_load_window', lane: 'ingest', at: '07:15', trigger: 'schedule', by: 'cron 15 7 * * *', runs: 'Daily', writes: 'starts the loads', logo: 'airflow' },
+    { id: 'monarch_load', lane: 'ingest', after: 'pipeline_load_window', trigger: 'parent DAG', by: 'pipeline_load_window', runs: 'Daily', writes: 'HOUSEHOLD_LEDGER RAW, CORE', logo: 'monarch' },
+    { id: 'ledger_email_alerts', lane: 'ingest', after: 'pipeline_load_window', trigger: 'parent DAG', by: 'pipeline_load_window', runs: 'Daily', writes: 'HOUSEHOLD_LEDGER RAW, CORE', logo: 'gmail' },
+    { id: 'moonshots_yt_sync_daily', lane: 'yt', after: 'pipeline_load_window', trigger: 'parent DAG', by: 'pipeline_load_window', runs: 'Mondays', writes: 'MOONSHOTS', logo: 'youtube' },
+    { id: 'moonshots_eyl_sync', lane: 'yt', after: 'pipeline_load_window', trigger: 'parent DAG', by: 'pipeline_load_window', runs: 'Mondays', writes: 'MOONSHOTS', logo: 'youtube' },
+    { id: 'drive_poll', lane: 'none', at: 'hourly', trigger: 'schedule', by: 'hourly', runs: 'Hourly', writes: 'document stages', logo: 'drive' },
   ],
 }
 DIAG.dbt = {

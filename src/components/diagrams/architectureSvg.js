@@ -557,14 +557,44 @@ export function dDatabase(D, dbId, inst=""){
   return svg(fullW,fullH,`${model.title} ERD`,a+o,'bx-arch--liam')};
 
 export function dAirflow(D, inst=""){
-  begin(true,inst);ID='af'+inst;const A=D.airflow;const W=420;let o='';
-  A.counts.forEach((c,i)=>{const x=12+i*134;o+=node('box',x,10,126,[{t:c.n,sz:fs(12),w:600,c:Z.src.k},{t:c.label,sz:fs(7.6),sub:1}],{h:30,z:'src',platform:'airflow'}).g});
-  const rows=A.rows;
-  const top=60,rh=18;
-  rows.forEach((r,i)=>{const y=top+i*rh;
-   o+=`<g class="nd nd-row" tabindex="0" role="button" data-node="${esc(r[0])}" data-b="8,${y-rh/2},${W-16},${rh},8,0" data-shape="box"><rect x="8" y="${y-rh/2}" width="${W-16}" height="${rh}" rx="4" fill="transparent"/>`+T(16,y,r[0],{sz:fs(8),mono:1,c:Z.src.k,a:'start'})+T(244,y,r[1],{sz:fs(7.8),c:C.sub,a:'start'})+'</g>'});
-  o+=legend(12,top+rows.length*rh+4,['src'],W-20);
-  return svg(W,top+rows.length*rh+18,A.title,o)};
+  begin(true,inst);setDensity(1);ID='af'+inst;const A=D.airflow;let o='',a='';
+  const narrow=typeof window!=='undefined'&&window.innerWidth<560;
+  const cw=narrow?158:156,gx=22,x0=10;
+  const W=narrow?10*2+cw*2+gx-4:x0+cw*3+gx*2+10;
+  const PILL={schedule:{c:'#0f7a4c',f:'#ecfdf3',s:'#abefc6'},'parent DAG':{c:'#175cd3',f:'#eff8ff',s:'#b2ddff'},Mondays:{c:'#b54708',f:'#fffaeb',s:'#fedf89'},other:{c:LIAM.schema,f:'#fff',s:LIAM.border}};
+  const tsz=8.8,ssz=7.8,psz=7,lh=1.25;
+  const by=Object.fromEntries(A.dags.map((d)=>[d.id,d]));
+  const col=(d)=>{if(narrow)return d.after?1:0;if(d.lane==='ledger')return d.after?1:0;return d.after?2:d.at==='07:15'?1:0};
+  const cx=(c)=>narrow?10+c*(cw+gx-4):x0+c*(cw+gx);
+  const pillW=(t)=>meas(t,psz,600)/0.9+12;
+  const lay=(d)=>{const tl=wrapW(d.id.replace(/_/g,'_\u200b'),cw-18,tsz,600).map((l)=>l.replace(/\u200b/g,''));
+    const sl=[d.trigger==='schedule'?(d.at==='hourly'?'every hour':`${d.at} ET · ${d.by}`):`from ${d.by}`,`→ ${d.writes}`];return {d,tl,sl,h:10+tl.length*tsz*lh+sl.length*ssz*lh+20}};
+  const card=(x,y,c)=>{const d=c.d;const hero=!d.after;let g='',ty=y+7;
+    c.tl.forEach((l)=>{g+=T(x+9,ty+tsz*lh/2,l,{sz:tsz,w:600,a:'start',c:LIAM.ink});ty+=tsz*lh});
+    c.sl.forEach((l,k)=>{g+=T(x+9,ty+ssz*lh/2,l,{sz:ssz,a:'start',c:k?LIAM.schema:LIAM.ink,mono:k===0});ty+=ssz*lh});
+    let px=x+9;[[d.trigger,PILL[d.trigger]||PILL.other],[d.runs,PILL[d.runs]||PILL.other]].forEach(([t,P])=>{const w=pillW(t);g+=`<rect x="${px}" y="${ty+4}" width="${w}" height="13" rx="6.5" fill="${P.f}" stroke="${P.s}"/>`+T(px+w/2,ty+10.9,t,{sz:psz,w:600,c:P.c});px+=w+4});
+    const h=c.h;
+    return `<g class="nd" tabindex="0" role="button" data-node="${esc(d.id)}" data-b="${x},${y},${cw},${h},9,7" data-shape="box"><g class="nd-face" filter="url(#${ID}sh)"><rect x="${x}" y="${y}" width="${cw}" height="${h}" rx="8" fill="${hero?'#f4fbf7':'#fff'}" stroke="${hero?LIAM.green:LIAM.border}" stroke-width="${hero?1.4:1}"/></g>${g}${platformBadge(x,y,cw,h,d.logo)}</g>`};
+  const C2=Object.fromEntries(A.dags.map((d)=>[d.id,lay(d)]));
+  let y=6;const pos={};
+  const guides=[];
+  A.lanes.forEach((L,li)=>{const dags=A.dags.filter((d)=>d.lane===L.id);
+    if(li)o+=`<line x1="6" y1="${y-6}" x2="${W-6}" y2="${y-6}" stroke="${LIAM.border}" stroke-dasharray="3 3"/>`;
+    const top=y+16;
+    const lab=`<g class="nd" tabindex="0" role="button" data-node="lane-${L.id}" data-b="6,${y},${W-12},14,0,0" data-shape="box"><rect x="6" y="${y}" width="${W-12}" height="14" fill="transparent"/>`+
+      (L.logo&&PLATFORM[L.logo]?`<image href="${PLATFORM[L.logo].src}" x="8" y="${y+1}" width="10" height="10"/>`:'')+
+      T(L.logo?21:8,y+6,L.t,{sz:8.2,w:600,a:'start',c:LIAM.ink,mono:1})+T(W-8,y+6,L.s,{sz:7.4,a:'end',c:LIAM.schema})+'</g>';
+    o+=lab;
+    const stack={};let bottom=top;
+    dags.forEach((d)=>{const c=col(d);const yy=stack[c]??top;pos[d.id]={x:cx(c),y:yy,h:C2[d.id].h};o+=card(cx(c),yy,C2[d.id]);stack[c]=yy+C2[d.id].h+8;bottom=Math.max(bottom,yy+C2[d.id].h)});
+    if(L.id==='none'&&!narrow){const p0=pos.drive_poll;const ty=p0.y+p0.h/2;for(let k=0;k<6;k++){const tx=cx(1)+k*((W-10-cx(1))/5);o+=`<circle cx="${tx}" cy="${ty}" r="3.4" fill="#fff" stroke="${LIAM.green}" stroke-width="1.3"/>`}
+      o+=T(cx(1),ty-10,'every hour',{sz:7.4,a:'start',c:LIAM.schema})}
+    y=bottom+18});
+  A.dags.filter((d)=>d.after).forEach((d)=>{const p=pos[by[d.after].id],q=pos[d.id];
+    if(Math.abs((p.y)-(q.y))<2&&q.x>p.x)a+=arrow(`M${p.x+cw},${p.y+p.h/2} H${q.x-3}`,'c');
+    else if(q.y<p.y+p.h&&q.x>p.x){const mx=p.x+cw+gx/2;a+=arrow(`M${p.x+cw},${p.y+p.h/2} H${mx} V${q.y+q.h/2} H${q.x-3}`,'c')}
+    else{const sx=p.x+cw/2+(narrow?0:30);a+=arrow(`M${sx},${p.y+p.h} V${q.y+q.h/2} H${q.x-3}`,'c')}});
+  return svg(W,y-8,A.title,a+o)};
 
 export function dDbt(D, inst=""){
   begin(true,inst);

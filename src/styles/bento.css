@@ -1632,7 +1632,9 @@ dialog.project-dialog.bx-dialog.bx-dialog--erd-full .bx-fig-big:has(.bx-arch--li
 
 /* Ship path keeps its natural height so every platform reads at the same scale. */
 .bx-t-workflow .bx-fig .bx-svg,
-.bx-t-workflow .bx-fig svg.bx-arch--liam {
+.bx-t-workflow .bx-fig svg.bx-arch--liam,
+.bx-t-airflow .bx-fig .bx-svg,
+.bx-t-airflow .bx-fig svg.bx-arch--liam {
   max-height: none;
 }
 
