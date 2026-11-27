@@ -1239,7 +1239,6 @@ body:has(dialog.project-dialog[open]) .scrollup {
 .bx-dbtabs--tile {
   margin: 0.55rem 0 0.65rem;
   gap: 0.35rem;
-  pointer-events: none;
 }
 
 .bx-dbtabs--tile .bx-dbtab {
@@ -1579,4 +1578,76 @@ dialog.project-dialog.bx-dialog.bx-dialog--erd-full .bx-fig-big:has(.bx-arch--li
   width: 100%;
   max-height: none;
   height: auto;
+}
+
+.bx-shipchips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 0.6rem;
+}
+
+.bx-shipchip {
+  border: 1px solid #e2e5eb;
+  border-radius: 999px;
+  background: #fff;
+  color: #475467;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.bx-shipchip:hover,
+.bx-shipchip:focus-visible {
+  border-color: #86d4ad;
+  color: #0f7a4c;
+}
+
+.bx-shipchip.is-active {
+  background: #12b76a;
+  border-color: #12b76a;
+  color: #fff;
+}
+
+.bx-shipchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.bx-shipchip-logo {
+  width: 0.95rem;
+  height: 0.95rem;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+.bx-shipchip.is-active .bx-shipchip-logo {
+  background: #fff;
+  padding: 1px;
+}
+
+/* Ship path keeps its natural height so every platform reads at the same scale. */
+.bx-t-workflow .bx-fig .bx-svg,
+.bx-t-workflow .bx-fig svg.bx-arch--liam {
+  max-height: none;
+}
+
+/* Collapsed Databases tile: the whole selected database as schema lanes, scrolling inside the tile. */
+.bx-t-domains:not(.is-expanded) .bx-fig--lanes .bx-svg {
+  max-height: min(22rem, 52vh);
+  overflow-y: auto;
+  border: 1px solid #e2e5eb;
+  border-radius: 10px;
+  padding: 0.25rem 0;
+  overscroll-behavior: contain;
+}
+
+.bx-t-domains:not(.is-expanded) .bx-fig--lanes .bx-svg svg.bx-arch--liam {
+  width: 100%;
+  height: auto;
+  max-height: none;
 }

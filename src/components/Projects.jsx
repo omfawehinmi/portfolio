@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { COPY } from '../data/architecture.js'
+import { COPY, DIAG } from '../data/architecture.js'
 import { intrinsicImageSize, publicUrl } from '../utils.js'
 import ArchitectureDiagram from './diagrams/ArchitectureDiagram.jsx'
+import { PLATFORM } from './diagrams/architectureSvg.js'
 import Icon from './ui/Icon.jsx'
 import SectionHeader from './ui/SectionHeader.jsx'
 
@@ -396,7 +397,43 @@ function LeadTile({ tall }) {
   )
 }
 
+function ShipPathChips({ value, onChange }) {
+  return (
+    <div className="bx-shipchips" role="tablist" aria-label="Release path by platform">
+      {DIAG.workflow.platforms.map((p) => (
+        <button
+          key={p.id}
+          type="button"
+          role="tab"
+          aria-selected={value === p.id}
+          className={`bx-shipchip${value === p.id ? ' is-active' : ''}`}
+          onClick={(event) => {
+            event.stopPropagation()
+            onChange(p.id)
+          }}
+        >
+          {PLATFORM[p.logo] ? <img className="bx-shipchip-logo" src={PLATFORM[p.logo].src} alt="" /> : null}
+          {p.label}
+        </button>
+      ))}
+    </div>
+  )
+}
+
+function TileFigure({ tile, tall, inst, ship, onShip, dbId, big = false, caption = null }) {
+  const variant = tile.id === 'workflow' ? ship : tile.id === 'domains' ? dbId : null
+  return (
+    <figure className={`bx-fig${big ? ' bx-fig-big' : ''}${tile.id === 'domains' ? ' bx-fig--lanes' : ''}`}>
+      {tile.id === 'workflow' ? <ShipPathChips value={ship} onChange={onShip} /> : null}
+      <ArchitectureDiagram kind={tile.id} tall={tall} inst={inst} variant={variant} />
+      {caption ? <figcaption>{caption}</figcaption> : null}
+    </figure>
+  )
+}
+
 function ArchitectureTile({ tile, onOpen, tall, expanded }) {
+  const [ship, setShip] = useState(DIAG.workflow.platforms[0].id)
+  const [dbId, setDbId] = useState(tile.databases?.[0]?.id || null)
   const showRowsOnTile = tile.id === 'mcp' || tile.id === 'grokbot' || tile.id === 'security'
   const isHero = tile.id === 'mcp' || tile.id === 'domains' || tile.id === 'grokbot'
   return (
@@ -414,24 +451,32 @@ function ArchitectureTile({ tile, onOpen, tall, expanded }) {
         <ExpandToggle expanded={expanded} label={tile.title} onToggle={() => onOpen(expanded ? null : tile.id)} />
       </div>
       {expanded ? (
-        <TilePanel tile={tile} tall={tall} />
+        <TilePanel tile={tile} tall={tall} ship={ship} onShip={setShip} dbId={dbId} onDb={setDbId} />
       ) : (
         <>
           <FoldBody project={{ outcome: tile.body }} lines={isHero ? 4 : 3} />
           {showRowsOnTile ? <RowTable rows={tile.rows} collapsed /> : null}
           {tile.id === 'domains' && tile.databases?.length ? (
-            <ul className="bx-dbtabs bx-dbtabs--tile" aria-hidden="true">
-              {tile.databases.map((db, i) => (
-                <li key={db.id} className={`bx-dbtab${i === 0 ? ' is-active' : ''}`}>
+            <div className="bx-dbtabs bx-dbtabs--tile" role="tablist" aria-label="Snowflake databases">
+              {tile.databases.map((db) => (
+                <button
+                  key={db.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={dbId === db.id}
+                  className={`bx-dbtab${dbId === db.id ? ' is-active' : ''}`}
+                  onClick={(event) => {
+                    event.stopPropagation()
+                    setDbId(db.id)
+                  }}
+                >
                   <strong>{db.name}</strong>
                   <span>{db.status}</span>
-                </li>
+                </button>
               ))}
-            </ul>
+            </div>
           ) : null}
-          <figure className="bx-fig">
-            <ArchitectureDiagram kind={tile.id} tall={tall} inst="tile" />
-          </figure>
+          <TileFigure tile={tile} tall={tall} inst="tile" ship={ship} onShip={setShip} dbId={dbId} />
         </>
       )}
       <DesignChoices title={tile.title} choices={tile.choices} />
@@ -534,9 +579,8 @@ function RowTable({ rows, collapsed = false, previewCount = 2 }) {
   )
 }
 
-function DomainsPanel({ tile, tall }) {
+function DomainsPanel({ tile, tall, dbId, setDbId }) {
   const databases = tile.databases || []
-  const [dbId, setDbId] = useState(databases[0]?.id || null)
   const active = databases.find((db) => db.id === dbId) || databases[0]
   return (
     <div className="bx-panel-body bx-panel-body--erd">
@@ -564,14 +608,11 @@ function DomainsPanel({ tile, tall }) {
   )
 }
 
-function TilePanel({ tile, tall }) {
-  if (tile.id === 'domains') return <DomainsPanel tile={tile} tall={tall} />
+function TilePanel({ tile, tall, ship, onShip, dbId, onDb }) {
+  if (tile.id === 'domains') return <DomainsPanel tile={tile} tall={tall} dbId={dbId} setDbId={onDb} />
   return (
     <div className="bx-panel-body">
-      <figure className="bx-fig bx-fig-big">
-        <ArchitectureDiagram kind={tile.id} tall={tall} inst="open" />
-        <figcaption>{tile.caption}</figcaption>
-      </figure>
+      <TileFigure tile={tile} tall={tall} inst="open" ship={ship} onShip={onShip} big caption={tile.caption} />
       <p>{tile.body}</p>
       <RowTable rows={tile.rows} />
     </div>

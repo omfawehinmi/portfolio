@@ -4,6 +4,7 @@ import { noteFor, tableNote } from '../../data/nodeNotes.js'
 import {
   dAirflow,
   dDatabase,
+  dDatabaseLanes,
   dDbt,
   dFeat,
   dGrokbot,
@@ -18,9 +19,10 @@ import {
 const builders = {
   lead: (tall, inst) => dLead(DIAG, tall, inst),
   mcp: (_tall, inst) => dMcp(DIAG, inst),
-  workflow: (_tall, inst) => dWorkflow(DIAG, inst),
+  workflow: (_tall, inst, variant) => dWorkflow(DIAG, inst, variant),
   // Per-DB Liam ERD (Style A green). Tile defaults to ledger; modal tabs pass dbId.
-  domains: (_tall, inst, dbId) => dDatabase(DIAG, dbId || 'ledger', inst),
+  domains: (_tall, inst, dbId) =>
+    String(inst).includes('tile') ? dDatabaseLanes(DIAG, dbId || 'ledger', inst) : dDatabase(DIAG, dbId || 'ledger', inst),
   airflow: (_tall, inst) => dAirflow(DIAG, inst),
   dbt: (_tall, inst) => dDbt(DIAG, inst),
   pipes: (_tall, inst) => dPipes(DIAG, inst),
@@ -35,6 +37,7 @@ export default function ArchitectureDiagram({
   tall = false,
   inst = 't',
   dbId = null,
+  variant = null,
 }) {
   const [markup, setMarkup] = useState('')
   const [pop, setPop] = useState(null)
@@ -49,7 +52,7 @@ export default function ArchitectureDiagram({
     }
     let cancelled = false
     const render = () => {
-      if (!cancelled) setMarkup(build(tall, inst, dbId))
+      if (!cancelled) setMarkup(build(tall, inst, variant ?? dbId))
     }
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(render)
@@ -59,7 +62,7 @@ export default function ArchitectureDiagram({
     return () => {
       cancelled = true
     }
-  }, [kind, tall, inst, dbId])
+  }, [kind, tall, inst, dbId, variant])
 
   useLayoutEffect(() => {
     const host = hostRef.current
