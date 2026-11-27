@@ -6,8 +6,8 @@
 
 export const COPY = {
   section: {
-    kicker: 'Projects',
-    title: 'Work that shows the platform',
+    kicker: 'Snowflake, agents, and MCP as personal infrastructure',
+    title: 'Built for life, not just the office',
     intro:
       'The lead project is the household data platform I run on Snowflake. It has five production databases for finance, YouTube, AI agents, shared operations and health records. Assistant tools can only reach approved data, and every change takes a careful path from pull request to production. The tiles below show how changes ship, how data feeds land, how models and schedules run, how access and cost are controlled, and how agents connect. A shorter list of other shipped work follows.',
   },
