@@ -733,14 +733,37 @@ p.bx-subhead {
     font-size: 1.9rem;
   }
 
+  /* Wide: copy row on top, diagram full tile width below (side-by-side shrank the diagram). */
   .bx-leadbody {
     display: grid;
-    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
-    gap: 1.75rem;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
     margin-top: 0.5rem;
     flex: 1 1 auto;
     min-height: 0;
     align-items: start;
+  }
+
+  .bx-leadtext {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    column-gap: 1.75rem;
+    align-items: start;
+  }
+
+  .bx-leadtext > .project-tile__fold {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+
+  .bx-leadtext > .bx-stats,
+  .bx-leadtext > .bx-chips {
+    grid-column: 2;
+  }
+
+  .bx-leadtext > .bx-stats {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    margin-top: 0;
   }
 
   .bx-leadfig {
@@ -815,7 +838,7 @@ p.bx-subhead {
   }
 
   .bx-lead .bx-leadfig svg {
-    max-height: min(24rem, 48vh);
+    max-height: none;
   }
 
   .bx-more {
