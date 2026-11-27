@@ -214,7 +214,7 @@ export function dGrokbot(D, inst=""){
     o+=node('box',390,y,156,[{t:r.use,sz:8.8,c:C.sub}],{h:48}).g;
     a+=arrow(`M184,${y+24} H198`,'c')+arrow(`M372,${y+24} H388`,'c');
   });
-  o+=node('box',14,286,532,[{t:G.note||'Cortex AGENT_HOUSEHOLD_FINANCE / _RO / AGENT_LEDGER_OPS sit on SV_* and CS_* behind these MCP catalogs.',sz:9,c:C.sub}],{h:40,dash:1}).g;
+  o+=node('box',14,286,532,[{t:G.note||'Cortex AGENT_HOUSEHOLD_FINANCE / _RO / AGENT_LEDGER_OPS sit on semantic views and Cortex Search services behind these MCP catalogs.',sz:9,c:C.sub}],{h:40,dash:1}).g;
   o+=legend(14,342,['agent','src']);
   return svg(W,366,G.title||'Grokbot architecture — agents per MCP',a+o)};
 
@@ -288,8 +288,8 @@ export function dSec(D, inst=""){
   o+=node('box',14,68,200,n2(S.write||'MCP_HOUSEHOLD_LEDGER','write path',8.6,K.writeSrv,'agent'),{h:44,z:'agent',hero:1,platform:'mcp'}).g;
   o+=node('box',230,68,200,n2(S.read?.t||'MCP_HOUSEHOLD_LEDGER_GROK',S.read?.s||'no write tools',8.6,K.readSrv,'agent'),{h:44,z:'agent',hero:1,platform:'mcp'}).g;
   o+=node('box',14,124,200,n2(S.gate?.t||'R_CORTEX_GATE',S.gate?.s||'sole CORTEX_USER',8.6),{h:28,z:'sec'}).g;
-  o+=node('cyl',230,122,120,n2(S.cat?.[0]||'SV_*','',8.2,K.svDoc,'data'),{h:32,z:'data'}).g;
-  o+=node('cyl',360,122,120,n2(S.cat?.[1]||'CS_*','',8.2,K.cs,'data'),{h:32,z:'data'}).g;
+  o+=node('cyl',230,122,120,n2(S.cat?.[0]||'Semantic views','',8.2,K.svDoc,'data'),{h:32,z:'data'}).g;
+  o+=node('cyl',360,122,120,n2(S.cat?.[1]||'Cortex Search','',8.2,K.cs,'data'),{h:32,z:'data'}).g;
   a+=arrow('M114,54 V68','c')+arrow('M330,54 V68','c')+arrow('M114,112 V124','c')+arrow('M330,112 V122','c');
   // Warehouses
   const wh=S.warehouses||[];

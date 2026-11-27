@@ -17,7 +17,7 @@ const PROJECT_RAIL = [
   { id: 'domains', label: 'DBs · tables · models' },
   { id: 'mcp', label: 'MCP · agents · tools' },
   { id: 'security', label: 'Roles · WH · cost' },
-  { id: 'features', label: 'SV_* · CS_* catalogs' },
+  { id: 'features', label: 'Semantic views · Cortex Search' },
   { id: 'grokbot', label: 'Grokbot · per MCP' },
   { id: 'more', label: 'More work' },
 ]
@@ -30,12 +30,12 @@ const KICKERS = {
   dbt: 'Transform layers',
   pipes: 'Source feeds → schemas',
   security: 'Roles · warehouses · cost',
-  features: 'SV_* · CS_* catalogs',
+  features: 'Semantic views · Cortex Search',
   grokbot: 'Agents per MCP server',
 }
 
 const LEAD_CAPTION =
-  'As-built: MCP_HOUSEHOLD_LEDGER_GROK (read) and MCP_HOUSEHOLD_LEDGER (write) in front of SV_* / CS_* on HOUSEHOLD_LEDGER.'
+  'As-built: MCP_HOUSEHOLD_LEDGER_GROK (read) and MCP_HOUSEHOLD_LEDGER (write) in front of semantic views / Cortex Search services on HOUSEHOLD_LEDGER.'
 
 const MORE_PREVIEW = {
   'hr-intelligence': { src: publicUrl('assets/img/bento/hr-intelligence.jpg'), sample: false },
@@ -311,8 +311,8 @@ function LeadTile({ tall }) {
       </div>
       <div className="bx-leadbody">
         <div className="bx-leadtext">
-          <FoldBody project={{ outcome: L.intro }} lines={3} />
           <StatStrip stats={L.stats} />
+          <FoldBody project={{ outcome: L.intro }} lines={3} />
         </div>
         <figure className="bx-fig bx-leadfig">
           <ArchitectureDiagram kind="lead" tall={tall} inst="tile" />

@@ -15,7 +15,7 @@ export const COPY = {
     title: 'HOUSEHOLD_LEDGER and MCP',
     subhead: 'Snowflake data architecture and MCP',
     oneLine:
-      '5 prod databases · 3 MCP servers · 20 Airflow DAG files · Monarch, Gmail, Drive, YouTube, Epic MyChart · AI chat history in AGENTIC_WORKFORCE · 15 SV_* · 6 CS_*. Agents hit MCP catalogs, not an open warehouse login.',
+      '5 prod databases · 3 MCP servers · 20 Airflow DAG files · Monarch, Gmail, Drive, YouTube, Epic MyChart · AI chat history in AGENTIC_WORKFORCE · 15 semantic views · 6 Cortex Search services. Agents hit MCP catalogs, not an open warehouse login.',
     tags: [
       'Snowflake',
       'HOUSEHOLD_LEDGER',
@@ -32,12 +32,12 @@ export const COPY = {
       { n: '5', label: 'prod databases' },
       { n: '3', label: 'MCP servers' },
       { n: '20', label: 'Airflow DAG files' },
-      { n: '4', label: 'warehouses (prod paths)' },
-      { n: '15', label: 'SV_* Analyst views' },
-      { n: '6', label: 'CS_* search services' },
+      { n: '4', label: 'warehouses' },
+      { n: '15', label: 'semantic views' },
+      { n: '6', label: 'Cortex Search services' },
     ],
     intro:
-      'This is the household data platform I build and run. Snowflake holds HOUSEHOLD_LEDGER (finance), MOONSHOTS (YouTube), AGENTIC_WORKFORCE (agent roster, conversations, graph, and chat-history capture across desks), CONTROL (procs, queues, MCP, tests), and HOUSEHOLD_HEALTH (Epic MyChart FHIR) — layers as schemas, not one database per layer. HOUSEHOLD_HEALTH’s architecture and Snowflake model are production; underlying MyChart patient data is not loaded yet — not a separate product card. Airflow on the office PC is the production scheduler; Snowflake tasks are retired. Monarch, Gmail, and Drive feed the ledger; YouTube feeds Moonshots; workforce capture and nightly chat backup land AI history; Epic MyChart SMART on FHIR R4 targets HOUSEHOLD_HEALTH when source data is available. Grok bots and Cursor attach to MCP servers bound to SV_*, CS_*, and approved procedures.',
+      'This is the household data platform I build and run. Snowflake holds HOUSEHOLD_LEDGER (finance), MOONSHOTS (YouTube), AGENTIC_WORKFORCE (agent roster, conversations, graph, and AI chat history captured across platforms), CONTROL (procs, queues, MCP, tests), and HOUSEHOLD_HEALTH (Epic MyChart FHIR) — layers as schemas, not one database per layer. HOUSEHOLD_HEALTH’s architecture and Snowflake model are production; underlying MyChart patient data is not loaded yet — not a separate product card. Airflow on the office PC is the production scheduler; Snowflake tasks are retired. Monarch, Gmail, and Drive feed the ledger; YouTube feeds Moonshots; workforce capture and nightly chat backup land AI chat history from every platform; Epic MyChart SMART on FHIR R4 targets HOUSEHOLD_HEALTH when source data is available. Grok bots and Cursor attach to MCP servers bound to semantic views, Cortex Search services, and approved procedures.',
   },
   tiles: [
     {
@@ -93,7 +93,7 @@ export const COPY = {
       title: 'Source feeds into Snowflake',
       svg: 'pipes',
       body:
-        'Live feeds land in product database schemas — not a shared dump. Morning ingest is one pipeline_load_window at 07:15 ET on INGEST_WH (email + Monarch daily; YouTube Monday, then trigger moonshots_yt_sync_daily; Epic FHIR when EPIC_FHIR_LOAD_ENABLED and source data is present). Monarch via EAI_MONARCH (monarch_load / proc_monarch_extract); Gmail via EAI_GMAIL (ledger_email_alerts → classify → reconcile_pending); Drive via drive_poll (same 07:15 minute, no warehouse) → doc_extract (pypdf then local Tesseract — no Cortex OCR). Workforce AI history lands through capture MERGE and the nightly chat backup into AGENTIC_WORKFORCE (and RAW.CHAT_MESSAGES). Epic MyChart SMART on FHIR R4 lands into HOUSEHOLD_HEALTH (architecture and Snowflake model are production; underlying patient data is not loaded yet). Shape is extract/land → transform (dbt) → test. No S3/Snowpipe path — that design was dropped.',
+        'Live feeds land in product database schemas — not a shared dump. Morning ingest is one pipeline_load_window at 07:15 ET on INGEST_WH (email + Monarch daily; YouTube Monday, then trigger moonshots_yt_sync_daily; Epic FHIR when EPIC_FHIR_LOAD_ENABLED and source data is present). Monarch via EAI_MONARCH (monarch_load / proc_monarch_extract); Gmail via EAI_GMAIL (ledger_email_alerts → classify → reconcile_pending); Drive via drive_poll (same 07:15 minute, no warehouse) → doc_extract (pypdf then local Tesseract — no Cortex OCR). Cross-platform AI chat history lands through capture MERGE and the nightly chat backup into AGENTIC_WORKFORCE (and RAW.CHAT_MESSAGES). Epic MyChart SMART on FHIR R4 lands into HOUSEHOLD_HEALTH (architecture and Snowflake model are production; underlying patient data is not loaded yet). Shape is extract/land → transform (dbt) → test. No S3/Snowpipe path — that design was dropped.',
       caption:
         'pipeline_load_window → ledger + Monday YouTube. Drive → OCR. Chat capture → AGENTIC_WORKFORCE. MyChart FHIR → HOUSEHOLD_HEALTH (model ready; source data pending).',
     },
@@ -237,7 +237,7 @@ export const COPY = {
       body:
         'RAW lands payloads. CORE holds business objects (often written in the same procedure pass as RAW). dbt builds STAGING / marts / ANALYTICS on top of CORE: at 06:00 ET ledger_dbt_daily runs Bash dbt on LEDGER_WH or COMPUTE_WH, then triggers hr_dbt_daily, then agentic_workforce_dbt_daily, and waits — one LEDGER_WH window. dbt_daily keeps its own 06:00 Cosmos cron (target hl_prod / ANALYTICS_DBT) and is created paused — not in that chain. Dev twins force hl_dev / *_DEV and have no schedule. How a PR becomes a Terraform apply or an Airflow pin lives on the Ship path tile — this tile is the transform contract.',
       caption:
-        'RAW → CORE → dbt STAGING/marts → ANALYTICS + SV_*. hl_prod vs hl_dev. PR CI schema is on the Ship path tile.',
+        'RAW → CORE → dbt STAGING/marts → ANALYTICS + semantic views. hl_prod vs hl_dev. PR CI schema is on the Ship path tile.',
       rows: [
         {
           name: 'RAW',
@@ -255,7 +255,7 @@ export const COPY = {
           status: 'Transform',
         },
         {
-          name: 'ANALYTICS + SV_*',
+          name: 'ANALYTICS + semantic views',
           role: 'Reporting grain and Cortex Analyst contracts (15 semantic views)',
           status: 'Serve / MCP catalogs',
         },
@@ -277,7 +277,7 @@ export const COPY = {
       title: 'Databases: columns, tables, modeling',
       svg: 'erd',
       body:
-        'Five production databases plus *_DEV twins with synthetic fixtures. Open a database below for schemas, example tables, and grain. HOUSEHOLD_LEDGER: PUBLIC, RAW, CORE, CTRL, ANALYTICS, AI, transient STAGING / INTERMEDIATE. MOONSHOTS: RAW, CORE, CTRL, AI. AGENTIC_WORKFORCE: AGENTS, CONVERSATIONS, GRAPH, CAPTURE, plus STAGING, INTERMEDIATE, ANALYTICS, AI, TRANSFORM, SECURITY — this is where desk AI history accumulates (capture MERGE + nightly RAW.CHAT_MESSAGES backup), then agentic_workforce_dbt_daily builds ANALYTICS. CONTROL: PROC, QUEUE, STAGE, FLAGS, TASKS, MCP, SECURITY, TESTS. HOUSEHOLD_HEALTH: Epic MyChart FHIR product database (architecture and Snowflake model production; underlying patient data not loaded yet) — same product-database idea, not a separate portfolio card. A RAW row is one landed payload; a CORE row is one business object; ANALYTICS is reporting grain and SV_* catalogs.',
+        'Five production databases plus *_DEV twins with synthetic fixtures. Open a database below for schemas, example tables, and grain. HOUSEHOLD_LEDGER: PUBLIC, RAW, CORE, CTRL, ANALYTICS, AI, transient STAGING / INTERMEDIATE. MOONSHOTS: RAW, CORE, CTRL, AI. AGENTIC_WORKFORCE: AGENTS, CONVERSATIONS, GRAPH, CAPTURE, plus STAGING, INTERMEDIATE, ANALYTICS, AI, TRANSFORM, SECURITY — this is where AI chat history from every platform accumulates (capture MERGE + nightly RAW.CHAT_MESSAGES backup), then agentic_workforce_dbt_daily builds ANALYTICS. CONTROL: PROC, QUEUE, STAGE, FLAGS, TASKS, MCP, SECURITY, TESTS. HOUSEHOLD_HEALTH: Epic MyChart FHIR product database (architecture and Snowflake model production; underlying patient data not loaded yet) — same product-database idea, not a separate portfolio card. A RAW row is one landed payload; a CORE row is one business object; ANALYTICS is reporting grain and semantic views.',
       caption:
         'Select a database for schemas and modeling grain. Prod: HOUSEHOLD_LEDGER, MOONSHOTS, AGENTIC_WORKFORCE, CONTROL, HOUSEHOLD_HEALTH.',
       databases: [
@@ -288,12 +288,12 @@ export const COPY = {
           oneLine: 'Finance ledger — Monarch, Gmail, Drive documents',
           schemas: ['PUBLIC', 'RAW', 'CORE', 'CTRL', 'ANALYTICS', 'AI', 'STAGING', 'INTERMEDIATE'],
           detail:
-            'Landing and conformed finance data. CTRL hosts MCP_HOUSEHOLD_LEDGER_GROK and MCP_HOUSEHOLD_LEDGER. ANALYTICS holds reporting grain and the 15 SV_* Analyst views; Cortex Search CS_DOCUMENTS, CS_EMAIL_MESSAGES, CS_GAPS_IDEA, CS_PARSE_REVIEW sit on ledger text. Example path: DOCUMENTS_RAW → DOCUMENTS → FACT_DOCUMENT_STANDING → SV_DOCUMENT_STANDING / CS_DOCUMENTS.',
+            'Landing and conformed finance data. CTRL hosts MCP_HOUSEHOLD_LEDGER_GROK and MCP_HOUSEHOLD_LEDGER. ANALYTICS holds reporting grain and the 15 semantic views; Cortex Search CS_DOCUMENTS, CS_EMAIL_MESSAGES, CS_GAPS_IDEA, CS_PARSE_REVIEW sit on ledger text. Example path: DOCUMENTS_RAW → DOCUMENTS → FACT_DOCUMENT_STANDING → SV_DOCUMENT_STANDING / CS_DOCUMENTS.',
           objects: [
             { layer: 'RAW', name: 'DOCUMENTS_RAW', note: 'One landed file / payload' },
             { layer: 'CORE', name: 'DOCUMENTS', note: 'One business document' },
             { layer: 'ANALYTICS', name: 'FACT_DOCUMENT_STANDING', note: 'Reporting grain' },
-            { layer: 'Catalog', name: 'SV_* / CS_*', note: 'Analyst + Search' },
+            { layer: 'Catalog', name: 'semantic views / Cortex Search services', note: 'Analyst + Search' },
           ],
         },
         {
@@ -315,7 +315,7 @@ export const COPY = {
           id: 'workforce',
           name: 'AGENTIC_WORKFORCE',
           status: 'Production',
-          oneLine: 'AI desk history — agents, conversations, graph, capture',
+          oneLine: 'Cross-platform AI chat history — agents, conversations, graph, capture',
           schemas: [
             'AGENTS',
             'CONVERSATIONS',
@@ -375,13 +375,13 @@ export const COPY = {
       title: 'MCP servers, agents, and tools',
       svg: 'mcp',
       body:
-        'Three MCP servers bind agents and tools — the household read/write split is only the first cut. MCP_HOUSEHOLD_LEDGER_GROK (HOUSEHOLD_LEDGER.CTRL) is the read catalog Grok desks attach to: household_finance_agent, ledger_ops_agent, analyst_* tools on the 15 SV_* views, search over CS_DOCUMENTS / CS_EMAIL_MESSAGES / CS_GAPS_IDEA / CS_PARSE_REVIEW, plus document stage list and download. MCP_HOUSEHOLD_LEDGER is the write catalog Cursor / Eta use: the same read surface plus mutate and pipeline procs (Monarch extract/mutate/holdings, ledger_mutate, Gmail ingest and email pipeline, reconcile_pending, document land/extract/jobs, rebuild_analytics, freshness / QA, metal spot). MCP_MOONSHOTS on MOONSHOTS.CTRL is a separate YouTube catalog for Cynthia: list/get video and channel, transcript and video search (ILIKE, semantic, CS_TRANSCRIPTS / CS_VIDEOS), sync status, and procs for youtube_sync, embed_transcripts, and CS refresh. Cortex agents AGENT_HOUSEHOLD_FINANCE, AGENT_HOUSEHOLD_FINANCE_RO, and AGENT_LEDGER_OPS sit on the certified catalogs behind those MCP surfaces. Auth is a Snowflake PAT under role MCP_LEDGER_CLIENT. A read client never holds write tools. Summarized families only — not a private tool dump.',
+        'Three MCP servers bind agents and tools — the household read/write split is only the first cut. MCP_HOUSEHOLD_LEDGER_GROK (HOUSEHOLD_LEDGER.CTRL) is the read catalog Grok desks attach to: household_finance_agent, ledger_ops_agent, analyst_* tools on the 15 semantic views, search over CS_DOCUMENTS / CS_EMAIL_MESSAGES / CS_GAPS_IDEA / CS_PARSE_REVIEW, plus document stage list and download. MCP_HOUSEHOLD_LEDGER is the write catalog Cursor / Eta use: the same read surface plus mutate and pipeline procs (Monarch extract/mutate/holdings, ledger_mutate, Gmail ingest and email pipeline, reconcile_pending, document land/extract/jobs, rebuild_analytics, freshness / QA, metal spot). MCP_MOONSHOTS on MOONSHOTS.CTRL is a separate YouTube catalog for Cynthia: list/get video and channel, transcript and video search (ILIKE, semantic, CS_TRANSCRIPTS / CS_VIDEOS), sync status, and procs for youtube_sync, embed_transcripts, and CS refresh. Cortex agents AGENT_HOUSEHOLD_FINANCE, AGENT_HOUSEHOLD_FINANCE_RO, and AGENT_LEDGER_OPS sit on the certified catalogs behind those MCP surfaces. Auth is a Snowflake PAT under role MCP_LEDGER_CLIENT. A read client never holds write tools. Summarized families only — not a private tool dump.',
       caption:
         'Servers → agents → tool families. Read MCP for Grok; write MCP for Cursor/Eta; Moonshots MCP for YouTube. No full catalog dump.',
       rows: [
         {
           name: 'MCP_HOUSEHOLD_LEDGER_GROK',
-          role: 'Read server — Grok desks. Agents: household_finance_agent, ledger_ops_agent. Tools: analyst_* (15 SV_*), search_* (4 CS_*), document stage list / download.',
+          role: 'Read server — Grok desks. Agents: household_finance_agent, ledger_ops_agent. Tools: analyst_* (15 semantic views), search_* (4 Cortex Search services), document stage list / download.',
           status: 'Read only',
         },
         {
@@ -391,12 +391,12 @@ export const COPY = {
         },
         {
           name: 'MCP_MOONSHOTS',
-          role: 'YouTube server — Cynthia. Catalog get/list, transcript/video search (ILIKE + semantic + CS_*), sync status, proc_youtube_sync / embed / CS refresh. Not household money.',
+          role: 'YouTube server — Cynthia. Catalog get/list, transcript/video search (ILIKE + semantic + Cortex Search), sync status, proc_youtube_sync / embed / CS refresh. Not household money.',
           status: 'Domain MCP',
         },
         {
           name: 'Agent layer',
-          role: 'MCP agents household_finance_agent + ledger_ops_agent; Cortex agents AGENT_HOUSEHOLD_FINANCE, AGENT_HOUSEHOLD_FINANCE_RO, AGENT_LEDGER_OPS on SV_* / CS_*.',
+          role: 'MCP agents household_finance_agent + ledger_ops_agent; Cortex agents AGENT_HOUSEHOLD_FINANCE, AGENT_HOUSEHOLD_FINANCE_RO, AGENT_LEDGER_OPS on semantic views / Cortex Search services.',
           status: 'Orchestration',
         },
         {
@@ -417,7 +417,7 @@ export const COPY = {
       title: 'Roles, warehouses & cost',
       svg: 'security',
       body:
-        'Access and spend sit on the same control surface. Pipeline work uses R_PIPELINE / R_PC_PIPELINE; interactive and agent clients use MCP_LEDGER_CLIENT on the MCP path — not an open warehouse login. R_CORTEX_GATE is the sole holder of SNOWFLAKE.CORTEX_USER; answers are supposed to come from certified SV_* views and CS_* search. Warehouses are split by job: LEDGER_WH (dbt / ledger, auto_suspend 30s, LEDGER_WH_MONITOR), INGEST_WH (07:15 ET load window, auto_suspend 60s, INGEST_MONITOR), ADHOC_WH (agent and desk reads under RM_ADHOC; SVC_GROK_* defaults here so Q&A does not wake LEDGER_WH), and YT_SYNC_WH (Moonshots sync/embed, QUERY_TAG splits embed). Cost controls in git — no dollar figures here: STD-WH-BATCH (batch wake-ups, no row-by-row inserts, QUERY_TAG required), ACCOUNT_MONITOR_40/50, BUDGET_CORTEX_AI_20 → PROC_CORTEX_REVOKE_AGENTS at 100%, PC Tesseract/Whisper instead of Cortex OCR/ASR, Airflow instead of Snowflake tasks, drive_poll hourly, CI JUnit one INSERT per run (CD-004), ROUTINE-PRUNE into existing windows (CD-008). Prod jobs never select DEV_MIGRATION_WH.',
+        'Access and spend sit on the same control surface. Pipeline work uses R_PIPELINE / R_PC_PIPELINE; interactive and agent clients use MCP_LEDGER_CLIENT on the MCP path — not an open warehouse login. R_CORTEX_GATE is the sole holder of SNOWFLAKE.CORTEX_USER; answers are supposed to come from certified semantic views and Cortex Search. Warehouses are split by job: LEDGER_WH (dbt / ledger, auto_suspend 30s, LEDGER_WH_MONITOR), INGEST_WH (07:15 ET load window, auto_suspend 60s, INGEST_MONITOR), ADHOC_WH (agent and desk reads under RM_ADHOC; SVC_GROK_* defaults here so Q&A does not wake LEDGER_WH), and YT_SYNC_WH (Moonshots sync/embed, QUERY_TAG splits embed). Cost controls in git — no dollar figures here: STD-WH-BATCH (batch wake-ups, no row-by-row inserts, QUERY_TAG required), ACCOUNT_MONITOR_40/50, BUDGET_CORTEX_AI_20 → PROC_CORTEX_REVOKE_AGENTS at 100%, PC Tesseract/Whisper instead of Cortex OCR/ASR, Airflow instead of Snowflake tasks, drive_poll hourly, CI JUnit one INSERT per run (CD-004), ROUTINE-PRUNE into existing windows (CD-008). Prod jobs never select DEV_MIGRATION_WH.',
       caption:
         'Roles + MCP split + Cortex gate on top; LEDGER_WH / INGEST_WH / ADHOC_WH / YT_SYNC_WH and monitors / STD-WH-BATCH / Cortex budget below.',
       rows: [
@@ -456,7 +456,7 @@ export const COPY = {
       body:
         '15 semantic views are the Analyst contracts: SV_SPENDING, SV_CASHFLOW, SV_BALANCES_NET_WORTH, SV_LIABILITIES_DUES, SV_EARLY_ACTIVITY, SV_BUDGET_VARIANCE, SV_INVESTMENTS, SV_OBLIGATIONS, SV_DOCUMENT_STANDING, SV_OPS_FRESHNESS, SV_TRANSACTIONS, SV_RECURRING_FIXED, SV_DEBT_PAYOFF, SV_ACCOUNTS_RECEIVABLE, SV_SAVINGS_GOALS. Cortex Search: CS_DOCUMENTS, CS_EMAIL_MESSAGES, CS_GAPS_IDEA, CS_PARSE_REVIEW on the ledger; CS_TRANSCRIPTS and CS_VIDEOS on Moonshots (6 services). Cortex agents: AGENT_HOUSEHOLD_FINANCE, AGENT_HOUSEHOLD_FINANCE_RO, AGENT_LEDGER_OPS. MCP servers in CTRL expose those catalogs as read or write. Warehouse work is batched into a load window; interactive and agent work can sit on a separate warehouse.',
       caption:
-        '15 SV_* and 6 CS_* catalogs. MCP_HOUSEHOLD_LEDGER_GROK and MCP_HOUSEHOLD_LEDGER sit in front of them.',
+        '15 semantic views and 6 Cortex Search services. MCP_HOUSEHOLD_LEDGER_GROK and MCP_HOUSEHOLD_LEDGER sit in front of them.',
     },
     {
       id: 'grokbot',
@@ -464,7 +464,7 @@ export const COPY = {
       title: 'Grokbot architecture — agents per MCP',
       svg: 'grokbot',
       body:
-        'Only the agent paths that attach to each MCP server, plus a few technical uses of that surface — not a broader platform tour. Stephen / Grok finance desks use MCP_HOUSEHOLD_LEDGER_GROK (read): household_finance_agent for spend, cashflow, balances, documents, and ops search; ledger_ops_agent for freshness and warehouse health; analyst_* and search_* tools for certified totals and mailbox/document retrieval. Cursor / Eta use MCP_HOUSEHOLD_LEDGER (write) for the same reads plus Monarch and ledger mutations, Gmail/document pipelines, and analytics rebuild. Cynthia uses MCP_MOONSHOTS for YouTube catalog, transcript search, and sync/embed jobs. Cortex agents AGENT_HOUSEHOLD_FINANCE / _RO and AGENT_LEDGER_OPS sit on SV_* and CS_* behind those MCP catalogs. Money answers stay a staff rule on the read path even when analyst tools are listed.',
+        'Only the agent paths that attach to each MCP server, plus a few technical uses of that surface — not a broader platform tour. Stephen / Grok finance desks use MCP_HOUSEHOLD_LEDGER_GROK (read): household_finance_agent for spend, cashflow, balances, documents, and ops search; ledger_ops_agent for freshness and warehouse health; analyst_* and search_* tools for certified totals and mailbox/document retrieval. Cursor / Eta use MCP_HOUSEHOLD_LEDGER (write) for the same reads plus Monarch and ledger mutations, Gmail/document pipelines, and analytics rebuild. Cynthia uses MCP_MOONSHOTS for YouTube catalog, transcript search, and sync/embed jobs. Cortex agents AGENT_HOUSEHOLD_FINANCE / _RO and AGENT_LEDGER_OPS sit on semantic views and Cortex Search services behind those MCP catalogs. Money answers stay a staff rule on the read path even when analyst tools are listed.',
       caption:
         'Grok → read MCP. Cursor/Eta → write MCP. Cynthia → Moonshots MCP. Each line is agent + MCP + what that access is for.',
       rows: [
@@ -485,7 +485,7 @@ export const COPY = {
         },
         {
           name: 'Uses of that access',
-          role: 'Money Q&A and ops freshness on ledger SV_*/CS_*; document standing; YouTube research on CS_TRANSCRIPTS / CS_VIDEOS',
+          role: 'Money Q&A and ops freshness on ledger semantic views / Cortex Search services; document standing; YouTube research on CS_TRANSCRIPTS / CS_VIDEOS',
           status: 'Technical',
         },
       ],
@@ -512,7 +512,7 @@ export const COPY = {
       prev: 'myorglab',
       title: 'MyOrgLab',
       line:
-        'Customer-facing practice built from the same pattern as HOUSEHOLD_LEDGER: in-account Cortex agents, SV_* semantic views, and MCP bridges — not a multi-tenant copy of customer data.',
+        'Customer-facing practice built from the same pattern as HOUSEHOLD_LEDGER: in-account Cortex agents, semantic views, and MCP bridges — not a multi-tenant copy of customer data.',
       tags: ['Snowflake', 'Cortex', 'semantic views', 'MCP', 'Streamlit', 'Power BI'],
     },
     {
@@ -549,7 +549,7 @@ export const COPY = {
 export const DIAG = {
   lead: {
     title:
-      'Lead diagram: agents through MCP_HOUSEHOLD_LEDGER_GROK and MCP_HOUSEHOLD_LEDGER into SV_* / CS_* and HOUSEHOLD_LEDGER schemas',
+      'Lead diagram: agents through MCP_HOUSEHOLD_LEDGER_GROK and MCP_HOUSEHOLD_LEDGER into semantic views / Cortex Search services and HOUSEHOLD_LEDGER schemas',
     layers: [
       {
         label: 'Clients',
@@ -569,15 +569,15 @@ export const DIAG = {
         label: 'Cortex',
         nodes: [
           { t: 'AGENT_HOUSEHOLD_FINANCE' },
-          { t: 'Analyst', s: 'text to SQL on SV_*' },
-          { t: 'Search', s: 'CS_* services' },
+          { t: 'Analyst', s: 'text to SQL on semantic views' },
+          { t: 'Search', s: 'Cortex Search services' },
         ],
       },
       {
         label: 'Catalogs',
         nodes: [
-          { t: 'SV_* semantic views', e: 1 },
-          { t: 'CS_* Cortex Search', e: 1 },
+          { t: 'semantic views', e: 1 },
+          { t: 'Cortex Search services', e: 1 },
         ],
       },
       {
@@ -638,7 +638,7 @@ export const DIAG = {
       },
       {
         label: 'Serve',
-        nodes: [{ t: 'ANALYTICS + SV_*' }, { t: 'MCP servers', e: 1 }],
+        nodes: [{ t: 'ANALYTICS + semantic views' }, { t: 'MCP servers', e: 1 }],
       },
     ],
     edges: [
@@ -679,7 +679,7 @@ export const DIAG = {
       },
       {
         label: 'Catalogs',
-        nodes: [{ t: 'SV_* certified views' }, { t: 'CS_* search services' }],
+        nodes: [{ t: 'certified semantic views' }, { t: 'Cortex Search services' }],
       },
     ],
     warehouses: [
@@ -730,8 +730,8 @@ export const DIAG = {
       {
         label: 'Catalogs',
         nodes: [
-          { t: 'SV_*', s: 'Analyst catalogs' },
-          { t: 'CS_*', s: 'Search catalogs' },
+          { t: 'Semantic views', s: 'Analyst catalogs' },
+          { t: 'Cortex Search', s: 'Search catalogs' },
         ],
       },
       {
@@ -778,7 +778,7 @@ export const DIAG = {
   },
   grokbot: {
     title: 'Grokbot architecture — agents per MCP',
-    note: 'Cortex AGENT_HOUSEHOLD_FINANCE / _RO / AGENT_LEDGER_OPS sit on SV_* and CS_* behind these MCP catalogs.',
+    note: 'Cortex AGENT_HOUSEHOLD_FINANCE / _RO / AGENT_LEDGER_OPS sit on semantic views and Cortex Search services behind these MCP catalogs.',
     rows: [
       {
         agent: 'Grok finance desks',
@@ -891,7 +891,7 @@ DIAG.dbt = {
     { t: 'RAW', s: 'landed payloads' },
     { t: 'CORE', s: 'business objects' },
     { t: 'dbt STAGING / marts', s: 'hl_prod · ledger_dbt_daily / dbt_daily' },
-    { t: 'ANALYTICS + SV_*', s: '15 Analyst views' },
+    { t: 'ANALYTICS + semantic views', s: '15 Analyst views' },
     { t: 'CI → merge → apply', s: 'PR schema · Terraform · Airflow pin pull' },
   ],
 }
@@ -924,7 +924,7 @@ Object.assign(DIAG.security, {
   write: 'MCP_HOUSEHOLD_LEDGER',
   read: { t: 'MCP_HOUSEHOLD_LEDGER_GROK', s: 'no write tools' },
   gate: { t: 'R_CORTEX_GATE', s: 'sole SNOWFLAKE.CORTEX_USER' },
-  cat: ['SV_* certified views', 'CS_* search services'],
+  cat: ['certified semantic views', 'Cortex Search services'],
 })
 
 DIAG.features.title = 'Snowflake capability matrix'
@@ -941,8 +941,8 @@ DIAG.features.rows = [
     label: 'Catalogs',
     z: 'data',
     cells: [
-      { i: 'grid', t: 'SV_*', s: 'Analyst catalogs' },
-      { i: 'search', t: 'CS_*', s: 'Search catalogs' },
+      { i: 'grid', t: 'Semantic views', s: 'Analyst catalogs' },
+      { i: 'search', t: 'Cortex Search', s: 'Search catalogs' },
     ],
   },
   {

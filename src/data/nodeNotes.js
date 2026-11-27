@@ -9,9 +9,9 @@ export const NODE_NOTES = [
   [/^Airflow/, 'Airflow on the office PC', 'Production scheduler (Snowflake tasks are retired). Runs the 07:15 ET pipeline_load_window on INGEST_WH, then dbt and tests.'],
   [/^Landing schema/, 'RAW', 'Landing schema. One row per landed payload, kept as received.'],
   [/^Conformed schema/, 'CORE', 'Conformed schema. One row per business object (account, transaction, document). The write path lands here.'],
-  [/^Analytics schema/, 'ANALYTICS', 'Reporting grain built by dbt. Feeds the SV_* semantic views.'],
-  [/^Semantic views/, 'Semantic views', '15 certified SV_* Analyst views. Agents answer numeric questions from these, not from raw tables.'],
-  [/^Cortex Search/, 'Cortex Search services', '6 CS_* services over documents, emails and transcripts for text retrieval.'],
+  [/^Analytics schema/, 'ANALYTICS', 'Reporting grain built by dbt. Feeds the semantic views.'],
+  [/^Semantic views/, 'Semantic views', '15 certified semantic views. Agents answer numeric questions from these, not from raw tables.'],
+  [/^Cortex Search/, 'Cortex Search services', '6 Cortex Search services over documents, emails and transcripts for text retrieval.'],
   [/Read MCP server$/, 'Read MCP server', 'MCP_HOUSEHOLD_LEDGER_GROK. Read-only catalog for Grok desks: analyst_* and search_* tools, no write tools.'],
   [/Write MCP server$/, 'Write MCP server', 'MCP_HOUSEHOLD_LEDGER. Used by Cursor / Eta: the same reads plus approved mutate and pipeline procedures.'],
   [/^Read clients$/, 'Read clients', 'Grok bots and desks. They attach to the read MCP server only, not an open warehouse login.'],
@@ -19,7 +19,7 @@ export const NODE_NOTES = [
   [/^Extract and land/, 'Extract and land', 'pipeline_load_window: Monarch and Gmail extracts land into RAW on INGEST_WH.'],
   [/^doc_extract/, 'doc_extract', 'Reads Drive documents with pypdf, then local Tesseract, and lands the text for CORE.'],
   [/^RAW and CORE/, 'RAW and CORE', 'Landed payloads (RAW) and conformed business objects (CORE).'],
-  [/^dbt/, 'dbt', 'Builds CORE into ANALYTICS and the SV_* views (ledger_dbt_daily).'],
+  [/^dbt/, 'dbt', 'Builds CORE into ANALYTICS and the semantic views (ledger_dbt_daily).'],
   [/^Tests$/, 'Tests', 'dbt and Airflow test results land in one append-only test-results table.'],
 ]
 

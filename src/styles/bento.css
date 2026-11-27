@@ -744,21 +744,11 @@ p.bx-subhead {
     align-items: start;
   }
 
+  /* Stats cards, then the description at full width, then the flow below. */
   .bx-leadtext {
-    display: grid;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-    column-gap: 1.75rem;
-    align-items: start;
-  }
-
-  .bx-leadtext > .project-tile__fold {
-    grid-column: 1;
-    grid-row: 1 / span 2;
-  }
-
-  .bx-leadtext > .bx-stats,
-  .bx-leadtext > .bx-chips {
-    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
   }
 
   .bx-leadtext > .bx-stats {

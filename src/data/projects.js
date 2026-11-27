@@ -12,7 +12,7 @@ export const projects = [
     icon: 'uil-snowflake',
     title: 'MyOrgLab',
     outcome:
-      'Customer practice built like HOUSEHOLD_LEDGER: in-account Cortex agents, SV_* views, and MCP bridges — not a multi-tenant copy of their data.',
+      'Customer practice built like HOUSEHOLD_LEDGER: in-account Cortex agents, semantic views, and MCP bridges — not a multi-tenant copy of their data.',
     modalTitle: 'MyOrgLab: governed agents in the customer account',
     thumb: publicUrl('assets/img/myorglab.png'),
     summary: [
@@ -163,11 +163,11 @@ export const projects = [
       'household-tools',
     ],
     summary: [
-      'HOUSEHOLD_LEDGER is the warehouse I operate. Monarch is the system of record for posted accounts and transactions. Gmail card alerts land early through EAI_GMAIL. Drive documents land through drive_poll / doc_extract. Agents answer from SV_* and CS_* catalogs instead of inventing missing figures.',
+      'HOUSEHOLD_LEDGER is the warehouse I operate. Monarch is the system of record for posted accounts and transactions. Gmail card alerts land early through EAI_GMAIL. Drive documents land through drive_poll / doc_extract. Agents answer from semantic views and Cortex Search services catalogs instead of inventing missing figures.',
       'AGENT_HOUSEHOLD_FINANCE and AGENT_LEDGER_OPS sit on top. Cursor uses MCP_HOUSEHOLD_LEDGER (write). Grok finance bots use MCP_HOUSEHOLD_LEDGER_GROK (read-only). Same account, split catalogs.',
     ],
     points: [
-      'Schemas: RAW land, CORE truth, ANALYTICS marts + SV_*, CTRL jobs / agents / MCP.',
+      'Schemas: RAW land, CORE truth, ANALYTICS marts + semantic views, CTRL jobs / agents / MCP.',
       'Sibling prod DBs: MOONSHOTS, AGENTIC_WORKFORCE, CONTROL. Airflow on the office PC is the scheduler.',
     ],
   },
@@ -251,16 +251,16 @@ export const projects = [
     group: 'Private platform',
     parentId: 'private-platform',
     icon: 'uil-chart-line',
-    title: 'SV_* semantic views',
+    title: 'semantic views',
     outcome:
-      'ANALYTICS star schema plus Cortex Analyst contracts: agents query SV_*, not ad-hoc vibes.',
+      'ANALYTICS star schema plus Cortex Analyst contracts: agents query semantic views, not ad-hoc vibes.',
     modalTitle: 'ANALYTICS semantic views',
     summary: [
       'CORE holds operational truth. ANALYTICS holds dims, facts, and semantic views so Cortex Analyst answers without ad-hoc SQL every turn: SV_SPENDING, SV_CASHFLOW, SV_BALANCES_NET_WORTH, SV_LIABILITIES_DUES, SV_EARLY_ACTIVITY, SV_BUDGET_VARIANCE, SV_INVESTMENTS, SV_OBLIGATIONS, SV_DOCUMENT_STANDING, SV_OPS_FRESHNESS, SV_TRANSACTIONS, SV_RECURRING_FIXED, SV_DEBT_PAYOFF, SV_ACCOUNTS_RECEIVABLE, SV_SAVINGS_GOALS.',
       'Each analyst_* MCP tool is bound to a view FQN. Agents prefer Analyst for totals and refuse rates or due dates the views do not have.',
     ],
     points: [
-      'Certified SV_* views are the grain agents are allowed to total from.',
+      'Certified semantic views are the grain agents are allowed to total from.',
       'SV_EARLY_ACTIVITY is pending email plus Monarch pending — not posted spend.',
       'CTRL.SV_OPS_FRESHNESS is what ledger_ops_agent reads before anyone trusts a figure.',
     ],
@@ -275,11 +275,11 @@ export const projects = [
       'Agents only get tools I bound. EAI_MONARCH and EAI_GMAIL reach out; procs mutate; Analyst and Search read.',
     modalTitle: 'Tool bindings and External Access Integrations',
     summary: [
-      'External Access Integrations: EAI_MONARCH (GraphQL), EAI_GMAIL, plus EAI_MARKET_DATA and EAI_MOONSHOTS_YOUTUBE where needed. AGENT_HOUSEHOLD_FINANCE gets Analyst on each SV_*, four ledger CS_* Search services, proc_metal_spot, and approved write procedures, plus skills on @CTRL.AGENT_SKILLS.',
+      'External Access Integrations: EAI_MONARCH (GraphQL), EAI_GMAIL, plus EAI_MARKET_DATA and EAI_MOONSHOTS_YOUTUBE where needed. AGENT_HOUSEHOLD_FINANCE gets Analyst on each semantic view, four ledger Cortex Search services, proc_metal_spot, and approved write procedures, plus skills on @CTRL.AGENT_SKILLS.',
       'Tool priority is the product: Analyst first, Search second, metal spot, then writes. No general Python REPL around the warehouse.',
     ],
     points: [
-      'MCP catalog: agents, analyst_* on SV_*, search_* on CS_*, pipeline and mutate procs on the write server.',
+      'MCP catalog: agents, analyst_* on semantic views, search_* on Cortex Search services, pipeline and mutate procs on the write server.',
       'R_CORTEX_GATE is the sole SNOWFLAKE.CORTEX_USER holder.',
       'ledger_ops_agent stays read-heavy so a freshness check cannot mutate Monarch.',
     ],
@@ -351,7 +351,7 @@ export const highlights = [
     projectId: 'private-platform',
     icon: 'uil-chart-line',
     label: 'HOUSEHOLD_LEDGER + MCP',
-    detail: 'Monarch, Gmail, Drive → Snowflake; MCP_HOUSEHOLD_LEDGER write / _GROK read on SV_* and CS_*.',
+    detail: 'Monarch, Gmail, Drive → Snowflake; MCP_HOUSEHOLD_LEDGER write / _GROK read on semantic views and Cortex Search services.',
   },
   {
     projectId: 'semantic-hr',
