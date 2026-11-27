@@ -125,7 +125,6 @@ export const NODE_NOTES = {
     [/^Pipelines · R_PIPELINE/, 'R_PIPELINE', 'The pipeline role for the box and office-PC service users. It runs the loads and the 06:00 ET dbt chain.'],
     [/^Office PC · R_PC_PIPELINE/, 'R_PC_PIPELINE', 'The office-PC role. It holds INGEST_WH and YT_SYNC_WH and writes landed data to RAW.'],
     [/^Grok bots/, 'Grok service users', 'SVC_GROK_LEDGER_RO for Stephen and the desks, SVC_GROK_LEDGER_RW for Eta, and SVC_GROK_MOONSHOTS for Cynthia.'],
-    [/^Sleeps after 30s/, 'Auto-suspend and monitor', 'Suspends 30 seconds after the last query. LEDGER_WH_MONITOR caps its credits.'],
     [/^Sleeps after 60s/, 'Auto-suspend and monitor', 'Suspends 60 seconds after the last query. Its own monitor notifies at 50, 75 and 90% and suspends at 100%.'],
     [/^Own monitor/, 'RM_GROK', 'GROK_WH has its own resource monitor, separate from the ledger and load warehouses.'],
     [/^Account monitor/, 'Account monitor', 'One monitor over the whole account, on top of the per-warehouse monitors.'],

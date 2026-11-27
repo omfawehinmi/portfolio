@@ -398,7 +398,7 @@ export const DIAG = {
   security: {
     title: 'Warehouses by job, with the roles that use them and how each stops spending',
     lanes: [
-      { wh: { t: 'LEDGER_WH', s: 'ledger and dbt work', logo: 'snowflake', hero: true }, who: { t: 'Pipelines · R_PIPELINE', s: 'ledger_dbt_daily at 06:00 ET builds the ledger models', logo: 'dbt' }, stop: { t: 'Sleeps after 30s', target: 'LEDGER_WH_MONITOR' } },
+      { wh: { t: 'LEDGER_WH', s: 'ledger and dbt work', logo: 'snowflake', hero: true }, who: { t: 'Pipelines · R_PIPELINE', s: 'ledger_dbt_daily at 06:00 ET builds the ledger models', logo: 'dbt' }, stop: { t: 'Sleeps after 60s', target: 'LEDGER_WH_MONITOR' } },
       { wh: { t: 'INGEST_WH', s: 'morning loads', logo: 'snowflake', hero: true }, who: { t: 'Office PC · R_PC_PIPELINE', s: 'one 07:15 ET window for email, Monarch and documents', logo: 'airflow' }, stop: { t: 'Sleeps after 60s', target: 'INGEST_MONITOR' } },
       { wh: { t: 'GROK_WH', s: 'bot questions', logo: 'snowflake' }, who: { t: 'Grok bots · SVC_GROK_*', s: 'the read, write and YouTube connectors default here', logo: 'grokbot' }, stop: { t: 'Own monitor', target: 'RM_GROK' } },
       { wh: { t: 'YT_SYNC_WH', s: 'YouTube sync', logo: 'snowflake' }, who: { t: 'Office PC · R_PC_PIPELINE', s: 'moonshots_yt_sync_daily and transcript embeddings', logo: 'youtube' }, stop: { t: 'Sleeps after 60s', target: 'YT_SYNC_MONITOR' } },
