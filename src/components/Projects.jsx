@@ -100,7 +100,7 @@ const moreItems = COPY.more.map((item) => ({
 function resolveOpen(openId) {
   if (!openId) return { kind: null }
   const mapped = OPEN_ALIASES[openId] || openId
-  if (mapped === 'lead') return { kind: 'lead' }
+  if (mapped === 'lead') return { kind: null }
   const tile = COPY.tiles.find((item) => item.id === mapped)
   if (tile) return { kind: 'tile', tile }
   const more = moreItems.find((item) => item.id === mapped)
@@ -298,26 +298,16 @@ function ProjectsJumpRail({ items, activeId }) {
   )
 }
 
-function LeadTile({ onOpen, tall }) {
+function LeadTile({ tall }) {
   const L = COPY.lead
   return (
-    <article
-      id="project-lead"
-      className="bx-tile bx-lead bx-tile--hero"
-      data-testid="project-tile"
-      tabIndex={0}
-      role="button"
-      aria-haspopup="dialog"
-      onClick={(event) => openTile(event, 'lead', onOpen)}
-      onKeyDown={(event) => onTileKey(event, 'lead', onOpen)}
-    >
+    <article id="project-lead" className="bx-tile bx-lead bx-tile--hero" data-testid="project-tile">
       <div className="bx-leadtop">
         <div>
           <p className="bx-kicker">Lead project</p>
           <h3 className="bx-h1">{L.title}</h3>
           <p className="bx-subhead">{L.subhead}</p>
         </div>
-        <OpenIcon />
       </div>
       <div className="bx-leadbody">
         <div className="bx-leadtext">
@@ -675,7 +665,7 @@ export default function Projects({ openId, onOpen }) {
         <div className="container bx">
           <p className="bx-intro">{COPY.section.intro}</p>
           <div className="bx-grid">
-            <LeadTile onOpen={onOpen} tall={tall} />
+            <LeadTile tall={tall} />
             {COPY.tiles.map((tile) => (
               <ArchitectureTile key={tile.id} tile={tile} onOpen={onOpen} tall={tall} />
             ))}

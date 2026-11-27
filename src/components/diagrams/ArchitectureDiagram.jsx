@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import { DIAG } from '../../data/architecture.js'
+import { noteFor } from '../../data/nodeNotes.js'
 import {
   dAirflow,
   dDatabase,
@@ -36,6 +37,7 @@ export default function ArchitectureDiagram({
   dbId = null,
 }) {
   const [markup, setMarkup] = useState('')
+  const [pop, setPop] = useState(null)
   const hostRef = useRef(null)
 
   useLayoutEffect(() => {
@@ -64,15 +66,46 @@ export default function ArchitectureDiagram({
     const svg = host.querySelector('svg.bx-arch')
     if (!svg) return undefined
 
+    const labelOf = (node) =>
+      Array.from(node.querySelectorAll('text'))
+        .map((el) => el.textContent)
+        .join(' ')
+
+    svg.querySelectorAll('.nd').forEach((node) => {
+      if (noteFor(labelOf(node))) node.classList.add('has-note')
+    })
+
     const clear = () => {
       svg.querySelectorAll('.nd.is-selected').forEach((el) => el.classList.remove('is-selected'))
+      setPop(null)
     }
 
     const select = (node) => {
       if (!node || !node.classList.contains('nd') || node.classList.contains('nd-tag')) return
       const already = node.classList.contains('is-selected')
       clear()
-      if (!already) node.classList.add('is-selected')
+      if (already) return
+      node.classList.add('is-selected')
+      const note = noteFor(labelOf(node))
+      if (!note) return
+      const hostBox = host.getBoundingClientRect()
+      const box = node.getBoundingClientRect()
+      const below = box.bottom - hostBox.top + 8
+      const flip = below + 120 > hostBox.height && box.top - hostBox.top > 130
+      setPop({
+        ...note,
+        left: Math.min(Math.max(box.left - hostBox.left + box.width / 2, 130), hostBox.width - 130),
+        top: flip ? box.top - hostBox.top - 8 : below,
+        flip,
+      })
+    }
+
+    const onOutside = (event) => {
+      if (!host.contains(event.target)) clear()
+    }
+
+    const onEsc = (event) => {
+      if (event.key === 'Escape') clear()
     }
 
     const onPointer = (event) => {
@@ -94,12 +127,30 @@ export default function ArchitectureDiagram({
 
     svg.addEventListener('click', onPointer)
     svg.addEventListener('keydown', onKey)
+    document.addEventListener('click', onOutside)
+    document.addEventListener('keydown', onEsc)
     return () => {
       svg.removeEventListener('click', onPointer)
       svg.removeEventListener('keydown', onKey)
+      document.removeEventListener('click', onOutside)
+      document.removeEventListener('keydown', onEsc)
     }
   }, [markup])
 
   if (!markup) return null
-  return <div className="bx-svg" ref={hostRef} dangerouslySetInnerHTML={{ __html: markup }} />
+  return (
+    <div className="bx-svg-wrap">
+      <div className="bx-svg" ref={hostRef} dangerouslySetInnerHTML={{ __html: markup }} />
+      {pop ? (
+        <div
+          className={`bx-node-pop${pop.flip ? ' is-above' : ''}`}
+          role="status"
+          style={{ left: pop.left, top: pop.top }}
+        >
+          <strong>{pop.title}</strong>
+          <span>{pop.text}</span>
+        </div>
+      ) : null}
+    </div>
+  )
 }
