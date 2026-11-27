@@ -1463,6 +1463,12 @@ dialog.project-dialog.bx-dialog.bx-dialog--erd-full .bx-fig-big:has(.bx-arch--li
   margin-inline: auto;
 }
 
+.bx-tile.bx-t-security.is-expanded .bx-fig svg {
+  max-width: 60rem;
+  max-height: none;
+  margin-inline: auto;
+}
+
 .bx-tile.is-expanded .bx-panel-body {
   margin-top: 0.75rem;
 }

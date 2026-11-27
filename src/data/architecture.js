@@ -220,7 +220,7 @@ export const COPY = {
       title: 'Roles, warehouses & cost',
       svg: 'security',
       body:
-        'Each kind of work gets its own warehouse, so cost stays easy to see and easy to cap. LEDGER_WH runs the morning dbt builds for the R_PIPELINE pipelines. INGEST_WH wakes once at 07:15 ET for the office-PC loads under R_PC_PIPELINE, and YT_SYNC_WH runs the YouTube sync under the same role. GROK_WH is the default for the Grok bots, so a question from a bot never wakes the ledger warehouse. Every warehouse goes to sleep within a minute of going idle and has its own monitor. Account-wide caps sit on top: an account monitor, a Cortex AI budget that cuts off agent access at 100%, and one role, R_CORTEX_GATE, that is allowed to call Cortex. People and bots reach data through MCP servers, never an open warehouse login. Reading documents and audio happens on the office PC, so it stays off the Snowflake bill. The table lists every role and what it is for.',
+        'Each kind of work gets its own warehouse, so cost stays easy to see and easy to cap. Eight warehouses run today. LEDGER_WH runs the morning dbt builds for R_PIPELINE. INGEST_WH wakes once at 07:15 ET for the Airflow loads under R_PC_PIPELINE, and YT_SYNC_WH runs the YouTube sync under the same role. GROK_WH is the default for the Grok bots, so a question from a bot never wakes the ledger warehouse, and ADHOC_WH holds my own ad-hoc queries. CI_WH takes test results from GitHub Actions, TF_WH runs Terraform, and DEV_MIGRATION_WH serves the dev twins only. Each one sleeps within a minute of going idle and has its own resource monitor with a monthly quota. Account-wide caps sit on top: an account monitor over every warehouse, a root budget, a Cortex AI budget that cuts off agent access at 100%, and a budget on the ingest search services. Monitors only cap warehouse compute, so the budgets are what hold serverless Cortex. People and bots reach data through MCP servers, never an open warehouse login. The table lists every role and what it is for.',
     },
     {
       id: 'grokbot',
@@ -398,21 +398,26 @@ export const DIAG = {
   security: {
     title: 'Warehouses by job, with the roles that use them and how each stops spending',
     lanes: [
-      { wh: { t: 'LEDGER_WH', s: 'ledger and dbt work', logo: 'snowflake', hero: true }, who: { t: 'Pipelines · R_PIPELINE', s: 'ledger_dbt_daily at 06:00 ET builds the ledger models', logo: 'dbt' }, stop: { t: 'Sleeps after 60s', target: 'LEDGER_WH_MONITOR' } },
-      { wh: { t: 'INGEST_WH', s: 'morning loads', logo: 'snowflake', hero: true }, who: { t: 'Office PC · R_PC_PIPELINE', s: 'one 07:15 ET window for email, Monarch and documents', logo: 'airflow' }, stop: { t: 'Sleeps after 60s', target: 'INGEST_MONITOR' } },
-      { wh: { t: 'GROK_WH', s: 'bot questions', logo: 'snowflake' }, who: { t: 'Grok bots · SVC_GROK_*', s: 'the read, write and YouTube connectors default here', logo: 'grokbot' }, stop: { t: 'Own monitor', target: 'RM_GROK' } },
-      { wh: { t: 'YT_SYNC_WH', s: 'YouTube sync', logo: 'snowflake' }, who: { t: 'Office PC · R_PC_PIPELINE', s: 'moonshots_yt_sync_daily and transcript embeddings', logo: 'youtube' }, stop: { t: 'Sleeps after 60s', target: 'YT_SYNC_MONITOR' } },
+      { group: 'Production pipelines', wh: { t: 'LEDGER_WH', s: 'ledger and dbt work', logo: 'snowflake', hero: true }, who: { t: 'Airflow · R_PIPELINE', s: 'ledger_dbt_daily at 06:00 ET, then the HR and agentic dbt builds', logo: 'dbt' }, stop: { t: 'Sleeps after 60s', pills: [{ t: 'LEDGER_WH_MONITOR', k: 'ok' }, { t: '30 credits', k: 'plain' }, { t: 'suspend 100%', k: 'red' }, { t: 'hard stop 110%', k: 'red' }] } },
+      { group: 'Production pipelines', wh: { t: 'INGEST_WH', s: 'morning loads', logo: 'snowflake', hero: true }, who: { t: 'Airflow · R_PC_PIPELINE', s: 'one 07:15 ET window for email, Monarch and documents', logo: 'airflow' }, stop: { t: 'Sleeps after 60s', pills: [{ t: 'INGEST_MONITOR', k: 'ok' }, { t: 'notify 50/75/90', k: 'plain' }] } },
+      { group: 'Production pipelines', wh: { t: 'YT_SYNC_WH', s: 'YouTube sync', logo: 'snowflake' }, who: { t: 'Airflow · R_PC_PIPELINE', s: 'moonshots_yt_sync_daily and transcript embeddings', logo: 'youtube' }, stop: { t: 'Sleeps after 60s', pills: [{ t: 'YT_SYNC_MONITOR', k: 'ok' }, { t: '2 credits', k: 'plain' }, { t: 'suspend 100%', k: 'red' }, { t: 'hard stop 110%', k: 'red' }] } },
+      { group: 'Agents and people', wh: { t: 'GROK_WH', s: 'bot questions', logo: 'snowflake' }, who: { t: 'Grok bots · SVC_GROK_*', s: 'read, write and YouTube connectors, plus the test-results reader', logo: 'grokbot' }, stop: { t: 'Sleeps after 60s', pills: [{ t: 'RM_GROK', k: 'ok' }, { t: '2 credits', k: 'plain' }] } },
+      { group: 'Agents and people', wh: { t: 'ADHOC_WH', s: 'ad-hoc admin queries', logo: 'snowflake' }, who: { t: 'Michael · admin sign-in', s: 'his default warehouse for ad-hoc work, kept apart from production', logo: 'person' }, stop: { t: 'Sleeps after 60s', pills: [{ t: 'RM_ADHOC', k: 'ok' }, { t: '5 credits', k: 'plain' }, { t: 'suspend 100%', k: 'red' }] } },
+      { group: 'Platform', wh: { t: 'CI_WH', s: 'CI test results', logo: 'snowflake' }, who: { t: 'GitHub Actions · R_TEST_RESULTS_WRITE', s: 'JUnit push, batched to one wake per CI burst', logo: 'github' }, stop: { t: 'Own monitor', pills: [{ t: 'RM_CI', k: 'ok' }, { t: '1 credit', k: 'plain' }] } },
+      { group: 'Platform', wh: { t: 'TF_WH', s: 'Terraform plans and applies', logo: 'snowflake' }, who: { t: 'Terraform · R_TF_ADMIN', s: 'tf-snowflake plan and apply sessions', logo: 'terraform' }, stop: { t: 'Own monitor', pills: [{ t: 'RM_TF', k: 'ok' }, { t: '3 credits', k: 'plain' }] } },
+      { group: 'Dev', wh: { t: 'DEV_MIGRATION_WH', s: 'dev pipelines', logo: 'snowflake' }, who: { t: 'Airflow dev DAGs · R_DEV_PIPELINE', s: 'the *_DEV databases only; production jobs refuse this warehouse', logo: 'airflow' }, stop: { t: 'Own monitor', pills: [{ t: 'RM_DEV_MIGRATION', k: 'ok' }, { t: '8 credits', k: 'plain' }, { t: 'suspend 100%', k: 'red' }, { t: 'hard stop 110%', k: 'red' }] } },
     ],
     caps: [
-      { t: 'Account monitor', s: 'one credit cap over the whole account' },
-      { t: 'Cortex AI budget', s: 'cuts off agent access at 100%', gate: 'BUDGET_CORTEX_AI_20' },
-      { t: 'One Cortex role', s: 'only R_CORTEX_GATE can call Cortex' },
-      { t: 'Dev stays apart', s: 'R_DEV_PIPELINE runs on DEV_MIGRATION_WH' },
+      { t: 'Account monitor', s: '50 credits a month across every warehouse, suspends at 100%', pills: [{ t: 'ACCOUNT_MONITOR_40', k: 'ok' }] },
+      { t: 'Root budget', s: '70 credits a month, with an email at 90%', pills: [{ t: 'ACCOUNT_ROOT_BUDGET', k: 'gate' }] },
+      { t: 'Cortex AI budget', s: '20 credits, then agent access to Cortex is revoked', pills: [{ t: 'BUDGET_CORTEX_AI_20', k: 'gate' }] },
+      { t: 'Ingest budget', s: 'a limit of 5 on the ingest Cortex Search services', pills: [{ t: 'BUDGET_INGEST_10USD', k: 'gate' }] },
     ],
+    note: 'Credit figures are monthly quotas. Warehouse monitors cap compute only, and serverless Cortex (search, embeddings, agents) is held by the budgets on top.',
     roles: [
       { group: 'Pipelines', items: [
-        ['R_PIPELINE', 'Airflow pipelines on the box and office PC: loads and dbt', 'LEDGER_WH'],
-        ['R_PC_PIPELINE', 'Office-PC loads: the morning window and YouTube sync', 'INGEST_WH, YT_SYNC_WH'],
+        ['R_PIPELINE', 'Airflow pipelines: loads and the 06:00 ET dbt chain', 'LEDGER_WH'],
+        ['R_PC_PIPELINE', 'Airflow loads: the 07:15 ET window and YouTube sync', 'INGEST_WH, YT_SYNC_WH'],
       ] },
       { group: 'Owners', items: [
         ['LEDGER_OWNER', 'Owns the household ledger tables', 'LEDGER_WH'],
@@ -441,6 +446,7 @@ export const DIAG = {
         ['R_AUDIT_OWNER', 'Owns the audit trail; no person holds it', 'Not set'],
         ['R_AUDIT_READ', 'Reads the audit trail for reviews', 'Not set'],
         ['R_TEST_RESULTS_READ', 'Reads CI test results', 'GROK_WH'],
+        ['R_TEST_RESULTS_WRITE', 'Pushes CI test results from GitHub Actions', 'CI_WH'],
         ['R_AW_DESKS_READ', 'Reads agent workforce analytics', 'Not set'],
         ['R_EYL_SVC', 'Read-only service access', 'Not set'],
       ] },

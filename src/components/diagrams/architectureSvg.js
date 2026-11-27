@@ -295,24 +295,28 @@ export function dPipes(D, inst=""){
  a+=arrow('M378,106 H384 Q388,106 388,110 V225 Q388,229 384,229 H378','c')+arrow(`M294,${132+oc.h} V208`,'c')+arrow('M232,227 H220','c')+arrow('M140,229 H128','c')+arrow('M78,229 H44','c');
  return svg(W,H,Pp.title,a+o)};
 
-// 5. Roles, warehouses and cost: one lane per warehouse, then account-wide caps.
+// 5. Roles, warehouses and cost: account-wide caps, then one lane per warehouse grouped by kind of work.
 export function dSec(D, inst=""){
   begin(true,inst);setDensity(1);ID='s'+inst;const S=D.security;let o='',a='';
   const narrow=typeof window!=='undefined'&&window.innerWidth<560;
-  const W=narrow?350:528,pad=10,g=20;
-  const cols=narrow?[[pad,'Warehouse and who runs it',196],[pad+196+g,'Stops spending',W-2*pad-196-g]]
-    :[[pad,'Warehouse',128],[pad+128+g,'Who runs it, what runs',196],[pad+128+196+2*g,'Stops spending',W-2*pad-128-196-2*g]];
-  cols.forEach(([x,t])=>o+=lab(x,10,t));
-  let y=22;
-  S.lanes.forEach((l)=>{const cards=narrow?[{...l.wh,s:`${l.who.t} · ${l.who.s}`},l.stop]:[l.wh,l.who,l.stop];
-    const h=Math.max(...cards.map((c,k)=>lcard(0,0,cols[k][2],c).h));
+  const W=narrow?350:580,pad=10,g=18,gap=8;
+  o+=lab(pad,10,'Account-wide caps, over every warehouse');
+  let y=20;const n=narrow?2:4,cw=(W-2*pad-gap*(n-1))/n;
+  for(let k=0;k<S.caps.length;k+=n){const set=S.caps.slice(k,k+n);const h=4+Math.max(...set.map((c)=>lcard(0,0,cw,c,{tsz:8.8,ssz:7.6}).h));
+    set.forEach((c,m)=>o+=lcard(pad+m*(cw+gap),y,cw,c,{h,tsz:8.8,ssz:7.6}).g);y+=h+gap}
+  y+=10;
+  const cols=narrow?[[pad,'Warehouse and who runs it',186],[pad+186+g,'Stops spending',W-2*pad-186-g]]
+    :[[pad,'Warehouse',156],[pad+156+g,'Who runs it, what runs',200],[pad+156+200+2*g,'Stops spending',W-2*pad-156-200-2*g]];
+  cols.forEach(([x,t])=>o+=lab(x,y,t));
+  y+=8;let grp=null;
+  S.lanes.forEach((l)=>{
+    if(l.group!==grp){grp=l.group;o+=`<line x1="${pad}" y1="${y+4}" x2="${W-pad}" y2="${y+4}" stroke="${LIAM.border}" stroke-dasharray="3 3"/>`+T(pad,y+15,grp.toUpperCase(),{sz:7.4,w:600,ls:.5,mono:1,a:'start',c:LIAM.schema});y+=24}
+    const cards=narrow?[{...l.wh,s:`${l.who.t} · ${l.who.s}`},l.stop]:[l.wh,l.who,l.stop];
+    const h=4+Math.max(...cards.map((c,k)=>lcard(0,0,cols[k][2],c).h));
     cards.forEach((c,k)=>{const [x,,w]=cols[k];o+=lcard(x,y,w,c,{h}).g;if(k){const px=cols[k-1][0]+cols[k-1][2];a+=arrow(`M${px+3},${y+h/2} H${x-3}`,'c')}});
-    y+=h+10});
-  o+=lab(pad,y+8,'Account-wide caps');y+=18;
-  const n=2,gap=10,w=(W-2*pad-gap*(n-1))/n;
-  for(let k=0;k<S.caps.length;k+=n){const pair=S.caps.slice(k,k+n);const h=Math.max(...pair.map((c)=>lcard(0,0,w,c).h));
-    pair.forEach((c,m)=>o+=lcard(pad+m*(w+gap),y,w,c,{h}).g);y+=h+gap}
-  return svg(W,y-gap+4,S.title,a+o)};
+    y+=h+gap});
+  wrapW(S.note,W-2*pad,7.8,400).forEach((l)=>{y+=11;o+=T(pad,y,l,{sz:7.8,a:'start',c:LIAM.schema})});
+  return svg(W,y+8,S.title,a+o)};
 
 // 6. Stack: flat layer bands, the agent interface in accent.
 export function dStack(D, inst=""){
@@ -595,13 +599,16 @@ export function dAirflow(D, inst=""){
   return svg(W,y-8,A.title,a+o)};
 
 /** Left-aligned card (Ship path style) with optional pill and platform badge; returns {g,h}. */
-const PILLS={gate:{c:'#b54708',f:'#fffaeb',s:'#fedf89'},ok:{c:'#0f7a4c',f:'#ecfdf3',s:'#abefc6'},plain:{c:LIAM.schema,f:'#fff',s:LIAM.border}};
+const PILLS={gate:{c:'#b54708',f:'#fffaeb',s:'#fedf89'},ok:{c:'#0f7a4c',f:'#ecfdf3',s:'#abefc6'},plain:{c:LIAM.schema,f:'#fff',s:LIAM.border},red:{c:'#b42318',f:'#fef3f2',s:'#fecdca'}};
 const lcard=(x,y,w,c,o={})=>{const tsz=o.tsz||9.2,ssz=o.ssz||8,lh=1.25;const rsv=badgeReserve(c.logo);
-  const tl=wrapW(c.t,w-18-rsv,tsz,600),sl=c.s?wrapW(c.s,w-18-rsv,ssz,400):[];const pill=c.gate||c.target;
-  const h=Math.max(o.h||0,12+tl.length*tsz*lh+sl.length*ssz*lh+(pill?19:0));let g='',ty=y+6;
+  const tl=wrapW(c.t,w-18-rsv,tsz,600),sl=c.s?wrapW(c.s,w-18-rsv,ssz,400):[];
+  const pills=c.pills||(c.gate?[{t:c.gate,k:'gate'}]:c.target?[{t:c.target,k:'ok'}]:[]);
+  const pl=[];let px=0,row=0;pills.forEach((p)=>{const pw=meas(p.t,7.4,600,0,1)/0.9+14;if(px&&px+pw>w-18-rsv){px=0;row++}pl.push({...p,pw,dx:px,row});px+=pw+4});
+  const rows=pills.length?row+1:0;
+  const h=Math.max(o.h||0,12+tl.length*tsz*lh+sl.length*ssz*lh+rows*17+(rows?2:0));let g='',ty=y+6;
   tl.forEach((l)=>{g+=T(x+9,ty+tsz*lh/2,l,{sz:tsz,w:600,a:'start',c:LIAM.ink});ty+=tsz*lh});
   sl.forEach((l)=>{g+=T(x+9,ty+ssz*lh/2,l,{sz:ssz,a:'start',c:LIAM.schema});ty+=ssz*lh});
-  if(pill){const P=c.gate?PILLS.gate:PILLS.ok;const pw=meas(pill,7.4,600,0,!c.gate)/0.9+14;g+=`<rect x="${x+9}" y="${ty+3}" width="${pw}" height="14" rx="7" fill="${P.f}" stroke="${P.s}"/>`+T(x+9+pw/2,ty+10.4,pill,{sz:7.4,w:600,c:P.c,mono:!c.gate})}
+  pl.forEach((p)=>{const P=PILLS[p.k]||PILLS.ok;const px0=x+9+p.dx,py=ty+3+p.row*17;g+=`<rect x="${px0}" y="${py}" width="${p.pw}" height="14" rx="7" fill="${P.f}" stroke="${P.s}"/>`+T(px0+p.pw/2,py+7.4,p.t,{sz:7.4,w:600,c:P.c,mono:1})});
   const hero=!!c.hero;const dash=!!o.dash;
   return {h,g:`<g class="nd" tabindex="0" role="button" data-node="${esc(c.t)}" data-b="${x},${y},${w},${h},9,6" data-shape="box"><g class="nd-face"${dash?'':` filter="url(#${ID}sh)"`}><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="${hero?'#f4fbf7':'#fff'}" stroke="${hero?LIAM.green:LIAM.border}" stroke-width="${hero?1.4:1}"${dash?' stroke-dasharray="3.5 3.5"':''}/></g>${g}${platformBadge(x,y,w,h,c.logo)}</g>`}};
 
