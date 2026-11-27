@@ -350,7 +350,7 @@ export const highlights = [
   {
     projectId: 'private-platform',
     icon: 'uil-chart-line',
-    label: 'HOUSEHOLD_LEDGER + MCP',
+    label: 'Household Snowflake Data Architecture and MCP',
     detail: 'Monarch, Gmail, Drive → Snowflake; MCP_HOUSEHOLD_LEDGER write / _GROK read on semantic views and Cortex Search services.',
   },
   {

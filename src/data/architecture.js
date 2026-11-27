@@ -12,8 +12,7 @@ export const COPY = {
       'The lead project is the household data platform I run on Snowflake. It has five production databases for finance, YouTube, AI agents, shared operations and health records. Assistant tools can only reach approved data, and every change takes a careful path from pull request to production. The tiles below show how changes ship, how data feeds land, how models and schedules run, how access and cost are controlled, and how agents connect. A shorter list of other shipped work follows.',
   },
   lead: {
-    title: 'HOUSEHOLD_LEDGER and MCP',
-    subhead: 'Snowflake data architecture and MCP',
+    title: 'Household Snowflake Data Architecture and MCP',
     oneLine:
       '5 prod databases · 3 MCP servers · 20 Airflow DAG files · Monarch, Gmail, Drive, YouTube, Epic MyChart · AI chat history in AGENTIC_WORKFORCE · 15 semantic views · 6 Cortex Search services. Agents hit MCP catalogs, not an open warehouse login.',
     tags: [
@@ -37,7 +36,7 @@ export const COPY = {
       { n: '6', label: 'Cortex Search services' },
     ],
     intro:
-      'This is the household data platform I build and run on Snowflake. It has five production databases. HOUSEHOLD_LEDGER holds finance. MOONSHOTS holds YouTube. AGENTIC_WORKFORCE holds AI agents and the chat history captured across every platform I use. CONTROL holds shared procedures, queues and tests. HOUSEHOLD_HEALTH is built for Epic MyChart records; its model is in production, but no patient data is loaded yet. Each database keeps its layers as schemas instead of splitting them into separate databases. Airflow on my office PC runs every schedule, and Snowflake tasks are retired. Monarch, Gmail and Google Drive feed the ledger. Every bank account is set to send a Gmail alert for each transaction, so new charges show up early. YouTube feeds Moonshots. Grok bots and Cursor never get an open warehouse login: they connect through MCP servers that only expose semantic views, Cortex Search services and approved procedures.',
+      'This is the household data platform I build and run on Snowflake. It has five production databases. HOUSEHOLD_LEDGER holds finance. MOONSHOTS holds the YouTube catalog for Moonshots by Peter Diamandis and Market Mondays by Earn Your Leisure. AGENTIC_WORKFORCE holds AI agents and the chat history captured across every platform I use. CONTROL holds shared procedures, queues and tests. HOUSEHOLD_HEALTH is built for Epic MyChart records; its model is in production, but no patient data is loaded yet. Each database keeps its layers as schemas instead of splitting them into separate databases. Airflow on my office PC runs every schedule, and Snowflake tasks are retired. Monarch, Gmail and Google Drive feed the ledger. Every bank account is set to send a Gmail alert for each transaction, so new charges show up early. YouTube feeds Moonshots. Grok bots and Cursor never get an open warehouse login: they connect through MCP servers that only expose semantic views, Cortex Search services and approved procedures.',
   },
   tiles: [
     {
@@ -93,7 +92,7 @@ export const COPY = {
       title: 'Source feeds into Snowflake',
       svg: 'pipes',
       body:
-        'Each feed lands in its own product database, not a shared dump. Morning ingest runs once at 07:15 ET on INGEST_WH. Monarch and email load every day. YouTube loads on Mondays and then starts the Moonshots sync. Epic MyChart loads once health data is switched on. Monarch comes in through EAI_MONARCH. Every bank account is set to send a Gmail alert for each transaction; those emails come in through EAI_GMAIL, get classified, and are matched to transactions by reconcile_pending. drive_poll picks up new Google Drive documents at the same minute without waking a warehouse, then doc_extract reads the text with pypdf and local Tesseract instead of Cortex OCR. AI chat history from every platform lands in AGENTIC_WORKFORCE through a daily capture and a nightly chat backup. Epic MyChart SMART on FHIR R4 data is meant for HOUSEHOLD_HEALTH; the model is ready, but no patient data is loaded yet. Every feed follows the same shape: extract and land, transform with dbt, then test. There is no S3 or Snowpipe path; that design was dropped.',
+        'Each feed lands in its own product database, not a shared dump. Morning ingest runs once at 07:15 ET on INGEST_WH. Monarch and email load every day. YouTube loads on Mondays and then starts the sync for Moonshots by Peter Diamandis and Market Mondays by Earn Your Leisure. Epic MyChart loads once health data is switched on. Monarch comes in through EAI_MONARCH. Every bank account is set to send a Gmail alert for each transaction; those emails come in through EAI_GMAIL, get classified, and are matched to transactions by reconcile_pending. drive_poll picks up new Google Drive documents at the same minute without waking a warehouse, then doc_extract reads the text with pypdf and local Tesseract instead of Cortex OCR. AI chat history from every platform lands in AGENTIC_WORKFORCE through a daily capture and a nightly chat backup. Epic MyChart SMART on FHIR R4 data is meant for HOUSEHOLD_HEALTH; the model is ready, but no patient data is loaded yet. Every feed follows the same shape: extract and land, transform with dbt, then test. There is no S3 or Snowpipe path; that design was dropped.',
       caption:
         'The morning load window feeds the ledger, plus YouTube on Mondays. Drive documents go through OCR. Chat capture lands in AGENTIC_WORKFORCE. MyChart is modeled in HOUSEHOLD_HEALTH and waiting on source data.',
     },
@@ -300,10 +299,10 @@ export const COPY = {
           id: 'moonshots',
           name: 'MOONSHOTS',
           status: 'Production',
-          oneLine: 'YouTube catalog — sync DAGs + MCP_MOONSHOTS',
+          oneLine: 'YouTube catalog for Moonshots by Peter Diamandis and Market Mondays by Earn Your Leisure',
           schemas: ['RAW', 'CORE', 'CTRL', 'AI'],
           detail:
-            'YouTube / EYL domain. Monday pipeline_load_window triggers moonshots_yt_sync_daily after the INGEST_WH work; EYL captions write in that window. moonshots_yt_sync_daily and moonshots_eyl_sync were the two confirmed-unpaused DAGs on the 2026-11-07 pin (not re-read). CTRL hosts MCP_MOONSHOTS for Cynthia. CS_TRANSCRIPTS and CS_VIDEOS are the Moonshots Cortex Search services. Phase 5 added ANALYTICS views over CORE for reporting reads.',
+            'YouTube domain for Moonshots by Peter Diamandis and Market Mondays by Earn Your Leisure, shortened to EYL. Monday pipeline_load_window triggers moonshots_yt_sync_daily after the INGEST_WH work; EYL captions write in that window. moonshots_yt_sync_daily and moonshots_eyl_sync were the two confirmed-unpaused DAGs on the 2026-11-07 pin (not re-read). CTRL hosts MCP_MOONSHOTS for Cynthia. CS_TRANSCRIPTS and CS_VIDEOS are the Moonshots Cortex Search services. Phase 5 added ANALYTICS views over CORE for reporting reads.',
           objects: [
             { layer: 'Scheduler', name: 'moonshots_yt_sync_daily', note: 'Monday window trigger · unpaused on pin' },
             { layer: 'Scheduler', name: 'moonshots_eyl_sync', note: 'Unscheduled · unpaused on pin' },

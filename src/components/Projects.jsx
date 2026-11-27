@@ -9,7 +9,7 @@ import SectionHeader from './ui/SectionHeader.jsx'
 
 /** Left jump rail: labeled anchors — names mirror what each block captures. */
 const PROJECT_RAIL = [
-  { id: 'lead', label: 'Lead platform' },
+  { id: 'lead', label: 'Household Snowflake + MCP' },
   { id: 'workflow', label: 'CI / CD ship path' },
   { id: 'pipes', label: 'Feeds → schemas' },
   { id: 'airflow', label: 'Airflow DAGs' },
@@ -306,7 +306,7 @@ function LeadTile({ tall }) {
         <div>
           <p className="bx-kicker">Lead project</p>
           <h3 className="bx-h1">{L.title}</h3>
-          <p className="bx-subhead">{L.subhead}</p>
+          {L.subhead ? <p className="bx-subhead">{L.subhead}</p> : null}
         </div>
       </div>
       <div className="bx-leadbody">
@@ -455,7 +455,7 @@ function LeadPanel({ tall }) {
   const L = COPY.lead
   return (
     <div className="bx-panel-body">
-      <p className="bx-subhead">{L.subhead}</p>
+      {L.subhead ? <p className="bx-subhead">{L.subhead}</p> : null}
       <StatStrip stats={L.stats} />
       <figure className="bx-fig bx-leadfig bx-fig-big">
         <ArchitectureDiagram kind="lead" tall={tall} inst="open" />

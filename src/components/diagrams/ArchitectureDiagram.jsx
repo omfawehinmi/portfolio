@@ -39,6 +39,7 @@ export default function ArchitectureDiagram({
   const [markup, setMarkup] = useState('')
   const [pop, setPop] = useState(null)
   const hostRef = useRef(null)
+  const popRef = useRef(null)
 
   useLayoutEffect(() => {
     const build = builders[kind]
@@ -101,7 +102,13 @@ export default function ArchitectureDiagram({
     }
 
     const onOutside = (event) => {
-      if (!host.contains(event.target)) clear()
+      const node = event.target.closest?.('.nd')
+      if (node && svg.contains(node) && !node.classList.contains('nd-tag')) return
+      // The popover is click-through so it never blocks the node beneath it; a click on its
+      // text still counts as inside the description.
+      const r = popRef.current?.getBoundingClientRect()
+      if (r && event.clientX >= r.left && event.clientX <= r.right && event.clientY >= r.top && event.clientY <= r.bottom) return
+      clear()
     }
 
     const onEsc = (event) => {
@@ -127,12 +134,12 @@ export default function ArchitectureDiagram({
 
     svg.addEventListener('click', onPointer)
     svg.addEventListener('keydown', onKey)
-    document.addEventListener('click', onOutside)
+    document.addEventListener('click', onOutside, true)
     document.addEventListener('keydown', onEsc)
     return () => {
       svg.removeEventListener('click', onPointer)
       svg.removeEventListener('keydown', onKey)
-      document.removeEventListener('click', onOutside)
+      document.removeEventListener('click', onOutside, true)
       document.removeEventListener('keydown', onEsc)
     }
   }, [markup])
@@ -143,6 +150,7 @@ export default function ArchitectureDiagram({
       <div className="bx-svg" ref={hostRef} dangerouslySetInnerHTML={{ __html: markup }} />
       {pop ? (
         <div
+          ref={popRef}
           className={`bx-node-pop${pop.flip ? ' is-above' : ''}`}
           role="status"
           style={{ left: pop.left, top: pop.top }}
