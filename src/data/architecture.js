@@ -14,7 +14,7 @@ export const COPY = {
   lead: {
     title: 'Household Snowflake Data Architecture and MCP',
     oneLine:
-      '5 prod databases · 3 MCP servers · 20 Airflow DAG files · Monarch, Gmail, Drive, YouTube, Epic MyChart · AI chat history in AGENTIC_WORKFORCE · 15 semantic views · 6 Cortex Search services. Agents hit MCP catalogs, not an open warehouse login.',
+      '5 prod databases · 3 MCP servers · 20 Airflow DAG files · Monarch, Gmail, Drive, YouTube, Epic MyChart · Grokbot, Cursor and OpenAI chat history in AGENTIC_WORKFORCE · 15 semantic views · 6 Cortex Search services. Agents hit MCP catalogs, not an open warehouse login.',
     tags: [
       'Snowflake',
       'HOUSEHOLD_LEDGER',
@@ -36,7 +36,7 @@ export const COPY = {
       { n: '6', label: 'Cortex Search services' },
     ],
     intro:
-      'This is the household data platform I build and run on Snowflake. It has five production databases. HOUSEHOLD_LEDGER holds finance. MOONSHOTS holds the YouTube catalog for Moonshots by Peter Diamandis and Market Mondays by Earn Your Leisure. AGENTIC_WORKFORCE holds AI agents and the chat history captured across every platform I use. CONTROL holds shared procedures, queues and tests. HOUSEHOLD_HEALTH holds Epic MyChart records, loaded every Monday through SMART on FHIR R4. Each database keeps its layers as schemas instead of splitting them into separate databases. Airflow on my office PC runs every schedule, and Snowflake tasks are retired. Monarch, Gmail and Google Drive feed the ledger. Every bank account is set to send a Gmail alert for each transaction, so new charges show up early. YouTube feeds Moonshots. Grok bots and Cursor never get an open warehouse login: they connect through MCP servers that only expose semantic views, Cortex Search services and approved procedures.',
+      'This is the household data platform I build and run on Snowflake. It has five production databases. HOUSEHOLD_LEDGER holds finance. MOONSHOTS holds the YouTube catalog for Moonshots by Peter Diamandis and Market Mondays by Earn Your Leisure. AGENTIC_WORKFORCE holds my AI agents and their chat history from Grokbot, Cursor and OpenAI. CONTROL holds shared procedures, queues and tests. HOUSEHOLD_HEALTH holds Epic MyChart records, loaded every Monday through SMART on FHIR R4. Each database keeps its layers as schemas instead of splitting them into separate databases. Airflow on my office PC runs every schedule, and Snowflake tasks are retired. Monarch, Gmail and Google Drive feed the ledger. Every bank account is set to send a Gmail alert for each transaction, so new charges show up early. YouTube feeds Moonshots. Grok bots and Cursor never get an open warehouse login: they connect through MCP servers that only expose semantic views, Cortex Search services and approved procedures.',
   },
   tiles: [
     {
@@ -57,7 +57,7 @@ export const COPY = {
       title: 'Source feeds into Snowflake',
       svg: 'pipes',
       body:
-        'Each feed lands in its own product database, not a shared dump. Morning ingest runs once at 07:15 ET on INGEST_WH. Monarch and email load every day. YouTube loads on Mondays and then starts the sync for Moonshots by Peter Diamandis and Market Mondays by Earn Your Leisure. Epic MyChart loads on Mondays in the same window. Monarch comes in through EAI_MONARCH. Every bank account is set to send a Gmail alert for each transaction; those emails come in through EAI_GMAIL, get classified, and are matched to transactions by reconcile_pending. drive_poll picks up new Google Drive documents at the same minute without waking a warehouse, then doc_extract reads the text with pypdf and local Tesseract instead of Cortex OCR. AI chat history from every platform lands in AGENTIC_WORKFORCE through a daily capture and a nightly chat backup. Epic MyChart SMART on FHIR R4 records land in HOUSEHOLD_HEALTH, whose database, schemas, roles and grants are managed in Terraform. Every feed follows the same shape: extract and land, transform with dbt, then test. There is no S3 or Snowpipe path; that design was dropped.',
+        'Each feed lands in its own product database, not a shared dump. Morning ingest runs once at 07:15 ET on INGEST_WH. Monarch and email load every day. YouTube loads on Mondays and then starts the sync for Moonshots by Peter Diamandis and Market Mondays by Earn Your Leisure. Epic MyChart loads on Mondays in the same window. Monarch comes in through EAI_MONARCH. Every bank account is set to send a Gmail alert for each transaction; those emails come in through EAI_GMAIL, get classified, and are matched to transactions by reconcile_pending. drive_poll picks up new Google Drive documents at the same minute without waking a warehouse, then doc_extract reads the text with pypdf and local Tesseract instead of Cortex OCR. Chat history from Grokbot, Cursor and OpenAI lands in AGENTIC_WORKFORCE through a daily capture and a nightly chat backup. Epic MyChart SMART on FHIR R4 records land in HOUSEHOLD_HEALTH, whose database, schemas, roles and grants are managed in Terraform. Every feed follows the same shape: extract and land, transform with dbt, then test. There is no S3 or Snowpipe path; that design was dropped.',
     },
     {
       id: 'airflow',
@@ -93,7 +93,7 @@ export const COPY = {
       title: 'Databases: columns, tables, modeling',
       svg: 'erd',
       body:
-        'Five production databases, each with a *_DEV twin that has the same schemas, tables and columns. Open a database below to see its schemas, example tables and grain. HOUSEHOLD_LEDGER has PUBLIC, RAW, CORE, CTRL, ANALYTICS and AI, plus temporary STAGING and INTERMEDIATE schemas. MOONSHOTS has RAW, CORE, CTRL and AI. AGENTIC_WORKFORCE has AGENTS, CONVERSATIONS, GRAPH and CAPTURE, plus STAGING, INTERMEDIATE, ANALYTICS, AI, TRANSFORM and SECURITY. It is where AI chat history from every platform collects, through a daily capture and a nightly chat backup, before agentic_workforce_dbt_daily builds ANALYTICS. CONTROL has PROC, QUEUE, STAGE, FLAGS, TASKS, MCP, SECURITY and TESTS. HOUSEHOLD_HEALTH is the Epic MyChart database, with RAW, STAGING, CORE and CTRL, kept apart so no ledger, Moonshots or agent role reaches health data through inheritance. In every database, a RAW row is one landed payload, a CORE row is one business object, and ANALYTICS holds reporting tables and semantic views.',
+        'Five production databases, each with a *_DEV twin that has the same schemas, tables and columns. Open a database below to see its schemas, example tables and grain. HOUSEHOLD_LEDGER has PUBLIC, RAW, CORE, CTRL, ANALYTICS and AI, plus temporary STAGING and INTERMEDIATE schemas. MOONSHOTS has RAW, CORE, CTRL and AI. AGENTIC_WORKFORCE has AGENTS, CONVERSATIONS, GRAPH and CAPTURE, plus STAGING, INTERMEDIATE, ANALYTICS, AI, TRANSFORM and SECURITY. It is where chat history from Grokbot, Cursor and OpenAI collects, through a daily capture and a nightly chat backup, before agentic_workforce_dbt_daily builds ANALYTICS. CONTROL has PROC, QUEUE, STAGE, FLAGS, TASKS, MCP, SECURITY and TESTS. HOUSEHOLD_HEALTH is the Epic MyChart database, with RAW, STAGING, CORE and CTRL, kept apart so no ledger, Moonshots or agent role reaches health data through inheritance. In every database, a RAW row is one landed payload, a CORE row is one business object, and ANALYTICS holds reporting tables and semantic views.',
       databases: [
         {
           id: 'ledger',
@@ -129,7 +129,7 @@ export const COPY = {
           id: 'workforce',
           name: 'AGENTIC_WORKFORCE',
           status: 'Production',
-          oneLine: 'Cross-platform AI chat history, with agents, conversations, graph and capture',
+          oneLine: 'Grokbot, Cursor and OpenAI chat history, with agents, conversations, graph and capture',
           schemas: [
             'AGENTS',
             'CONVERSATIONS',
@@ -143,10 +143,10 @@ export const COPY = {
             'SECURITY',
           ],
           detail:
-            'Where multi-platform AI history accumulates. A daily capture routine MERGEs agents, conversations, graph, and capture tables. A nightly chat backup MERGEs RAW.CHAT_MESSAGES as SVC_BOX_PIPELINE under R_PIPELINE. agentic_workforce_dbt_daily builds tag:agentic_workforce into AGENTIC_WORKFORCE.ANALYTICS, with AGENTIC_WORKFORCE_DEV as its dev twin. It has no cron of its own and starts after hr_dbt_daily in the 06:00 ledger_dbt_daily chain. Desk marts for the Desks app are still queued and not counted as shipped.',
+            'Where Grokbot, Cursor and OpenAI chat history accumulates. A daily capture routine MERGEs agents, conversations, graph, and capture tables. A nightly chat backup MERGEs RAW.CHAT_MESSAGES as SVC_BOX_PIPELINE under R_PIPELINE. agentic_workforce_dbt_daily builds tag:agentic_workforce into AGENTIC_WORKFORCE.ANALYTICS, with AGENTIC_WORKFORCE_DEV as its dev twin. It has no cron of its own and starts after hr_dbt_daily in the 06:00 ledger_dbt_daily chain. Desk marts for the Desks app are still queued and not counted as shipped.',
           objects: [
             { layer: 'Capture', name: 'AGENTS / CONVERSATIONS / GRAPH', note: 'Daily MERGE' },
-            { layer: 'Landing', name: 'RAW.CHAT_MESSAGES', note: 'Nightly chat backup' },
+            { layer: 'Landing', name: 'RAW.CHAT_MESSAGES', note: 'Nightly backup of Grokbot, Cursor and OpenAI chats' },
             { layer: 'dbt', name: 'agentic_workforce_dbt_daily', note: '→ ANALYTICS · 06:00 chain' },
             { layer: 'Planned', name: 'AW desk marts', note: 'Queued, not prod' },
           ],

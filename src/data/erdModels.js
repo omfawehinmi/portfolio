@@ -1567,7 +1567,7 @@ export const ERD_MODELS = {
 
   workforce: {
     title: "AGENTIC_WORKFORCE",
-    subtitle: "Cross-platform AI chat history · 17 tables across AGENTS/CONVERSATIONS/GRAPH/CAPTURE/+ · metadata only",
+    subtitle: "Grokbot, Cursor and OpenAI chat history · 17 tables across AGENTS/CONVERSATIONS/GRAPH/CAPTURE/+ · metadata only",
     tables: [
       {
         id: "agents",
