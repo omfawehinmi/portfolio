@@ -6,9 +6,9 @@ export const profile = {
   eyebrow: 'Snowflake · Cortex · Agents',
   headline: 'I build governed Snowflake AI that executives can actually use.',
   summary:
-    'Snowflake platforms, Cortex agents, and semantic layers: from HRIS APIs to certified schemas, then Streamlit, Power BI, and in-account agents on top.',
+    'Snowflake platforms, Cortex agents, and semantic layers — from HRIS APIs to certified schemas, then Streamlit, Power BI, and in-account agents on top.',
   about:
-    'At NetApp I am integral to bringing SuccessFactors into Snowflake, and I lead the Cortex AI build-out on top of it: agents, MCP servers, and the governed semantic layer they read. At Novanta I was the sole engineer on the Workday-to-Snowflake integration and put Cortex on that certified grain. MyOrgLab is the practice I am building on the same pattern.',
+    'At NetApp I am integral to bringing SuccessFactors into Snowflake, and I lead the Cortex AI build-out on top of it — agents, MCP servers, and the governed semantic layer they read. At Novanta I was the sole engineer on the Workday-to-Snowflake integration and put Cortex on that certified grain. MyOrgLab is the practice I am building on the same pattern.',
   location: 'Revere, MA 02151',
   phone: '(781) 947-5700',
   phoneHref: 'tel:+17819475700',
