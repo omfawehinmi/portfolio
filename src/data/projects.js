@@ -201,7 +201,7 @@ export const projects = [
     modalTitle: 'Documents: DOCUMENTS_STAGE → CORE → CS_DOCUMENTS',
     summary: [
       'Loan contracts, statements, and rate letters do not live cleanly in Monarch. drive_poll spots new files; doc_extract downloads them and runs pypdf then local Tesseract (no Cortex OCR); proc_document_extract writes dues and rates into CORE.',
-      'CS_DOCUMENTS and SV_DOCUMENT_STANDING let the agent cite a standing document instead of inventing a rate. doc_extract has been paused for warehouse quota on some pins, and the as-built calls out that status.',
+      'CS_DOCUMENTS and SV_DOCUMENT_STANDING let the agent cite a standing document instead of inventing a rate.',
     ],
     points: [
       'DOCUMENTS_STAGE / DOCUMENTS_DOWNLOAD_STAGE are the file system of record inside the account.',

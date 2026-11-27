@@ -93,7 +93,7 @@ export const COPY = {
       title: 'Databases: columns, tables, modeling',
       svg: 'erd',
       body:
-        'Five production databases, each with a *_DEV twin filled with synthetic test data. Open a database below to see its schemas, example tables and grain. HOUSEHOLD_LEDGER has PUBLIC, RAW, CORE, CTRL, ANALYTICS and AI, plus temporary STAGING and INTERMEDIATE schemas. MOONSHOTS has RAW, CORE, CTRL and AI. AGENTIC_WORKFORCE has AGENTS, CONVERSATIONS, GRAPH and CAPTURE, plus STAGING, INTERMEDIATE, ANALYTICS, AI, TRANSFORM and SECURITY. It is where AI chat history from every platform collects, through a daily capture and a nightly chat backup, before agentic_workforce_dbt_daily builds ANALYTICS. CONTROL has PROC, QUEUE, STAGE, FLAGS, TASKS, MCP, SECURITY and TESTS. HOUSEHOLD_HEALTH is the Epic MyChart database, with RAW, STAGING, CORE and CTRL, kept apart so no ledger, Moonshots or agent role reaches health data through inheritance. In every database, a RAW row is one landed payload, a CORE row is one business object, and ANALYTICS holds reporting tables and semantic views.',
+        'Five production databases, each with a *_DEV twin that has the same schemas, tables and columns. Open a database below to see its schemas, example tables and grain. HOUSEHOLD_LEDGER has PUBLIC, RAW, CORE, CTRL, ANALYTICS and AI, plus temporary STAGING and INTERMEDIATE schemas. MOONSHOTS has RAW, CORE, CTRL and AI. AGENTIC_WORKFORCE has AGENTS, CONVERSATIONS, GRAPH and CAPTURE, plus STAGING, INTERMEDIATE, ANALYTICS, AI, TRANSFORM and SECURITY. It is where AI chat history from every platform collects, through a daily capture and a nightly chat backup, before agentic_workforce_dbt_daily builds ANALYTICS. CONTROL has PROC, QUEUE, STAGE, FLAGS, TASKS, MCP, SECURITY and TESTS. HOUSEHOLD_HEALTH is the Epic MyChart database, with RAW, STAGING, CORE and CTRL, kept apart so no ledger, Moonshots or agent role reaches health data through inheritance. In every database, a RAW row is one landed payload, a CORE row is one business object, and ANALYTICS holds reporting tables and semantic views.',
       databases: [
         {
           id: 'ledger',
@@ -117,10 +117,10 @@ export const COPY = {
           oneLine: 'YouTube catalog for Moonshots by Peter Diamandis and Market Mondays by Earn Your Leisure',
           schemas: ['RAW', 'CORE', 'CTRL', 'AI'],
           detail:
-            'YouTube domain for Moonshots by Peter Diamandis and Market Mondays by Earn Your Leisure, shortened to EYL. Monday pipeline_load_window triggers moonshots_yt_sync_daily after the INGEST_WH work; EYL captions write in that window. moonshots_yt_sync_daily and moonshots_eyl_sync were the two DAGs confirmed unpaused at the last check. CTRL hosts MCP_MOONSHOTS for Cynthia (Moonshot and architecture advisory). CS_TRANSCRIPTS and CS_VIDEOS are the Moonshots Cortex Search services. Phase 5 added ANALYTICS views over CORE for reporting reads.',
+            'YouTube domain for Moonshots by Peter Diamandis and Market Mondays by Earn Your Leisure, shortened to EYL. Monday pipeline_load_window triggers moonshots_yt_sync_daily after the INGEST_WH work; EYL captions write in that window. CTRL hosts MCP_MOONSHOTS for Cynthia (Moonshot and architecture advisory). CS_TRANSCRIPTS and CS_VIDEOS are the Moonshots Cortex Search services. Phase 5 added ANALYTICS views over CORE for reporting reads.',
           objects: [
-            { layer: 'Scheduler', name: 'moonshots_yt_sync_daily', note: 'Monday window trigger · unpaused' },
-            { layer: 'Scheduler', name: 'moonshots_eyl_sync', note: 'Unscheduled · unpaused' },
+            { layer: 'Scheduler', name: 'moonshots_yt_sync_daily', note: 'Monday window trigger' },
+            { layer: 'Scheduler', name: 'moonshots_eyl_sync', note: 'Monday window step' },
             { layer: 'CTRL', name: 'MCP_MOONSHOTS', note: 'YouTube MCP catalog' },
             { layer: 'Search', name: 'CS_TRANSCRIPTS / CS_VIDEOS', note: 'Cortex Search' },
           ],
@@ -147,7 +147,7 @@ export const COPY = {
           objects: [
             { layer: 'Capture', name: 'AGENTS / CONVERSATIONS / GRAPH', note: 'Daily MERGE' },
             { layer: 'Landing', name: 'RAW.CHAT_MESSAGES', note: 'Nightly chat backup' },
-            { layer: 'dbt', name: 'agentic_workforce_dbt_daily', note: '→ ANALYTICS · created paused' },
+            { layer: 'dbt', name: 'agentic_workforce_dbt_daily', note: '→ ANALYTICS · 06:00 chain' },
             { layer: 'Planned', name: 'AW desk marts', note: 'Queued, not prod' },
           ],
         },
@@ -781,8 +781,8 @@ DIAG.code = {
   cs: 'CS_DOCUMENTS',
   airflow: '16 production DAGs · runs the pulled release tag',
   land: 'pipeline_load_window → monarch + email',
-  ocr: 'doc_extract · paused for warehouse quota',
-  dbt: 'ledger_dbt_daily → hr → agentic · dbt_daily paused',
+  ocr: 'doc_extract · local OCR on the office PC',
+  dbt: 'ledger_dbt_daily → hr → agentic',
 }
 
 Object.assign(DIAG.pipes, {
