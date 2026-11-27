@@ -209,21 +209,22 @@ export function dGrokbot(D, inst=""){
   begin(true,inst);setDensity(1);ID='gb'+inst;const G=D.grokbot;let o='',a='';
   const narrow=typeof window!=='undefined'&&window.innerWidth<560;
   const W=narrow?350:528,pad=10,gap=8;
-  const row=(y,label,cards,cols,ssz)=>{o+=lab(pad,y+5,label);y+=14;const n=cols||cards.length;const w=(W-2*pad-gap*(n-1))/n;
-    const out=[],top=y,rh=Math.max(...cards.map((c)=>lcard(0,0,w,c,{ssz}).h));
-    cards.forEach((c,k)=>{const col=k%n,line=Math.floor(k/n);const x=pad+col*(w+gap),yy=y+line*(rh+gap);o+=lcard(x,yy,w,c,{h:rh,dash:c.go,ssz}).g;out.push({x,y:yy,w,h:rh,mx:x+w/2})});
+  const row=(y,label,cards,cols,ssz,ppl)=>{o+=lab(pad,y+5,label);y+=14;const n=cols||cards.length;const w=(W-2*pad-gap*(n-1))/n;
+    const card=(xx,yy,c,op)=>ppl?pcard(xx,yy,w,c,op):lcard(xx,yy,w,c,{...op,ssz});
+    const out=[],top=y,rh=Math.max(...cards.map((c)=>card(0,0,c,{}).h));
+    cards.forEach((c,k)=>{const col=k%n,line=Math.floor(k/n);const x=pad+col*(w+gap),yy=y+line*(rh+gap);o+=card(x,yy,c,{h:rh,dash:c.go}).g;out.push({x,y:yy,w,h:rh,mx:x+w/2})});
     const lines=Math.ceil(cards.length/n);return {top,bottom:y+lines*rh+(lines-1)*gap,cards:out}};
   if(narrow){
-    let y=4;const ppl=row(y,'People and bots',G.people,3);y=ppl.bottom+10;
+    let y=4;const ppl=row(y,'People and bots',G.people,3,0,true);y=ppl.bottom+10;
     G.servers.forEach((sv,k)=>{const sr=row(y,k?'':'MCP servers',[{...sv,s:sv.s+' · '+sv.users}]);a+=arrow(`M${W/2},${sr.bottom+3} V${sr.bottom+11}`,'c');
       const fr=row(sr.bottom+0,'',[G.families[k]]);y=fr.bottom+10});
     const cx=row(y,'Cortex in SQL',[G.cortex]);return svg(W,cx.bottom+4,G.title,a+o)}
-  const ppl=row(4,'People and bots',G.people);
+  const ppl=row(4,'People and bots',G.people,0,0,true);
   const srv=row(ppl.bottom+30,'MCP servers',G.servers,0,7);
   G.people.forEach((p,k)=>{const from=ppl.cards[k];(p.to||[]).forEach((t,m)=>{const to=srv.cards[t];const tx=to.mx+((p.to.length>1?(m?-14:14):0))+(t===0?(k-1)*12:0);
     a+=arrow(`M${from.mx},${ppl.bottom+3} C${from.mx},${ppl.bottom+18} ${tx},${srv.top-16} ${tx},${srv.top-3}`,'c')})});
   const mi=G.people.findIndex((p)=>p.go),ei=G.people.findIndex((p)=>p.t==='Eta');
-  if(mi>0&&ei>=0){const m=ppl.cards[mi],e=ppl.cards[ei];a+=arrow(`M${m.x-2},${m.y+m.h/2} H${e.x+e.w+3}`,'w')}
+  if(mi>0&&ei>=0){const m=ppl.cards[mi],e=ppl.cards[ei];a+=arrow(`M${m.mx-22},${m.y+21} H${e.mx+25}`,'w')}
   const fam=row(srv.bottom+18,'What each server offers',G.families);
   srv.cards.forEach((c,k)=>a+=arrow(`M${c.mx},${srv.bottom+3} V${fam.top+11}`,'c'));
   const cx=row(fam.bottom+18,'Cortex in SQL',[G.cortex]);
@@ -588,6 +589,31 @@ const lcard=(x,y,w,c,o={})=>{const tsz=o.tsz||9.2,ssz=o.ssz||8,lh=1.25;const rsv
   if(pill){const P=c.gate?PILLS.gate:PILLS.ok;const pw=meas(pill,7.4,600,0,!c.gate)/0.9+14;g+=`<rect x="${x+9}" y="${ty+3}" width="${pw}" height="14" rx="7" fill="${P.f}" stroke="${P.s}"/>`+T(x+9+pw/2,ty+10.4,pill,{sz:7.4,w:600,c:P.c,mono:!c.gate})}
   const hero=!!c.hero;const dash=!!o.dash;
   return {h,g:`<g class="nd" tabindex="0" role="button" data-node="${esc(c.t)}" data-b="${x},${y},${w},${h},9,6" data-shape="box"><g class="nd-face"${dash?'':` filter="url(#${ID}sh)"`}><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="${hero?'#f4fbf7':'#fff'}" stroke="${hero?LIAM.green:LIAM.border}" stroke-width="${hero?1.4:1}"${dash?' stroke-dasharray="3.5 3.5"':''}/></g>${g}${platformBadge(x,y,w,h,c.logo)}</g>`}};
+
+const SKIN='#f2dfcf',SKIN2='#c99a78',HAIR='#2b2f3a',INK=LIAM.ink;
+const bust=(shirt,skin=SKIN)=>`<path d="M4,32 C4,23 9,20.5 16,20.5 C23,20.5 28,23 28,32 Z" fill="${shirt}"/><rect x="13.6" y="16.5" width="4.8" height="5" fill="${skin}"/><circle cx="16" cy="11.5" r="6.4" fill="${skin}"/>`;
+const eyes=(y=12)=>`<circle cx="13.6" cy="${y}" r="0.75" fill="${INK}"/><circle cx="18.4" cy="${y}" r="0.75" fill="${INK}"/><path d="M14.2,14.6 Q16,15.8 17.8,14.6" fill="none" stroke="${INK}" stroke-width="0.7" stroke-linecap="round"/>`;
+const FIGS={
+  Stephen:()=>bust('#344054')+`<path d="M13.2,20.6 L16,24 L18.8,20.6 Z" fill="#fff"/><path d="M15.2,21.6 L16.8,21.6 L17.2,27 L16,28.4 L14.8,27 Z" fill="${LIAM.green}"/><path d="M9.6,10.4 C9.8,5.2 22.2,5.2 22.4,10.4 C20,8.4 13.6,8 9.6,10.4 Z" fill="${HAIR}"/>`+eyes()+`<circle cx="13.6" cy="12" r="1.9" fill="none" stroke="${INK}" stroke-width="0.6"/><circle cx="18.4" cy="12" r="1.9" fill="none" stroke="${INK}" stroke-width="0.6"/><path d="M15.5,12 H16.5" stroke="${INK}" stroke-width="0.6"/>`,
+  'Grok desks':()=>`<g transform="translate(6,-1) scale(0.78)" opacity="0.55">${bust('#98a2b3')}<path d="M9.6,10.4 C9.8,5.4 22.2,5.4 22.4,10.4 C19,8.6 13,8.6 9.6,10.4 Z" fill="${HAIR}"/></g><g transform="translate(-3,1) scale(0.9)">${bust('#d1fadf',SKIN2)}<path d="M9.4,11 C9,4.6 23,4.6 22.6,11 C21,8 11,8 9.4,11 Z" fill="${HAIR}"/>${eyes()}</g>`,
+  Eta:()=>bust(LIAM.green)+`<circle cx="16" cy="3.6" r="2.8" fill="${HAIR}"/><path d="M9.6,12 C9,4.8 23,4.8 22.4,12 C21,8.6 11,8.6 9.6,12 Z" fill="${HAIR}"/>`+eyes()+`<path d="M9.2,12 C9.2,6 22.8,6 22.8,12" fill="none" stroke="${INK}" stroke-width="0.9"/><rect x="8.2" y="10.6" width="2" height="3.4" rx="1" fill="${INK}"/><path d="M9.2,14 Q10.6,17 13.4,16.4" fill="none" stroke="${INK}" stroke-width="0.7"/>`,
+  Michael:()=>bust('#1a1f2c',SKIN2)+[10.6,13,15.4,17.8,20.2,21.6].map((x,i)=>`<circle cx="${x}" cy="${i%2?6.6:7.4}" r="2.2" fill="${HAIR}"/>`).join('')+eyes()+`<path d="M10.4,13.4 C11,19.6 21,19.6 21.6,13.4 C20,16.4 12,16.4 10.4,13.4 Z" fill="${HAIR}"/><circle cx="25.4" cy="25" r="3.6" fill="${LIAM.green}" stroke="#fff" stroke-width="0.9"/><path d="M23.8,25 L25,26.2 L27,23.8" fill="none" stroke="#fff" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>`,
+  Cursor:()=>`<path d="M5,32 C5,24 9,21.5 16,21.5 C23,21.5 27,24 27,32 Z" fill="#e4e7ec"/><path d="M16,3 V6" stroke="${INK}" stroke-width="0.9"/><circle cx="16" cy="2.6" r="1.3" fill="${LIAM.green}"/><rect x="8.5" y="6" width="15" height="12.5" rx="3.5" fill="#fff" stroke="${INK}" stroke-width="0.9"/><rect x="11.4" y="10" width="3" height="3" rx="0.6" fill="${INK}"/><rect x="17.6" y="10" width="3" height="3" rx="0.6" fill="${INK}"/><path d="M13.6,15.6 H18.4" stroke="${LIAM.green}" stroke-width="1" stroke-linecap="round"/><path d="M13.4,25.4 L11.6,27.2 L13.4,29 M18.6,25.4 L20.4,27.2 L18.6,29 M16.8,25 L15.2,29.4" fill="none" stroke="${INK}" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/>`,
+  Cynthia:()=>`<path d="M8.6,12 C7.4,24 9,25 11.2,24.6 L20.8,24.6 C23,25 24.6,24 23.4,12 Z" fill="#6b3f2a"/>`+bust('#fdb022',SKIN2)+`<path d="M9.4,12.4 C8.6,4.2 23.4,4.2 22.6,12.4 C20.4,7.4 13.2,7 9.4,12.4 Z" fill="#6b3f2a"/>`+eyes()+`<circle cx="9.7" cy="14.6" r="0.9" fill="${LIAM.green}"/><circle cx="22.3" cy="14.6" r="0.9" fill="${LIAM.green}"/>`,
+};
+const figure=(name,x,y,size)=>{const f=FIGS[name];return f?`<g pointer-events="none" transform="translate(${x},${y}) scale(${size/32})">${f()}</g>`:''};
+let FIGN=0;
+/** People node: a character token with a name pill and role, no card. */
+const pcard=(x,y,w,c,o={})=>{
+  const tsz=9.2,ssz=8,lh=1.25,cid=`${ID}fc${FIGN++}`,dash=!!c.go;
+  const d=38,cx=x+w/2,cy=y+d/2+2;const tl=wrapW(c.t,w-6,tsz,600),sl=c.s?wrapW(c.s,w-4,ssz,400):[];
+  const pw=Math.min(w,meas(tl[0],tsz,600)/0.9+16);let g='',ty=y+d+8;
+  g+=`<rect x="${cx-pw/2}" y="${ty}" width="${pw}" height="${tsz*lh+5}" rx="${(tsz*lh+5)/2}" fill="#fff" stroke="${dash?LIAM.conn:LIAM.green}"${dash?' stroke-dasharray="3 3"':''}/>`+T(cx,ty+(tsz*lh+5)/2,tl[0],{sz:tsz,w:600,c:INK});ty+=tsz*lh+7;
+  sl.forEach((l)=>{g+=T(cx,ty+ssz*lh/2,l,{sz:ssz,c:LIAM.schema});ty+=ssz*lh});
+  const h=Math.max(o.h||0,ty-y+2);
+  const tok=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="transparent"/><circle cx="${cx}" cy="${cy}" r="${d/2}" fill="#fff" stroke="${LIAM.border}" filter="url(#${ID}sh)"/><clipPath id="${cid}"><circle cx="${cx}" cy="${cy}" r="${d/2-2.5}"/></clipPath><circle cx="${cx}" cy="${cy}" r="${d/2-2.5}" fill="${LIAM.soft}"/><g clip-path="url(#${cid})">${figure(c.t,cx-(d-5)/2,cy-(d-5)/2+2,d-5)}</g>`;
+  const bk=d/2*0.72,badge=c.logo&&PLATFORM[c.logo]?platformBadge(cx+bk-w+BADGE/2+4,cy+bk-BADGE/2+4,w,BADGE,c.logo):'';
+  return {h,g:`<g class="nd" tabindex="0" role="button" data-node="${esc(c.t)}" data-b="${cx-d/2-4},${y},${d+8},${h},9,6" data-shape="box">${tok}${g}${badge}</g>`}};
 
 export function dDbt(D, inst=""){
   begin(true,inst);setDensity(1);ID='db'+inst;const B=D.dbt;let o='',a='';
