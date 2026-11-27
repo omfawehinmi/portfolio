@@ -1,0 +1,16 @@
+{
+  "name": "portfolio-e2e",
+  "private": true,
+  "description": "Playwright gate for the portfolio. Run against a Vite production build served on :3000 at /portfolio/.",
+  "scripts": {
+    "test": "playwright test",
+    "test:e2e": "PLAYWRIGHT_GATE=1 playwright test --project=chromium-375 --project=chromium-768 --project=chromium-1280 --project=chromium-1440 nav.spec.js clickthrough.spec.js geometry.spec.js",
+    "test:e2e:visual": "PLAYWRIGHT_GATE=1 playwright test --project=chromium-375 --project=chromium-768 --project=chromium-1280 --project=chromium-1440 visual.spec.js",
+    "test:e2e:a11y": "PLAYWRIGHT_GATE=1 playwright test --project=chromium-375 --project=chromium-768 --project=chromium-1280 --project=chromium-1440 a11y.spec.js",
+    "test:e2e:geometry": "PLAYWRIGHT_GATE=1 playwright test --project=chromium-375 --project=chromium-768 --project=chromium-1280 --project=chromium-1440 geometry.spec.js"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.1",
+    "@playwright/test": "1.64.1"
+  }
+}
