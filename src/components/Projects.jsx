@@ -323,7 +323,6 @@ function LeadTile({ onOpen, tall }) {
         <div className="bx-leadtext">
           <FoldBody project={{ outcome: L.intro }} lines={3} />
           <StatStrip stats={L.stats} />
-          <Chips tags={L.tags} />
         </div>
         <figure className="bx-fig bx-leadfig">
           <ArchitectureDiagram kind="lead" tall={tall} inst="tile" />
@@ -473,7 +472,6 @@ function LeadPanel({ tall }) {
         <figcaption>{LEAD_CAPTION}</figcaption>
       </figure>
       <p>{L.intro}</p>
-      <Chips tags={L.tags} />
     </div>
   )
 }
