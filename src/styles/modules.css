@@ -791,6 +791,15 @@ body {
 .button--ghost {
   color: var(--title-color);
 }
+/* White on --first-color is below 4.5:1; kept by request for the hero Resume
+   button. Hover stays on the darker accent so white text never sits on #5cc8ef. */
+.button.button--light-text,
+.button.button--light-text:hover {
+  color: #fff;
+}
+.button.button--light-text:hover {
+  background-color: var(--first-color-alt);
+}
 /* --first-color-alt (#1689b5) with navy text is 4.25:1; use the lighter
    lighter accent for hover (navy on #5cc8ef is 8.9:1+). */
 

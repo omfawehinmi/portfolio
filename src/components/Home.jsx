@@ -46,7 +46,7 @@ export default function Home() {
               {profile.years} years in data · {profile.location}
             </p>
             <div className="home__actions">
-              <a download="" href={publicUrl('assets/pdf/Michael-Fawehinmi-Resume.pdf')} className="button button--flex">
+              <a download="" href={publicUrl('assets/pdf/Michael-Fawehinmi-Resume.pdf')} className="button button--flex button--light-text">
                 Resume <Icon name="uil-download-alt" className="button__icon" />
               </a>
               <a href="#projects" className="button button--flex button--ghost">
